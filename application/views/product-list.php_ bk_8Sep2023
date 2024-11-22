@@ -1,0 +1,74 @@
+<?php require_once('common/header.php'); ?>
+<style>
+	.filters {
+		display: block;
+	}
+	a {
+		text-decoration: none;
+	}
+	a {
+		text-decoration: none;
+	}
+	.price-filter li.out_of_stock_variant {
+		background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><path d='M1 0 L0 1 L99 100 L100 99' fill='black' /><path d='M0 99 L99 0 L100 1 L1 100' fill='black' /></svg>");
+		background-repeat: no-repeat;
+		background-position: center center;
+		background-size: 100% 100%, auto;
+		pointer-events: none;
+		cursor: default;
+	}
+	.product-stock-message {
+		color: red;
+	}
+	.out_of_stock {
+		display: none !important;
+	}
+</style>
+<?php // echo "<pre>";print_r($product_search);exit;
+?>
+<section class="categories-banner" id="category_product_title">
+	<!-- <h2>VEGETABLES</h2> -->
+</section>
+<section class="category-product">
+	<input type="hidden" id="product_ids">
+	<div class="container">
+		<div class="container-flex ">
+			<div class="category-filter">
+				<div id="categories">
+					<h3 class="accordion-toggle">CATEGORY <span class="fa fa-minus pull-right "></span></h3>
+					<div class="accordion" id="category_filter">
+					</div>
+				</div>
+				<div id="brands">
+					<h3 class="accordion-toggle">BRAND <span class="fa fa-minus pull-right"></span></h3>
+					<div class="accordion" id="brand_filter">
+					</div>
+				</div>
+				<div>
+					<h3 class="accordion-toggle last-accordion">PRICE <span class="fa fa-minus pull-right"></span></h3>
+					<div class="accordion">
+						<input placeholder="Min price" id="min_price" name="" type="text">
+						<span>To</span>
+						<input placeholder="Max price" id="max_price" name="" type="text">
+					</div>
+				</div>
+				<div id="tags">
+					<h3 class="accordion-toggle">TAGS <span class="fa fa-minus pull-right"></span></h3>
+					<div class="accordion" id="tag_filter">
+					</div>
+				</div>
+				<div><button onclick="apply_filter();" class="vraj-btn">Apply</button></div>
+			</div>
+			<div class="product-filter">
+				<div class="product-grid" id="category_product">
+					<input type="hidden" id="category_url" value="<?php echo ($url != "" ? $url : ""); ?>">
+					<input type="hidden" id="search_product"
+						value="<?php echo ($product_search != "" ? $product_search : ""); ?>">
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<?php require_once('common/common_js.php'); ?>
+<?php require_once('scripts/product_list_js.php'); ?>
+<?php require_once('common/footer.php'); ?>

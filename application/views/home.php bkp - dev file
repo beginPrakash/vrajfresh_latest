@@ -1,0 +1,1718 @@
+<?php require_once('common/header.php'); ?>
+<section class="banner container">
+	<div class="banner-left">
+		<div class="slick-carousel" id="home_banner">
+			<!-- <div><img src=<?php echo ASSET_URL . "images/banner-1.jpg"; ?>></div> -->
+			<!--<div><img src=<?php echo ASSET_URL . "images/banner-1.jpg"; ?>></div>
+			<div><img src=<?php echo ASSET_URL . "images/banner-1.jpg"; ?>></div> -->
+		</div>
+	</div>
+	<div class="banner-right" id="banner-right">
+		<!--<img src=<?php echo ASSET_URL . "images/banner-add.jpg"; ?>>-->
+	</div>
+</section>
+<section class="categories">
+	<div class="container">
+		<div class="tab-container">
+			<ul class="tabs" id="tabs">
+				<!-- <li class="tab-link current" data-tab="Grocery"> <img class="svg" src=<?php echo ASSET_URL . "images/category-1-icon.svg"; ?>> <span>Grocery</span></li>
+				<li class="tab-link" data-tab="Bakery"> <img class="svg" src=<?php echo ASSET_URL . "images/category-2-icon.svg"; ?>> <span>Bakery Products</span></li>
+				<li class="tab-link" data-tab="Frozen"> <img class="svg" src=<?php echo ASSET_URL . "images/category-3-icon.svg"; ?>> <span>Frozen</span></li>
+				<li class="tab-link" data-tab="Fresh"> <img class="svg" src=<?php echo ASSET_URL . "images/category-4-icon.svg"; ?>> <span>Fresh Produce</span></li>
+				<li class="tab-link" data-tab="Dairy"> <img class="svg" src=<?php echo ASSET_URL . "images/category-5-icon.svg"; ?>> <span>Dairy Products</span></li>
+				<li class="tab-link" data-tab="Healthcare"> <img class="svg" src=<?php echo ASSET_URL . "images/category-6-icon.svg"; ?>> <span>Personal & Healthcare</span></li>
+				<li class="tab-link" data-tab="Canned-Food"> <img class="svg" src=<?php echo ASSET_URL . "images/category-7-icon.svg"; ?>> <span>Canned Food</span></li> -->
+			</ul>
+		</div>
+		<div id="categories_product" class="tab-content current"></div>
+			<!--<div class="product-grid" id="product-grid">
+				 <div class="product-box"> 
+					<img src=<?php echo ASSET_URL . "images/product-1.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div> 
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-2.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-3.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-4.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-1.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-2.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-3.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-4.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+			</div>
+			<div id="Bakery" class="tab-content">
+				<div class="product-grid">
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-1.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-2.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-3.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-4.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-1.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-2.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-3.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-4.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div id="Frozen" class="tab-content">
+				<div class="product-grid">
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-1.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-2.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-3.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-4.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-1.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-2.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-3.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-4.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div id="Fresh" class="tab-content">
+				<div class="product-grid">
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-1.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-2.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-3.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-4.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-1.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-2.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-3.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-4.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div id="Dairy" class="tab-content">
+				<div class="product-grid">
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-1.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-2.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-3.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-4.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-1.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-2.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-3.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-4.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div id="Healthcare" class="tab-content">
+				<div class="product-grid">
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-1.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-2.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-3.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-4.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-1.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-2.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-3.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-4.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div id="Canned-Food" class="tab-content">
+				<div class="product-grid">
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-1.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-2.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-3.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-4.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-1.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-2.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-3.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-4.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+					<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+						<h4>Redish</h4>
+						<strong>$2.49</strong> <span>200g</span>
+						<ul>
+							<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+							<li>
+								<button>Add</button>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>-->
+</section>
+<!--<section class="home-product">
+	<div class="container">
+		<div class="product-grid">
+			<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-1.png"; ?>>
+				<h4>Redish</h4>
+				<strong>$2.49</strong> <span>200g</span>
+				<ul>
+					<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+					<li>
+						<button>Add</button>
+					</li>
+				</ul>
+			</div>
+			<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-2.png"; ?>>
+				<h4>Redish</h4>
+				<strong>$2.49</strong> <span>200g</span>
+				<ul>
+					<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+					<li>
+						<button>Add</button>
+					</li>
+				</ul>
+			</div>
+			<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-3.png"; ?>>
+				<h4>Redish</h4>
+				<strong>$2.49</strong> <span>200g</span>
+				<ul>
+					<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+					<li>
+						<button>Add</button>
+					</li>
+				</ul>
+			</div>
+			<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-4.png"; ?>>
+				<h4>Redish</h4>
+				<strong>$2.49</strong> <span>200g</span>
+				<ul>
+					<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+					<li>
+						<button>Add</button>
+					</li>
+				</ul>
+			</div>
+			<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+				<h4>Redish</h4>
+				<strong>$2.49</strong> <span>200g</span>
+				<ul>
+					<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+					<li>
+						<button>Add</button>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="product-grid-2">
+			<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+				<h4>Redish</h4>
+				<strong>$2.49</strong> <span>200g</span>
+				<ul>
+					<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+					<li>
+						<button>Add</button>
+					</li>
+				</ul>
+			</div>
+			<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-4.png"; ?>>
+				<h4>Redish</h4>
+				<strong>$2.49</strong> <span>200g</span>
+				<ul>
+					<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+					<li>
+						<button>Add</button>
+					</li>
+				</ul>
+			</div>
+			<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-3.png"; ?>>
+				<h4>Redish</h4>
+				<strong>$2.49</strong> <span>200g</span>
+				<ul>
+					<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+					<li>
+						<button>Add</button>
+					</li>
+				</ul>
+			</div>
+			<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-2.png"; ?>>
+				<h4>Redish</h4>
+				<strong>$2.49</strong> <span>200g</span>
+				<ul>
+					<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+					<li>
+						<button>Add</button>
+					</li>
+				</ul>
+			</div>
+			<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-1.png"; ?>>
+				<h4>Redish</h4>
+				<strong>$2.49</strong> <span>200g</span>
+				<ul>
+					<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+					<li>
+						<button>Add</button>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>-->
+<section class="vraj-bakery vraj-title">
+	<div class="container" id="category_product">
+		<!-- <h2>Vraj Bakery</h2>
+		<div class="container-flex">
+			<div class="product-box"> <img src=<?php echo ASSET_URL . "images/bakery-1.jpg"; ?>>
+				<div>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="product-box"> <img src=<?php echo ASSET_URL . "images/bakery-2.jpg"; ?>>
+				<div>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="product-box"> <img src=<?php echo ASSET_URL . "images/bakery-3.jpg"; ?>>
+				<div>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="product-box"> <img src=<?php echo ASSET_URL . "images/bakery-4.jpg"; ?>>
+				<div>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="product-box"> <img src=<?php echo ASSET_URL . "images/bakery-5.png"; ?>>
+				<div>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="product-box"> <img src=<?php echo ASSET_URL . "images/bakery-6.png"; ?>>
+				<div>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="product-box"> <img src=<?php echo ASSET_URL . "images/bakery-7.png"; ?>>
+				<div>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="product-box"> <img src=<?php echo ASSET_URL . "images/bakery-8.png"; ?>>
+				<div>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="product-box"> <img src=<?php echo ASSET_URL . "images/bakery-9.png"; ?>>
+				<div>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+			</div> -->
+	</div>
+	<a href="#" class="vraj-btn">View all bakery products</a>
+	</div>
+</section>
+<section class="ads">
+	<div class="container" >
+		<ul class="container-flex" id="bottom_category" >
+			 <!-- <li><a href="#"><img src=<?php //echo ASSET_URL . "images/ads-1.png"; ?>></a></li>
+			<li><a href="#"><img src=<?php //echo ASSET_URL . "images/ads-2.png"; ?>></a></li>
+			<li><a href="#"><img src=<?php //echo ASSET_URL . "images/ads-3.png"; ?>></a></li>  -->
+		</ul>
+	</div>
+</section>
+<section class="vraj-title">
+	<div class="container">
+		<div class="popular-product" id="popular-product">
+			<!-- <h2>Popular Items</h2> -->
+			<!--<div class="popular-items">
+				 <div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-1.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-2.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-3.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-4.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+			</div>-->
+		</div>
+		<div class="popular-product slick-carousel" id="popular-product1">
+			<!-- <h2>Best Of Home Essentials</h2>-->
+			<!--<div class="popular-items" id="popular-items1">
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-1.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-2.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-3.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-4.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+				<div class="product-box"> <img src=<?php echo ASSET_URL . "images/product-5.png"; ?>>
+					<h4>Redish</h4>
+					<strong>$2.49</strong> <span>200g</span>
+					<ul>
+						<li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li>
+						<li>
+							<button>Add</button>
+						</li>
+					</ul>
+				</div>
+			</div> 
+		</div>-->
+		</div>
+</section>
+<section class="discover-greatest vraj-title">
+	<div class="container">
+		<h2>Discover Our Latest & Greatest</h2>
+		<div class="discover" id="discover">
+			<!-- <div> <img src=<?php echo ASSET_URL . "images/Greatest-1.jpg"; ?>>
+				<h4>Organi Oatmilk Collagen Creamer</h4>
+			</div>
+			<div> <img src=<?php echo ASSET_URL . "images/Greatest-2.jpg"; ?>>
+				<h4>SmartSweets Jolly Gems</h4>
+			</div>
+			<div> <img src=<?php echo ASSET_URL . "images/Greatest-3.jpg"; ?>>
+				<h4>Blueberry Pecan Boule Bread</h4>
+			</div>
+			<div> <img src=<?php echo ASSET_URL . "images/Greatest-1.jpg"; ?>>
+				<h4>Organi Oatmilk Collagen Creamer</h4>
+			</div>
+			<div> <img src=<?php echo ASSET_URL . "images/Greatest-2.jpg"; ?>>
+				<h4>SmartSweets Jolly Gems</h4>
+			</div>
+			<div> <img src=<?php echo ASSET_URL . "images/Greatest-3.jpg"; ?>>
+				<h4>Blueberry Pecan Boule Bread</h4>
+			</div>
+			<div> <img src=<?php echo ASSET_URL . "images/Greatest-1.jpg"; ?>>
+				<h4>Organi Oatmilk Collagen Creamer</h4>
+			</div>
+			<div> <img src=<?php echo ASSET_URL . "images/Greatest-2.jpg"; ?>>
+				<h4>SmartSweets Jolly Gems</h4>
+			</div>
+			<div> <img src=<?php echo ASSET_URL . "images/Greatest-3.jpg"; ?>>
+				<h4>Blueberry Pecan Boule Bread</h4>
+			</div>
+			<div> <img src=<?php echo ASSET_URL . "images/Greatest-1.jpg"; ?>>
+				<h4>Organi Oatmilk Collagen Creamer</h4>
+			</div>
+			<div> <img src=<?php echo ASSET_URL . "images/Greatest-2.jpg"; ?>>
+				<h4>SmartSweets Jolly Gems</h4>
+			</div>
+			<div> <img src=<?php echo ASSET_URL . "images/Greatest-3.jpg"; ?>>
+				<h4>Blueberry Pecan Boule Bread</h4>
+			</div> -->
+		</div>
+	</div>
+</section>
+<section class="discover-greatest vraj-title">
+	<div class="container">
+		<h2>Shop by Brand</h2>
+		<div class="brand" id="brand">
+			<!-- <div> <img src=<?php //echo ASSET_URL . "images/Brand-logo-1.png"; ?>> </div>
+			<div> <img src=<?php //echo ASSET_URL . "images/Brand-logo-2.png"; ?>> </div>
+			<div> <img src=<?php //echo ASSET_URL . "images/Brand-logo-3.png"; ?>> </div>
+			<div> <img src=<?php //echo ASSET_URL . "images/Brand-logo-4.png"; ?>> </div>
+			<div> <img src=<?php //echo ASSET_URL . "images/Brand-logo-5.png"; ?>> </div>
+			<div> <img src=<?php //echo ASSET_URL . "images/Brand-logo-6.png"; ?>> </div>
+			<div> <img src=<?php //echo ASSET_URL . "images/Brand-logo-7.png"; ?>> </div>
+			<div> <img src=<?php //echo ASSET_URL . "images/Brand-logo-1.png"; ?>> </div>
+			<div> <img src=<?php //echo ASSET_URL . "images/Brand-logo-2.png"; ?>> </div>
+			<div> <img src=<?php //echo ASSET_URL . "images/Brand-logo-3.png"; ?>> </div>
+			<div> <img src=<?php //echo ASSET_URL . "images/Brand-logo-4.png"; ?>> </div>
+			<div> <img src=<?php //echo ASSET_URL . "images/Brand-logo-5.png"; ?>> </div>
+			<div> <img src=<?php //echo ASSET_URL . "images/Brand-logo-6.png"; ?>> </div>
+			<div> <img src=<?php //echo ASSET_URL . "images/Brand-logo-7.png"; ?>> </div> -->
+		</div>
+	</div>
+</section>
+<script>
+	$(document).ready(function() {
+		const url_prefix = "https://dev.thcitsolutions.com/vrajfresh/api/";
+		showProgress('div#spinner');
+		get_slider_banners(url_prefix);
+		get_side_banners(url_prefix);
+		get_brands(url_prefix);
+		get_icon_categories(url_prefix);
+		get_image_categories(url_prefix);
+		//get_products(url_prefix);
+		get_special_product(url_prefix);
+		get_special_product1(url_prefix);
+		get_discover_products(url_prefix);
+		get_category_products(url_prefix);
+		// get_home_page_categories();
+		hideProgress('div#spinner');
+		
+	});
+	
+function slider()
+		{
+			$('.slick-carousel').slick({
+					arrows: false,
+					centerPadding: "0px",
+					dots: true,
+					slidesToShow: 1,
+					infinite: false,
+					responsive: [{
+							breakpoint: 991,
+							settings: {
+								slidesToShow: 3,
+							}
+						},
+						{
+							breakpoint: 767,
+							settings: {
+								slidesToShow: 1,
+							}
+						}
+					]
+				});
+		}
+	function get_slider_banners(url_prefix) {
+		var json_request = {
+			"oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+			"is_active_only": "1",
+			"banner_type": "slider",
+			"search_keyword": "",
+			"limit": "10",
+			"page_no": "0",
+			"sort_column": "banner_id",
+			"sort_order": "desc"
+		};
+		var slider_banner = "";
+		$.ajax({
+			"type": "POST",
+			"url": url_prefix + 'get-banners',
+			"data": JSON.stringify(json_request),
+			"dataType": "JSON",
+			"success": function(response) {
+				for (let a = 0; a < response.data.length; a++) {
+					slider_banner = slider_banner.concat("<div><a href=" + response.data[a]['banner_link'] + "><img src='" + response.data[a]['banner_image'] + "'></a></div>");
+				}
+				$("#home_banner").html(slider_banner);
+				$('.slick-carousel').slick({
+					arrows: false,
+					centerPadding: "0px",
+					dots: true,
+					slidesToShow: 1,
+					infinite: false,
+					responsive: [{
+							breakpoint: 991,
+							settings: {
+								slidesToShow: 3,
+							}
+						},
+						{
+							breakpoint: 767,
+							settings: {
+								slidesToShow: 1,
+							}
+						}
+					]
+				});
+			},
+			"error": function(e) {
+				console.log(e.responseText);
+			}
+		});
+		//hideProgress(progressbar_id);
+	}
+	function get_side_banners(url_prefix) {
+		var json_request = {
+			"oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+			"is_active_only": "1",
+			"banner_type": "side",
+			"search_keyword": "",
+			"limit": "10",
+			"page_no": "0",
+			"sort_column": "banner_id",
+			"sort_order": "desc"
+		};
+		var slider_banner = "";
+		$.ajax({
+			"type": "POST",
+			"url": url_prefix + 'get-banners',
+			"data": JSON.stringify(json_request),
+			"dataType": "JSON",
+			"success": function(response) {
+				if (response.data != null) {
+					for (let a = 0; a < response.data.length; a++) {
+						slider_banner = slider_banner.concat("<div><a href="+response.data[a]['banner_link']+"><img src=" + response.data[a]['banner_image'] + "></a></div>");
+					}
+				}
+				$("#banner-right").html(slider_banner);
+			},
+			"error": function(e) {
+				console.log(e.responseText);
+			}
+		});
+	}
+	function get_brands(url_prefix) {
+		var json_request = {
+			"oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+			"is_active_only": "1",
+			"search_keyword": "",
+			"limit": "10",
+			"page_no": "0",
+			"sort_column": "brand_id",
+			"sort_order": "desc"
+		};
+		var brand = "";
+		$.ajax({
+			"type": "POST",
+			"url": url_prefix + 'get-brands',
+			"data": JSON.stringify(json_request),
+			"dataType": "JSON",
+			"success": function(response) {
+				if (response.data != null) {
+					for (let a = 0; a < response.data.length; a++) {
+						brand = brand.concat("<div><img src=" + response.data[a]['brand_image'] + "></div>");
+					}
+				}
+				$("#brand").html(brand);
+				jQuery('.brand').slick({
+					dots: true,
+					arrows: false,
+					infinite: true,
+					speed: 300,
+					slidesToShow: 7,
+					slidesToScroll: 7,
+					responsive: [{
+							breakpoint: 991,
+							settings: {
+								slidesToShow: 3,
+							}
+						},
+						{
+							breakpoint: 767,
+							settings: {
+								slidesToShow: 2,
+							}
+						}
+					]
+				});
+				
+			},
+			"error": function(e) {
+				console.log(e.responseText);
+			}
+		});
+	}
+	function get_icon_categories(url_prefix) {
+		var json_request = {
+			"oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+			"is_active_only": "1",
+			"search_keyword": "",
+			"limit": "10",
+			"page_no": "0",
+			"style": "top",
+			"is_home_display": "1",
+			"sort_column": "category_id",
+			"sort_order": "asc"
+		};
+		var category = "";
+		var product = "";
+		$.ajax({
+			"type": "POST",
+			"url": url_prefix + 'get-home-categories-product',
+			"data": JSON.stringify(json_request),
+			"dataType": "JSON",
+			"success": function(response) {
+				if (response.data != null) {
+					for (let a = 0; a < response.data.categories.length; a++) {
+						category = category.concat('<li class="tab-link" data-tab="' + response.data.categories[a]['category_slug'] + '" style="background:url('+response.data.categories[a]['category_background_image']+')"> <img class="svg" src="' + response.data.categories[a]['category_image'] + '"> <span>' + response.data.categories[a]['category_name'] + '</span></li>');
+						product = product.concat('<div id="'+response.data.categories[a]['category_slug']+'" class="tab-content"><div class="product-grid">');
+						for (let b = 0; b < response.data.categories[a].products.products.length; b++) {
+							// if(response.data.categories[a].products.products[b].product_id == response.data.categories[a].products.products[b++].product_id)
+							// {
+							// 	variant_data=response.data.categories[a].products.products[b].variant_price +'-'+response.data.categories[a].products.products[b].variant_price;
+							// }
+						product = product.concat('<a href="'+response.data.categories[a].products.products[b].product_slug+'"><div class="product-box"><img src='+url_prefix +'assets/images/' + response.data.categories[a].products.products[b].product_image + '><h4>' + response.data.categories[a].products.products[b].product_name + '</h4><strong>$' + response.data.categories[a].products.products[b].product_price + '</strong> <span>' + response.data.categories[a].products.products[b].product_weight_gms + 'g</span><ul><li><img src="<?php echo ASSET_URL . "images/plus-minus.png"; ?>"></li><li><button>Add</button></li></ul></div></a>');
+					}
+						product = product.concat('</div></div>');
+					}
+					$("#tabs").html(category);
+					$("#categories_product").html(product);
+				}
+			},
+			"error": function(e) {
+				console.log(e.responseText);
+			}
+		});
+
+	}
+	function home_products(url_prefix)
+	{
+		var json_request = {
+		"oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+		"category_slug": "1",
+		"is_active_only": "1",
+		"search_keyword": "",
+		"limit": "10",
+		"page_no": "0",
+		"banner_type":"bottom",
+		"sort_column": "banner_id",
+		"sort_order": "asc"
+		};
+		var banners = "";
+		$.ajax({
+		"type": "POST",
+		"url": url_prefix + 'get-banners',
+		"data": JSON.stringify(json_request),
+		"dataType": "JSON",
+		"success": function(response) {
+			if (response.data != null) {
+				for (let a = 0; a < response.data.length; a++) {
+					banners = banners.concat('<li><a href="'+response.data[a]['banner_link']+'"><img class="svg" src=' + response.data[a]['banner_image'] + '> </a></li>');
+				}
+				$("#bottom_category").html(banners);
+			}
+		},
+		"error": function(e) {
+			console.log(e.responseText);
+		}
+		});
+	}
+	function get_image_categories(url_prefix) {
+		var json_request = {
+			"oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+			"is_active_only": "1",
+			"search_keyword": "",
+			"limit": "10",
+			"page_no": "0",
+			"banner_type":"bottom",
+			"sort_column": "banner_id",
+			"sort_order": "asc"
+		};
+		var banners = "";
+		$.ajax({
+			"type": "POST",
+			"url": url_prefix + 'get-banners',
+			"data": JSON.stringify(json_request),
+			"dataType": "JSON",
+			"success": function(response) {
+				if (response.data != null) {
+					for (let a = 0; a < response.data.length; a++) {
+						banners = banners.concat('<li><a href="'+response.data[a]['banner_link']+'"><img class="svg" src=' + response.data[a]['banner_image'] + '> </a></li>');
+					}
+					$("#bottom_category").html(banners);
+				}
+			},
+			"error": function(e) {
+				console.log(e.responseText);
+			}
+		});
+
+	}
+	function get_products(url_prefix) {
+		var json_request = {
+			"oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+			"is_active_only": "1",
+			"search_keyword": "",
+			"is_home_display": "1",
+			"limit": "10",
+			"page_no": "0",
+			"sort_column": "product_id",
+			"sort_order": "desc"
+		};
+		var product = "";
+		$.ajax({
+			"type": "POST",
+			"url": url_prefix + 'get-products',
+			"data": JSON.stringify(json_request),
+			"dataType": "JSON",
+			"success": function(response) {
+				if (response.data != null) {
+					for (let a = 0; a < response.data.length; a++) {
+						product = product.concat('<div class="product-box"><img src=' + response.data[a]["image"] + '><h4>' + response.data[a]["product_name"] + '</h4><strong>$' + response.data[a]["product_price"] + '</strong> <span>' + response.data[a]["product_weight_gms"] + 'g</span><ul><li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li><li><button>Add</button></li></ul></div>');
+					}
+					$("#product-grid").html(product);
+				}
+			},
+			"error": function(e) {
+				console.log(e.responseText);
+			}
+		});
+
+	}
+	function get_special_product(url_prefix) {
+		var json_request = {
+			"oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+			"special_product_slug": "popular-items"
+		};
+		var product = "";
+		$.ajax({
+			"type": "POST",
+			"url": url_prefix + 'get-special-products',
+			"data": JSON.stringify(json_request),
+			"dataType": "JSON",
+			"success": function(response) {
+				if (response.data != null) {
+					product_title = '<h2>' + response.data.special_product_name + '</h2>';
+					for (let a = 0; a < response.data.product_detail.length; a++) {
+						product = product.concat('<a href="'+response.data.product_detail[a].product_slug+'"><div class="product-box"> <img src=' + response.data.product_detail[a].image + '><h4>' + response.data.product_detail[a].product_name + '</h4><strong>$' + response.data.product_detail[a].variant_price + '</strong> <span>' + response.data.product_detail[a].product_weight_gms + '</span><ul><li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li><li><button>Add</button></li></ul></div></a>');
+					}
+				}
+				// $("#popular-product").html(product_title);
+				$("#popular-product").html(product_title + '<div class="popular-items  id="popular-items">' + product + '</div>');
+				jQuery('.popular-items, .popular-items-2').slick({
+					dots: true,
+					arrows: false,
+					infinite: true,
+					speed: 300,
+					slidesToShow: 5,
+					slidesToScroll: 5,
+					responsive: [{
+							breakpoint: 991,
+							settings: {
+								slidesToShow: 3,
+							}
+						},
+						{
+							breakpoint: 767,
+							settings: {
+								slidesToShow: 2,
+							}
+						}
+					]
+				});
+			},
+			"error": function(e) {
+				console.log(e.responseText);
+			}
+		});
+
+	}
+	function get_special_product1(url_prefix) {
+		var json_request = {
+			"oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+			"special_product_slug": "best-of-home-essentials"
+		};
+		var product1 = "";
+		$.ajax({
+			"type": "POST",
+			"url": url_prefix + 'get-special-products',
+			"data": JSON.stringify(json_request),
+			"dataType": "JSON",
+			"success": function(response) {
+				if (response.data != null) {
+					product_title1 = '<h2>' + response.data.special_product_name + '</h2>';
+					for (let a = 0; a < response.data.product_detail.length; a++) {
+						product1 = product1.concat('<a href="'+response.data.product_detail[a].product_slug+'"><div class="product-box"> <img src=' + response.data.product_detail[a].image + '><h4>' + response.data.product_detail[a].product_name + '</h4><strong>$' + response.data.product_detail[a].variant_price + '</strong> <span>' + response.data.product_detail[a].product_weight_gms + '</span><ul><li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li><li><button>Add</button></li></ul></div></a>');
+					}
+					//$("#popular-product1").html();
+				}
+				$("#popular-product1").html(product_title1 + '<div class="popular-items" id="popular-items">' + product1 + '</div>');
+				jQuery('.popular-items, .popular-items-2').slick({
+					dots: true,
+					arrows: false,
+					infinite: true,
+					speed: 300,
+					slidesToShow: 5,
+					slidesToScroll: 5,
+					responsive: [{
+							breakpoint: 991,
+							settings: {
+								slidesToShow: 3,
+							}
+						},
+						{
+							breakpoint: 767,
+							settings: {
+								slidesToShow: 2,
+							}
+						}
+					]
+				});
+				
+			},
+			"error": function(e) {
+				console.log(e.responseText);
+			}
+		});
+	}
+	function get_discover_products(url_prefix) {
+		var json_request = {
+			"oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+			"is_active_only": "1",
+			"search_keyword": "",
+			"product_style":"discover",
+			"is_home_display": "1",
+			"limit": "10",
+			"page_no": "0",
+			"sort_column": "product_id",
+			"sort_order": "desc",
+			"is_home_display": "1"
+		};
+		var product = "";
+		$.ajax({
+			"type": "POST",
+			"url": url_prefix + 'get-products',
+			"data": JSON.stringify(json_request),
+			"dataType": "JSON",
+			"success": function(response) {
+				if (response.data != null) {
+					for (let a = 0; a < response.data.length; a++) {
+						//product = product.concat('<div class="product-box"><img src='+response.data[a]["image"]+'><h4>'+response.data[a]["product_name"]+'</h4><strong>'+response.data[a]["product_price"]+'</strong> <span>'+response.data[a]["product_weight_gms"]+'</span><ul><li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li><li><button>Add</button></li></ul></div>');
+						product = product.concat('<a href="'+response.data[a]["product_slug"]+'"><div> <img src=' + response.data[a]["image"] + '><h4>' + response.data[a]["product_name"] + '</h4></div></a>');
+					}
+					$("#discover").html(product);
+					jQuery('.discover').slick({
+						dots: true,
+						arrows: false,
+						infinite: true,
+						speed: 300,
+						slidesToShow: 3,
+						slidesToScroll: 3,
+						responsive: [{
+								breakpoint: 991,
+								settings: {
+									slidesToShow: 3,
+								}
+							},
+							{
+								breakpoint: 767,
+								settings: {
+									slidesToShow: 2,
+								}
+							}
+						]
+					});
+				}
+			},
+			"error": function(e) {
+				console.log(e.responseText);
+			}
+		});
+
+	}
+	function get_category_products(url_prefix) {
+		var json_request = {
+			"oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT"
+		};
+		var product = "";
+		$.ajax({
+			"type": "POST",
+			"url": url_prefix + 'get-home-category-product',
+			"data": JSON.stringify(json_request),
+			"dataType": "JSON",
+			"success": function(response) {
+				if (response.data != null) {
+					product_title = '<h2>' + response.data[0].category_name + '</h2>';
+					for (let a = 0; a < response.data.length; a++) {
+						//product = product.concat('<div class="product-box"><img src='+response.data[a]["image"]+'><h4>'+response.data[a]["product_name"]+'</h4><strong>'+response.data[a]["product_price"]+'</strong> <span>'+response.data[a]["product_weight_gms"]+'</span><ul><li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li><li><button>Add</button></li></ul></div>');
+						product = product.concat('<div class="product-box"><a href="'+response.data[a]["product_slug"]+'"><img src=' + response.data[a]["image"] + '><div><h4>' + response.data[a]["product_name"] + '</h4><strong>$' + response.data[a]["product_price"] + '</strong> <span>' + response.data[a]["product_weight_gms"] + '</span></a><ul><li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li><li><button type="button" class="add_cart">Add</button></li></ul></div></div>');
+					}
+					$("#category_product").html(product_title + '<div class="container-flex">' + product + '</div>');
+					$("a.vraj-btn").replaceWith("<a href='"+ response.data[0].category_slug +"' class='vraj-btn'>View all " + response.data[0].category_name + " products</a>")
+				}
+			},
+			"error": function(e) {
+				console.log(e.responseText);
+			}
+			
+		});
+		
+	}
+</script>
+<?php require_once('common/footer.php'); ?>

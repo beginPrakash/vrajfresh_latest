@@ -1,0 +1,232 @@
+@media (max-width: 767px) {
+.my-account ul {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+	   }
+
+}
+@media (max-width: 767px) {
+
+.footer-grid ul {
+		display: none; /* Hide ul by default on mobile */
+	}
+	.footer-grid h3 {
+		cursor: pointer;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		border-top: 1px solid #ccc;
+		padding-top: 11px;
+		font-weight: normal;
+		font-size: 1.6em;
+	}
+	.footer-grid ul.expanded {
+		display: block; /* Show ul when expanded class is added */
+	}
+	.footer-grid h3 .arrow {
+		border: solid #1e53a5;
+		border-width: 0 2px 2px 0;
+		display: inline-block;
+		padding: 4px;
+		transform: rotate(45deg);
+		-webkit-transform: rotate(45deg);
+	}
+	.footer-grid h3.expanded .arrow { 
+		transform: rotate(-45deg);
+		-webkit-transform: rotate(-45deg);
+	}
+	.copyright { text-align: center;}
+}
+
+
+@media (max-width: 767px) {
+
+	   #mobile_full #title_container .b_main_heading {
+		width: 78%;
+		font-size: 25px;
+		color: #1e53a5;
+	}
+
+	   #viewMoreBtn {
+		font-size: 20px;
+		}
+		.refill_pantry .item {
+			min-height: 150px; 
+		}
+		
+		.featured_category_image {
+			margin-top: 0px;
+		}
+		.home_banner { 
+			display: none !important; 
+		}
+		.home_banner_mobile { 
+			display: block !important;
+		}
+		.home_banner_mobile  .slick-dots {
+			margin: 0;
+		}
+		.featured_cat_container {
+			justify-content: space-between;
+			height: 610px; 
+			margin-left: -10px;
+		}
+		.banner {
+			width: 100% !important;
+		}
+		
+	   .featured_category_image {
+		min-height: 92px;
+	   }
+	   .featured_cat_container a {
+		font-size: 18px;
+		height: 20px;
+	   }
+	   #stock_container {
+		margin-top: 20px !important;
+		margin-bottom: 30px !important;
+	}
+	#title_container {
+		margin-top: 20px !important;
+		margin-bottom: 20px !important;
+	}
+	   .suyf .featured_stockup_image {
+		min-height: 120px;
+		margin-top: 14px;
+	   }
+	   .suyf .featured_stockup_title a {
+		margin-top: 5px;    
+		margin-bottom: 10px;
+		font-size: 18px;
+	   }
+	   .categories .slick-slide {
+		margin: 0 5px;
+	   }
+	   .slick-prev {
+		left: -20px;
+	   }
+	   .slick-next {
+		right: -11px;
+	   }
+	   .advertise_top {
+		gap: 10px;
+	   }
+	   .col-first, .col-second  {
+		width: 100%;
+	   }
+	   .col-third {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	   }
+	   .col-sub {
+		gap: 10px;
+		margin-top: 10px;
+	   }
+	   .slick-track .product-box .quantity  {
+		  width: 100%;
+	   }
+	   .product-box ul li>button:before {
+		width: 38px;
+		background-repeat: no-repeat;
+	   }
+	   .slick-track .product-box {
+		padding: 10px;
+		min-height: 250px;
+		margin: 0 5px;
+	}
+	.begin_img_container {
+		min-height: 102px;
+		
+	}
+	   .slick-track .product-box h4 {
+		min-height: 32px;
+		margin: 8px 0 6px 0;
+	   }
+	   .slick-track ul {
+		gap: 0px;
+	   }
+	   .slick-track .product-box img {
+		height: auto;
+		width: auto;
+		max-width: 100%;
+		max-height: 102px;
+	}
+	   .my-account ul {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+	   }
+	   .advertise_bottom_container {
+		display: flex;
+		gap: 10px;
+		margin-top: 10px;
+		flex-direction: column;
+	   }
+	   .refill_pantry .featured_pantry_title a {
+		margin-top: 0px;
+		font-size: 18px;
+	   }
+	   .refill_pantry .featured_pantry_image {
+		margin-top: 10px;
+		min-height: 115px;
+		padding: 20px;
+		max-height: 115px;
+	   }
+	.footer-grid ul {
+		display: none; /* Hide ul by default on mobile */
+	}
+	.footer-grid h3 {
+		cursor: pointer;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		border-top: 1px solid #ccc;
+		padding-top: 11px;
+		font-weight: normal;
+		font-size: 1.6em;
+	}
+	.footer-grid ul.expanded {
+		display: block; /* Show ul when expanded class is added */
+	}
+	.footer-grid h3 .arrow {
+		border: solid #1e53a5;
+		border-width: 0 2px 2px 0;
+		display: inline-block;
+		padding: 4px;
+		transform: rotate(45deg);
+		-webkit-transform: rotate(45deg);
+	}
+	.footer-grid h3.expanded .arrow { 
+		transform: rotate(-45deg);
+		-webkit-transform: rotate(-45deg);
+	}
+	.copyright { text-align: center;}
+	.view_all {
+		margin-top: 8px !important;
+		font-size: 16px !important;
+	}
+	.fresh_veg-title {
+		display: flex;
+		justify-content: space-between;
+		align-content: center;
+		flex-wrap: nowrap;
+		align-items: baseline;
+	}
+}
+
+@media only screen and (min-width: 585px) and (max-width: 992px)  {
+.mobile-menu{
+top:60px;
+}
+}
+
+.search-autocomplete-result.open .image-box img{
+width:50px;
+}
+
+.alert-danger, .alert-success{
+    margin:1em;
+}

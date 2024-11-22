@@ -1,0 +1,124 @@
+#calendar_div{font-family: 'Roboto', sans-serif;}
+.none{display:none;}
+.calendar-wrap{width:100%; margin:10px auto 0;}
+.calendar-wrap .cal-nav{background-color:#efefef; color:#444444; font-size:17px; text-align:center; line-height:40px; padding: 5px 8px;}
+.calendar-wrap .cal-nav a{color:#fff; float:none; text-decoration: none; font-size: 2.5em; line-height: 35px;}
+.calendar-wrap .cal-nav a:hover{color:#fff;}
+.calendar-wrap .cal-nav a:first-child{float: left;}
+.calendar-wrap .cal-nav a:last-child{float: right;}
+.calendar-wrap select{color: #444444; font-size:17px;}
+.calendar-days{width:100%; float:left; margin-top:20px;}
+.calendar-days ul{padding:0; list-style-type:none;}
+.calendar-days ul li{float:left; display:block; width:14.2%; border-right:1px solid #fff; text-align:center; font-size:15px; min-height:0; background:none; box-shadow:none; margin:0; padding:10px 0 10px 0; font-weight:500; color:#fff; background:#3a3a3b;}
+.calendar-dates{width:100%; margin-top:0px; float:left; border-left:1px solid #ccc; border-bottom:1px solid #ccc; margin-bottom:20px;}
+.calendar-dates ul{margin:0; padding:0; list-style-type:none;}
+.calendar-dates ul li{float:left; width:14.2%; height:90px; text-align:center; border-top:1px solid #ccc; border-right:1px solid #ccc; min-height:0; background:none; box-shadow:none; margin:0; padding:0; position:relative; background:#fff;}
+.calendar-dates ul li span{margin-top:7px; float:left; margin-left:7px; text-align:center;}
+.grey{background-color:#2979ff !important; color:#fff !important;}
+.light_sky{background-color:#e6efff !important; color:#000 !important;}
+.date_cell{cursor: pointer;cursor: hand;}
+.date_cell:hover {background: #f9f7f7 !important;}
+.date_popup_wrap {position: absolute; width: 143px; height: 115px; z-index: 9999; top: -115px; left:-55px; background: transparent url(../img/info-popup.png) no-repeat top left;
+	color: #666 !important;}
+.events_window {overflow: hidden; overflow-y: auto; width: 133px; height: 115px; margin-top: 28px; margin-left: 25px;}
+.event_wrap { margin-bottom: 10px; padding-bottom: 10px; border-bottom: solid 1px #E4E4E7; font-size: 12px; padding: 3px;}
+.date_window {margin-top:20px; margin-bottom: 2px; padding: 5px; font-size: 16px; margin-left:9px; margin-right:14px}
+.popup_event {margin-bottom: 2px; padding: 2px; font-size: 16px; width:100%;}
+.popup_event a {color: #000000 !important;}
+.popup_event a:hover {color: #181919; text-decoration: underline;}
+#event_list{text-align:center;}
+.calendar-wrap .cal-nav {background-color: #2661b7; color: #444444; font-size: 17px; text-align: center; line-height: 40px; padding: 5px 8px; width:99.2%; display:inline-block; width:100%;}
+#event_list h2 {margin: 12px 0 0 0; font-size: 19px; font-weight: 500; font-family: 'Roboto', sans-serif;}
+#event_list ul{margin:0px; padding:0px;}
+#event_list ul li {padding: 0px; list-style: none; font-size: 14px; margin:7px 0 0px 0; color:#383636;}
+.qe_calender_page_white_bg{border:none; border-radius:0px; box-shadow:none;}
+.month_dropdown{margin: 0px; padding:0 8px 0 8px; border:none; color: #333 !important; background: #fff url(../img/down_arrow_bde.png) left top no-repeat; background-position: 93% 50%; -webkit-appearance:none; -moz-appearance:none; appearance:none; min-width: 160px; border-radius: 3px; margin-left:15px;}
+.month_dropdown:focus{outline:none;}
+.month_dropdown option{font-size:15px; padding:0px;}
+.year_dropdown{margin: 0px; padding:0 8px 0 8px; border:none; color: #333 !important; background: #fff url(../img/down_arrow_bde.png) left top no-repeat; background-position: 93% 50%; -webkit-appearance:none; -moz-appearance:none; appearance:none; width:80px; border-radius: 3px; margin-right:15px;}
+.year_dropdown:focus{outline:none;}
+.year_dropdown option{font-size:15px; padding:0px;}
+.qe_calender_page_white_bg .box-body{padding-left:20px;}
+.date_popup_wrap .date_window a{color:#2979ff;}
+.grey:before {content: "Today"; color: #fff; position: absolute; left: 6px; bottom: 7px; font-size: 13px;}
+.grey:hover{background-color:#2979ff !important; color:#fff !important;}
+#event_list ul li:before {content: "\f073"; display: inline-block; border-radius: 100%; margin: 0px 7px 0 0; position: relative; top: -1px;     font: normal normal normal 14px/1 FontAwesome;}
+
+.qe_calender_page_white_bg .date_navigation{float:left;}
+.qe_calender_page_white_bg .date_buttons{float:right;}
+.qe_calender_page_white_bg .date_buttons a{font-size:14px; background:#333; color:#fff; display:inline-block; border-radius:4px; padding:3px 20px 3px 20px; font-weight:500; margin:0 0px 0 6px; float:none !important;}
+.qe_calender_page_white_bg .date_buttons a:hover{background:#fff; color:#333;}
+
+
+.qe_calender_page_white_bg .event_count {position: absolute; right: 0; text-align:right; bottom:0;}
+.qe_calender_page_white_bg .event_count .eventcount {display: inline-block; text-align: center; width: 24px; padding: 0px !important; font-size: 13px; height: 20px; line-height: 20px; margin: 0 0 0 3px;}
+.qe_calender_page_white_bg .event_count .my_event{background:#699; color:#fff;}
+.qe_calender_page_white_bg .event_count .project_delivery{background:#C90; color:#fff;}
+.qe_calender_page_white_bg .event_count .payment_due{background:#900; color:#fff; padding:0 4px 0 4px;}
+.qe_calender_page_white_bg .event_count .fllow_up{background:#909; color:#fff;}
+
+.qe_calender_page_white_bg .event_count_btn{float:left;}
+.qe_calender_page_white_bg .event_count_btn .eventcount_btn{display:inline-block; color:#fff; font-size:13px; padding:0 10px 0 10px; line-height:26px;}
+
+.qe_calender_page_white_bg .event_count_btn .my_event{background:#699;}
+.qe_calender_page_white_bg .event_count_btn .project_delivery{background:#C90;}
+.qe_calender_page_white_bg .event_count_btn .payment_due{background:#900;}
+.qe_calender_page_white_bg .event_count_btn .fllow_up{background:#909;}
+.light_sky:hover{background-color:#e6efff !important; color:#000 !important;}
+
+.innner_tbls h2{font-weight: 500; font-family: 'Roboto', sans-serif; margin:15px 0 18px 0; padding:0px; font-size:22px; color:#000;}
+.innner_tbls ul{margin:0 0 0 0px; padding:0px;}
+.innner_tbls ul li{margin:7px 0 0 0px; font-size:15px; font-family: 'Roboto', sans-serif; list-style:none; border: dotted 1px #fff; padding:4px 13px 4px 13px;}
+.innner_tbls ul li:before{width:20px;}
+/*.innner_tbls ul li:last-child{border:none;}*/
+.modal-content{min-height:200px;}
+.calender_date_time_picker_bottom_left{background: #fff url(../img/date_icon.png) left top no-repeat; background-position: 98% 50%;}
+
+.innner_tbls ul .project_delivery{color:#fff; background:#C90;}
+.innner_tbls ul .project_delivery:before{content: "\f03e"; display: inline-block; border-radius: 100%; margin: 0px 7px 0 0; position: relative; top:0px; font: normal normal normal 17px/1 FontAwesome;}
+.innner_tbls ul .event{color:#fff; background:#699;}
+.innner_tbls ul .event:before{content: "\f073"; display: inline-block; border-radius: 100%; margin: 0px 7px 0 0; position: relative; top:0px; font: normal normal normal 17px/1 FontAwesome;}
+.innner_tbls ul .follow_up{color:#fff; background:#909;}
+.innner_tbls ul .follow_up:before{content: "\f234"; display: inline-block; border-radius: 100%; margin: 0px 7px 0 0; position: relative; top:0px; font: normal normal normal 17px/1 FontAwesome;}
+.innner_tbls ul .payment_due{color:#fff; background:#900;}
+.innner_tbls ul .payment_due:before{content: "\f0d6"; display: inline-block; border-radius: 100%; margin: 0px 7px 0 0; position: relative; top:0px; font: normal normal normal 17px/1 FontAwesome;}
+#recordDetailsPopUp .modal-header{padding:15px;}
+#recordDetailsPopUp .modal-header #detailsPopUpTitle{font-weight: 500; font-family: 'Roboto', sans-serif; margin:0 0 0px 0;  padding:0px 0 0px 0px; font-size:19px; color: #000;}
+
+.event_count_btn_in_popup {text-align: right; padding: 10px 0 10px 0px; border-bottom: solid 1px #f1efef; margin: 0px 0 30px 0;}
+.event_count_btn_in_popup .eventcount_btn{display:inline-block; margin:0 0 0px 10px; font-weight:500; padding:0px 0 0px 0px; font-family: 'Roboto', sans-serif;}
+
+
+.event_count_btn_in_popup .my_event{color:#699;}
+.event_count_btn_in_popup .my_event:before {content: ""; background: #699; height: 11px; width: 11px; display: inline-block; margin: 6px 6px 0 0; float: left;}
+.event_count_btn_in_popup .project_delivery{color:#C90;}
+.event_count_btn_in_popup .project_delivery:before {content: ""; background: #C90; height: 11px; width: 11px; display: inline-block; margin: 6px 6px 0 0; float: left;}
+.event_count_btn_in_popup .payment_due{color:#900;}
+.event_count_btn_in_popup .payment_due:before {content: ""; background: #900; height: 11px; width: 11px; display: inline-block; margin: 6px 6px 0 0; float: left;}
+.event_count_btn_in_popup .fllow_up{color:#909;}
+.event_count_btn_in_popup .fllow_up:before {content: ""; background: #909; height: 11px; width: 11px; display: inline-block; margin: 6px 6px 0 0; float: left;}
+
+
+ @media only screen and (min-width:768px) and (max-width:991px) {
+.qe_calender_page_white_bg .date_buttons {float: inherit; text-align:right;}
+.qe_calender_page_white_bg .event_count_btn {float: right;}
+}
+
+ @media only screen and (max-width:767px) {
+.calendar-dates ul .light_sky:before{font-size:9px !important;}
+.grey:before{font-size:9px !important;}
+.qe_calender_page_white_bg .box-body{padding:10px;}
+.month_dropdown{min-width:120px;}
+.calendar-wrap{ width:100%;}
+.calendar-days ul li{ width:14.2%; font-size:11px;}
+.calendar-dates ul li{ width:14.2%;}
+.calendar-dates{ width:100%;}
+.calendar-dates ul li{ height:50px;}
+#event_list h2{font-size:15px;}
+#event_list ul li{font-size:13px;}
+.year_dropdown{margin-right:0px;}
+.month_dropdown{margin-left:0px;}
+.qe_calender_page_white_bg .date_navigation {margin: 0 0 11px 0; width: 100%; float:inherit;}
+.qe_calender_page_white_bg .event_count_btn {float: inherit; width: 100%; text-align: center;}
+.qe_calender_page_white_bg .date_buttons {float: inherit;}
+}

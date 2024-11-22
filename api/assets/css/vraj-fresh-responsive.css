@@ -1,0 +1,35 @@
+@media (min-width: 1366px) and (max-width: 1600px) {
+.container { width: 1200px; margin: 0 auto; }
+}
+ @media (min-width: 993px) and (max-width: 1365px) {
+.container { width: 90%; margin: 0 auto; }
+}
+ @media (min-width: 768px) and (max-width: 992px) {
+.container { width: 90%; margin: 0 auto; }
+}
+ @media (min-width: 768px) and (max-width: 992px) {
+.menu {padding: 10px 0; }
+}
+@media only screen and (max-width: 767px) {
+html { font-size: 80%; }
+.container { width: 96%; margin: 0 auto; }
+.container-flex { display: block; }
+.banner-left, .banner-right { width: 100%; }
+.banner img { height: auto; }
+.main-menu { display: none; }
+.zip-code { margin-left: 0em; order: 4; }
+header .container-flex > div.home-search { margin: 1em 0em; order: 3; }
+.logo img { width: 160px; }
+header .container-flex { display: flex; flex-wrap: wrap; }
+.my-account { order: 2; }
+.header > div { flex: 1 1 calc((100% / 2) - 2rem); }
+.header-phone { position: fixed; bottom: 0; background: #1e53a5; width: 100%; text-align: center; justify-content: center; padding: 7px 0; z-index: 9; left: 0; }
+.vraj-title .popular-product h2:before { display: none; }
+.product-box { padding: 0.5em; margin: 0.2em; }
+.slick-dots { width: 100%; text-align: center; }
+.product-box ul li img { width: 50px !important; margin-right: 0.5em !important; }
+.popular-product { padding: 2em 0.2em; }
+ul.tabs { flex-wrap: wrap; }
+.tabs li span { display: none; }
+.tabs li img { width: 38px; }
+}

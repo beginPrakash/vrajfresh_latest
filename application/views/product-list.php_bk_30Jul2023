@@ -1,0 +1,482 @@
+<?php require_once('common/header.php'); ?>
+<style>
+	.filters {
+		display: block;
+	}
+	a {
+		text-decoration: none;
+	}
+	a {
+		text-decoration: none;
+	}
+	.price-filter li.out_of_stock_variant {
+		background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><path d='M1 0 L0 1 L99 100 L100 99' fill='black' /><path d='M0 99 L99 0 L100 1 L1 100' fill='black' /></svg>");
+		background-repeat: no-repeat;
+		background-position: center center;
+		background-size: 100% 100%, auto;
+		pointer-events: none;
+		cursor: default;
+	}
+	.product-stock-message {
+		color: red;
+	}
+	.out_of_stock {
+		display: none !important;
+	}
+</style>
+<?php // echo "<pre>";print_r($product_search);exit;
+?>
+<section class="categories-banner" id="category_product_title">
+	<!-- <h2>VEGETABLES</h2> -->
+</section>
+<section class="category-product">
+	<input type="hidden" id="product_ids">
+	<div class="container">
+		<div class="container-flex ">
+			<div class="category-filter">
+				<div id="categories">
+					<h3 class="accordion-toggle">CATEGORY <span class="fa fa-minus pull-right "></span></h3>
+					<div class="accordion" id="category_filter">
+					</div>
+				</div>
+				<div id="brands">
+					<h3 class="accordion-toggle">BRAND <span class="fa fa-minus pull-right"></span></h3>
+					<div class="accordion" id="brand_filter">
+					</div>
+				</div>
+				<div>
+					<h3 class="accordion-toggle last-accordion">PRICE <span class="fa fa-minus pull-right"></span></h3>
+					<div class="accordion">
+						<input placeholder="Min price" id="min_price" name="" type="text">
+						<span>To</span>
+						<input placeholder="Max price" id="max_price" name="" type="text">
+					</div>
+				</div>
+				<div id="tags">
+					<h3 class="accordion-toggle">TAGS <span class="fa fa-minus pull-right"></span></h3>
+					<div class="accordion" id="tag_filter">
+					</div>
+				</div>
+				<div><button onclick="apply_filter();" class="vraj-btn">Apply</button></div>
+			</div>
+			<div class="product-filter">
+				<div class="product-grid" id="category_product">
+					<input type="hidden" id="category_url" value="<?php echo ($url != "" ? $url : ""); ?>">
+					<input type="hidden" id="search_product"
+						value="<?php echo ($product_search != "" ? $product_search : ""); ?>">
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<?php require_once('common/common_js.php'); ?>
+<script>
+	// const api_url_prefix = "https://dev.thcitsolutions.com/vrajfresh/api/";
+	//const api_url_prefix = "http://localhost/git/vraj-fresh-api/";
+	$(document).ready(function () {
+		showProgress('div#spinner');
+		get_category_products(api_url_prefix);
+		hideProgress('div#spinner');
+		$(document).on('click', '.add_cart', function () {
+			var product_id = $(this).data('productid');
+			var product_name = $(this).data('productname');
+			var price = $(this).data('price');
+			var quantity = $('#' + product_id).val();
+			var image = $(this).data('productimage');
+			var product_slug = $(this).data('productslug');
+			var is_perisible = $(this).data('isperisible');
+			var product_tax = $(this).data('producttax');
+			// alert(product_tax);
+			var parent = $(this).parent().parent().parent().find("select.variants");
+			if (parent.length > 0) {
+				var selected = parent.find("option:selected").val();
+				var variant_detail = selected.split('-');
+				var weight = variant_detail[0];
+				var price = variant_detail[1];
+				var variant_id = variant_detail[2];
+			} else {
+				var price = $(this).data('price');
+				var weight = $(this).data('productweight');
+			}
+			var json_request = {
+				"oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+				"product_id": product_id,
+				"product_name": product_name,
+				"price": price,
+				"quantity": quantity,
+				"product_image": image,
+				"weight": weight,
+				"variant_id": variant_id,
+				"product_slug": product_slug,
+				"is_perisible": is_perisible,
+				"product_tax": product_tax,
+			};
+			if (quantity != "" || quantity > 0) {
+				var total_qty = parseInt($("#cartCount").html()) + parseInt(quantity);
+				$("#cartCount").html(total_qty);
+				$.ajax({
+					"type": "POST",
+					"url": front_url + 'cart/add',
+					"data": JSON.stringify(json_request),
+					"dataType": "JSON",
+					"success": function (response) {
+						$("#btn_" + product_id).text('Added');
+						setTimeout(() => {
+							$(".add").prev().val(1);
+							$("#btn_" + product_id).text('Add');
+						}, 3000);
+
+						//	alert('Product Added Into Cart');
+						//  $("#cart-details").html(data);
+						// setTimeout(function() {
+						// 	location.reload();
+						// }, 1000);
+					},
+					"error": function (response) {
+						console.log(response.errors);
+					}
+				});
+			} else {
+				alert("Please Enter quantity");
+			}
+		});
+	});
+	function enableCartButton() {
+		alert("enableCartButton");
+		$(".out_of_stock").removeClass("out_of_stock");
+		$(".product-stock-message").hide();
+	}
+	
+	// function enableCartButton() {
+	// 	alert("enableCartButton");
+	// }
+
+	function get_filters(api_url_prefix, product_ids) {
+		var url = $("#category_url").val();
+		//var product_ids=$("#product_ids").val();
+		var json_request = {
+			"oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+			"product_ids": product_ids,
+			"zipcode": Cookies.get("zipcode")
+		};
+		var category = "";
+		var brand = "";
+		var tag = "";
+		$.ajax({
+			"type": "POST",
+			"url": api_url_prefix + 'get-filters',
+			"data": JSON.stringify(json_request),
+			"dataType": "JSON",
+			"success": function (response) {
+				if (response.data != null) {
+					//product_title = '<h2>' + response.data.category.category_name + '</h2>';
+					category_detail = response.data.filters.category;
+					brand_detail = response.data.filters.brand;
+					tag_detail = response.data.filters.tag;
+					if (category_detail != null || category_detail != "") {
+						category_key = Object.keys(category_detail);
+						if (category_key.length > 0) {
+							for (let i = 0; i < category_key.length; i++) {
+								category = category.concat('<ul class="filters"><li><input name="" type="checkbox" id="category_' + category_key[i] + '" value="' + category_key[i] + '" class="checkbox"><label for="category_' + category_key[i] + '">' + category_detail[category_key[i]] + '</label></li></ul>');
+							}
+						}
+						$("#category_filter").html(category);
+					} else {
+						$("#categories").hide();
+					}
+					if (brand_detail != null || brand_detail != "") {
+						brand_key = Object.keys(brand_detail);
+						if (brand_key.length > 0) {
+							for (let j = 0; j < brand_key.length; j++) {
+								brand = brand.concat('<ul class="filters"><li><input name="" type="checkbox" id="brand_' + brand_key[j] + '" value="' + brand_key[j] + '" class="checkbox"><label for="brand_' + brand_key[j] + '">' + brand_detail[brand_key[j]] + '</label></li></ul>');
+							}
+						}
+						$("#brand_filter").html(brand);
+					} else {
+						$("#brands").hide();
+					}
+					if (tag_detail != null || tag_detail != "") {
+						tag_key = Object.keys(tag_detail);
+						if (tag_key.length > 0) {
+							for (let k = 0; k < tag_key.length; k++) {
+								tag = tag.concat('<ul class="filters"><li><input name="" type="checkbox" id="tag_' + tag_key[k] + '" value="' + tag_key[k] + '" class="checkbox"><label for="tag_' + tag_key[k] + '">' + tag_detail[tag_key[k]] + '</label></li></ul>');
+							}
+						}
+						$("#tag_filter").html(tag);
+					} else {
+						$("#tags").hide();
+					}
+
+				}
+			},
+			"error": function (response) {
+				console.log(response.errors);
+			}
+		});
+	}
+	function get_category_products(api_url_prefix) {
+		var url = $("#category_url").val();
+		var search = $("#search_product").val();
+		if (search != "" && search != undefined) {
+			$("#search").val(search);
+			var json_request = {
+				"oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+				"search_term": search,
+				"zipcode": Cookies.get("zipcode")
+			};
+			var product = "";
+			$.ajax({
+				"type": "POST",
+				"url": api_url_prefix + 'get-category-product-search',
+				"data": JSON.stringify(json_request),
+				"dataType": "JSON",
+				"success": function (response) {
+					if (response.data != null) {
+						if (response.data.product_id != null) {
+							//product_title = '<h2>' + response.data.category.category_name + '</h2>';
+							for (let a = 0; a < response.data.products.length; a++) {
+							var first_variant_out_of_stock = false;
+								var out_of_stock = "<div class='product-stock-message'></div>";
+								var out_of_stock_class = "";
+								var variant_in_stock_count = 0;
+								/*if (response.data.products[a].is_out_of_stock == 0) {
+									out_of_stock = "<div class='product-stock-message'>Out of stock</div>";
+									out_of_stock_class = "out_of_stock";
+								}*/
+								if (response.data.products[a].product_size.length > 1 && response.data.products[a].product_size[0] != "")
+								{
+									var price_weight = '<form name="form" id="form"><select name="jumpMenu" id="jumpMenu" class="variants ' + out_of_stock_class + '">';
+									for (let j = 0; j < response.data.products[a].product_size.length; j++) {
+										var out_of_stock_variant = '';
+										if (response.data.products[a].product_size[j].is_out_of_stock == 0) {
+											out_of_stock_variant = ' out_of_stock_variant';
+											if (response.data.products[a].product_size[j].is_out_of_stock == 0) {
+												first_variant_out_of_stock = true;
+											}
+										}
+										if (!first_variant_out_of_stock ) {
+											price_weight = price_weight.concat('<option class="' + out_of_stock_variant + '" value="' + response.data.products[a].product_size[j].size + '-' + response.data.products[a].product_size[j].price + '-' + response.data.products[a].product_size[j].variant_id + '">' + response.data.products[a].product_size[j].size + 'lb - $' + response.data.products[a].product_size[j].price + '</option>');
+											variant_in_stock_count = variant_in_stock_count + 1;
+										}
+									}
+									price_weight += '</select></form>';
+								}
+								else
+								{
+									var price_weight = '<span>' + response.data.products[a]
+										.product_weight_gms + 'lb</span> - <strong>$' + response.data.products[a]
+										.product_price + '</strong>';
+								}
+								var out_of_stock = "<div class='product-stock-message'></div>";
+								var out_of_stock_class = "";
+								
+								console.log("product out of stock:"+response.data.products[a].is_out_of_stock + " and variant out of stock:"+ variant_in_stock_count);
+								if (response.data.products[a].is_out_of_stock == 0 && variant_in_stock_count==0)
+								{
+									out_of_stock = "<div class='product-stock-message'>Product Out of stock</div>";
+									out_of_stock_class = "out_of_stock";
+									var price_weight = "";
+								}
+								//product = product.concat('<div class="product-box"><img src='+response.data[a]["image"]+'><h4>'+response.data[a]["product_name"]+'</h4><strong>'+response.data[a]["product_price"]+'</strong> <span>'+response.data[a]["product_weight_gms"]+'</span><ul><li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li><li><button>Add</button></li></ul></div>');
+								product = product.concat('<a href="<?php echo BASE_URL; ?>product/' + response.data.products[a].product_slug + '"><div class="product-box"><img src=' + response.data.products[a].product_image + ' onerror=this.src="<?php echo ADMIN_URL; ?>uploads/logo-2.png" ><div><h4>' + response.data.products[a].product_name + '</h4></a>' + price_weight + out_of_stock + '<ul><li><div class="quantity ' + out_of_stock_class + '"><button type="button" id="sub" class="sub">-</button><input type="text" class = "prod_add1" id="' + response.data.products[a].product_id + '" value="1" min="1" max="3" disabled /><button type="button" id="add" class="add">+</button></div></li><li><button id= "btn_' + response.data.products[a].product_id + '" class="add_cart ' + out_of_stock_class + '" data-isperisible="' + response.data.products[a].is_perisible_products + '" data-productslug="' + response.data.products[a].product_slug + '" data-productimage= "' + response.data.products[a].product_image + '" data-productname="' + response.data.products[a].product_name + '" data-price=' + response.data.products[a].product_price + ' data-productid = ' + response.data.products[a].product_id + ' data-productweight =' + response.data.products[a].product_weight_gms + ' data-producttax="' + response.data.products[a].product_tax + '" >Add</button></li></ul></div></div>');
+							}
+							get_filters(api_url_prefix, response.data.product_id);
+							//$("#category_product_title").html(product_title);
+							$("#category_product").html(product);
+
+						} else {
+							product = '<div class="product-box">No Products Found</div>';
+							$(".category-filter").hide();
+							$("#category_product").html(product);
+						}
+					} else {
+						product = '<div class="product-box">No Products Found</div>';
+						$(".category-filter").hide();
+						$("#category_product").html(product);
+					}
+				},
+				"error": function (response) {
+					$("#category_product").html(response.errors);
+				}
+			});
+		} else {
+			var json_request = {
+				"oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+				"category_slug": url
+			};
+			var product = "";
+			$.ajax({
+				"type": "POST",
+				"url": api_url_prefix + 'get-category-product-detail',
+				"data": JSON.stringify(json_request),
+				"dataType": "JSON",
+				"success": function (response) {
+					if (response.data != null && response.data.product_id != null && response.data.category != null) {
+						product_title = '<h2>' + response.data.category.category_name + '</h2>';
+						for (let a = 0; a < response.data.products.length; a++) {
+						var first_variant_out_of_stock = false;
+								var variant_in_stock_count = 0;
+							var price_weight = "";
+							var out_of_stock = "<div class='product-stock-message'></div>";
+							var out_of_stock_class = "";
+							/*if (response.data.products[a].is_out_of_stock == 0) {
+								out_of_stock = "<div class='product-stock-message'>Out of stock</div>";
+								out_of_stock_class = "out_of_stock";
+							}*/
+							if (response.data.products[a].product_size.length > 1 && response.data.products[a].product_size[0] != "")
+							{
+								var price_weight = '<form name="form" id="form"><select name="jumpMenu" id="jumpMenu" class="variants ' + out_of_stock_class + '">';
+								for (let j = 0; j < response.data.products[a].product_size.length; j++)
+								{
+									var first_variant_out_of_stock = false;
+									var out_of_stock_variant = '';
+									if (response.data.products[a].product_size[j].is_out_of_stock == 0)
+									{
+										var out_of_stock_variant = ' out_of_stock_variant';
+										if (response.data.products[a].product_size[j].is_out_of_stock == 0)
+										{
+											first_variant_out_of_stock = true;
+										}
+									}
+									if (!first_variant_out_of_stock)
+									{
+										price_weight = price_weight.concat('<option class="' + out_of_stock_variant + '" value="' + response.data.products[a].product_size[j].size + '-' + response.data.products[a].product_size[j].price + '-' + response.data.products[a].product_size[j].variant_id + '">' + response.data.products[a].product_size[j].size + 'lb - $' + response.data.products[a].product_size[j].price + '</option>');
+											variant_in_stock_count = variant_in_stock_count + 1;
+									}
+								}
+								price_weight += '</select></form>';
+							}
+							else
+							{
+								var price_weight = '<span>' + response.data.products[a]
+									.product_weight_gms + 'lb</span> - <strong>$' + response.data.products[a]
+									.product_price + '</strong>';
+							}
+							var out_of_stock = "<div class='product-stock-message'></div>";
+							var out_of_stock_class = "";
+							console.log(response.data.products[a].product_name.substring(0, 32)+"====product out of stock:"+response.data.products[a].is_out_of_stock + " and variant out of stock:"+ variant_in_stock_count);
+							if (response.data.products[a].is_out_of_stock == 0 && variant_in_stock_count==0)
+							{
+								var price_weight = "";
+								out_of_stock = "<div class='product-stock-message'>Product Out of stock</div>";
+								out_of_stock_class = "out_of_stock";
+							}
+							//product = product.concat('<div class="product-box"><img src='+response.data[a]["image"]+'><h4>'+response.data[a]["product_name"]+'</h4><strong>'+response.data[a]["product_price"]+'</strong> <span>'+response.data[a]["product_weight_gms"]+'</span><ul><li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li><li><button>Add</button></li></ul></div>');
+							product = product.concat('<a href="<?php echo BASE_URL; ?>product/' + response.data.products[a].product_slug + '"><div class="product-box"><img src=' + response.data.products[a].product_image + ' onerror=this.src="<?php echo ADMIN_URL; ?>uploads/logo-2.png" ><div><h4>' + response.data.products[a].product_name.substring(0, 32) + '...</h4></a>' + price_weight + out_of_stock + '<ul><li><div class="quantity ' + out_of_stock_class + '"><button type="button" id="sub" class="sub">-</button><input type="text" class= "prod_add1" id="' + response.data.products[a].product_id + '" value="1" min="1" max="3" disabled /><button type="button" id="add" class="add">+</button></div></li><li><button id= "btn_' + response.data.products[a].product_id + '" class="add_cart ' + out_of_stock_class + '" data-isperisible="' + response.data.products[a].is_perisible_products + '" data-productslug="' + response.data.products[a].product_slug + '" data-productimage= "' + response.data.products[a].product_image + '" data-productname="' + response.data.products[a].product_name + '" data-price=' + response.data.products[a].product_price + ' data-productid = ' + response.data.products[a].product_id + ' data-productweight =' + response.data.products[a].product_weight_gms + ' data-producttax=' + response.data.products[a].product_tax + '>Add</button></li></ul></div></div>');
+							var out_of_stock_class_varaiant = '';
+						}
+						get_filters(api_url_prefix, response.data.product_id);
+						$("#category_product_title").html(product_title);
+						$("#category_product").html(product);
+
+					} else {
+						$("#category_product_title").hide();
+						$("#category_product").html('<div class="product-box">No Product Found</div>');
+						$(".category-filter").hide();
+					}
+				},
+				"error": function (response) {
+					$("#category_product").html(response.errors);
+				}
+			});
+		}
+
+	}
+	function apply_filter() {
+		var category_ids = $("#categories input:checkbox:checked").map(function () {
+			return $(this).val();
+		}).get();
+		var brand_ids = $("#brands input:checkbox:checked").map(function () {
+			return $(this).val();
+		}).get();
+		var tag_ids = $("#tags input:checkbox:checked").map(function () {
+			return $(this).val();
+		}).get();
+		var min_val = $("#min_price").val();
+		var max_val = $("#max_price").val();
+		var json_request = {
+			"oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+			"category_id": category_ids,
+			"brand_id": brand_ids,
+			"tag_id": tag_ids,
+			"min_price": min_val,
+			"max_price": max_val
+		};
+		$.ajax({
+			"type": "POST",
+			"url": api_url_prefix + 'get-category-product-detail-id',
+			"data": JSON.stringify(json_request),
+			"dataType": "JSON",
+			"success": function (response) {
+				if (response.data != null) {
+					var product = "";
+					if (response.data.product_details.length > 0) {
+						var first_variant_out_of_stock = false;
+						for (let a = 0; a < response.data.product_details.length; a++) {
+							var price_weight = "";
+							var out_of_stock = "<div class='product-stock-message'></div>";
+							var out_of_stock_class = "";
+							if (response.data.product_details[a].is_out_of_stock == 0 || first_variant_out_of_stock) {
+								out_of_stock = "<div class='product-stock-message'>Product is out of stock</div>";
+								out_of_stock_class = "out_of_stock";
+							}
+							var out_of_stock_variant = '';
+							if (response.data.product_details[a].variant_is_out_of_stock == 0) {
+								var out_of_stock_variant = ' out_of_stock_variant';
+								if (response.data.product_details[a].variant_is_out_of_stock == 0) {
+									first_variant_out_of_stock = true;
+								}
+							}
+							if (response.data.product_details[a].product_size.length > 1) {
+								var price_weight = '<form name="form" id="form"><select name="jumpMenu" id="jumpMenu" class="variants ' + out_of_stock_class + '">';
+								for (let j = 0; j < response.data.product_details[a].product_size.length; j++) {
+									if (!first_variant_out_of_stock || (first_variant_out_of_stock && j > 0)) {
+										price_weight = price_weight.concat('<option class"' + out_of_stock_variant + '"value="' + response.data.product_details[a].product_size[j].size + '-' + response.data.product_details[a].product_size[j].price + '-' + response.data.product_details[a].product_size[j].variant_id + '">' + response.data.product_details[a].product_size[j].size + 'lb - $' + response.data.product_details[a].product_size[j].price + '</option>');
+									}
+								}
+								price_weight += '</select></form>';
+							} else {
+								var price_weight = '<span>' + response.data.product_details[a]
+									.product_weight_gms + 'lb</span> - <strong>$' + response.data.product_details[a]
+									.product_price + '</strong>';
+							}
+							var out_of_stock = "<div class='product-stock-message'></div>";
+							var out_of_stock_class = "";
+							
+							
+							if (first_variant_out_of_stock) {
+								out_of_stock = "<div class='product-stock-message'>Product is out of stock</div>";
+								out_of_stock_class = "out_of_stock";
+							}
+							else if (response.product_details[a].is_out_of_stock == 0 && response.data.product_details[a].product_size.length==0) {
+								out_of_stock = "<div class='product-stock-message'>Product is out of stock</div>";
+								out_of_stock_class = "out_of_stock";
+							}
+							
+							
+							product = product.concat('<a href="<?php echo BASE_URL; ?>product/' + response.data.product_details[a].product_slug + '"><div class="product-box"><img src=' + response.data.product_details[a].product_image + ' onerror=this.src="<?php echo ADMIN_URL; ?>uploads/logo-2.png"><div><h4>' + response.data.product_details[a].product_name + '</h4></a>' + price_weight + out_of_stock + '<ul><li><div class="quantity ' + out_of_stock_class + '"><button type="button" id="sub" class="sub">-</button><input type="text" id="' + response.data.product_details[a].product_id + '" value="1" min="1" max="3" disabled /><button type="button" id="add" class="add">+</button></div></li><li><button id= "btn_' + response.data.product_details[a].product_id + '" class="add_cart ' + out_of_stock_class + '" data-isperisible="' + response.data.product_details[a].is_perisible_products + '" data-productslug="' + response.data.product_details[a].product_slug + '" data-productimage= "' + response.data.product_details[a].product_image + '" data-productname="' + response.data.product_details[a].product_name + '" data-price=' + response.data.product_details[a].product_price + ' data-productid = ' + response.data.product_details[a].product_id + ' data-productweight =' + response.data.product_details[a].product_weight_gms + ' data-producttax=' + response.data.product_details[a].product_tax + '>Add</button></li></ul></div></div>');
+							var first_variant_out_of_stock = false;
+						}
+					} else {
+						product = product.concat('<div class="product-box">No Product Found</div>');
+					}
+					showProgress('div#spinner');
+					$("#category_product").html(product);
+					hideProgress('div#spinner');
+				} else {
+					product = '<div class="product-box">No Product Found</div>';
+					showProgress('div#spinner');
+					$("#category_product").html(product);
+					$("#category-filter").hide();
+					hideProgress('div#spinner');
+				}
+			},
+			"error": function (response) {
+				console.log(response.errors);
+			}
+		});
+	}
+	setTimeout(() => {
+	}, 2000);
+</script>
+<?php require_once('common/footer.php'); ?>

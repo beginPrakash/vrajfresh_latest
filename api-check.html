@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display JSON Response</title>
+</head>
+<body>
+    <pre id="json-output"></pre>
+
+    <script>
+        async function testapi() {
+            const url = 'http://176.34.45.149:3000/public/vehicles?stock_list=USA';
+            const response = await fetch(url);
+            const data = await response.json();
+            const jsonOutput = document.getElementById('json-output');
+            jsonOutput.textContent = JSON.stringify(data, null, 2);
+        }
+        
+        window.addEventListener('load', testapi);
+    </script>
+</body>
+</html>

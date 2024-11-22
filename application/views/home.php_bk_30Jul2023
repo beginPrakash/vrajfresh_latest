@@ -1,0 +1,779 @@
+<?php require_once('common/header.php'); ?>
+<section class="banner container">
+   <div class="banner-left">
+      <div class="slick-carousel" id="home_banner"> </div>
+   </div>
+   <div class="banner-right" id="banner-right"> </div>
+</section>
+<section class="categories">
+   <div class="container">
+      <div class="tab-container">
+         <ul class="tabs" id="tabs">
+         </ul>
+      </div>
+      <div id="categories_product" class="tab-content current"></div>
+   </div>
+</section>
+<section class="vraj-bakery vraj-title">
+   <div class="container" id="category_product"> </div>
+   <div id="vraj-btn"></div>
+</section>
+<section class="vraj-title">
+   <div class="container">
+      <div class="popular-product" id="popular-product"> </div>
+   </div>
+</section>
+<section class="vraj-title">
+   <div class="container">
+      <div class="popular-product" id="popular-product1"> </div>
+   </div>
+</section>
+<section class="discover-greatest vraj-title container" id="discover">
+   <div class="container"> </div>
+</section>
+<section class="discover-greatest vraj-title">
+   <div class="container">
+      <h2>Shop by Brand</h2>
+      <div class="brand" id="brand"> </div>
+   </div>
+</section>
+<?php require_once('common/common_js.php'); ?>
+<link href="<?php echo ASSET_URL; ?>css/toastr.css" rel="stylesheet" />
+<script src="<?php echo ASSET_URL; ?>js/toastr.js"></script>
+<script>
+$(document).ready(function() {
+    showProgress('div#spinner');
+    get_slider_banners(api_url_prefix);
+    get_side_banners(api_url_prefix);
+    get_icon_categories(api_url_prefix);
+    get_special_product(api_url_prefix);
+    get_special_product1(api_url_prefix);
+    get_discover_products(api_url_prefix);
+    get_category_products(api_url_prefix);
+    get_brands(api_url_prefix);
+	
+    $(document).on('click', 'ul.tabs li', function() {
+        var tab_id = $(this).attr('data-tab');
+		
+        $('ul.tabs li').removeClass('current');
+        $(this).addClass('current');
+        var json_request = {
+            "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+            "is_home_display": "1",
+            "category_slug": tab_id
+        };
+        //$("#tab-content").html('tab_id ' + tab_id);
+        var product = "";
+        $.ajax({
+            "type": "POST",
+            "url": api_url_prefix + 'get-product-by-category-slug',
+            "data": JSON.stringify(json_request),
+            "dataType": "JSON",
+            "success": function(response) {
+                if (response.data[0] != "") {
+                    product += '<div class="product-grid">';
+                    var first_variant_out_of_stock = false;
+                    for (let a = 0; a < response.data.length; a++) {
+                        var price_weight = "";
+                        var out_of_stock = "<div class='product-stock-message'></div>";
+                        var out_of_stock_class = "";
+                        if (response.data.is_out_of_stock == 0) {
+                            out_of_stock = "<div class='product-stock-message'>Out of stock</div>";
+                            out_of_stock_class = "out_of_stock";
+                        }
+                        if (response.data[a].product_size.length > 1) {
+                            var price_weight = '<form name="form" id="form"><select name="jumpMenu" class="variants ' + out_of_stock_class + '" id="section2_jumpMenu_' + response.data[a].product_id + '">';
+                            for (let j = 0; j < response.data[a].product_size.length; j++) {
+                                var out_of_stock_variant = '';
+                                if (response.data[a].product_size[j].variant_is_out_of_stock == 0) {
+                                    out_of_stock_variant = ' out_of_stock_variant';
+                                    if (response.data[a].product_size[j].variant_is_out_of_stock == 0) {
+                                        first_variant_out_of_stock = true;
+                                    }
+                                }
+                                if (!first_variant_out_of_stock || (first_variant_out_of_stock && j > 0)) {
+                                    price_weight = price_weight.concat('<option class="' + out_of_stock_variant + '" value="' + response.data[a].product_size[j].size + '-' + response.data[a].product_size[j].price + '-' + response.data[a].product_size[j].variant_id + '">' + response.data[a].product_size[j].size + 'lb - $' + response.data[a].product_size[j].price + '</option>');
+                                }
+                            }
+                            price_weight += '</select></form>';
+                        } else {
+                            var price_weight = '<span>' + response.data[a].product_weight_gms + 'lb</span> - <strong>$' + response.data[a].product_price + '</strong>';
+                        }
+                        var out_of_stock = "<div class='product-stock-message'></div>";
+                        var out_of_stock_class = "";
+                        if (response.data.is_out_of_stock == 0 || first_variant_out_of_stock) {
+                            out_of_stock = "<div class='product-stock-message'>Product is out of stock</div>";
+                            out_of_stock_class = "out_of_stock";
+                        }
+                        product = product.concat('<div class="product-box"><a href="product/' + response.data[a]
+                            .product_slug + '"><img src=' +
+                            response.data[a].product_image + ' onerror=this.src="<?php echo BASE_URL; ?>assets/images/logo-2.png"><h4>' + response.data[a].product_name + '</h4></a>' + price_weight + '<ul><li><div class="quantity ' + out_of_stock_class + '"><button type="button" id="sub" class="sub">-</button><input type="text" id="' + response.data[a].product_id + '" value="1" min="1" max="3" disabled /><button type="button" id="add" class="add">+</button></div></li><li><button id= "btn_section2_' + response.data[a].product_id + '" class="add_cart ' + out_of_stock_class + '" data-section="section2" data-isperisible="' + response.data[a].is_perisible_products + '" data-productslug="' + response.data[a].product_slug + '" data-productimage= "' + response.data[a].product_image + '" data-productname= "' + response.data[a].product_name + '" data-price=' + response.data[a].product_price + ' data-productid = ' + response.data[a].product_id + ' data-productweight =' + response.data[a].product_weight_gms +  ' data-producttax=' + response.data[a].product_tax + ' >Add</button></li></ul></div>'
+                        );
+                    }
+                    product += '</div>';
+                } else {
+                    product = "No Products";
+                }
+                $("#tab-content").html(product);
+            },
+            "error": function(response) {
+                console.log(response.errors);
+            }
+        });
+        toastr.options = {
+                "debug": false,
+                "positionClass": "toast-bottom-right",
+                "onclick": null,
+                "fadeIn": 300,
+                "fadeOut": 1000,
+                "timeOut": 2000,
+                "extendedTimeOut": 1000
+            } 
+			<?php if ($this->session->flashdata('success_message')) { ?>
+			toastr.success('<?php echo $this->session->flashdata('
+			success_message '); ?>'); 
+			<?php } ?>
+			<?php if ($this->session->flashdata('error_message')) { ?>
+			toastr.error('<?php echo $this->session->flashdata('
+			error_message '); ?>'); 
+			<?php } ?>
+    });
+    $(document).on('click', '.add_cart', function() {
+        var section_id = $(this).data('section');
+        var product_id = $(this).data('productid');
+        var product_name = $(this).data('productname');
+        var image = $(this).data('productimage');
+        var product_slug = $(this).data('productslug');
+        var is_perisible = $(this).data('isperisible');
+		var product_tax = $(this).data('producttax');
+	//	alert('product_tax'+product_tax);
+        var quantity = $('#' + product_id).val();
+        var parent = $(this).parent().parent().parent().find("select.variants");
+        if (parent.length > 0) {
+            var selected = parent.find("option:selected").val();
+            var variant_detail = selected.split('-');
+            var weight = variant_detail[0];
+            var price = variant_detail[1];
+            var variant_id = variant_detail[2];
+        } else {
+            var price = $(this).data('price');
+            var weight = $(this).data('productweight');
+        }
+        var json_request = {
+            "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+            "product_id": product_id,
+            "product_name": product_name,
+            "price": price,
+            "quantity": quantity,
+            "product_image": image,
+            "weight": weight,
+            "variant_id": variant_id,
+            "product_slug": product_slug,
+			"product_tax": product_tax,
+            "is_perisible": is_perisible
+        };
+        if (quantity != "" || quantity > 0) {
+            var total_qty = parseInt($("#cartCount").html()) + parseInt(quantity);
+            $("#cartCount").html(total_qty);
+            $.ajax({
+                "type": "POST",
+                "url": front_url + 'cart/add',
+                "data": JSON.stringify(json_request),
+                "dataType": "JSON",
+                "success": function(response) {
+                    $("#btn_" + section_id + "_" + product_id).text('Added');
+                    setTimeout(() => {
+                        $(".add").prev().val(1);
+                        $("#btn_" + section_id + "_" + product_id).text('Add');
+                    }, 3000);
+                },
+                "error": function(response) {
+                    console.log(response.errors);
+                }
+            });
+        } else {
+            alert("Please Enter quantity");
+        }
+    });
+});
+function get_slider_banners(api_url_prefix) {
+    var json_request = {
+        "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+        "is_active_only": "1",
+        "banner_type": "slider",
+        "search_keyword": "",
+        "limit": "10",
+        "page_no": "0",
+        "sort_column": "banner_id",
+        "sort_order": "desc"
+    };
+    var slider_banner = "";
+    $.ajax({
+        "type": "POST",
+        "url": api_url_prefix + 'get-banners',
+        "data": JSON.stringify(json_request),
+        "dataType": "JSON",
+        "success": function(response) {
+            for (let a = 0; a < response.data.length; a++) {
+                slider_banner = slider_banner.concat("<div><a href='" + response.data[a]['banner_link'] +
+                    "'><img src='" + response.data[a]['banner_image'] + "' onerror=this.src='<?php echo BASE_URL; ?>assets/images/logo-2.png'></a></div>");
+            }
+            $("#home_banner").html(slider_banner);
+            $('.slick-carousel').slick({
+                arrows: false,
+                autoplay: true,
+                centerPadding: "0px",
+                dots: true,
+                slidesToShow: 1,
+                infinite: false,
+                responsive: [{
+                    breakpoint: 991,
+                    settings: {
+                        slidesToShow: 1,
+                    }
+                }, {
+                    breakpoint: 767,
+                    settings: {
+                        slidesToShow: 1,
+                    }
+                }]
+            });
+        },
+        "error": function(response) {
+            console.log(response.errors);
+        }
+    });
+}
+function get_side_banners(api_url_prefix) {
+    var json_request = {
+        "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+        "is_active_only": "1",
+        "banner_type": "side_banner",
+        "search_keyword": "",
+        "limit": "10",
+        "page_no": "0",
+        "sort_column": "banner_id",
+        "sort_order": "desc"
+    };
+    var slider_banner = "";
+    $.ajax({
+        "type": "POST",
+        "url": api_url_prefix + 'get-banners',
+        "data": JSON.stringify(json_request),
+        "dataType": "JSON",
+        "success": function(response) {
+            if (response.data != null) {
+                for (let a = 0; a < response.data.length; a++) {
+                    slider_banner = slider_banner.concat("<div><a href='" + response.data[a]['banner_link'] +
+                        "'><img src=" + response.data[a]['banner_image'] + " onerror=this.src='<?php echo BASE_URL; ?>assets/images/logo-2.png'></a></div>");
+                }
+            }
+            $("#banner-right").html(slider_banner);
+            $('#banner-right').slick({
+                arrows: false,
+                centerPadding: "0px",
+                dots: true,
+                slidesToShow: 1,
+                infinite: false,
+                responsive: [{
+                    breakpoint: 991,
+                    settings: {
+                        slidesToShow: 1,
+                    }
+                }, {
+                    breakpoint: 767,
+                    settings: {
+                        slidesToShow: 1,
+                    }
+                }]
+            });
+        },
+        "error": function(response) {
+            console.log(response.errors);
+        }
+    });
+}
+function get_brands(api_url_prefix) {
+    var json_request = {
+        "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+        "is_active_only": "1",
+        "is_home_display": "1",
+        "search_keyword": "",
+        "limit": "10",
+        "page_no": "0",
+        "sort_column": "brand_id",
+        "sort_order": "desc"
+    };
+    var brand = "";
+    $.ajax({
+        "type": "POST",
+        "url": api_url_prefix + 'get-brands',
+        "data": JSON.stringify(json_request),
+        "dataType": "JSON",
+        "success": function(response) {
+            if (response.data != null) {
+                for (let a = 0; a < response.data.length; a++) {
+                    brand = brand.concat("<div><a href='<?php echo BASE_URL; ?>brand/" + response.data[a]['brand_slug'] + "'><img src=" + response.data[a]['brand_image'] + " onerror=this.src='<?php echo BASE_URL; ?>assets/images/logo-2.png'></a></div>");
+                }
+            }
+            jQuery("#brand").html(brand);
+            jQuery('.brand').slick({
+                dots: false,
+                autoplay: true,
+                arrows: true,
+                infinite: true,
+                speed: 300,
+                slidesToShow: 7,
+                slidesToScroll: 7,
+                responsive: [{
+                    breakpoint: 991,
+                    settings: {
+                        slidesToShow: 5,
+                        slidesToScroll: 5,
+                    }
+                }, {
+                    breakpoint: 767,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 3,
+                    }
+                }]
+            });
+        },
+        "error": function(response) {
+            console.log(response.errors);
+        }
+    });
+}
+function get_icon_categories(api_url_prefix) {
+    var json_request = {
+        "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+        "is_active_only": "1",
+        "search_keyword": "",
+        "limit": "7",
+        "page_no": "0",
+        "style": "top",
+        "is_home_display": "1",
+        "sort_column": "category_id",
+        "sort_order": "asc",
+        "zipcode": Cookies.get("zipcode")
+    };
+    var category = "";
+    var product = "";
+    $.ajax({
+        "type": "POST",
+        "url": api_url_prefix + 'get-home-categories-product',
+        "data": JSON.stringify(json_request),
+        "dataType": "JSON",
+        "success": function(response) {
+            if (response.data != null) {
+                for (let a = 0; a < response.data.categories.length; a++) {
+                    category = category.concat('<li class="tab-link" data-tab="' + response.data.categories[
+                            a]['category_slug'] + '"> <img class="svg" src="' + response.data
+                        .categories[a]['category_image'] + '"> <span>' + response.data.categories[a][
+                            'category_name'
+                        ] + '</span></li>');
+                    product = product.concat('<div id="' + response.data.categories[a]['category_slug'] +
+                        '" class="tab-content"><div class="product-grid">');
+                }
+                $("#tabs").html(category);
+                $("#categories_product").html(
+                    '<div id="tab-content" class="tab-content current"><div class="product-grid">Loading....</div></div>'
+                );
+                $("#tabs li:first-child").addClass("current");
+                $("#tabs li:first-child").click();
+                hideProgress('div#spinner');
+            } else {
+                $("#tabs").hide();
+                hideProgress('div#spinner');
+            }
+        },
+        "error": function(response) {
+            category = response.errors;
+            $("#tabs").html(category);
+            hideProgress('div#spinner');
+        }
+    });
+}
+function home_products(api_url_prefix) {
+    var json_request = {
+        "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+        "category_slug": "1",
+        "is_active_only": "1",
+        "search_keyword": "",
+        "limit": "10",
+        "page_no": "0",
+        "banner_type": "bottom",
+        "sort_column": "banner_id",
+        "sort_order": "asc"
+    };
+    var banners = "";
+    $.ajax({
+        "type": "POST",
+        "url": api_url_prefix + 'get-banners',
+        "data": JSON.stringify(json_request),
+        "dataType": "JSON",
+        "success": function(response) {
+            if (response.data != null) {
+                for (let a = 0; a < response.data.length; a++) {
+                    banners = banners.concat('<li><a href="' + response.data[a]['banner_link'] +
+                        '"><img class="svg" src=' + response.data[a]['banner_image'] + '> </a></li>');
+                }
+                $("#bottom_category").html(banners);
+            }
+        },
+        "error": function(e) {
+            console.log(e.responseText);
+        }
+    });
+}
+function get_image_categories(api_url_prefix) {
+    var json_request = {
+        "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+        "is_active_only": "1",
+        "search_keyword": "",
+        "limit": "10",
+        "page_no": "0",
+        "banner_type": "bottom",
+        "sort_column": "banner_id",
+        "sort_order": "asc"
+    };
+    var banners = "";
+    $.ajax({
+        "type": "POST",
+        "url": api_url_prefix + 'get-banners',
+        "data": JSON.stringify(json_request),
+        "dataType": "JSON",
+        "success": function(response) {
+            if (response.data != null) {
+                for (let a = 0; a < response.data.length; a++) {
+                    banners = banners.concat('<li><a href="' + response.data[a]['banner_link'] +
+                        '"><img class="svg" src=' + response.data[a]['banner_image'] + '> </a></li>');
+                }
+                $("#bottom_category").html(banners);
+            }
+        },
+        "error": function(e) {
+            console.log(e.responseText);
+        }
+    });
+}
+function get_products(api_url_prefix) {
+    var json_request = {
+        "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+        "is_active_only": "1",
+        "search_keyword": "",
+        "is_home_display": "1",
+        "limit": "10",
+        "page_no": "0",
+        "sort_column": "product_id",
+        "sort_order": "desc"
+    };
+    var product = "";
+    $.ajax({
+        "type": "POST",
+        "url": api_url_prefix + 'get-products',
+        "data": JSON.stringify(json_request),
+        "dataType": "JSON",
+        "success": function(response) {
+            if (response.data != null) {
+                for (let a = 0; a < response.data.length; a++) {
+                    product = product.concat('<div class="product-box"><img src=' + response.data[a][
+                            "image"
+                        ] + 'onerror=this.src="<?php echo BASE_URL; ?>assets/images/logo-2.png"><h4>' + response.data[a]["product_name"] + '</h4><strong>$' +
+                        response.data[a]["product_price"] + '</strong> <span>' + response.data[a][
+                            "product_weight_gms"
+                        ] +
+                        'g</span><ul><li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li><li><button>Add</button></li></ul></div>'
+                    );
+                }
+                $("#product-grid").html(product);
+            }
+        },
+        "error": function(e) {
+            console.log(e.responseText);
+        }
+    });
+}
+function get_special_product(api_url_prefix) {
+    var json_request = {
+        "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+        "special_product_slug": "popular-items",
+        "zipcode": Cookies.get("zipcode")
+    };
+    var product = "";
+    $.ajax({
+        "type": "POST",
+        "url": api_url_prefix + 'get-special-products',
+        "data": JSON.stringify(json_request),
+        "dataType": "JSON",
+        "success": function(response) {
+			console.log(response);
+            if (response.data != null) {
+                product_title = '<h2>' + response.data.special_product_name + '</h2>';
+                if (response.data.product_detail != "") {
+                        var first_variant_out_of_stock = false;
+                    for (let a = 0; a < response.data.product_detail.length; a++) {
+                        var price_weight = "";
+						 var out_of_stock_variant = '';
+                            if (response.data.product_detail[a].is_out_of_stock == 0) {
+                                out_of_stock_variant = ' out_of_stock_variant';
+                                if (a == 0) {
+                                    first_variant_out_of_stock = true;
+                                }
+                            }
+                        if (response.data.product_detail[a].product_size.length > 1) {
+                            var price_weight = '<form name="form" id="form"><select name="jumpMenu" class="variants" id="section4_jumpMenu_' + response.data.product_detail[a].product_id + '">';
+                            for (let j = 0; j < response.data[a].product_size.length; j++) {
+                                price_weight = price_weight.concat('<option value="' + response.data.product_detail[a].product_size[j].size + '-' + response.data.product_detail[a].product_size[j].price + '-' + response.data.product_detail[a].product_size[j].variant_id + '">' + response.data.product_detail[a].product_size[j].size + 'lb - $' + response.data.product_detail[a].product_size[j].price + '</option>');
+                            }
+                            price_weight += '</select></form>';
+                        } else {
+                            var price_weight = '<span>' + response.data.product_detail[a]
+                                .product_weight_gms + 'lb</span> - <strong>$' + response.data.product_detail[a]
+                                .product_price + '</strong>';
+                        }
+						var out_of_stock = "<div class='product-stock-message'></div>";
+                            var out_of_stock_class = "";
+                            if (response.data.product_detail[a].is_out_of_stock == 0 || first_variant_out_of_stock) {
+                                out_of_stock = "<div class='product-stock-message'>Out of stock</div>";
+                                out_of_stock_class = "out_of_stock";
+                            }
+                        product = product.concat('<div class="product-box"><a href="product/' + response.data.product_detail[a].product_slug +
+                            '"> <img src=' + response.data.product_detail[a]
+                            .image + ' onerror=this.src="<?php echo BASE_URL; ?>assets/images/logo-2.png"><h4>' + response.data.product_detail[a].product_name +
+                            '</h4></a>' + price_weight +
+                            '<ul><li><div class="quantity ' + out_of_stock_class + '"><button type="button" id="sub" class="sub">-</button><input type="text" id="' + response.data.product_detail[a].product_id + '" value="1" min="1" max="3" disabled /><button type="button" id="add" class="add">+</button></div></li><li><button id= "btn_section4_' + response.data.product_detail[a].product_id + '"data-productslug="' + response.data.product_detail[a].product_slug + '" data-productimage= "' + response.data.product_detail[a].product_image + '" data-isperisible="' + response.data.product_detail[a].is_perisible_products + '" class="add_cart ' + out_of_stock_class + '" data-section="section4" data-isperisible="' + response.data.product_detail[a].is_perisible_products + '" data-productname="' + response.data.product_detail[a].product_name + '" data-price=' + response.data.product_detail[a].product_price + ' data-productid = ' + response.data.product_detail[a].product_id + ' data-productweight =' + response.data.product_detail[a].product_weight_gms +  ' data-producttax=' + response.data.product_detail[a].product_tax + '>Add</button></li></ul></div>'
+							
+							
+							
+                        );
+                        jQuery("#popular-product").html(product_title +
+                            '<div class="popular-items"  id="popular-items">' + product + '</div>');
+                        setTimeout(function() {
+                            jQuery('.popular-items, .popular-items-2').slick({
+                                dots: false,
+                                arrows: true,
+                                autoplay: true,
+                                infinite: false,
+                                speed: 300,
+                                slidesToShow: 5,
+                                slidesToScroll: 5,
+                                responsive: [{
+                                    breakpoint: 991,
+                                    settings: {
+                                        slidesToShow: 3,
+                                        slidesToScroll: 3,
+                                    }
+                                }, {
+                                    breakpoint: 767,
+                                    settings: {
+                                        slidesToShow: 2,
+                                        slidesToScroll: 2,
+                                    }
+                                }]
+                            });
+                        }, 500);
+                    }
+                } else {
+                    jQuery("#popular-product").hide();
+                }
+            }
+        },
+        "error": function(response) {
+            jQuery("#popular-product").html('<div class="popular-items"  id="popular-items">' + response.errors + '</div>');;
+        }
+    });
+}
+function get_special_product1(api_url_prefix) {
+    var json_request = {
+        "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+        "special_product_slug": "best-of-home-essentials",
+        "zipcode": Cookies.get("zipcode")
+    };
+    var product1 = "";
+    $.ajax({
+        "type": "POST",
+        "url": api_url_prefix + 'get-special-products',
+        "data": JSON.stringify(json_request),
+        "dataType": "JSON",
+        "success": function(response) {
+            if (response.data != null) {
+                product_title1 = '<h2>' + response.data.special_product_name + '</h2>';
+                if (response.data.product_detail != "") {
+					
+                        var first_variant_out_of_stock = false;
+                    for (let a = 0; a < response.data.product_detail.length; a++) {
+                        var price_weight = "";
+						
+						
+						var out_of_stock_variant = '';
+						if (response.data.product_detail[a].is_out_of_stock == 0) {
+						out_of_stock_variant = ' out_of_stock_variant';
+						if (response.data.product_detail[a].is_out_of_stock == 0) {
+						first_variant_out_of_stock = true;
+						}
+						}
+                        if (response.data.product_detail[a].product_size.length > 1) {
+                            var price_weight = '<form name="form" id="form"><select name="jumpMenu" class="variants '  + out_of_stock_variant +'" id="section5_jumpMenu_' + response.data.product_detail[a].product_id + '>';
+                            for (let j = 0; j < response.data.product_detail[a].product_size.length; j++) {
+                                price_weight = price_weight.concat('<option value="' + response.data.product_detail[a].product_size[j].size + '-' + response.data.product_detail[a].product_size[j].price + '-' + response.data.product_detail[a].product_size[j].variant_id + out_of_stock_variant +'">' + response.data.product_detail[a].product_size[j].size + 'lb - $' + response.data.product_detail[a].product_size[j].price + '</option>');
+                            }
+                            price_weight += '</select></form>';
+                        } else {
+                            var price_weight = '<span>' + response.data.product_detail[a]
+                                .product_weight_gms + 'lb</span> - <strong>$' + response.data.product_detail[a]
+                                .product_price + '</strong>';
+                        }
+                            var out_of_stock = "<div class='product-stock-message'></div>";
+							var out_of_stock_class = "";
+							if (response.data.product_detail[a].is_out_of_stock == 0 || first_variant_out_of_stock) {
+								out_of_stock = "<div class='product-stock-message'>Out of stock</div>";
+								out_of_stock_class = "out_of_stock";
+							}
+                        product1 = product1.concat('<div class="product-box"><a href="product/' + response.data.product_detail[a].product_slug +
+                            '"><img src=' + response.data.product_detail[a]
+                            .image + ' onerror=this.src="<?php echo BASE_URL; ?>assets/images/logo-2.png"><h4>' + response.data.product_detail[a].product_name +
+                            '</h4></a>' + price_weight + out_of_stock +
+                            '<ul><li><div class="quantity ' + out_of_stock_class + '"><button type="button" id="sub" class="sub">-</button><input type="text" id= "' + response.data.product_detail[a].product_id + '" value="1" min="1" max="3" disabled /><button type="button" id="add" class="add">+</button></div></li><li><button id= "btn_section5_' + response.data.product_detail[a].product_id + '" class="add_cart ' + out_of_stock_class + '" data-section="section5"  data-isperisible="' + response.data.product_detail[a].is_perisible_products + '" data-productslug="' + response.data.product_detail[a].product_slug + '" data-productimage= "' + response.data.product_detail[a].product_image + '" data-productname="' + response.data.product_detail[a].product_name + '" data-price=' + response.data.product_detail[a].product_price + ' data-productid = ' + response.data.product_detail[a].product_id + ' data-productweight =' + response.data.product_detail[a].product_weight_gms +  ' data-producttax=' + response.data.product_detail[a].product_tax + '>Add</button></li></ul></div>'
+                        );
+                    }
+					
+                    jQuery("#popular-product1").html(product_title1 +'<div class="popular-items" id="popular-items">' + product1 + '</div>');
+                    setTimeout(function() {
+                        jQuery('.popular-items').slick({
+                            dots: true,
+                            arrows: false,
+                            infinite: true,
+                            autoplay: true,
+                            speed: 300,
+                            slidesToShow: 5,
+                            slidesToScroll: 5,
+                            responsive: [{
+                                    breakpoint: 1025,
+                                    settings: {
+                                        slidesToShow: 3,
+                                    }
+                                },
+                                {
+                                    breakpoint: 767,
+                                    settings: {
+                                        slidesToShow: 2,
+                                    }
+                                }
+                            ]
+                        });
+                    }, 500);
+                } else {
+                    jQuery("#popular-product1").hide();
+                }
+            }
+        },
+        "error": function(response) {
+            jQuery("#popular-product1").html('<div class="popular-items" id="popular-items1">' + response.errors + '</div>');
+        }
+    });
+}
+function get_discover_products(api_url_prefix) {
+    var json_request = {
+        "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+        "special_product_slug": "discover",
+        "zipcode": Cookies.get("zipcode")
+    };
+    var product = "";
+    $.ajax({
+        "type": "POST",
+        "url": api_url_prefix + 'get-special-products',
+        "data": JSON.stringify(json_request),
+        "dataType": "JSON",
+        "success": function(response) {
+            if (response.data != null) {
+                product_title = '<h2>' + response.data.special_product_name + '</h2>';
+                if (response.data.product_detail != "") {
+                    for (let a = 0; a < response.data.product_detail.length; a++) {
+                        product = product.concat('<a href="product/' + response.data.product_detail[a].product_slug + '"><img src=' + response.data.product_detail[a].product_image + ' onerror=this.src="<?php echo BASE_URL; ?>assets/images/logo-2.png"><h4>' + response.data.product_detail[a].product_name + '</h4></a>');
+                    }
+                    $("#discover").html(product_title + "<div class='discover'>" + product + "</div>");
+                    jQuery('.discover').slick({
+                        dots: false,
+                        arrows: true,
+                        infinite: false,
+						autoplay: true,
+                        speed: 300,
+                        slidesToShow: 3,
+                        slidesToScroll: 3,
+                        responsive: [{
+                            breakpoint: 991,
+                            settings: {
+                                slidesToShow: 3,
+                                slidesToScroll: 3,
+                            }
+                        }, {
+                            breakpoint: 767,
+                            settings: {
+                                slidesToShow: 2,
+                                slidesToScroll: 1,
+                            }
+                        }]
+                    });
+                } else {
+                    $("#discover").hide();
+                }
+            }
+        },
+        "error": function(response) {
+            $("#discover").html("<div class='discover'>" + response.errors + "</div>");
+        }
+    });
+}
+function get_category_products(api_url_prefix) {
+    var json_request = {
+        "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+        "zipcode": Cookies.get("zipcode")
+    };
+    var product = "";
+    $.ajax({
+        "type": "POST",
+        "url": api_url_prefix + 'get-home-category-product',
+        "data": JSON.stringify(json_request),
+        "dataType": "JSON",
+        "success": function(response) {
+            if (response.data != null) {
+                product_title = '<h2>' + response.data[0].category_name + '</h2>';
+                for (let a = 0; a < response.data.length; a++) {
+                    var price_weight = "";
+                    if (response.data[a].product_size.length > 1) {
+                        var price_weight = '<form name="form" id="form"><select name="jumpMenu" class="variants" id="section3_jumpMenu' + response.data[a].product_id + '">';
+                        for (let j = 0; j < response.data[a].product_size.length; j++) {
+                            price_weight = price_weight.concat('<option value="' + response.data[a].product_size[j].size + '-' + response.data[a].product_size[j].price + '-' + response.data[a].product_size[j].variant_id + '">' + response.data[a].product_size[j].size + 'lb - $' + response.data[a].product_size[j].price + '</option>');
+                        }
+                        price_weight += '</select></form>';
+                    } else {
+                        var price_weight = '<span>' + response.data[a]
+                            .product_weight_gms + 'lb</span> - <strong>$' + response.data[a]
+                            .product_price + '</strong>';
+                    }
+                    product = product.concat('<div class="product-box"><a href="product/' + response.data[a][
+                        "product_slug"
+                    ] + '"><img src=' + response.data[a]["image"] + ' onerror=this.src="<?php echo BASE_URL; ?>assets/images/logo-2.png"><div><h4>' + response.data[a][
+                        "product_name"
+                    ] + '</h4></a>' + price_weight + '<ul><li><div class="quantity"><button type="button" id="sub" class="sub">-</button><input type="text" id="' + response.data[a]["product_id"] + '" value="1" min="1" max="3" disabled/><button type="button" id="add" class="add">+</button></div></li><li><button type="button" id= "btn_section3_' + response.data[a]["product_id"] + '" class="add_cart" data-section="section3" data-isperisible="' + response.data[a]["is_perisible_products"] + '" data-productslug="' + response.data[a]["product_slug"] + '" data-productimage= "' + response.data[a]["image"] + '" data-productname="' + response.data[a]["product_name"] + '" data-price=' + response.data[a]["product_price"] + ' data-productid = ' + response.data[a]["product_id"] + 'data-productweight =' + response.data[a]["product_weight_gms"] + 'data-productslug=' + response.data[a]["product_slug"] + ' data-producttax=' + response.data[a].product_tax + '>Add</button></li></ul></div></div>');
+                }
+                $("#category_product").html(product_title + '<div class="container-flex"><div class="product-grid">' + product +
+                    '</div></div>');
+                $("#vraj-btn").html("<a href='category/" + response.data[0].category_slug +
+                    "' class='vraj-btn'>View all " + response.data[0].category_name + " products</a>")
+            } else {
+                //$("#category_product").html("<div>"+response.errors+"</div>");
+                $(".vraj-bakery").hide();
+                $("a.vraj-btn").hide();
+            }
+        },
+        "error": function(response) {
+            $("#category_product").html("<div>" + response.errors + "</div>");
+            $("a.vraj-btn").hide();
+        }
+    });
+}
+</script>
+<?php require_once('common/footer.php'); ?>

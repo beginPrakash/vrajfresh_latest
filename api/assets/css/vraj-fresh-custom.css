@@ -1,0 +1,726 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+html {
+    font-size: 100%;
+}
+
+* {
+    outline: none;
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+img {
+    outline: none;
+}
+
+body {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1em;
+    color: #000;
+}
+
+.container {
+    width: 1400px;
+    margin: 0 auto;
+}
+
+.container-flex {
+    display: flex;
+}
+
+.clear {
+    clear: both;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ul,
+li,
+p {
+    margin: 0px;
+    padding: 0px;
+    display: inline-block;
+}
+
+.vraj-title h2 {
+    color: #1e53a5;
+    font-size: 3.375em;
+}
+
+.vraj-btn {
+    padding: 15px 30px;
+    background: #209FCF;
+    border-radius: 30px;
+    font-size: 1.3em;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    margin-top: 2em;
+    display: inline-block;
+}
+
+
+/*********************header****************************/
+
+header {
+    padding: 0.8em 0;
+}
+
+header .container-flex {
+    align-items: center;
+}
+
+.header>div {
+    flex: 1;
+    position: relative;
+}
+
+.zip-code {
+    margin-left: 3em;
+}
+
+header .container-flex>div input {
+    border: solid 1px #ddd;
+    height: 40px;
+    width: 100%;
+    border-radius: 30px;
+    padding: 0 20px 0 45px;
+}
+
+header .container-flex>div.home-search input {
+    padding: 0 45px 0 20px;
+}
+
+.zip-code img {
+    position: absolute;
+    top: 10px;
+    left: 18px;
+}
+
+.home-search img {
+    position: absolute;
+    top: 4px;
+    right: 5px;
+}
+
+header .container-flex>div.home-search {
+    flex: 2;
+    margin: 0 3em;
+}
+
+header .container,
+.banner.container {
+    width: 90%;
+}
+
+.my-account {
+    text-align: right;
+}
+
+.menu {
+    background: #1E53A5;
+    margin-top: 1em;
+}
+
+.menu ul li a {
+    color: #fff;
+    text-decoration: none;
+    padding: 1em 1em;
+    display: inline-block;
+}
+
+.menu ul li a:hover {
+    background: #209FCF;
+}
+
+.all-categories {
+    color: #fff;
+    border-right: solid 1px #209FCF;
+    padding: 0.2em 4em 0.2em 1em;
+    margin-right: 4em;
+    cursor: pointer;
+}
+
+.all-categories span,
+.header-phone {
+    display: flex;
+    align-items: center;
+}
+
+.all-categories span img {
+    margin-right: 5px;
+    width: 20px;
+}
+
+.header-phone {
+    font-weight: 600;
+    color: #fff;
+    margin-left: auto;
+    font-size: 1.3em;
+}
+
+.header-phone img {
+    margin-right: 8px;
+}
+
+.my-account li {
+    margin-left: 15px;
+}
+
+.menu-categories {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgb(0 0 0 / 50%);
+    left: -100%;
+    top: 0;
+    transition: 0.5s;
+    z-index: 9;
+}
+
+.menu-categories ul {
+    background: #1E53A5;
+    height: 100%;
+    width: 320px;
+}
+
+.menu-categories ul li,
+.menu-categories ul li a {
+    width: 100%;
+}
+
+.open-categories .menu-categories {
+    left: 0%;
+    transition: 0.5s;
+}
+
+.close-categories {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    right: 0;
+    top: 0;
+    background: #1e53a5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/*********************Banner****************************/
+
+.banner {
+    margin-top: 2em;
+}
+
+.banner img {
+    border-radius: 10px;
+    width: 100%;
+    height: 430px;
+}
+
+.banner-left {
+    width: 65%;
+    float: left;
+    position: relative;
+}
+
+.banner-right {
+    width: 32%;
+    float: right;
+}
+
+.banner-left ul.slick-dots {
+    position: absolute;
+    right: 20px;
+    bottom: 1em;
+}
+
+.slick-dots li {
+    margin: 0 5px;
+}
+
+.slick-slide img {
+    display: block;
+    width: 100%;
+}
+
+.slick-dots li button {
+    background: none;
+    border: solid 2px #fff;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    text-indent: -9999px;
+    cursor: pointer;
+}
+
+.slick-dots li.slick-active button,
+.slick-dots li button:hover {
+    background: #ffffff;
+}
+
+
+/*********************categories****************************/
+
+.categories {
+    display: inline-block;
+    width: 100%;
+    padding: 4em 0;
+}
+
+.categories .slick-slide {
+    margin: 0 1.1em;
+}
+
+.tabs li {
+    cursor: pointer;
+    background: url(../images/category-icon-bg.png);
+    width: 162px;
+    background-size: 100%;
+    height: 170px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.tabs li span {
+    color: #363636;
+    font-size: 1.1em;
+    font-weight: 600;
+    width: 65%;
+    text-align: center;
+    line-height: 1;
+    margin-top: 10px;
+}
+
+.tabs li:nth-child(1) {
+    background: url(../images/category-1.png);
+}
+
+.tabs li:nth-child(2) {
+    background: url(../images/category-2.png);
+}
+
+.tabs li:nth-child(3) {
+    background: url(../images/category-3.png);
+}
+
+.tabs li:nth-child(4) {
+    background: url(../images/category-4.png);
+}
+
+.tabs li:nth-child(5) {
+    background: url(../images/category-5.png);
+}
+
+.tabs li:nth-child(6) {
+    background: url(../images/category-6.png);
+}
+
+.tabs li:nth-child(7) {
+    background: url(../images/category-7.png);
+}
+
+.tab-link:hover,
+li.current {
+    transition: 0.5s;
+    background: url(../images/category-icon-bg.png) !important;
+    color: #fff;
+}
+
+.tab-link:hover span,
+li.current span {
+    color: #fff;
+}
+
+.tab-link:hover path,
+li.current path {
+    fill: #fff;
+}
+
+.tab-link:hover img,
+li.current img {
+    filter: unset;
+}
+
+ul.tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 2em;
+}
+
+.tab-content {
+    display: none;
+    transition-property: transform, opacity;
+    transition-duration: 0.4s;
+    transition-timing-function: ease-out;
+}
+
+.tab-content.current {
+    display: inherit;
+    border-radius: 0 0 .5rem .5rem;
+    animation: fade 0.3s ease-in-out both;
+}
+
+@keyframes fade {
+    0% {
+        opacity: 0;
+        transform: translateY(2rem);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/*********************product****************************/
+
+.product-grid {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.product-box {
+    border: solid 1px #ddd;
+    padding: 1em;
+    border-radius: 8px;
+    flex: 1 1 calc((100% / 5) - 3em);
+    margin: 1em;
+    background: #fff;
+    text-align: left;
+}
+
+.product-box img {
+    display: block;
+    width: 100%;
+}
+
+.product-box h4 {
+    display: inline-block;
+    width: 100%;
+    color: #253D4E;
+    font-size: 1.25em;
+    padding: 8px 0 13px 0;
+}
+
+.product-box strong {
+    color: #013F9E;
+    font-size: 1.25emem;
+    margin-right: 1em;
+}
+
+.product-box span {
+    color: #979797;
+}
+
+.product-box ul {
+    display: flex;
+    margin-top: 1.5em;
+    justify-content: space-between;
+}
+
+.product-box ul li img {
+    width: auto;
+}
+
+.product-box ul li button {
+    background: #ebebeb;
+    position: relative;
+    border: none;
+    height: 100%;
+    padding: 0 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 0.8em;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    line-height: 30px;
+    border: solid 2px #ebebeb;
+}
+
+.product-box ul li button:hover {
+    border: solid 2px #209fcf;
+    background: #209fcf;
+    color: #fff;
+}
+
+.product-box ul li button:before {
+    content: "";
+    background: url(../images/cart-icon.png);
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    margin-right: 4px;
+    background-size: 100%;
+}
+
+.product-box ul li button:hover:before {
+    content: "";
+    background: url(../images/cart-icon-hover.png);
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    margin-right: 4px;
+    background-size: 100%;
+}
+
+
+/*********************vraj-bakery****************************/
+
+.vraj-bakery {
+    padding: 4em 0;
+    background: url(../images/Vraj-Bakery-bg.jpg);
+    margin: 3em 0 0 0;
+    text-align: center;
+    background-size: cover;
+}
+
+.vraj-bakery .container-flex {
+    flex-wrap: wrap;
+}
+
+.vraj-bakery h2 {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0.5em;
+    color: #fff
+}
+
+.vraj-bakery .product-box {
+    flex: 1 1 calc((100% / 3) - 3em);
+    display: flex;
+}
+
+.vraj-bakery .product-box img {
+    display: block;
+    width: 150px;
+    margin-right: 1.5em;
+}
+
+.vraj-bakery .product-box ul li img {
+    width: auto;
+}
+
+
+/************************Ads**********************************/
+
+.ads {
+    background: #f3f3f3;
+    padding: 3em 0;
+}
+
+.ads .container-flex {
+    margin: -1em;
+}
+
+.ads ul li {
+    flex: 1 1 calc((100% / 3) - 2rem);
+    margin: 0.8em;
+}
+
+.ads img {
+    width: 100%;
+}
+
+.popular-product {
+    padding: 3em 0 0em 0;
+}
+
+.popular-product {
+    padding: 2em 1em;
+    background: rgb(30 83 165 / 15%);
+    border-radius: 10px;
+    margin: 2em 0;
+}
+
+.vraj-title .popular-product h2 {
+    font-size: 2.75em;
+    padding: 0 20px;
+    position: relative;
+}
+
+.vraj-title .popular-product h2:before {
+    height: 2px;
+    content: "";
+    background: #1e53a5;
+    width: 100%;
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 100%;
+}
+
+.popular-product .slick-prev,
+.popular-product .slick-next {
+    position: absolute;
+    top: 50%;
+    cursor: pointer;
+    transform: translateY(-50%);
+    right: 100%;
+    background: #209fcf;
+    height: 40px;
+    border: none;
+    padding: 0 7px;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 11px;
+}
+
+.popular-product .slick-next {
+    right: auto;
+    left: 100%;
+}
+
+.popular-product .slick-dots {
+    margin-top: 1em;
+    width: 100%;
+    text-align: center;
+}
+
+
+/***************************Discover-Greatest*******************************/
+
+.discover-greatest {
+    text-align: center;
+    padding: 3em 0;
+}
+
+.discover-greatest.vraj-title h2 {
+    color: #1e53a5;
+    font-size: 2.5em;
+}
+
+.discover,
+.brand {
+    margin-top: 2em;
+}
+
+.discover-greatest .slick-slide img {
+    display: inline-block;
+}
+
+.slick-dots li button {
+    border: solid 2px #adadad;
+}
+
+.slick-dots li.slick-active button {
+    background: #013F9E;
+    border: solid 2px #013F9E;
+}
+
+.slick-dots {
+    margin-top: 2em;
+}
+
+.brand .slick-slide {
+    margin: 0 1.5em;
+}
+
+
+/***************************Footer*******************************/
+
+footer {
+    border-top: solid 1px #ddd;
+    padding: 3em 0;
+    line-height: 30px;
+    font-weight: 600;
+}
+
+.footer-grid {
+    flex: 1 1 calc((100% / 4) - 4em);
+    margin: 1em 0em;
+    font-weight: 600;
+    line-height: 30px;
+}
+
+.footer-grid:first-child {
+    flex: 1 1 calc((40% / 1) - 4em);
+}
+
+footer ul li {
+    display: inline-block;
+    width: 100%;
+    padding: 6px 0;
+}
+
+footer ul li a {
+    color: #000;
+    text-decoration: none;
+}
+
+footer ul li a:hover {
+    color: #209FCF;
+}
+
+.footer-grid h3 {
+    color: #013F9E;
+    font-size: 1.8em;
+    padding-bottom: 1em;
+}
+
+footer ul li img {
+    margin: 7px 7px 0 0;
+    display: inline-block;
+    float: left;
+}
+
+.copyright {
+    border-top: solid 1px #ddd;
+    padding-top: 2em;
+    margin-top: 1em;
+    justify-content: space-between;
+    padding-bottom: 1em;
+}
+
+
+/***********************scroll*************************************/
+
+#scroll {
+    position: fixed;
+    right: 0px;
+    bottom: 0px;
+    cursor: pointer;
+    width: 46px;
+    height: 46px;
+    z-index: 999;
+    display: none;
+    background: #1e53a5;
+}
+
+#scroll:hover {
+    background: #209fcf;
+}
+
+#scroll span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 10px solid transparent;
+    border-bottom-color: #fff;
+    transform: translate(-50%, -80%);
+}
+
+div#spinner {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    background: url(../images/loader.gif) no-repeat center;
+    overflow: visible;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+}

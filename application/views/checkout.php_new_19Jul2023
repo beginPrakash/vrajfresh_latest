@@ -1,0 +1,1023 @@
+<?php require_once('common/header.php');
+?>
+<section class="categories-banner">
+	<h2>CHECKOUT</h2>
+</section>
+<style>
+	.error {
+		color: red;
+	}
+</style>
+<section class="click-login">
+	<div class="container container-flex">
+	</div>
+</section>
+<?php
+$action = BASE_URL . 'checkout-process';
+$attributes = array('class' => '', 'id' => 'checkoutForm', 'role' => 'form', 'enctype' => 'multipart/form-data');
+echo form_open($action, $attributes);
+$this->load->config('config');
+?>
+<section class="billing-page">
+	<div class="container container-flex">
+		<div class="billing-left">
+			<h3>SHIPPING ADDRESS INFO</h3>
+			<div>
+				<label>First Name <small title="required">*</small>
+				</label>
+				<?php
+				if ($_COOKIE['first_name'] != "") {
+					$first_name = $_COOKIE['first_name'];
+				} else {
+					$first_name = "";
+				}
+				?>
+				<input placeholder="First Name" name="first_name" id="first_name" type="text" maxlength="100"
+					value="<?php echo $first_name; ?>">
+				<span id="first-name-error" class="error"></span>
+			</div>
+			<?php
+			if ($_COOKIE['last_name'] != "") {
+				$last_name = $_COOKIE['last_name'];
+			} else {
+				$last_name = "";
+			}
+			?>
+			<div>
+				<label>Last name <small title="required">*</small>
+				</label>
+				<input placeholder="Last name" name="last_name" id="last_name" type="text" maxlength="100"
+					value="<?php echo $last_name; ?>">
+				<span id="last-name-error" class="error"></span>
+			</div>
+			<div>
+				<label>Country / Region <small title="required">*</small>
+				</label>
+				<br>
+				<strong>United States (US)</strong>
+				<br>
+				<br>
+			</div>
+			<?php
+			if ($_COOKIE['shipping_street_address'] != "") {
+				$shipping_street_address = $_COOKIE['shipping_street_address'];
+			} else {
+				$shipping_street_address = "";
+			}
+			if ($_COOKIE['shipping_apartment'] != "") {
+				$shipping_apartment = $_COOKIE['shipping_apartment'];
+			} else {
+				$shipping_apartment = "";
+			}
+			?>
+			<div>
+				<label>Shipping Street address <small title="required">*</small>
+				</label>
+				<input placeholder="House number and street name" name="street_address" id="street_address" type="text"
+					maxlength="500" value="<?php echo $shipping_street_address; ?>">
+				<input placeholder="Apartment, suite, unit, etc. (optional)" name="apartment" id="apartment" type="text"
+					maxlength="500" value="<?php echo $shipping_apartment; ?>">
+				<span id="street-address-error" class="error"></span>
+			</div>
+			<?php
+			/*if ($_COOKIE['delivery_area_name'] != "") {
+				$shipping_city = $_COOKIE['delivery_area_name'];
+			} 
+			else */
+			if ($_COOKIE['shipping_city'] != "") {
+				$shipping_city = $_COOKIE['shipping_city'];
+			} else {
+				$shipping_city = "";
+			}
+			?>
+			<div>
+				<label>Shipping Town / City <small title="required">*</small>
+				</label>
+				<input placeholder="City" name="city" id="city" type="text" maxlength="100"
+					value="<?php echo $shipping_city; ?>">
+				<span id="city-error" class="error"></span>
+			</div>
+			<?php //check if state is set in cookie if yes then select that state
+			
+			if ($_COOKIE['delivery_state_id'] != "") {
+				$shipping_state = $_COOKIE['delivery_state_id'];
+			}else if ($_COOKIE['shipping_state'] != "") {
+				$shipping_state = $_COOKIE['shipping_state'];
+			} else {
+				$shipping_state = "";
+			}
+			?>
+			<div>
+				<label>Shipping State <small title="required">*</small>
+				</label>
+				<?php //echo form_dropdown('state', $ArrStateOption, $shipping_state, 'id="state" data-tax=""'); ?>
+				<select name="state" id="state" data-tax="" readonly>
+					<?php
+					foreach ($ArrStateOption as $key => $state_data) {
+						$ArrStateData = explode('|', $key);
+						$billing_state_id = $ArrStateData[1];
+						?>
+						<option value="<?php echo $key; ?>" <?php if ($billing_state_id == $shipping_state || $state_data == $shipping_state) {
+							   echo 'selected';
+						   } ?>><?php echo $state_data; ?></option>
+					<?php } ?>
+				</select>
+				<span id="state-error" class="error"></span>
+			</div>
+			<?php
+			$zipcode = '';
+			if (isset($_COOKIE['zipcode']) && $_COOKIE['zipcode'] != '') {
+				$zipcode = $_COOKIE['zipcode'];
+			} else if (isset($_COOKIE['shipping_zip_code']) && $_COOKIE['shipping_zip_code'] != '') {
+				$zipcode = $_COOKIE['shipping_zip_code'];
+			}
+			?>
+			<div>
+				<label>Shipping Postcode / ZIP <small title="required">*</small>
+				</label>
+				<input placeholder="Zip Code" name="zip_code" id="zip_code" type="text" value="<?php echo $zipcode; ?>"
+					maxlength="100" readonly>
+				<span id="zip-code-error" class="error"></span>
+			</div>
+			<div>
+				<label>Shipping Mobile <small title="required">*</small>
+				</label>
+				<input placeholder="Mobile" name="phone" id="phone" type="text" value="<?php echo $_COOKIE['shipping_phone']; ?>"
+					maxlength="15">
+				<span id="phone-error" class="error"></span>
+			</div>
+			<div>
+				<label>Email address <small title="required">*</small>
+				</label>
+				<?php if ($this->session->userdata['logged_in']['email'] != "") {
+					$readonly = 'readonly';
+					$class = 'readonly';
+				} else {
+					$readonly = '';
+					$class = '';
+				}
+				?>
+				<input placeholder="Email address" name="email" id="email" type="email"
+					value="<?php echo $this->session->userdata['logged_in']['email']; ?>" <?php echo $readonly; ?>
+					class="<?php echo $class; ?>" maxlength="100">
+				<span id="email-address-error" class="error"></span>
+			</div>
+			<br>
+			<button id="autofill-btn">Same as Shipping Address</button>
+			<!-- <label>Create an account?</label> -->
+			<br><br>
+			<h3>BILLING INFO</h3>
+			<input name="ship_to_different_address" id="ship_to_different_address" type="hidden" value="No">
+			<!--<label>Ship to a different address?</label>-->
+			<?php
+			$address = $address2 = $city = $zip = $phone = '';
+			//echo "<pre>";print_r($_COOKIE);exit;
+			if ($_COOKIE['address'] != "") {
+				$address = $_COOKIE['address'];
+			}
+			if ($_COOKIE['address2'] != "") {
+				$address2 = $_COOKIE['address2'];
+			}
+			if ($_COOKIE['city'] != "") {
+				$city = $_COOKIE['city'];
+			}
+			if ($_COOKIE['zip'] != "") {
+				$zip = $_COOKIE['zip'];
+			}
+			if ($_COOKIE['phone'] != "") {
+				$phone = $_COOKIE['phone'];
+			}
+			if ($_COOKIE['state'] != "") {
+				$state = $_COOKIE['state'];
+			}
+			?>
+			<div id="shipingAddressBox">
+				<div>
+					<label>Billing Street address <small title="required">*</small>
+					</label>
+					<input placeholder="House number and street name" value="<?php echo $address; ?>"
+						name="shiping_street_address" id="shiping_street_address" type="text" maxlength="500">
+					<span id="shiping-street-address-error" class="error"></span>
+					<input placeholder="Apartment, suite, unit, etc. (optional)" value="<?php echo $address2; ?>"
+						name="shiping_apartment" id="shiping_apartment" type="text" maxlength="500">
+				</div>
+				<div>
+					<label>Billing Town / City <small title="required">*</small>
+					</label>
+					<input placeholder="City" value="<?php echo $city; ?>" name="shiping_city" id="shiping_city"
+						type="text" maxlength="100">
+					<span id="shiping-city-error" class="error"></span>
+				</div>
+				<div><label>Billing State <small title="required">*</small>
+					</label>
+					<?php echo form_dropdown('shiping_state', $ArrBillingStateOption, $state, 'id="shiping_state" '); ?>
+					<span id="shiping-state-error" class="error"></span>
+				</div>
+				<div><label>Billing Postcode / ZIP <small title="required">*</small>
+					</label>
+					<input placeholder="Zip Code" value="<?php echo $zip; ?>" name="shiping_zip_code"
+						id="shiping_zip_code" type="text" maxlength="100">
+					<span id="zip-error" class="error"></span>
+				</div>
+				<div><label>Billing Mobile <small title="required">*</small>
+					</label>
+					<input placeholder="Mobile" value="<?php echo $phone; ?>" name="shiping_phone" id="shiping_phone"
+						type="text" maxlength="15">
+					<span id="shiping-phone-error" class="error"></span>
+				</div>
+
+			</div><br />
+			<?php if ($_COOKIE['delivery_type'] == 'Express Delivery' || $_COOKIE['delivery_type'] == 'Same Day Delivery') { ?>
+				<div><label><b>Delivery Type</b></label><br />
+					<!-- <input name="delivery_type" id="delivery_type_hour" type="radio" value="two_hour" class="chk_delivery_type"> -->
+					<!-- <label for="delivery_type_hour" id="delivery_after_hr"> 2 Hours Delivery</label> -->
+					<input name="delivery_type" id="delivery_type_day" type="radio" value="one_day"
+						class="chk_delivery_type" checked>
+					<label for="delivery_type_day"> One Day Delivery</label>
+				</div>
+			<?php }
+			if ($_COOKIE['delivery_type'] == 'Twise in a week') { ?>
+				<label><b>Tentitive Delivery Date:</b></label>
+				<p>
+					<?php $t = date('d-m-Y');
+					if (date("l", strtotime($t)) == "Tuesday" || date("l", strtotime($t)) == "Wednesday" || date("l", strtotime($t)) == "Thursday") {
+						$date = new DateTime();
+						echo $date->modify('next thursday')->format('m-d-Y l');
+					}
+					if (date("l", strtotime($t)) == "Friday" || date("l", strtotime($t)) == "Saturday" || date("l", strtotime($t)) == "Sunday" || date("l", strtotime($t)) == "Monday") {
+						$date = new DateTime();
+						echo $date->modify('next monday')->format('m-d-Y l');
+					}
+					?>
+				</p>
+				<input name="delivery_type" id="delivery_type_week" type="hidden"
+					value="<?php echo $_COOKIE['delivery_type']; ?>" class="chk_delivery_type">
+			<?php } ?><br />
+			<input type="hidden" name="coupon_id"
+				value="<?php echo ((isset($_SESSION['coupon_id']) && $_SESSION['coupon_id'] > 0) ? $_SESSION['coupon_id'] : 0); ?>">
+			<h4>Tip</h4>
+			<!--<input name="tip" type="checkbox" >Tip</h4>-->
+			<div class="order_tip_form">
+				<button id="order_tip_5" type="button" class="order_tip" data-tip="5">$5</button>
+				<button id="order_tip_10" type="button" class="order_tip" data-tip="10">$ 10</button>
+				<button id="order_tip_15" type="button" class="order_tip" data-tip="15">$ 15</button>
+				<button id="order_tip_20" type="button" class="order_tip" data-tip="20">$ 20</button>
+				<button id="order_tip_25" type="button" class="order_tip" data-tip="25">$ 25</button>
+				<button id="order_tip_custom" type="button" class="active" data-tip="custom"
+					onClick="addCustomTip();">Custom Tip </button>
+				<input placeholder="Enter Tip Amount" name="tip_amount" id="tip_amount" type="text"
+					style="display:none;" onkeypress="return isNumber(event)">
+					<span id="tip_error_message" style="display:none;color:red;" >Please enter valid amount</span>
+					<a href="javascript:void();" onClick="AddCustomTipAmountInTotal()" id="add_tip_button" style="display:none;color: #fff;border: none;padding: 8px 9px;cursor: pointer;background: #1e53a5;border-radius: 2px;">Add Tip</a>
+					<span id="tip_remove_button" style="display:none;" ><a href="javascript:void(0);" onClick="RemoveTip()">Remove Tip</a></span>
+			</div>
+			<label>Order Notes (optional)
+			</label>
+			<textarea name="order_comments" id="order_comments"
+				placeholder="Notes about your order, e.g. special notes for delivery."></textarea>
+			<h3 id="required_policy">SUBSTITUTION PREFERENCES<small title="required">*</small></h3>
+			<input name="refund_for_unavailable" id="substitute_unavailable" type="radio" value="1">
+			<label for="substitute_unavailable">Yes, please substitute unavailable items with similar products </label>
+			<br>
+			<input name="refund_for_unavailable" id="refund_for_unavailable" type="radio" value="0">
+			<label for="refund_for_unavailable">No, please refund for unavailable items</label>
+			<span id="replace-policy-error" class="error"></span>
+			</form>
+		</div>
+		<?php //print_r($this->cart->contents()); 
+		?>
+		<div class="billing-right">
+			<h3>REVIEW YOUR ORDERS</h3>
+			<table width="100%" cellpadding="0" cellspacing="5" align="center">
+				<tr>
+					<th scope="col">PRODUCT</th>
+					<th scope="col">QTY</th>
+					<th scope="col">TAX($) </th>
+					<th scope="col">TOTAL</th>
+				</tr>
+				<?php if (count($this->cart->contents()) > 0) {
+					$counter = 1;
+					foreach ($this->cart->contents() as $items) {
+						?>
+						<tr>
+							<td>
+								<img src="<?php echo $items["image"]; ?>" alt="<?php echo $items["name"]; ?>">
+								<span class="product_name">
+									<?php echo $items["name"]; ?>
+								</span>
+							</td>
+							<td>
+								<?php echo $items["qty"]; ?>
+								<?php //$product_tax = $items["product_tax"];
+										//$total_tax = (intval($items["product_tax"]) / 100); 
+										?>
+							</td>
+							<td>
+								<?php
+								if ($items['product_tax'] == 1) {
+									?>
+									<span id="product-tax-<?php echo $counter; ?>" data-tax="">$0.00</span>
+								<?php } else {
+									echo '$0.00';
+								} ?>
+							</td>
+							<td>
+								<?php $total_price = ($items["price"] * $items["qty"]);
+								$total_price_tax = number_format($total_price, 2, '.', ''); ?>
+								<span id="product-price-<?php echo $counter++; ?>">$<?php echo number_format((float) $total_price_tax, 2, '.', ''); ?></span>
+							</td>
+						</tr>
+						<tr>
+							<!--<td><?php //echo $items["name"]; 
+									?></td>-->
+						</tr>
+					<?php } ?>
+				<?php } ?>
+			</table>
+			<div class="cart_totals">
+				<ul>
+					<li class="cart-subtotal coupon_detail" id="coupon_detail">
+						<p>Applyed Coupon Code:</p>
+						<span id="apply_coupon_code"></span>
+					</li>
+					<li class="cart-subtotal">
+						<p>Subtotal:</p>
+						<span id="subtotal">
+							<?php
+							$taxable_products_amount = 0;
+							$tax_add = 0;
+							if (count($this->cart->contents()) > 0) {
+								$total_price = 0;
+								//echo "<pre>"; print_r($this->cart->contents()); exit;
+								foreach ($this->cart->contents() as $items) {
+									if ($items['product_tax'] == 1) {
+										$taxable_products_amount += ($items["price"] * $items["qty"]);
+										$tax_add = $items['product_tax'];
+									} else {
+										$tax_add = 0;
+									}
+									?>
+									<?php $total_price += ($items["price"] * $items["qty"]);
+									?>
+
+								<?php }
+								echo "$" . number_format($total_price, 2); ?>
+							<?php } ?>
+						</span>
+					</li>
+					<li class="cart-subtotal">
+						<p>Discount:</p>
+						<span>
+							<span id="discount"></span>
+						</span>
+					</li>
+					<li class="cart-subtotal">
+						<p>Delivery:</p>
+						<span>
+							<b>Free Delivery</b>
+						</span>
+					</li>
+					<li class="cart-tip">
+						<p>Tip:</p>
+						<span>
+							<b>$<span id="tip"></span></b>
+						</span>
+					</li>
+					<li class="extra_delivery_charge">
+						<p>Extra Delivery Charge:</p>
+						<span>
+							<span id="extra_delivery_charge"></span>
+						</span>
+					</li>
+					<li class="cart-tax">
+						<p>State Tax:</p>
+						<span>
+							<b>$<span id="cart-tax" data-tax="">
+									<?php ?>
+								</span></b>
+						</span>
+					</li>
+					<!-- <li class="cart-product-tax">
+						<p>Product Tax:</p>
+						<span>
+							<b><span id="cart-product-tax" data-tax=""><?php ?></span>%</b>
+						</span>
+					</li> -->
+					<li class="cart-Preparation">
+						<p>Preparation Cost:</p>
+						<span>
+							<b>$<span name="cart-preparation" id="cart-preparation">
+									<?php echo $preparation_cost = $preparation['preparation_cost'] = $this->config->item('preparation_cost'); ?>
+								</span></b>
+						</span>
+					</li>
+					<li class="cart-packaging">
+						<p>Packaging Cost:</p>
+						<span>
+							<b>$<span name="cart-packaging" id="cart-packaging">
+									<?php echo $packaging_cost = $packaging['packaging_cost'] = $this->config->item('packaging_cost'); ?>
+								</span></b>
+						</span>
+					</li>
+					<li class="cart-subtotal">
+						<p>Total:</p>
+						<span>
+							<b>$<span name="cart-total" id="cart-total">
+									<?php echo $total_price + $preparation_cost + $packaging_cost; ?>
+								</span></b>
+						</span>
+					</li>
+				</ul>
+				<input type="hidden" name="cart_total1" id="hdn_order_amount"
+					value="<?php echo $total_price + $preparation_cost + $packaging_cost; ?>">
+				<input type="hidden" name="cart_total" id="cart_total"
+					value="<?php echo $total_price + $preparation_cost + $packaging_cost; ?>">
+				<input type="hidden" name="preparation_cost" id="cart_preparation"
+					value="<?php echo $preparation_cost = $preparation['preparation_cost'] = $this->config->item('preparation_cost'); ?>">
+				<input type="hidden" name="packaging_cost" id="cart_packaging"
+					value="<?php echo $packaging_cost = $packaging['packaging_cost'] = $this->config->item('packaging_cost'); ?>">
+				<input type="hidden" name="state_tax" id="state_tax">
+				<input type="hidden" name="hdn_tip_amount" id="hdn_tip_amount" value="">
+				<!--<input type="hidden" name="shippping_state" id="shipping_state_id">
+				<input type="hidden" name="billing_state" id="billing_state_id">-->
+				<input type="hidden" name="discount_amount" id="dis_count_amount">
+				<input type="hidden" name="discount_id" id="discount_id">
+				<!-- <?php //if (count($this->cart->contents()) > 0) {
+				
+				//foreach ($this->cart->contents() as $items) {
+				?>
+						<?php //if ($items['product_tax'] == 0) {
+						//}	
+						?> -->
+				<input type="hidden" name="product_tax" id="product_tax">
+				<!-- <script></script>
+					<?php //} 
+					?>
+				<?php //} 
+				?> -->
+				<!-- <input type="hidden" name="state_tax" id="cart-tax"> -->
+				<p>
+					<b>Note: </b>Orders placed before 3:00PM, will be delivered same day between 5:00 PM - 9:00 PM.
+					Orders placed after 3:00PM, will be delivered next day 5:00 PM - 9:00 PM
+				</p>
+				<?php
+				if ($_COOKIE['valid_zipcode']) {
+					if ($this->cart->total() > 0) { ?>
+						<button type="submit" onclick="return validateForm()" class="vraj-btn" name="submit" id="submit"
+							value="Processed to Pay">Proceed to Pay</button>
+						<?php
+					}
+				}
+				?>
+			</div>
+		</div>
+	</div>
+</section>
+</form>
+<?php require_once('common/common_js.php'); ?>
+<?php require_once('common/footer.php'); ?>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script>
+function RemoveTip() {
+	$("#tip").html(0);
+	$("#tip_amount").val(0);
+	$("#hdn_tip_amount").val(0);
+	$("#tip_amount").hide();
+	$("#add_tip_button").hide();
+	$("#tip_remove_button").hide();
+	$("#linkRemoveTip").hide();
+	
+	var amount = $("#tip_amount").val();
+	var tip = $("#tip").text();
+	var sub_total = $("#subtotal").text();
+	var total_amount = (parseFloat(sub_total.replace('$', '')) + parseFloat(amount) + parseFloat(<?php echo $preparation_cost + $packaging_cost; ?>)).toFixed(2);
+	if(amount>0)
+	{
+		var orginal_amount = parseFloat(sub_total);
+	}
+	else
+	{
+		var orginal_amount = parseFloat(sub_total.replace('$', ''));
+	}
+	
+	if(amount>0)
+	{
+		var total = (parseFloat(orginal_amount) + parseFloat(amount) + parseFloat(<?php echo $preparation_cost + $packaging_cost; ?>)).toFixed(2);
+	}
+	else
+	{
+		var total = (parseFloat(orginal_amount) + parseFloat(amount.replace('$', '')) + parseFloat(<?php echo $preparation_cost + $packaging_cost; ?>)).toFixed(2);
+	}
+	$("#cart-total").html(parseFloat(total));
+	$("#hdn_order_amount").val(parseFloat(total));
+	
+	var sub_total = $("#subtotal").text();
+	var total = (parseFloat(sub_total.replace('$', '')) + parseFloat(amount) + parseFloat(<?php echo $preparation_cost + $packaging_cost; ?>)).toFixed(2);
+	
+	var discount = sessionStorage.getItem("discount_amount");
+	var discount_amount = 0;
+	if (discount != null && discount != '' && discount != undefined) {
+	var discount_amount = parseFloat(discount);
+	}
+	total = total - discount_amount;
+	
+	$("#cart-total").html(parseFloat(total).toFixed(2));
+	$("#cart_total").val(parseFloat(total).toFixed(2));
+	
+}
+function addCustomTip() {
+	$("#tip").html(0);
+	$("#hdn_tip_amount").val(0);
+	$("#tip_amount").show();
+	$("#add_tip_button").show();
+	$("#tip_remove_button").hide();
+}
+function AddCustomTipAmountInTotal()
+{
+	$("#tip_error_message").hide();
+	var amount = $("#tip_amount").val();
+	console.log(" tip_amount amount"+amount);
+	if (amount > 0) {
+		
+	$("#add_tip_button").hide();
+	//alert(amount); cart-total
+	$("#hdn_tip_amount").val(amount);
+	var tip = $("#tip").text();
+	var sub_total = $("#subtotal").text();
+	console.log("sub_total"+sub_total);
+	var total_amount = (parseFloat(sub_total.replace('$', '')) + parseFloat(amount) + parseFloat(<?php echo $preparation_cost + $packaging_cost; ?>)).toFixed(2);
+	$(".cart-tip").show();
+	$("#tip").html(amount);
+	console.log("tip amount"+amount);
+	console.log("tip"+tip);
+	console.log("gGgg"+total_amount);
+	$("#cart-total").html(total_amount);
+	console.log("total_amount"+total_amount);
+	if (tip != "" && tip != null && tip != 'custom')
+	{
+		$("#tip").html(amount);
+	console.log("amount:"+amount);
+		if(sub_total>0)
+		{
+	console.log("in if:"+sub_total);
+			var orginal_amount = parseFloat(sub_total);
+		}
+		else
+		{
+	console.log("in else:"+sub_total);
+			var orginal_amount = parseFloat(sub_total.replace('$', ''));
+		}
+		
+		if(amount>0)
+		{
+	console.log("in orginal_amount:"+orginal_amount);
+	console.log("in if:"+amount);
+			var total = (parseFloat(orginal_amount) + parseFloat(amount) + parseFloat(<?php echo $preparation_cost + $packaging_cost; ?>)).toFixed(2);
+		}
+		else
+		{
+	console.log("in else:"+amount);
+			var total = (parseFloat(orginal_amount) + parseFloat(amount.replace('$', '')) + parseFloat(<?php echo $preparation_cost + $packaging_cost; ?>)).toFixed(2);
+		}
+	console.log("final total:"+total);
+		$("#tip_remove_button").show();
+		$("#cart-total").html(parseFloat(total));
+		$("#cart_total").val(parseFloat(total));
+		$("#hdn_order_amount").val(parseFloat(total));
+	}
+	}
+	else
+	{
+		amount = 0;
+		$("#tip_error_message").show();
+		return false;
+	}
+}
+
+	$(document).ready(function () {
+		
+	
+	
+		<?php
+		$preparation_cost = $preparation['preparation_cost'] = $this->config->item('preparation_cost');
+		$packaging_cost = $packaging['packaging_cost'] = $this->config->item('packaging_cost'); ?>
+		$(".cart-tip").hide();
+		$('.extra_delivery_charge').hide();
+		var discount = sessionStorage.getItem("discount_amount");
+		var order_amount_session = sessionStorage.getItem("order_amount");
+		var discount_id = sessionStorage.getItem("coupon_id");
+		if (order_amount_session != null) {
+			var order_amount = order_amount_session.replace(/,/g, '');
+		} else {
+			var order_amount = order_amount_session;
+		}
+		var coupon_code = sessionStorage.getItem("coupon_code");
+		if (discount != "" && discount != null) {
+			$('#dis_count_amount').val(discount);
+			$('#discount_id').val(discount_id);
+			$("#discount").html('-$' + discount);
+		} else {
+			$("#discount").html('0.00');
+		}
+		if (order_amount != "" && order_amount != null) {
+			$("#cart-total").html((parseFloat(order_amount) + parseFloat(<?php echo $preparation_cost + $packaging_cost; ?>)).toFixed(2));
+			$("#hdn_order_amount").val((parseFloat(order_amount) + parseFloat(<?php echo $preparation_cost + $packaging_cost; ?>)).toFixed(2));
+		} else {
+			$("#cart-total").html(<?php echo number_format($total_price + $preparation_cost + $packaging_cost, 2, '.', ''); ?>);
+			$("#hdn_order_amount").val(<?php echo number_format($total_price + $preparation_cost + $packaging_cost, 2, '.', ''); ?>);
+		}
+		if (coupon_code != "" && coupon_code != null) {
+			$("#apply_coupon_code").html(coupon_code);
+		} else {
+			$("#coupon_detail").hide();
+		}
+		$(document).on('change', '.chk_delivery_type', function () {
+			if (this.value == 'two_hour') {
+				$(".extra_delivery_charge").show();
+				get_delivery_extra_charge(api_url_prefix);
+			} else {
+				$('.extra_delivery_charge').hide();
+			}
+		});
+		
+		$(document).on('click', '.order_tip', function () {
+			$("#add_tip_button").hide();
+			// Remove previously selected tip
+			$("#tip_amount").hide();
+			var tip = parseFloat($("#tip").text().replace('$', ''));
+			var sub_total = parseFloat($("#hdn_order_amount").val());
+			var total = sub_total - tip;
+			$("#cart-total").html(parseFloat(total).toFixed(2));
+			// $("#hdn_order_amount").val(parseFloat(total));
+			$("#tip").html('');
+				$("#tip_remove_button").show();
+			// tip add on select of state
+			// Add new tip
+			var amount = $(this).data('tip');
+			console.log(amount);
+			$("#hdn_tip_amount").val(amount);
+			$(".cart-tip").show();
+			var tip = $("#tip").text();
+			console.log(tip);
+			if (tip != " " && tip != null) {
+				var sub_total = $("#hdn_order_amount").val();
+				console.log(sub_total);
+				var total = (parseFloat(sub_total) + parseFloat(amount));
+				console.log(total);
+				$("#cart-total").html(parseFloat(total).toFixed(2));
+				// $("#hdn_order_amount").val(parseFloat(total));
+				$("#cart_total").val(parseFloat(total));
+				$("#tip").html(amount);
+			} else {
+				//$("#tip").html('$' + amount);
+				$("#tip").html(amount);
+				var sub_total = $("#subtotal").text();
+				// var sub_total = $("#cart_total").val();
+				var total = (parseFloat(sub_total.replace('$', '')) + parseFloat(amount) + parseFloat(<?php echo $preparation_cost + $packaging_cost; ?>)).toFixed(2);
+				$("#cart-total").html(parseFloat(total).toFixed(2));
+				// $("#hdn_order_amount").val(parseFloat(total));
+				$("#cart_total").val(parseFloat(total).toFixed(2));
+			}
+
+			if (tip == '0') {
+				var sub_total = $("#cart_total").val();
+				console.log(sub_total);
+				// var original_total = parseFloat(sub_total.replace('$', '')) - parseFloat(tip.replace('$', ''));
+				var total = (parseFloat(sub_total) + parseFloat(amount));
+				console.log(total);
+				$("#cart-total").html(parseFloat(total));
+				$("#hdn_order_amount").val(parseFloat(total));
+				$("#cart_total").val(parseFloat(total));
+				$("#tip").html(amount);
+			}
+		});
+		var current = new Date();
+		var hr = current.getHours();
+		var min = current.getMinutes();
+		if (hr > 14) {
+			$("#delivery_type_hour").hide();
+			$("#delivery_after_hr").hide();
+		}
+	});
+</script>
+<script>
+	function ManageShipingAddressBox(obj) {
+		if (obj.checked) {
+			$("#ship_to_different_address").val('Yes');
+			$("#shipingAddressBox").show();
+		} else {
+			$("#ship_to_different_address").val('No');
+			$("#shipingAddressBox").hide();
+		}
+	}
+	$(document).ready(function () {
+		$('#autofill-btn').click(function () {
+			var billingStreetAddress = $('#street_address').val();
+			var billingApartment = $('#apartment').val();
+			var billingCity = $('#city').val();
+			var billingState = $('#state').val();
+			var billingZipCode = $('#zip_code').val();
+			var billingPhone = $('#phone').val();
+			$('#shiping_street_address').val(billingStreetAddress);
+			$('#shiping_apartment').val(billingApartment);
+			$('#shiping_city').val(billingCity);
+			//$('#shiping_state').val(billingState);
+			$('#shiping_zip_code').val(billingZipCode);
+			$('#shiping_phone').val(billingPhone);
+			var billingState = $('#state').val().split('|');
+			console.log("selectedstate_id"+$('#state').val());
+			var selectedValue = billingState[0];
+			var selectedstate_id = billingState[1];
+			
+			//if(selectedstate_id === undefined){selectedstate_id = $('#state').val();}
+			console.log("selectedstate_id"+selectedstate_id);
+			$('#shiping_state').val(selectedstate_id);
+			return false;
+		});
+	});
+
+	document.getElementById("submit").addEventListener("click", function (event) {
+		var firstName = document.getElementById("first_name").value.trim();
+		var lastName = document.getElementById("last_name").value.trim();
+		var streetAddress = document.getElementById("street_address").value.trim();
+		var city = document.getElementById("city").value.trim();
+		var state = document.getElementById("state").value.trim();
+		var zip_code = document.getElementById("zip_code").value.trim();
+		var phone = document.getElementById("phone").value.trim();
+		var email = document.getElementById("email").value.trim();
+		var shiping_street_address = document.getElementById("shiping_street_address").value.trim();
+		var shiping_apartment = document.getElementById("shiping_apartment").value.trim();
+		var shiping_city = document.getElementById("shiping_city").value.trim();
+		var shiping_state = document.getElementById("shiping_state").value.trim();
+		var shiping_zip_code = document.getElementById("shiping_zip_code").value.trim();
+		var shiping_phone = document.getElementById("shiping_phone").value.trim();
+		var substitute = document.getElementsByName("refund_for_unavailable");
+		var policyError = document.getElementById("replace-policy-error");
+		var isValid = false;
+		// var required_policy = document.getElementById("required_policy").value.trim();
+		if (firstName === "") {
+			document.getElementById("first-name-error").textContent = "Please enter your first name.";
+			event.preventDefault();
+		} else {
+			document.getElementById("first-name-error").textContent = "";
+		}
+		if (lastName === "") {
+			document.getElementById("last-name-error").textContent = "Please enter your last name.";
+			event.preventDefault();
+		} else {
+			document.getElementById("last-name-error").textContent = "";
+		}
+		if (streetAddress === "") {
+			document.getElementById("street-address-error").textContent = "Please enter your street address.";
+			event.preventDefault();
+		} else {
+			document.getElementById("street-address-error").textContent = "";
+		}
+		if (city === "") {
+			document.getElementById("city-error").textContent = "Please enter your City.";
+			event.preventDefault();
+		} else {
+			document.getElementById("city-error").textContent = "";
+		}
+		if (state === "") {
+			document.getElementById("state-error").textContent = "Please enter your state.";
+			event.preventDefault();
+		} else {
+			document.getElementById("state-error").textContent = "";
+		}
+		if (zip_code === "") {
+			document.getElementById("zip-code-error").textContent = "Please enter your zip code.";
+			event.preventDefault();
+		} else {
+			document.getElementById("zip-code-error").textContent = "";
+		}
+		if (phone === "") {
+			document.getElementById("phone-error").textContent = "Please enter your Phone number.";
+			event.preventDefault();
+		} else {
+			document.getElementById("phone-error").textContent = "";
+		}
+		if (email === "") {
+			document.getElementById("email-address-error").textContent = "Please enter your email.";
+			event.preventDefault();
+		} else {
+			document.getElementById("email-address-error").textContent = "";
+		}
+		if (shiping_street_address === "") {
+			document.getElementById("shiping-street-address-error").textContent = "Please enter your shipping street address.";
+			event.preventDefault();
+		} else {
+			document.getElementById("shiping-street-address-error").textContent = "";
+		}
+		if (shiping_apartment === "") {
+			document.getElementById("shiping-apartment-address-error").textContent = "Please enter your shipping street apartment.";
+			event.preventDefault();
+		} else {
+			document.getElementById("shiping-apartment-address-error").textContent = "";
+		}
+		if (shiping_city === "") {
+			document.getElementById("shiping-city-error").textContent = "Please enter your shipping city.";
+			event.preventDefault();
+		} else {
+			document.getElementById("shiping-city-error").textContent = "";
+		}
+		if (shiping_state === "") {
+			document.getElementById("shiping-state-error").textContent = "Please enter your shipping state.";
+			event.preventDefault();
+		} else {
+			document.getElementById("shiping-state-error").textContent = "";
+		}
+		if (shiping_zip_code === "") {
+			document.getElementById("zip-error").textContent = "Please enter your shipping zip code.";
+			event.preventDefault();
+		} else {
+			document.getElementById("zip-error").textContent = "";
+		}
+		if (shiping_phone === "") {
+			document.getElementById("shiping-phone-error").textContent = "Please enter your shipping Mobile number.";
+			event.preventDefault();
+		} else {
+			document.getElementById("shiping-phone-error").textContent = "";
+		}
+	})
+	function validateForm() {
+		var substitute = document.getElementsByName("refund_for_unavailable");
+		var policyError = document.getElementById("replace-policy-error");
+		var isValid = false;
+		for (var i = 0; i < substitute.length; i++) {
+			if (substitute[i].checked) {
+				isValid = true;
+				break;
+			}
+		}
+		if (!isValid) {
+			policyError.innerHTML = "Please select an option.";
+			alert("Please fill out all required fields or Select an option for replacement policy.");
+			return false;
+		} else {
+			policyError.innerHTML = "";
+			return true;
+		}
+	}
+
+	var cart_contents = '<?php echo json_encode($this->cart->contents()); ?>';
+	$(document).ready(function () {
+		var get_state_from_cookie = Cookies.get('state');
+		if (get_state_from_cookie != null && get_state_from_cookie != '' && get_state_from_cookie != undefined) {
+			// $('#state').val(get_state_from_cookie);
+			//commented by bbn $('#state').find('option:selected').val(get_state_from_cookie);
+		}
+		if (sessionStorage.getItem('coupon_id') != null && sessionStorage.getItem('coupon_id') != '' && sessionStorage.getItem('coupon_id') != undefined) {
+			$('a#cart-details').hide();
+		} else {
+			$('a#cart-details').show();
+		}
+		$(".cart-tax").hide();
+		$(".cart-product-tax").hide();
+		// console.log(cart_contents);
+		$('#state').on('change', function () {
+			taxCalc();
+		});
+
+		$("#shiping_state").on('change', function () {
+			var selectedOption = $(this).val().split('|');
+			var selectedValue = selectedOption[0];
+			var selectedstate_id = selectedOption[1];
+			//if(selectedstate_id === undefined){selectedstate_id = $(this).val();}
+			console.log(selectedstate_id);
+			$("#shiping_state").removeAttr("data-tax");
+			jQuery("#shiping_state").attr("data-tax", selectedValue);
+			$("#billing_state_id").val(selectedstate_id);
+		});
+		taxCalc();
+	});
+
+		function taxCalc() {
+			
+			<?php
+			$preparation_cost = $preparation['preparation_cost'] = $this->config->item('preparation_cost');
+			$packaging_cost = $packaging['packaging_cost'] = $this->config->item('packaging_cost');
+			?>
+			$(".cart-tax").show();
+			var selectedOption = $("#state").val().split('|');
+			var selectedValue = selectedOption[0];
+			console.log("selectedValue"+selectedValue);
+			var selectedstate_id = selectedOption[1];
+			var taxable_products_amount = <?php echo $taxable_products_amount ?>;
+			console.log("taxable_products_amount"+taxable_products_amount);
+			var tax_add = <?php echo $tax_add; ?>;
+			var tax_product = (selectedValue / 100) * <?php echo $taxable_products_amount ?>;
+			// jQuery("#product-tax").text(tax_product);
+			// jQuery("#cart-product-tax").text(selectedValue);
+			$("#state").removeAttr("data-tax");
+			$("#state").attr("data-tax", selectedValue);
+			var sub_total = <?php echo number_format($total_price + $preparation_cost + $packaging_cost, 2, '.', '') ?>;
+			// $("#hdn_order_amount").val();
+			var price = (selectedValue / 100) * taxable_products_amount;
+			console.log("price"+price);
+			console.log("sub_total"+sub_total);
+			var total_tax_sub = (parseFloat(sub_total) + parseFloat(price)).toFixed(2);
+			$("#cart-tax").text(parseFloat(price).toFixed(2));
+			
+			$("#cart-total").html(parseFloat(total_tax_sub));
+			$("#hdn_order_amount").val(parseFloat(total_tax_sub));
+			$("#cart_total").val(parseFloat(total_tax_sub));
+			$("#state_tax").val(parseFloat(price));
+			$("#product_name").val(parseFloat(price));
+			$("#shipping_state_id").val(selectedstate_id);
+			var tip = $("#tip").text();
+			//if discount is applied then calculate discount on total amount
+			var discount = sessionStorage.getItem("discount_amount");
+			var order_amount_session = sessionStorage.getItem("order_amount");
+			if (order_amount_session != null) {
+				var order_amount = order_amount_session.replace(/,/g, '');
+			} else {
+				var order_amount = order_amount_session;
+			}
+			var coupon_code = sessionStorage.getItem("coupon_code");
+			if (discount != null && discount != '' && discount != undefined) {
+				var discount_amount = parseFloat(discount);
+				var total_amount = total_tax_sub;
+				var total_amount_after_discount = total_amount - discount_amount;
+				var total_amount_after_discount = total_amount_after_discount.toFixed(2);
+				$("#cart-total").html(parseFloat(total_amount_after_discount));
+				$("#hdn_order_amount").val(parseFloat(total_amount_after_discount));
+				$("#cart_total").val(parseFloat(total_amount_after_discount));
+				$("#discount_amount").val(parseFloat(discount_amount));
+				$("#coupon_code").val(coupon_code);
+			}
+			if (tip != null && tip != '' && tip != undefined && discount != null && discount != '' && discount != undefined) {
+				$("#cart_total").val(parseFloat(total_amount_after_discount) + parseFloat(tip));
+				$("#cart-total").html(parseFloat(total_amount_after_discount) + parseFloat(tip));
+			}
+			if (tip != null && tip != '' && tip != undefined && discount == null && discount == '' && discount == undefined) {
+				$("#cart_total").val(parseFloat(total_tax_sub) + parseFloat(tip));
+				$("#cart-total").html(parseFloat(total_tax_sub) + parseFloat(tip));
+			}
+			// product_name
+			if (tax_add == 1) {
+				var product_tax = $("#product_tax").val(parseFloat(price));
+			} else {
+				var product_tax = $("#product_tax").val(0);
+			}
+			if (product_tax == 0 || product_tax == null || product_tax == "") {
+				$(".cart-product-tax").hide();
+			} else {
+				$(".cart-product-tax").show();
+			}
+			//  console.log(selectedState);
+			// Add your onclick function code here, using the selectedState variable
+			if (selectedValue == "") {
+				$(".cart-tax").hide();
+				$(".cart-product-tax").hide();
+			}
+			UpdateCartTax(selectedValue);
+		}
+		function UpdateCartTax(taxPercentage) {
+			if (taxPercentage == "") {
+				taxPercentage = 0;
+			}
+			var cartObject = jQuery.parseJSON(cart_contents);
+			var counter = 1;
+			$.each(cartObject, function (i) {
+				console.log(i);
+				var subtotal = cartObject[i].subtotal;
+				$("#product-tax-" + counter).text("$" + (taxPercentage * subtotal / 100).toFixed(2));
+				subtotal = (parseFloat(subtotal) + (parseFloat(taxPercentage) * parseFloat(subtotal) / 100)).toFixed(2);
+				$("#product-price-" + counter++).text("$" + subtotal);
+			});
+		}
+		
+	function get_delivery_extra_charge(api_url_prefix) {
+		var json_request = {
+			"oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+			"configuration_key": "'two_hour_delivery_charge'"
+		};
+		$.ajax({
+			"type": "POST",
+			"url": api_url_prefix + 'get-configurations-by-key',
+			"data": JSON.stringify(json_request),
+			"dataType": "JSON",
+			"success": function (response) {
+				$("#extra_delivery_charge").html('$' + response.data[0].configuration_value);
+				var sub_total = $("#cart-total").text();
+				var delivery_charge = $("#extra_delivery_charge").text();
+				var total = parseFloat(sub_total.replace('$', '')) + parseFloat(delivery_charge.replace('$', '')) + parseFloat(amount) + parseFloat($preparation_cost) + parseFloat($packaging_cost);
+				$("#cart-total").html(parseFloat(total));
+				$("#hdn_order_amount").val(parseFloat(total));
+				//  $("#section-content").html(response.data[0].cms_description);
+			},
+			"error": function (response) {
+				console.log(response.errors);
+			}
+		});
+	}
+	function isNumber(evt) {
+		evt = (evt) ? evt : window.event;
+		var charCode = (evt.which) ? evt.which : evt.keyCode;
+		if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+			return false;
+		}
+		return true;
+	}
+</script>

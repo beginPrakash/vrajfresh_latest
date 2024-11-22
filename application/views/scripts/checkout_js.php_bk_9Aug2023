@@ -1,0 +1,454 @@
+<script>
+/***********************************************************************************************************
+										TIP FUNCTIONS START
+/***********************************************************************************************************/
+function addTipAmount(tip_amount) {
+	var sub_total = parseFloat($("#hdn_order_amount").val());
+	console.log("tip_amount:" + tip_amount);
+	console.log("sub_total:" + sub_total);
+	if (tip_amount > 0) {
+		console.log('in ifffffffffffffffffffffff');
+		var total = parseFloat(sub_total + tip_amount).toFixed(2);
+		console.log("total:" + total);
+		$("#tip_remove_button").show();
+		$(".cart-tip").show();
+		$("#cart-total").html(total);
+		$("#tip").html(tip_amount);
+		$("#hdn_order_amount").val(parseFloat(total - tip_amount).toFixed(2));
+		$("#cart_total").val(parseFloat(total));
+		$("#hdn_tip_amount").val(tip_amount);
+	} else {
+		console.log('in elseeeeeeeeeeeeeeee');
+		$(".cart-tip").hide();
+		$(".tip_remove_button").hide();
+		$("#cart-total").html(sub_total);
+		$("#tip").html("$0");
+		$("#hdn_order_amount").val(parseFloat(sub_total));
+		$("#cart_total").val(parseFloat(sub_total));
+		$("#hdn_tip_amount").val(0);
+	}
+}
+function addCustomTip() {
+	removeTipAmount(0);
+    $("#tip_amount").show();
+    $("#add_tip_button").show();
+}
+function addCustomTipAmount() {
+    $("#tip_error_message").hide();
+    var tip_amount = parseFloat($("#tip_amount").val());
+    console.log("addCustomTipAmount tip_amount:" + tip_amount);
+    if (tip_amount > 0) {
+        $("#add_tip_button").hide();
+        addTipAmount(tip_amount);
+    } else {
+        addTipAmount(0);
+        $("#tip_error_message").show();
+        return false;
+    }
+}
+function removeTipAmount() {
+    var tip_amount = 0;
+    $("#tip").html(tip_amount);
+    $("#tip_amount").val(tip_amount);
+    $("#hdn_tip_amount").val(tip_amount);
+    $("#tip_amount").hide();
+    $("#add_tip_button").hide();
+    $("#tip_remove_button").hide();
+    $("#linkRemoveTip").hide();
+    var tip = $("#tip").text();
+    var sub_total = $("#hdn_subtotal").val();
+    var total = $("#hdn_order_amount").val();//(parseFloat(sub_total) + parseFloat( <?php echo $preparation_cost + $packaging_cost; ?> )).toFixed(2);
+    var cart_tax = $("#state_tax").val();
+    var discount = sessionStorage.getItem("discount_amount");
+    var discount_amount = 0;
+    if (discount != null && discount != '' && discount != undefined) {
+        var discount_amount = parseFloat(discount);
+    }
+    var cart_net_total = parseFloat(total + cart_tax).toFixed(2);
+    $("#hdn_order_amount").val(cart_net_total);
+    $("#cart-total").html(cart_net_total);
+    $("#cart_total").val(cart_net_total);
+}
+$(document).on('click', '.order_tip', function() {
+    $("#add_tip_button").hide();
+    // Remove previously selected tip
+    $("#tip_amount").hide();
+    $("#hdn_tip_amount").val(0);
+    // Add new tip
+    var tip_amount = $(this).data('tip');
+    addTipAmount(tip_amount);
+});
+/***********************************************************************************************************
+										TIP FUNCTIONS END
+/***********************************************************************************************************/
+
+function ManageShipingAddressBox(obj) {
+    if (obj.checked) {
+        $("#ship_to_different_address").val('Yes');
+        $("#shipingAddressBox").show();
+    } else {
+        $("#ship_to_different_address").val('No');
+        $("#shipingAddressBox").hide();
+    }
+}
+	
+	
+document.getElementById("submit").addEventListener("click", function(event) {
+    var firstName = document.getElementById("first_name").value.trim();
+    var lastName = document.getElementById("last_name").value.trim();
+    var streetAddress = document.getElementById("street_address").value.trim();
+    var city = document.getElementById("city").value.trim();
+    var state = document.getElementById("state").value.trim();
+    var zip_code = document.getElementById("zip_code").value.trim();
+    var phone = document.getElementById("phone").value.trim();
+    var email = document.getElementById("email").value.trim();
+    var shiping_street_address = document.getElementById("shiping_street_address").value.trim();
+    var shiping_apartment = document.getElementById("shiping_apartment").value.trim();
+    var shiping_city = document.getElementById("shiping_city").value.trim();
+    var shiping_state = document.getElementById("shiping_state").value.trim();
+    var shiping_zip_code = document.getElementById("shiping_zip_code").value.trim();
+    var shiping_phone = document.getElementById("shiping_phone").value.trim();
+    var substitute = document.getElementsByName("refund_for_unavailable");
+    var policyError = document.getElementById("replace-policy-error");
+    var isValid = false;
+    // var required_policy = document.getElementById("required_policy").value.trim();
+    if (firstName === "") {
+        document.getElementById("first-name-error").textContent = "Please enter your first name.";
+        event.preventDefault();
+    } else {
+        document.getElementById("first-name-error").textContent = "";
+    }
+    if (lastName === "") {
+        document.getElementById("last-name-error").textContent = "Please enter your last name.";
+        event.preventDefault();
+    } else {
+        document.getElementById("last-name-error").textContent = "";
+    }
+    if (streetAddress === "") {
+        document.getElementById("street-address-error").textContent = "Please enter your street address.";
+        event.preventDefault();
+    } else {
+        document.getElementById("street-address-error").textContent = "";
+    }
+    if (city === "") {
+        document.getElementById("city-error").textContent = "Please enter your City.";
+        event.preventDefault();
+    } else {
+        document.getElementById("city-error").textContent = "";
+    }
+    if (state === "") {
+        document.getElementById("state-error").textContent = "Please enter your state.";
+        event.preventDefault();
+    } else {
+        document.getElementById("state-error").textContent = "";
+    }
+    if (zip_code === "") {
+        document.getElementById("zip-code-error").textContent = "Please enter your zip code.";
+        event.preventDefault();
+    } else {
+        document.getElementById("zip-code-error").textContent = "";
+    }
+    if (phone === "") {
+        document.getElementById("phone-error").textContent = "Please enter your Phone number.";
+        event.preventDefault();
+    } else {
+        document.getElementById("phone-error").textContent = "";
+    }
+    if (email === "") {
+        document.getElementById("email-address-error").textContent = "Please enter your email.";
+        event.preventDefault();
+    } else {
+        document.getElementById("email-address-error").textContent = "";
+    }
+    if (shiping_street_address === "") {
+        document.getElementById("shiping-street-address-error").textContent = "Please enter your shipping street address.";
+        event.preventDefault();
+    } else {
+        document.getElementById("shiping-street-address-error").textContent = "";
+    }
+    if (shiping_apartment === "") {
+        document.getElementById("shiping-apartment-address-error").textContent = "Please enter your shipping street apartment.";
+        event.preventDefault();
+    } else {
+        document.getElementById("shiping-apartment-address-error").textContent = "";
+    }
+    if (shiping_city === "") {
+        document.getElementById("shiping-city-error").textContent = "Please enter your shipping city.";
+        event.preventDefault();
+    } else {
+        document.getElementById("shiping-city-error").textContent = "";
+    }
+    if (shiping_state === "") {
+        document.getElementById("shiping-state-error").textContent = "Please enter your shipping state.";
+        event.preventDefault();
+    } else {
+        document.getElementById("shiping-state-error").textContent = "";
+    }
+    if (shiping_zip_code === "") {
+        document.getElementById("zip-error").textContent = "Please enter your shipping zip code.";
+        event.preventDefault();
+    } else {
+        document.getElementById("zip-error").textContent = "";
+    }
+    if (shiping_phone === "") {
+        document.getElementById("shiping-phone-error").textContent = "Please enter your shipping Mobile number.";
+        event.preventDefault();
+    } else {
+        document.getElementById("shiping-phone-error").textContent = "";
+    }
+})
+function validateForm() {
+    var substitute = document.getElementsByName("refund_for_unavailable");
+    var policyError = document.getElementById("replace-policy-error");
+    var isValid = false;
+    for (var i = 0; i < substitute.length; i++) {
+        if (substitute[i].checked) {
+            isValid = true;
+            break;
+        }
+    }
+    if (!isValid) {
+        policyError.innerHTML = "Please select an option.";
+        alert("Please fill out all required fields or Select an option for replacement policy.");
+        return false;
+    } else {
+        policyError.innerHTML = "";
+        return true;
+    }
+}
+var cart_contents = '<?php echo json_encode($this->cart->contents()); ?>';
+
+function taxCalc() {
+console.log('taxCalc calling');
+    <?php
+    $preparation_cost = $preparation['preparation_cost'] = $this->config-> item('preparation_cost');
+    $packaging_cost = $packaging['packaging_cost'] = $this->config-> item('packaging_cost'); 
+	?>
+    $(".cart-tax").show();
+    var selectedOption = $("#state").val().split('|');
+    var selectedValue = selectedOption[0];
+    console.log("selectedValue" + selectedValue);
+    var selectedstate_id = selectedOption[1];
+    var taxable_products_amount = <?php echo $taxable_products_amount ?>;
+    console.log("taxable_products_amount" + taxable_products_amount);
+    var tax_add = <?php echo $tax_add; ?>;
+    var tax_product = (selectedValue / 100) * <?php echo $taxable_products_amount ?>;
+   
+    $("#state").removeAttr("data-tax");
+    $("#state").attr("data-tax", selectedValue);
+    var sub_total = <?php echo number_format($total_price + $preparation_cost + $packaging_cost, 2, '.', '') ?>;
+    // $("#hdn_order_amount").val();
+    var price = (selectedValue / 100) * taxable_products_amount;
+    console.log("price" + price);
+    console.log("sub_total" + sub_total);
+    var total_tax_sub = (parseFloat(sub_total) + parseFloat(price)).toFixed(2);
+    $("#cart-tax").text(parseFloat(price).toFixed(2));
+    $("#cart-total").html(parseFloat(total_tax_sub));
+    $("#hdn_order_amount").val(parseFloat(total_tax_sub));
+    $("#cart_total").val(parseFloat(total_tax_sub));
+    $("#state_tax").val(parseFloat(selectedValue));
+    $("#product_name").val(parseFloat(price));
+    $("#shipping_state_id").val(selectedstate_id);
+    var tip = $("#tip").text();
+    //if discount is applied then calculate discount on total amount
+    var discount = sessionStorage.getItem("discount_amount");
+    var order_amount_session = sessionStorage.getItem("order_amount");
+    if (order_amount_session != null) {
+        var order_amount = order_amount_session.replace(/,/g, '');
+    } else {
+        var order_amount = order_amount_session;
+    }
+    var coupon_code = sessionStorage.getItem("coupon_code");
+    if (discount != null && discount != '' && discount != undefined) {
+        var discount_amount = parseFloat(discount);
+        var total_amount = total_tax_sub;
+        var total_amount_after_discount = total_amount - discount_amount;
+        var total_amount_after_discount = total_amount_after_discount.toFixed(2);
+        $("#cart-total").html(parseFloat(total_amount_after_discount));
+        $("#hdn_order_amount").val(parseFloat(total_amount_after_discount));
+        $("#cart_total").val(parseFloat(total_amount_after_discount));
+        $("#discount_amount").val(parseFloat(discount_amount));
+        $("#coupon_code").val(coupon_code);
+    }
+    if (tip != null && tip != '' && tip != undefined && discount != null && discount != '' && discount != undefined) {
+        $("#cart_total").val(parseFloat(total_amount_after_discount) + parseFloat(tip));
+        $("#cart-total").html(parseFloat(total_amount_after_discount) + parseFloat(tip));
+    }
+    if (tip != null && tip != '' && tip != undefined && discount == null && discount == '' && discount == undefined) {
+        $("#cart_total").val(parseFloat(total_tax_sub) + parseFloat(tip));
+        $("#cart-total").html(parseFloat(total_tax_sub) + parseFloat(tip));
+    }
+    // product_name
+    if (tax_add == 1) {
+        var product_tax = $("#product_tax").val(parseFloat(price).toFixed(2));
+    } else {
+        var product_tax = $("#product_tax").val(0);
+    }
+    if (product_tax == 0 || product_tax == null || product_tax == "") {
+        $(".cart-product-tax").hide();
+    } else {
+        $(".cart-product-tax").show();
+    }
+    //  console.log(selectedState);
+    // Add your onclick function code here, using the selectedState variable
+    if (selectedValue == "") {
+        $(".cart-tax").hide();
+        $(".cart-product-tax").hide();
+    }
+    UpdateCartTax(selectedValue);
+}
+function UpdateCartTax(taxPercentage) {
+    if (taxPercentage == "") {
+        taxPercentage = 0;
+    }
+    var cartObject = $.parseJSON(cart_contents);
+    console.log(cartObject);
+    var counter = 1;
+    $.each(cartObject, function(i) {
+        var subtotal = cartObject[i].subtotal;
+        if (cartObject[i].product_tax == 0) {
+            $("#product-tax-" + counter).text("$0.00");
+        } else {
+            $("#product-tax-" + counter).text("$" + (taxPercentage * subtotal / 100).toFixed(2));
+            subtotal = (parseFloat(subtotal) + (parseFloat(taxPercentage) * parseFloat(subtotal) / 100)).toFixed(2);
+        }
+        $("#product-price-" + counter++).text("$" + parseFloat(subtotal).toFixed(2));
+    });
+}
+function get_delivery_extra_charge(api_url_prefix) {
+    var json_request = {
+        "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+        "configuration_key": "'two_hour_delivery_charge'"
+    };
+    $.ajax({
+        "type": "POST",
+        "url": api_url_prefix + 'get-configurations-by-key',
+        "data": JSON.stringify(json_request),
+        "dataType": "JSON",
+        "success": function(response) {
+            $("#extra_delivery_charge").html('$' + response.data[0].configuration_value);
+            var sub_total = $("#cart-total").text();
+            var delivery_charge = $("#extra_delivery_charge").text();
+            var total = parseFloat(sub_total.replace('$', '')) + parseFloat(delivery_charge.replace('$', '')) + parseFloat(amount) + parseFloat($preparation_cost) + parseFloat($packaging_cost);
+            $("#cart-total").html(parseFloat(total));
+            $("#hdn_order_amount").val(parseFloat(total));
+        },
+        "error": function(response) {
+            console.log(response.errors);
+        }
+    });
+}
+function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        return false;
+    }
+    return true;
+} 
+
+$(document).ready(function() {
+    <?php
+    $preparation_cost = $preparation['preparation_cost'] = $this->config-> item('preparation_cost');
+    $packaging_cost = $packaging['packaging_cost'] = $this->config-> item('packaging_cost'); 
+	?>
+    $(".cart-tip").hide();
+    $('.extra_delivery_charge').hide();
+    var discount = sessionStorage.getItem("discount_amount");
+    var order_amount_session = sessionStorage.getItem("order_amount");
+    var discount_id = sessionStorage.getItem("coupon_id");
+    if (order_amount_session != null) {
+        var order_amount = order_amount_session.replace(/,/g, '');
+    } else {
+        var order_amount = order_amount_session;
+    }
+    var coupon_code = sessionStorage.getItem("coupon_code");
+    if (discount != "" && discount != null) {
+        $('#dis_count_amount').val(discount);
+        $('#discount_id').val(discount_id);
+        $("#discount").html('-$' + discount);
+    } else {
+        $("#discount").html('0.00');
+    }
+    if (order_amount != "" && order_amount != null) {
+        $("#cart-total").html((parseFloat(order_amount) + parseFloat( <?php echo $preparation_cost + $packaging_cost; ?>)).toFixed(2));
+        $("#hdn_order_amount").val((parseFloat(order_amount) + parseFloat( <?php echo $preparation_cost + $packaging_cost; ?>)).toFixed(2));
+    } else {
+        $("#cart-total").html( <?php echo number_format($total_price + $preparation_cost + $packaging_cost, 2, '.', ''); ?>);
+        $("#hdn_order_amount").val( <?php echo number_format($total_price + $preparation_cost + $packaging_cost, 2, '.', ''); ?>);
+    }
+    if (coupon_code != "" && coupon_code != null) {
+        $("#apply_coupon_code").html(coupon_code);
+    } else {
+        $("#coupon_detail").hide();
+    }
+    $(document).on('change', '.chk_delivery_type', function() {
+        if (this.value == 'two_hour') {
+            $(".extra_delivery_charge").show();
+            get_delivery_extra_charge(api_url_prefix);
+        } else {
+            $('.extra_delivery_charge').hide();
+        }
+    });
+    var current = new Date();
+    var hr = current.getHours();
+    var min = current.getMinutes();
+    if (hr > 14) {
+        $("#delivery_type_hour").hide();
+        $("#delivery_after_hr").hide();
+    }
+
+    $('#autofill-btn').click(function() {
+        var billingStreetAddress = $('#street_address').val();
+        var billingApartment = $('#apartment').val();
+        var billingCity = $('#city').val();
+        var billingState = $('#state').val();
+        var billingZipCode = $('#zip_code').val();
+        var billingPhone = $('#phone').val();
+        $('#shiping_street_address').val(billingStreetAddress);
+        $('#shiping_apartment').val(billingApartment);
+        $('#shiping_city').val(billingCity);
+        //$('#shiping_state').val(billingState);
+        $('#shiping_zip_code').val(billingZipCode);
+        $('#shiping_phone').val(billingPhone);
+        var billingState = $('#state').val().split('|');
+        console.log("selectedstate_id" + $('#state').val());
+        var selectedValue = billingState[0];
+        var selectedstate_id = billingState[1];
+        //if(selectedstate_id === undefined){selectedstate_id = $('#state').val();}
+        console.log("selectedstate_id" + selectedstate_id);
+        $('#shiping_state').val(selectedstate_id);
+        return false;
+    });
+	
+	  var get_state_from_cookie = Cookies.get('state');
+    if (get_state_from_cookie != null && get_state_from_cookie != '' && get_state_from_cookie != undefined) {
+        // $('#state').val(get_state_from_cookie);
+        //commented by bbn $('#state').find('option:selected').val(get_state_from_cookie);
+    }
+    if (sessionStorage.getItem('coupon_id') != null && sessionStorage.getItem('coupon_id') != '' && sessionStorage.getItem('coupon_id') != undefined) {
+        $('a#cart-details').hide();
+    } else {
+        $('a#cart-details').show();
+    }
+    $(".cart-tax").hide();
+    $(".cart-product-tax").hide();
+
+    $('#state').on('change', function() {
+        taxCalc();
+    });
+    $("#shiping_state").on('change', function() {
+        var selectedOption = $(this).val().split('|');
+        var selectedValue = selectedOption[0];
+        var selectedstate_id = selectedOption[1];
+        //if(selectedstate_id === undefined){selectedstate_id = $(this).val();}
+        console.log(selectedstate_id);
+        $("#shiping_state").removeAttr("data-tax");
+        $("#shiping_state").attr("data-tax", selectedValue);
+        $("#billing_state_id").val(selectedstate_id);
+    });
+    taxCalc();
+	
+	
+});
+</script>
