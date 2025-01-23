@@ -86,6 +86,7 @@ $is_payment_received = true;
          </label>
       </div>
       <?php } ?>
+      
       <?php $cal_per_amt = 0; $total_disp_amt = 0;?>
       <?php if ($ArrFieldData['promotional_code'] != '') { 
          $promo_dis_val = $ArrFieldData['promo_dis_val'];
@@ -357,6 +358,22 @@ $is_payment_received = true;
 		 }
          ?>
       </div>
+      <div class="col-sm-4">
+
+         <label>Delivery Date : </label>
+
+         <input type="text"
+
+            value="<?php echo (isset($ArrFieldData['delivery_datetime']) && $ArrFieldData['delivery_datetime']!='0000-00-00 00:00:00') ? date('Y-m-d H:i:s', strtotime($ArrFieldData['delivery_datetime'])) : ''; ?>"
+
+            placeholder="Delivery Date" name="delivery_datetime" id="delivery_datetime"
+
+            class='date_time_picker_bottom_left form-control' autocomplete="false">
+
+         <?php //echo fornm_error('password'); ?>
+
+      </div>
+
    </div>
 
    <div class="row">
@@ -495,12 +512,12 @@ $is_payment_received = true;
 
 <?php if($ArrFieldData['is_capture'] == 1){
          if(!empty($ArrFieldData['diff_coupon_discount'])){     
-            $tval = $ArrFieldData['DiffAmount'] ;
+            $tval = number_format($ArrFieldData['DiffAmount'],2);
          }else{
-            $tval = $ArrFieldData['DiffAmount'];
+            $tval = number_format($ArrFieldData['DiffAmount'],2);
          }
     }  else {
-      $tval = $ArrFieldData['DiffAmount'];
+      $tval = number_format($ArrFieldData['DiffAmount'],2);
     }
 
     ?>

@@ -313,7 +313,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                         var variant_size=response.data.products[a].product_variant_size;
                                         
                                         /*if (response.data.products[a].is_out_of_stock == 0) {
-                                            out_of_stock = "<div class='product-stock-message'>Out of stock</div>";
+                                            out_of_stock = "<div class='product-stock-message'>Sold out</div>";
                                             out_of_stock_class = "out_of_stock";
                                         }*/
                                         if (response.data.products[a].product_size.length > 1 && response.data.products[a].product_size[0] != "") {
@@ -342,9 +342,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                         var out_of_stock = "<div class='product-stock-message'></div>";
                                         var out_of_stock_class = "";
 
-                                        // console.log("product out of stock:" + response.data.products[a].is_out_of_stock + " and variant out of stock:" + variant_in_stock_count);
+                                        // console.log("product Sold out:" + response.data.products[a].is_out_of_stock + " and variant Sold out:" + variant_in_stock_count);
                                         if (response.data.products[a].is_out_of_stock == 0) {
-                                            out_of_stock = "<div class='product-stock-message'>Product Out of stock</div>";
+                                            out_of_stock = "<div class='product-stock-message'>Product Sold out</div>";
                                             out_of_stock_class = "out_of_stock";
                                             var price_weight = "";
                                         }

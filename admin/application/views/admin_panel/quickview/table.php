@@ -88,8 +88,21 @@
 
 
 
-                <b>Order Note:</b> <?php echo $ArrFieldDatashow['order_notes']; ?><br>
+                <?php if ($ArrFieldDatashow['delivery_comments'] != '') { ?>
+                    <b>Delivery Instructions:</b>
 
+                    <?php echo $ArrFieldDatashow['delivery_comments']; ?><br>
+                <?php } ?>
+                <?php if ($ArrFieldDatashow['delivery_type'] != '') { ?>
+                    <b>Delivery Type:</b>
+
+                    <?php echo $ArrFieldDatashow['delivery_type']; ?><br>
+                <?php } ?>
+                <?php if ($ArrFieldDatashow['delivery_datetime'] != '') { ?>
+                    <b>Delivery Date:</b>
+
+                    <?php echo $ArrFieldDatashow['delivery_datetime']; ?><br>
+                <?php } ?>
 
 
             </div>
@@ -122,7 +135,7 @@
 
                 Date:
 
-                <?php echo $ArrFieldDatashow['order_datetime']; ?>
+                <?php echo $ArrFieldDatashow['created_datetime']; ?>
 
                 <br>
 
@@ -171,6 +184,10 @@
 
 
             <b>Tel:</b> <?php echo $ArrFieldDatashow['shipping_phone']; ?> <br>
+            <?php if ($ArrFieldDatashow['order_notes'] != '') { ?>
+            <b>Order Note:</b> <?php echo $ArrFieldDatashow['order_notes']; ?><br>
+<?php } ?>
+                
 
 			<?php //echo "<pre>";print_r($ArrOrderProductshow);exit; ?>
 

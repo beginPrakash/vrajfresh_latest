@@ -85,7 +85,7 @@ defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automat
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
 	
-define('SITE_URI','https://www.vrajfresh.com/admin/');
+define('SITE_URI','http://localhost/vrajfresh_latest/admin/');
 //define('SITE_URI','http://'.$_SERVER['HTTP_HOST'].'/vrj');
 define('SITE_URL',SITE_URI.'/');
 define('ADMIN_PANEL_THEME_PATH',SITE_URL.'themes/admin_panel/');
@@ -96,12 +96,12 @@ defined('PRODUCT_IMAGE_HEIGHT')      OR define('PRODUCT_IMAGE_HEIGHT', "250PX");
 defined('CATEGORY_IMAGE_WIDTH')      OR define('CATEGORY_IMAGE_WIDTH', "250PX"); 
 defined('CATEGORY_IMAGE_HEIGHT')      OR define('CATEGORY_IMAGE_HEIGHT', "250PX"); 
 
-defined('API_URL')      OR define('API_URL', 'https://www.vrajfresh.com/api/');
+defined('API_URL')      OR define('API_URL', 'http://localhost/vrajfresh_latest/api/');
 defined('PRODUCT_IMAGE_PATH')      OR define('PRODUCT_IMAGE_PATH', $_SERVER['DOCUMENT_ROOT'] . "/admin/");
 
 
- defined('STRIPE_SECRET_KEY')    OR define('STRIPE_SECRET_KEY','sk_test_Nf5qbJOgwQg3chjObUc7TimG006zBZcXbI'); // Stripe secret key
-defined('STRIPE_PUBLISHABLE_KEY')    OR define('STRIPE_PUBLISHABLE_KEY','pk_test_yd5gvyIjhcQuvcys2VGQY9yj00PXtsIsOU'); // Stripe secret key 
+/* defined('STRIPE_SECRET_KEY')    OR define('STRIPE_SECRET_KEY','sk_test_Nf5qbJOgwQg3chjObUc7TimG006zBZcXbI'); // Stripe secret key
+defined('STRIPE_PUBLISHABLE_KEY')    OR define('STRIPE_PUBLISHABLE_KEY','pk_test_yd5gvyIjhcQuvcys2VGQY9yj00PXtsIsOU'); // Stripe secret key */
 
 
 /* CART SESSION EXPIRATION TIME */

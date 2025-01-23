@@ -132,7 +132,7 @@
                            </div>
                            <div class="col-sm-3">
                               <div class="radio_btn_design_add_products">
-                                 <label>Is Out Of Stock? : <span class="red">*</span></label>
+                                 <label>Is Sold Out? : <span class="red">*</span></label>
                                  <div class="checkbox">
                                     <?php if (!empty($edit_id)) { ?>
                                        <label style="width: 100%; padding-left: 0px;">
@@ -314,7 +314,7 @@
                                              </td>
 
                                              <td>
-                                                <select name="ArrOutOfStock[]" class="form-control" title="Is out of stock?">
+                                                <select name="ArrOutOfStock[]" class="form-control" title="Is sold out?">
                                                    <option value="1" <?php if ($value['is_out_of_stock'] == 1) {
                                                                         echo 'selected';
                                                                      } ?>>No</option>

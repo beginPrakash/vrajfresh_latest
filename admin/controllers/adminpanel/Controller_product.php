@@ -747,7 +747,7 @@ class Controller_product extends CI_Controller{
 					<input type="text" placeholder="Stock SKU" class="form-control" name="ArrVariantSKU[]"  value="" required>
 				</td>
 				<td>
-					<select name="ArrOutOfStock[]" class="form-control" title="Is out of stock?">
+					<select name="ArrOutOfStock[]" class="form-control" title="Is sold out?">
 					<option value="1" selected>No</option>
 					<option value="0">Yes</option>
 					</select>

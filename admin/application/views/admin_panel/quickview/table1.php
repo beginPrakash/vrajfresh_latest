@@ -68,9 +68,9 @@
 
                 <b>Order No: <?php echo $ArrFieldDatashow['order_id'];  ?></b><br>
 
-                Invoice Date: <?php echo $ArrFieldDatashow['order_datetime'];  ?><br>
+                Invoice Date: <?php echo $ArrFieldDatashow['created_datetime'];  ?><br>
 
-                Date: <?php echo $ArrFieldDatashow['order_datetime'];  ?><br>
+                Date: <?php echo $ArrFieldDatashow['created_datetime'];  ?><br>
 
                 Email: <?php echo $ArrFieldDatashow['billing_email'] ?><br>
 

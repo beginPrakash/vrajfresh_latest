@@ -298,7 +298,7 @@
 									var out_of_stock = "<div class='product-stock-message'></div>";
 									var out_of_stock_class = "";
 									if (response.data.is_out_of_stock == 0 || first_variant_out_of_stock) {
-										out_of_stock = "<div class='product-stock-message'>Out of stock</div>";
+										out_of_stock = "<div class='product-stock-message'>Sold out</div>";
 										out_of_stock_class = "out_of_stock";
 										price_weight = "";
 										price_range = "";
@@ -316,7 +316,7 @@
 									var out_of_stock = "<div class='product-stock-message'></div>";
 									var out_of_stock_class = "";
 									if (response.data.is_out_of_stock == 0 || first_variant_out_of_stock) {
-										out_of_stock = "<div class='product-stock-message'>Out of stock</div>";
+										out_of_stock = "<div class='product-stock-message'>Sold out</div>";
 										out_of_stock_class = "out_of_stock";
 									}
 
@@ -390,7 +390,7 @@
 								var out_of_stock = "<div class='product-stock-message'></div>";
 								var out_of_stock_class = "";
 								if (response.data.is_out_of_stock == 0 || first_variant_out_of_stock) {
-									out_of_stock = "<div class='product-stock-message'>Out of stock</div>";
+									out_of_stock = "<div class='product-stock-message'>Sold out</div>";
 									out_of_stock_class = "out_of_stock";
 									price_weight = "";
 									price_range = "";
@@ -408,7 +408,7 @@
 								var out_of_stock = "<div class='product-stock-message'></div>";
 								var out_of_stock_class = "";
 								if (response.data.is_out_of_stock == 0 || first_variant_out_of_stock) {
-									out_of_stock = "<div class='product-stock-message'>Out of stock</div>";
+									out_of_stock = "<div class='product-stock-message'>Sold out</div>";
 									out_of_stock_class = "out_of_stock";
 								}
 
@@ -496,7 +496,7 @@
 							var out_of_stock = "<div class='product-stock-message'></div>";
 							var out_of_stock_class = "";
 							if (response.data.is_out_of_stock == 0 || first_variant_out_of_stock) {
-								out_of_stock = "<div class='product-stock-message'>Product is out of stock</div>";
+								out_of_stock = "<div class='product-stock-message'>Product is Sold out</div>";
 								out_of_stock_class = "out_of_stock";
 							}
 

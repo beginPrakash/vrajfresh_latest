@@ -990,6 +990,14 @@ footer ul li img {
 	margin-right: 4px;
 	background-size: 100%;
 }
+button[type="button"].remove_add_btn {
+    width: 20px;
+    height: 20px;
+    font-size: 0;
+    background: url(../images/delete.png) no-repeat center center / contain;
+    opacity: 0.5;
+	padding-top: 25px;
+ }
 .product-usp {
 	flex: 3;
 }

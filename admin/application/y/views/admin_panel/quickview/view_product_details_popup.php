@@ -72,7 +72,7 @@
 
 <div class="row">
    <div class="col-sm-3">
-      <label>Is Out Of Stock? : </label>
+      <label>Is Sold Out? : </label>
    </div>
    <div class="col-sm-9">
       <label  style="font-weight:400; line-height: 20px;"><?php echo ($ArrFieldData['is_out_of_stock'] == '1')?'Yes':'No'; ?></label>

@@ -254,7 +254,7 @@
 							var out_of_stock = "<div class='product-stock-message'></div>";
 							var out_of_stock_class = "";
 							if (response.data.is_out_of_stock == 0 || first_variant_out_of_stock) {
-								out_of_stock = "<div class='product-stock-message'>Out of stock</div>";
+								out_of_stock = "<div class='product-stock-message'>Sold out</div>";
 								out_of_stock_class = "out_of_stock";
 							}
 
@@ -321,7 +321,7 @@
 								var out_of_stock = "<div class='product-stock-message'></div>";
 								var out_of_stock_class = "";
 								if (response.data.is_out_of_stock == 0 || first_variant_out_of_stock) {
-									out_of_stock = "<div class='product-stock-message'>Out of stock</div>";
+									out_of_stock = "<div class='product-stock-message'>Sold out</div>";
 									out_of_stock_class = "out_of_stock";
 								}
 
@@ -408,7 +408,7 @@
 							var out_of_stock = "<div class='product-stock-message'></div>";
 							var out_of_stock_class = "";
 							if (response.data.products[a].is_out_of_stock == 0 || first_variant_out_of_stock) {
-								out_of_stock = "<div class='product-stock-message'>Out of stock</div>";
+								out_of_stock = "<div class='product-stock-message'>Sold out</div>";
 								out_of_stock_class = "out_of_stock";
 							}
 							product = product.concat('<a href="<?php echo BASE_URL; ?>product/' + response.data.product_details[a].product_slug + '"><div class="product-box"><img src=' + response.data.product_details[a].product_image + ' onerror=this.src="<?php echo ADMIN_URL; ?>uploads/logo-2.png"><div><h4>' + response.data.product_details[a].product_name + '</h4></a>' + price_weight + out_of_stock + '<ul><li><div class="quantity' + out_of_stock_class + '"><button type="button" id="sub" class="sub">-</button><input type="text" id="' + response.data.product_details[a].product_id + '" value="1" min="1" max="3" disabled /><button type="button" id="add" class="add">+</button></div></li><li><button id= "btn_' + response.data.product_details[a].product_id + '" class="add_cart' + out_of_stock_class + '" data-isperisible="' + response.data.product_details[a].is_perisible_products + '" data-productslug="' + response.data.product_details[a].product_slug + '" data-productimage= "' + response.data.product_details[a].product_image + '" data-productname="' + response.data.product_details[a].product_name + '" data-price=' + response.data.product_details[a].product_price + ' data-productid = ' + response.data.product_details[a].product_id + ' data-producttax="' + response.data.product_details[a].product_tax + '>Add</button></li></ul></div></div>');

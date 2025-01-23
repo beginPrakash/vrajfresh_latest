@@ -80,11 +80,11 @@ error_reporting(0);
 
                 Invoice Date:
 
-                <?php echo $ArrFieldDatashow['order_datetime']; ?><br>
+                <?php echo $ArrFieldDatashow['created_datetime']; ?><br>
 
                 Date:
 
-                <?php echo $ArrFieldDatashow['order_datetime']; ?><br>
+                <?php echo $ArrFieldDatashow['created_datetime']; ?><br>
 
                 Email:
 
@@ -93,6 +93,8 @@ error_reporting(0);
                 Tel:
 
                 <?php echo $ArrFieldDatashow['shipping_phone']; ?><br>
+
+                
 
                 Delivery Method: Free Delivery<br>
 
@@ -112,6 +114,11 @@ echo "Yes, Substitute on selected products only";
 
 } ?><br>
 
+<?php if ($ArrFieldDatashow['order_notes'] != '') { ?>
+Order Note:
+
+<?php echo $ArrFieldDatashow['order_notes']; ?><br>
+<?php } ?>
             </div>
 
 
@@ -151,7 +158,21 @@ echo "Yes, Substitute on selected products only";
                 <?php echo $ArrFieldDatashow['shipping_state_name'] ?><br>
 
                 <?php echo $ArrFieldDatashow['shipping_zipcode'] ?><br>
+                <?php if ($ArrFieldDatashow['delivery_comments'] != '') { ?>
+                    <b>Delivery Instructions:</b>
 
+                    <?php echo $ArrFieldDatashow['delivery_comments']; ?><br>
+                <?php } ?>
+                <?php if ($ArrFieldDatashow['delivery_type'] != '') { ?>
+                    <b>Delivery Type:</b>
+
+                    <?php echo $ArrFieldDatashow['delivery_type']; ?><br>
+                <?php } ?>
+                <?php if ($ArrFieldDatashow['delivery_datetime'] != '') { ?>
+                    <b>Delivery Date:</b>
+
+                    <?php echo $ArrFieldDatashow['delivery_datetime']; ?><br>
+                <?php } ?>
 
 
             </div>

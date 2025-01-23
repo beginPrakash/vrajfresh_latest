@@ -503,7 +503,7 @@
 								var out_of_stock_class = "";
 								var variant_in_stock_count = 0;
 								/*if (response.data.products[a].is_out_of_stock == 0) {
-									out_of_stock = "<div class='product-stock-message'>Out of stock</div>";
+									out_of_stock = "<div class='product-stock-message'>Sold out</div>";
 									out_of_stock_class = "out_of_stock";
 								}*/
 								if (response.data.products[a].product_size.length > 1 && response.data.products[a].product_size[0] != "") {
@@ -538,9 +538,9 @@
 								var out_of_stock = "<div class='product-stock-message'></div>";
 								var out_of_stock_class = "";
 
-								console.log("product out of stock:" + response.data.products[a].is_out_of_stock + " and variant out of stock:" + variant_in_stock_count);
+								console.log("product Sold out:" + response.data.products[a].is_out_of_stock + " and variant SOLD OUT:" + variant_in_stock_count);
 								if (response.data.products[a].is_out_of_stock == 0) {
-									out_of_stock = "<div class='product-stock-message'>Product Out of stock</div>";
+									out_of_stock = "<div class='product-stock-message'>Product Sold out</div>";
 									out_of_stock_class = "out_of_stock";
 									var price_weight = "";
 								}
@@ -642,7 +642,7 @@
 							var out_of_stock = "<div class='product-stock-message'></div>";
 							var out_of_stock_class = "";
 							/*if (response.data.products[a].is_out_of_stock == 0) {
-								out_of_stock = "<div class='product-stock-message'>Out of stock</div>";
+								out_of_stock = "<div class='product-stock-message'>Sold out</div>";
 								out_of_stock_class = "out_of_stock";
 							}*/
 							
@@ -678,23 +678,23 @@
 
 							var out_of_stock = "<div class='product-stock-message'></div>";
 							var out_of_stock_class = "";
-							console.log(response.data.products[a].product_name.substring(0, 32) + "====product out of stock:" + response.data.products[a].is_out_of_stock + " and variant out of stock:" + variant_in_stock_count + "is_variant_product" + is_variant_product);
-							/* PRODUCT IS IN STOCK AND ALL VARIANT OUT OF STOCK  */
+							console.log(response.data.products[a].product_name.substring(0, 32) + "====product Sold out:" + response.data.products[a].is_out_of_stock + " and variant SOLD OUT:" + variant_in_stock_count + "is_variant_product" + is_variant_product);
+							/* PRODUCT IS IN STOCK AND ALL VARIANT SOLD OUT  */
 							if (response.data.products[a].is_out_of_stock == 0 && variant_in_stock_count == 0) {
 								var price_weight = "";
-								out_of_stock = "<div class='product-stock-message'>Product Out of stock</div>";
+								out_of_stock = "<div class='product-stock-message'>Product Sold out</div>";
 								out_of_stock_class = "out_of_stock";
 							}
-							/* PRODUCT IS OUT OF STOCK */
+							/* PRODUCT IS SOLD OUT */
 							if (response.data.products[a].is_out_of_stock == 0) {
-								out_of_stock = "<div class='product-stock-message'>Product Out of stock</div>";
+								out_of_stock = "<div class='product-stock-message'>Product Sold out</div>";
 								out_of_stock_class = "out_of_stock";
 								var price_weight = "";
 							}
-							/* PRODUCT IS VARIANT AND ALL VARIANT OUT OF STOCK */
+							/* PRODUCT IS VARIANT AND ALL VARIANT SOLD OUT */
 							if (is_variant_product == 1 && variant_in_stock_count == 0) {
 								var price_weight = "";
-								out_of_stock = "<div class='product-stock-message'>Product Out of stock</div>";
+								out_of_stock = "<div class='product-stock-message'>Product Sold out</div>";
 								out_of_stock_class = "out_of_stock";
 							}
 							//product = product.concat('<div class="product-box"><img src='+response.data[a]["image"]+'><h4>'+response.data[a]["product_name"]+'</h4><strong>'+response.data[a]["product_price"]+'</strong> <span>'+response.data[a]["product_weight_gms"]+'</span><ul><li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li><li><button>Add</button></li></ul></div>');
@@ -804,7 +804,7 @@
 							var out_of_stock = "<div class='product-stock-message'></div>";
 							var out_of_stock_class = "";
 							if (response.data.product_details[a].is_out_of_stock == 0 || first_variant_out_of_stock) {
-								out_of_stock = "<div class='product-stock-message'>Product is out of stock</div>";
+								out_of_stock = "<div class='product-stock-message'>Product is sold out</div>";
 								out_of_stock_class = "out_of_stock";
 							}
 							var out_of_stock_variant = '';
@@ -834,10 +834,10 @@
 
 
 							if (first_variant_out_of_stock) {
-								out_of_stock = "<div class='product-stock-message'>Product is out of stock</div>";
+								out_of_stock = "<div class='product-stock-message'>Product is sold out</div>";
 								out_of_stock_class = "out_of_stock";
 							} else if (response.data.product_details[a].is_out_of_stock == 0 && response.data.product_details[a].product_size.length == 0) {
-								out_of_stock = "<div class='product-stock-message'>Product is out of stock</div>";
+								out_of_stock = "<div class='product-stock-message'>Product is sold out</div>";
 								out_of_stock_class = "out_of_stock";
 							}
 

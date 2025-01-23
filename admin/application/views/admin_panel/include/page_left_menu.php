@@ -5,11 +5,25 @@
 /* CALL FUNCTION IN MENU HELPER */
 
 $active_menu = getActiveMenuName();
-
+$unread_report_count = getUnreadReportCount('about_order');
+$unread_product_faci_count = getUnreadReportCount('product_repo');
+$processing_order_count = getProcessingOrderCount();
 $user_role_id = $this->session->userdata('login_view');
 
 ?>
-
+<style>
+span.noti_count {
+    border: 2px solid red;
+    border-radius: 10px;
+    font-size: 8px;
+    margin-top: -4px !important;
+    position: absolute;
+    padding-left: 2px;
+    padding-right: 2px;
+    font-weight: bold;
+    margin-left: -3px;
+}
+</style>
 <ul class="sidebar-menu">
 
 
@@ -52,7 +66,7 @@ $user_role_id = $this->session->userdata('login_view');
 
 			<ul class="treeview-menu">
 
-				<li><a href="<?php echo base_url(); ?>orders">My Orders</a></li>
+				<li><a href="<?php echo base_url(); ?>orders">My Orders <?php if($processing_order_count > 0){ ?> <span class="noti_count"> <?php echo $processing_order_count; ?></span> <?php } ?></a></li>
 
 				<li><a href="<?php echo base_url(); ?>historic-orders">My Historic Orders</a></li>
 
@@ -422,9 +436,9 @@ $user_role_id = $this->session->userdata('login_view');
 
 				<li><a href="<?php echo base_url(); ?>contact-inquiry">Contact Us</a></li>
 
-				<li><a href="<?php echo base_url(); ?>report-about-order">Report About Order</a></li>
+				<li><a href="<?php echo base_url(); ?>report-about-order">Report About Order <?php if($unread_report_count > 0){ ?> <span class="noti_count"> <?php echo $unread_report_count; ?></span> <?php } ?></a></li>
 
-				<li><a href="<?php echo base_url(); ?>product-facility-request">Product Facility Requests</a></li>
+				<li><a href="<?php echo base_url(); ?>product-facility-request">Product Facility Requests<?php if($unread_product_faci_count > 0){ ?> <span class="noti_count"> <?php echo $unread_product_faci_count; ?></span> <?php } ?></a></li>
 
 
 

@@ -85,11 +85,11 @@ defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automat
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
 //defined('BASE_URL')      OR define('BASE_URL', 'http://localhost/git/vraj-fresh-front/');
-defined('BASE_URL')      OR define('BASE_URL', 'https://www.vrajfresh.com/');
+defined('BASE_URL')      OR define('BASE_URL', 'http://localhost/vrajfresh_latest/');
 defined('SITE_URL')      OR define('SITE_URL', BASE_URL);
 defined('ASSET_URL')      OR define('ASSET_URL', SITE_URL.'assets/');
-defined('API_URL')      OR define('API_URL', 'https://www.vrajfresh.com/api/');
-defined('ADMIN_URL')         OR define('ADMIN_URL','https://www.vrajfresh.com/admin/');
+defined('API_URL')      OR define('API_URL', 'http://localhost/vrajfresh_latest/api/');
+defined('ADMIN_URL')         OR define('ADMIN_URL','http://localhost/vrajfresh_latest/admin/');
 
 defined('FACEBOOK_APP_ID')         OR define('FACEBOOK_APP_ID','907828336842418');  //Facebook App id
 defined('FACEBOOK_APP_SECRET')     OR define('FACEBOOK_APP_SECRET','c5bb3f45e33d3f264693e6f0d2dd86a0');  //Facebook App secret
@@ -100,8 +100,8 @@ defined('GOOGLE_CLIENT_ID')  OR define('GOOGLE_CLIENT_ID', '705571454677-3su3mmo
 defined('GOOGLE_CLIENT_SECRET') OR define('GOOGLE_CLIENT_SECRET', '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'); //Google secret id
 */
 
- defined('STRIPE_SECRET_KEY')    OR define('STRIPE_SECRET_KEY','sk_test_Nf5qbJOgwQg3chjObUc7TimG006zBZcXbI'); // Stripe secret key
-defined('STRIPE_PUBLISHABLE_KEY')    OR define('STRIPE_PUBLISHABLE_KEY','pk_test_yd5gvyIjhcQuvcys2VGQY9yj00PXtsIsOU'); // Stripe secret key 
+ /*defined('STRIPE_SECRET_KEY')    OR define('STRIPE_SECRET_KEY','sk_test_Nf5qbJOgwQg3chjObUc7TimG006zBZcXbI'); // Stripe secret key
+defined('STRIPE_PUBLISHABLE_KEY')    OR define('STRIPE_PUBLISHABLE_KEY','pk_test_yd5gvyIjhcQuvcys2VGQY9yj00PXtsIsOU'); // Stripe secret key */
 
 /* LIVE CREDENTIALS */
 /*defined('STRIPE_SECRET_KEY')    OR define('STRIPE_SECRET_KEY','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'); // Stripe secret key

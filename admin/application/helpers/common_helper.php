@@ -3316,4 +3316,26 @@ function send_mail($email, $subject, $message,$attachment='') {
 	}
 }
 
+if (!function_exists('getUnreadReportCount')) {
+    function getUnreadReportCount($report_type)
+    {
+        $ci =& get_instance();
+        if($report_type == 'about_order'):
+            $query = $ci->db->select("order_complain_id")->from('tbl_order_complains')->where('is_read', 1)->get();
+        else:
+            $query = $ci->db->select("requested_product_id")->from('tbl_requested_product')->where('is_read', 1)->get();
+        endif;
+        return $query->num_rows();
+    }
+}
+
+if (!function_exists('getProcessingOrderCount')) {
+    function getProcessingOrderCount()
+    {
+        $ci =& get_instance();
+        $query = $ci->db->select("order_id")->from('tbl_orders')->where('order_status', 'Processing')->get();
+        return $query->num_rows();
+    }
+}
+
 ?>

@@ -202,8 +202,9 @@ class order_model extends CI_Model
 	public function getMonthlyOrderNumbers()
 	{
 
-		$sql = "SELECT MONTHNAME(created_datetime) as month,count(*) as order_count,SUM(order_total_amount) as order_total FROM `tbl_orders` WHERE 1=1 GROUP BY MONTH(created_datetime)";
-		$query = $this->db->query($sql);
+		$sql = "SELECT MONTHNAME(created_datetime) as month,count(*) as order_count,SUM(order_total_amount) as order_total FROM `tbl_orders` WHERE 1=1 AND created_datetime >= DATE_FORMAT(NOW() - INTERVAL 11 MONTH, '%Y-%m-01') AND created_datetime <= LAST_DAY(NOW())
+  GROUP BY MONTH(created_datetime)";
+  $query = $this->db->query($sql);
 		if ($query->num_rows() > 0) {
 			return $query->result_array();
 		}

@@ -221,6 +221,64 @@ $(document).on('click', '.edit_billing_data_btn', function() {
     }); 
 });
 
+$(document).on('click', '.delete_shipping_data_btn', function() {
+    
+    var user_id = '<?php echo $this->session->userdata['logged_in']['user_id']; ?>';
+    var id = $(this).attr('data-id');
+    var type = 'shipping';
+
+    var json_request = {
+        "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+        "user_id": user_id,
+        "id": id,
+        "type": type,
+    };
+    $.ajax({
+        "type": "POST",
+        "url": api_url_prefix + 'delete-checkout-address-details',
+        "data": JSON.stringify(json_request),
+        "dataType": "JSON",
+        "success": function(response) {
+            
+            if (response.data != null) {
+                location.reload();
+            } 
+        },
+        "error": function(response) {
+         
+        }
+    }); 
+});
+
+$(document).on('click', '.delete_billing_data_btn', function() {
+    
+    var user_id = '<?php echo $this->session->userdata['logged_in']['user_id']; ?>';
+    var id = $(this).attr('data-id');
+    var type = 'billing';
+
+    var json_request = {
+        "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+        "user_id": user_id,
+        "id": id,
+        "type": type,
+    };
+    $.ajax({
+        "type": "POST",
+        "url": api_url_prefix + 'delete-checkout-address-details',
+        "data": JSON.stringify(json_request),
+        "dataType": "JSON",
+        "success": function(response) {
+            
+            if (response.data != null) {
+                location.reload();
+            } 
+        },
+        "error": function(response) {
+         
+        }
+    }); 
+});
+
 function update_state(state, tax){
     
     $('#state option').prop('selected', false);

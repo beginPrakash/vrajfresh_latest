@@ -760,6 +760,7 @@ class Controller_order extends CI_Controller
 			$order_status = $this->input->post('order_status');
 			$preparation_cost = $this->input->post('preparation_cost');
 			$packaging_cost = $this->input->post('packaging_cost');
+			$delivery_datetime = (trim($this->input->post('delivery_datetime'))) ? date('Y-m-d H:i:s', strtotime(trim($this->input->post('delivery_datetime')))) : null;
 			$order_total_amount = $total_order_amount + $shipping_charge + $preparation_cost + $packaging_cost + $order_tip - $discount_amount;
 			// if($total_updated_order_diff > 0){
 			// 	$diff_c_dis = $orderdetails['totaldiff_coupon_discount'];
@@ -782,6 +783,7 @@ class Controller_order extends CI_Controller
 					'order_total_tax' => trim($order_total_tax),
 					'discount_amount' => trim($discount_amount),
 					'order_total_amount' => trim($order_total_amount),
+					'delivery_datetime' => $delivery_datetime,
 				);
 			//}
 			

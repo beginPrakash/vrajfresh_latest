@@ -372,7 +372,7 @@
 							{
 								out_of_stock_class = "out_of_stock";
 								price_weight = ''
-								var buttonSection = "<div class='product-stock-message'>Product is out of stock</div>";
+								var buttonSection = "<div class='product-stock-message'>Product is sold out</div>";
 							}
 							else
 							{

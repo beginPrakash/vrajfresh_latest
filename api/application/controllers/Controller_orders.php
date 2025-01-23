@@ -60,7 +60,6 @@ class Controller_orders extends CI_Controller
 
 	public function update_checkout_address()
 	{
-		
 		$errors = $success_message = '';
 
 		$json_str = $this->input->raw_input_stream;		
@@ -157,7 +156,7 @@ class Controller_orders extends CI_Controller
 							'modify_at' => date('Y-m-d H:i:s'),
 							'is_active' => 1,
 						);
-						$this->master->insertData('tbl_shipping_address', $newInsertArr);
+						//$this->master->insertData('tbl_shipping_address', $newInsertArr);
 						$shiiping_address = $this->master->get_list_of_data('tbl_shipping_address', array('user_id' => $user_id, 'is_active' => 1));
 					}
 					
@@ -199,7 +198,7 @@ class Controller_orders extends CI_Controller
 						'modify_at' => date('Y-m-d H:i:s'),
 						'is_active' => 1,
 					);
-					$this->master->insertData('tbl_billing_address', $newInsertArr);
+					//$this->master->insertData('tbl_billing_address', $newInsertArr);
 					$billing_address = $this->master->get_list_of_data('tbl_billing_address', array('user_id' => $user_id, 'is_active' => 1));
 				}
 			}
@@ -1154,5 +1153,43 @@ class Controller_orders extends CI_Controller
 		}
 		
 		
+	}
+
+	public function delete_checkout_address_details()
+	{
+
+		$errors = $success_message = '';
+
+		$json_str = $this->input->raw_input_stream;		
+		$json_obj = json_decode($json_str);
+		
+
+		$oauth_key = $json_obj->oauth_key;
+		$user_id = $json_obj->user_id;
+		$id = $json_obj->id;
+		$type = $json_obj->type;
+
+		$ArrData = array();
+
+		if (check_oauth_key($oauth_key)) {
+
+			if($type != "" && $id != "" && $user_id != ""){
+				
+				$this->db->where($type.'_id',$id);
+
+				$this->db->delete('tbl_'.$type.'_address');
+				if ($this->db->affected_rows() > 0) {
+					$success_message = $type.' address deleted successfully';
+				}
+				else{
+					$errors = "Something went wrong";
+				}
+
+			} else {
+				$errors = "Something went wrong";
+			}
+
+		}
+		send_response_to_api($ArrData, $errors, $success_message);
 	}
 }

@@ -148,7 +148,7 @@ $(document).ready(function() {
                            </div>
                            <div class="col-sm-3">
                               <div class="radio_btn_design_add_products">
-                                 <label>Is Out Of Stock? : <span class="red">*</span></label>
+                                 <label>Is Sold Out? : <span class="red">*</span></label>
                                  <div class="checkbox">
                                     <?php if (!empty($edit_id)) { ?>
                                        <label style="width: 100%; padding-left: 0px;">
@@ -337,6 +337,9 @@ $(document).ready(function() {
                                              <td>
                                                 <input type="text" placeholder="Price" class="form-control" name="ArrVariantPrice[]" value="<?php echo $value['variant_price']; ?>" required>
                                              </td>
+                                             <td>
+                                                <input type="text" placeholder="Unit Cost" class="form-control" name="ArrVariantUnitcost[]" value="<?php echo $value['variant_unitcost']; ?>" required>
+                                             </td>
                                              <!--<td>
                            <input type="text" placeholder="Stock QTY" class="form-control" name="ArrVariantQTY[]"  value="<?php echo $value['variant_qty']; ?>" required>
                         </td>-->
@@ -345,7 +348,7 @@ $(document).ready(function() {
                                              </td>
 
                                              <td>
-                                                <select name="ArrOutOfStock[]" class="form-control" title="Is out of stock?">
+                                                <select name="ArrOutOfStock[]" class="form-control" title="Is sold out?">
                                                    <option value="1" <?php if ($value['is_out_of_stock'] == 1) {
                                                       echo 'selected';
                                                    } ?>>No</option>

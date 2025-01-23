@@ -947,7 +947,7 @@ function get_special_product(api_url_prefix) {
 
 							price_weight = ''
 
-                            var buttonSection = "<div class='product-stock-message'>Product is out of stock</div>";
+                            var buttonSection = "<div class='product-stock-message'>Product is sold out</div>";
 
 						}
 
@@ -1133,7 +1133,7 @@ function get_special_product1(api_url_prefix) {
 
 								out_of_stock_class = "out_of_stock";
 
-								var buttonSection = "<div class='product-stock-message'>Product is out of stock</div>";
+								var buttonSection = "<div class='product-stock-message'>Product is sold out</div>";
 
 							}
 
@@ -1866,7 +1866,7 @@ function get_home_product_slider(api_url_prefix) {
                                 {
                                     out_of_stock_class = "out_of_stock";
                                     price_weight = ''
-                                    var buttonSection = "<div class='product-stock-message'>Product is out of stock</div>";
+                                    var buttonSection = "<div class='product-stock-message'>Product is sold out</div>";
                                 }
                                 else
                                 {

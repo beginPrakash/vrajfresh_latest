@@ -140,6 +140,7 @@ $route['add-order'] = 'Controller_orders/add_order';
 $route['add-checkout-address'] = 'Controller_orders/add_checkout_address';
 $route['update-checkout-address'] = 'Controller_orders/update_checkout_address';
 $route['get-checkout-address-details'] = 'Controller_orders/get_checkout_address_details';
+$route['delete-checkout-address-details'] = 'Controller_orders/delete_checkout_address_details';
 $route['get-checkout-details'] = 'Controller_orders/get_checkout_details';
 $route['get-order-by-id'] = 'Controller_orders/get_order_by_id';
 $route['deliveryboy-order-by-id'] = 'Controller_orders/deliveryboy_order_by_id';

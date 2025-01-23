@@ -521,7 +521,7 @@ function get_product_detail(api_url_prefix) {
                                 first_variant_out_of_stock = true;
                             }
                         }
-                        /* IF PRODUCR IS NOT OUT OF STOCK */
+                        /* IF PRODUCR IS NOT sold out */
                         if (response.data.is_out_of_stock == 1)
                         {
                             price_weight1 = price_weight1.concat('<li onClick="enableCartButton(' + response.data.variants[j].id + ');" class="' + is_first_variant + out_of_stock_variant + '" data-productid="'+response.data.product_id+'" data-tab="' + response.data.variants[j].id + '" data-price="' + response.data.variants[j].variant_price + '"  data-weight_string="'+response.data.variants[j].product_variant_size+'" value = "' + response.data.variants[j].product_variant_size + '" data-url="' + response.data.variants[j].variant_image + '">' + response.data.variants[j].product_variant_size + 'LB' + '</li>');
@@ -709,18 +709,18 @@ function get_product_detail(api_url_prefix) {
                 }
                 var out_of_stock = "<div class='product-stock-message'></div>";
                 var out_of_stock_class = "";
-                /* IF PRODUCR IS OUT OF STOCK ELSE FIRST VARIANT OUT OF STOCK ELSE */
+                /* IF PRODUCR IS sold out ELSE FIRST VARIANT sold out ELSE */
                 if (response.data.is_out_of_stock == 0)
                 {
-                    out_of_stock = "<div class='product-stock-message'>Product is out of stock</div>";
+                    out_of_stock = "<div class='product-stock-message'>Product is sold out</div>";
                     out_of_stock_class = "out_of_stock";
                 }
                 else if (first_variant_out_of_stock) {
-                    out_of_stock = "<div class='product-stock-message'>Product is out of stock</div>";
+                    out_of_stock = "<div class='product-stock-message'>Product is sold out</div>";
                     out_of_stock_class = "out_of_stock";
                 }
                 else if (response.data.is_out_of_stock == 0 && response.data.variants.length==0) {
-                    out_of_stock = "<div class='product-stock-message'>Product is out of stock</div>";
+                    out_of_stock = "<div class='product-stock-message'>Product is sold out</div>";
                     out_of_stock_class = "out_of_stock";
                 }
                 

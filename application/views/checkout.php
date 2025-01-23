@@ -24,6 +24,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
       border-radius: 5px;
       margin: 5px 0;
     }
+   
 </style>
 <section class="categories-banner">
    <h2>CHECKOUT</h2>
@@ -79,6 +80,10 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                                     <image xlink:href="data:img/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAiCAMAAADiW5DOAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAABiVBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwwLPBAAAAgnRSTlMAT9rkZQQhMBFpiBue8e4L00nAOu3eCHjJDwaylwEX7O9yIxADjvUth8OlfeGL1RWs/lOWz/3XHFBb3EL2vKMFVPokTiKvmPv5Crq+wnzKZJXFgauokY+2efRinHNgDCU5UWewNp9A28FrSx8J/FdIneV+PfhKMjGS4xPY4Cx20NQNoV6DzAAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAG0SURBVDjLjdNpV9NAGIbhV4qgbFIWkdKqQFEsoKAUsNSlRaUBFAEXFq0LoIIWVGRzA+5fbrNMJwktx+fDnMzJdTKTeRKRUjlVRqBcT09XVFo54yJnMVPlzKprarFTd85N6oMNCjU2odJ8XpEWuNAqoTYIR0QuXuJye0enlaiXiEJdXLnq3243XLOXjcagR3rp85Oq/LLXb9jX0X7qZICbXhG5BYNxhobV5gcERrwkDG2h23ESFhpNcsdvonchdk/kformtMhYksADnzH3GLNebyxFIG0N4jWhh/DIOYFgkqZxEhXiNerM7IxmcDblMsYE9BWIlMeprxavMSZ1h05jziEVTGgKHmvSDk8cos00tGiiGvOap8xoMgsNBaLNHM/cjU0actzM8FzV8QJeuog2Zcy7G5NiZoFFu44lmFMk8uq1yxgQzL55++79smrMzApktemAceezXi0Q+QCd2gzHrfsLHz+t6Tp8Rhqn11c+fxFvfKZo/t/k2DjBbEL+Jxri6wmmi2/58Tu5zZJk64f192UT5MLbO5XHsxvcy7D/07TpX5TO7z/2A42/B5miIHXYc2SCfx+PrwcAjj9tAAAAAElFTkSuQmCC" width="25" height="25"/>
                                  </svg>
                               </a>
+                              <a href="javascript:void(0);" data-id="<?php echo $shipping_address[$i]['shipping_id']; ?>" class="delete_shipping_data_btn" >
+                                 <button type="button" class="remove_inventory remove_add_btn error">X
+                                 </button>
+                              </a>
                            </p>
 					         </div>
 				         </div>
@@ -123,6 +128,10 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                               <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" width="25" height="25" viewBox="0 0 25 25">
                                  <image xlink:href="data:img/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAiCAMAAADiW5DOAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAABiVBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwwLPBAAAAgnRSTlMAT9rkZQQhMBFpiBue8e4L00nAOu3eCHjJDwaylwEX7O9yIxADjvUth8OlfeGL1RWs/lOWz/3XHFBb3EL2vKMFVPokTiKvmPv5Crq+wnzKZJXFgauokY+2efRinHNgDCU5UWewNp9A28FrSx8J/FdIneV+PfhKMjGS4xPY4Cx20NQNoV6DzAAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAG0SURBVDjLjdNpV9NAGIbhV4qgbFIWkdKqQFEsoKAUsNSlRaUBFAEXFq0LoIIWVGRzA+5fbrNMJwktx+fDnMzJdTKTeRKRUjlVRqBcT09XVFo54yJnMVPlzKprarFTd85N6oMNCjU2odJ8XpEWuNAqoTYIR0QuXuJye0enlaiXiEJdXLnq3243XLOXjcagR3rp85Oq/LLXb9jX0X7qZICbXhG5BYNxhobV5gcERrwkDG2h23ESFhpNcsdvonchdk/kformtMhYksADnzH3GLNebyxFIG0N4jWhh/DIOYFgkqZxEhXiNerM7IxmcDblMsYE9BWIlMeprxavMSZ1h05jziEVTGgKHmvSDk8cos00tGiiGvOap8xoMgsNBaLNHM/cjU0actzM8FzV8QJeuog2Zcy7G5NiZoFFu44lmFMk8uq1yxgQzL55++79smrMzApktemAceezXi0Q+QCd2gzHrfsLHz+t6Tp8Rhqn11c+fxFvfKZo/t/k2DjBbEL+Jxri6wmmi2/58Tu5zZJk64f192UT5MLbO5XHsxvcy7D/07TpX5TO7z/2A42/B5miIHXYc2SCfx+PrwcAjj9tAAAAAElFTkSuQmCC" width="25" height="25"/>
                               </svg>
+                           </a>
+                           <a href="javascript:void(0);" data-id="<?php echo $billing_address[$i]['billing_id']; ?>" class="delete_billing_data_btn" >
+                                 <button type="button" class="remove_inventory remove_add_btn error">X
+                                 </button>
                            </a>
                         </p>
                      </div>
@@ -223,7 +232,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
             <div><label>Billing Mobile <small title="required">*</small>
                </label>
                <input placeholder="Mobile" value="<?php echo $shipping_phone; ?>" name="shiping_phone" id="shiping_phone"
-                  type="text" maxlength="15">
+                  class="numberonly" type="text" maxlength="10">
                <span id="shiping-phone-error" class="error"></span>
             </div>
          </div>
@@ -580,7 +589,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
       <label>Shipping Postcode / ZIP <small title="required">*</small></label>
       <input placeholder="Zip Code" name="shipping_zipcode" id="shipping_zipcode" type="text" value="" maxlength="100">
       <label>Shipping Mobile <small title="required">*</small></label>
-      <input placeholder="Mobile" name="shipping_phone" id="shipping_phone" type="text" value="" maxlength="15">
+      <input placeholder="Mobile" name="shipping_phone" id="shipping_phone" class="numberonly" type="text" value="" maxlength="10">
       <input type="hidden" name="oauth_key" value="F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT">
       <input type="hidden" name="user_role_id" value="4">
       <button onclick="SaveAddress('shipping');">SAVE ADDRESS</button>
@@ -625,7 +634,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
       <label>Shipping Postcode / ZIP <small title="required">*</small></label>
       <input placeholder="Zip Code" name="edit_shipping_zipcode" id="edit_shipping_zipcode" type="text" value="" maxlength="100">
       <label>Shipping Mobile <small title="required">*</small></label>
-      <input placeholder="Mobile" name="edit_shipping_phone" id="edit_shipping_phone" type="text" value="" maxlength="15">
+      <input placeholder="Mobile" name="edit_shipping_phone" id="edit_shipping_phone" class="numberonly" type="text" value="" maxlength="10">
       <input type="hidden" name="oauth_key" value="F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT">
       <input type="hidden" name="user_role_id" value="4">
       <input name="edit_shipping_id" id="edit_shipping_id" type="hidden">
@@ -664,7 +673,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
       <label>Billing Postcode / ZIP <small title="required">*</small></label>
       <input placeholder="Zip Code" name="billing_zipcode" id="billing_zipcode" type="text" value="" maxlength="100">
       <label>Billing Mobile <small title="required">*</small></label>
-      <input placeholder="Mobile" name="billing_phone" id="billing_phone" type="text" value="" maxlength="15">
+      <input placeholder="Mobile" name="billing_phone" id="billing_phone" class="numberonly" type="text" value="" maxlength="10">
       <input type="hidden" name="oauth_key" value="F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT">
       <input type="hidden" name="user_role_id" value="4">
       <button onclick="SaveAddress('billing');">SAVE ADDRESS</button>
@@ -706,7 +715,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
       <label>Billing Postcode / ZIP <small title="required">*</small></label>
       <input placeholder="Zip Code" name="edit_billing_zipcode" id="edit_billing_zipcode" type="text" value="" maxlength="100">
       <label>Billing Mobile <small title="required">*</small></label>
-      <input placeholder="Mobile" name="edit_billing_phone" id="edit_billing_phone" type="text" value="" maxlength="15">
+      <input placeholder="Mobile" name="edit_billing_phone" id="edit_billing_phone" class="numberonly" type="text" value="" maxlength="10">
       <input type="hidden" name="oauth_key" value="F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT">
       <input type="hidden" name="user_role_id" value="4">
       <input name="edit_billing_id" id="edit_billing_id" type="hidden">
@@ -781,6 +790,11 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
     $(document).on('click', '.close-vraj-checkout', function() {
       CloseCheckoutModels();
     });
+    $('.numberonly').keypress(function (e) {
+		var charCode = (e.which) ? e.which : event.keyCode
+		if (String.fromCharCode(charCode).match(/[^0-9]/g))
+			return false;
+	});
 </script>
 
 <style>

@@ -84,18 +84,18 @@ defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
-defined('BASE_URL')         OR define('BASE_URL','https://www.vrajfresh.com/api/');
+defined('BASE_URL')         OR define('BASE_URL','http://localhost/vrajfresh_latest/api/');
 defined('ASSET_URL')         OR define('ASSET_URL',BASE_URL.'assets/');
-defined('FRONT_URL')         OR define('FRONT_URL','https://www.vrajfresh.com/');
+defined('FRONT_URL')         OR define('FRONT_URL','http://localhost/vrajfresh_latest/');
 
-defined('ADMIN_URL')         OR define('ADMIN_URL','https://www.vrajfresh.com/admin/');
+defined('ADMIN_URL')         OR define('ADMIN_URL','http://localhost/vrajfresh_latest/admin/');
 
 defined('FEDEX_CLIENT_ID')  OR define('FEDEX_CLIENT_ID', 'l7da850e647e304b0faba020cadce84dd4'); //Fedex Client id
 defined('FEDEX_CLIENT_SECRET') OR define('FEDEX_CLIENT_SECRET', '799e545107064f38b283ff16fe3e0fa0'); //Fedex secret id
 
 
-defined('STRIPE_SECRET_KEY')    OR define('STRIPE_SECRET_KEY','sk_test_Nf5qbJOgwQg3chjObUc7TimG006zBZcXbI'); // Stripe secret key
-defined('STRIPE_PUBLISHABLE_KEY')    OR define('STRIPE_PUBLISHABLE_KEY','pk_test_yd5gvyIjhcQuvcys2VGQY9yj00PXtsIsOU'); // Stripe secret key 
+/*defined('STRIPE_SECRET_KEY')    OR define('STRIPE_SECRET_KEY','sk_test_Nf5qbJOgwQg3chjObUc7TimG006zBZcXbI'); // Stripe secret key
+defined('STRIPE_PUBLISHABLE_KEY')    OR define('STRIPE_PUBLISHABLE_KEY','pk_test_yd5gvyIjhcQuvcys2VGQY9yj00PXtsIsOU'); // Stripe secret key */
 
 
 /* LIVE CREDENTIALS */

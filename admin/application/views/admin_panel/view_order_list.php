@@ -41,6 +41,7 @@
                         <option value="Cancelled">Cancelled</option>
                         <option value="Refunded">Refunded</option>
                         <option value="Failed">Failed</option>
+                        <option value="Out For Delivery">Out For Delivery</option>
                      </select>
                   </div>
                   <div class="col-sm-3">
