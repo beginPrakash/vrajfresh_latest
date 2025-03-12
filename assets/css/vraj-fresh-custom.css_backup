@@ -470,6 +470,9 @@ ul.tabs {
 	background: #fff;
 	text-align: left;
 }
+.product-stock-message {
+    line-height: 16px;
+}
 .product-box img {
 	display: block;
 	width: auto;
@@ -993,7 +996,7 @@ button[type="button"].remove_add_btn {
     font-size: 0;
     background: url(../images/delete.png) no-repeat center center / contain;
     opacity: 0.5;
-    padding-top: 25px;
+	padding-top: 25px;
  }
 .product-usp {
 	flex: 3;
@@ -1338,6 +1341,23 @@ header .success {
 .billing-right .quantity {
 	margin: 0 auto;
 }
+/* .cart_totals {
+	margin: 20px 0;
+	background: #fff;
+	padding: 2em;
+	width: 100%;
+}
+.cart_totals ul {
+	width: 100%;
+	margin-bottom: 15px;
+}
+.cart_totals ul li {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+	padding: 15px 0;
+	border-bottom: solid 1px #ddd;
+} */
 .cart_totals {
 	margin: 20px 0;
 	background: #fff;
@@ -2162,7 +2182,6 @@ body { font-family: 'IBM Plex Sans', sans-serif; }
 .popup-right form input { width: 100%; padding: 13px 18px; border: none; }
 .popup-right form button { width: 50px; border: none; background: #209fcf; cursor: pointer; }
 .popup-right form button img { width: 20px; }
-.product-stock-message { line-height: 16px; }
 .popup-right .popup-ul { display: flex; justify-content: space-between; }
 .popup-right .popup-ul li { color: #a31008; background: #ffe264; padding: 10px 10px; text-decoration: none; display: flex; text-align: center; font-weight: 600; text-transform: uppercase; }
 .close-popup { position: absolute; right: 3px; width: 40px; height: 40px; top: 3px; }

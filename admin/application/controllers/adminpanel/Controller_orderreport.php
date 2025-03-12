@@ -27,11 +27,25 @@ class Controller_orderreport extends CI_Controller
 			$i = $_REQUEST['start'] + 1;
 			foreach ($ArrData['result'] as $aRow) {
 				$row = $category_name = array();
-
+				$city = '';
+				$state = '';
+				$zip = '';
+				if(!empty($aRow['city'])){
+					$city= ', '.$aRow['city'];
+				}
+				if(!empty($aRow['state'])){
+					$state = ', '.$aRow['state'];
+				}
+				if(!empty($aRow['zip'])){
+					$zip = ', '.$aRow['zip'];
+				}
 				
 				$row[] = $aRow['order_id'];
 				$row[] = $aRow['order_datetime'];
 				$row[] = $aRow['display_name'];
+				$row[] = $aRow['email'];
+				$row[] = $aRow['address'].''.$city.''.$zip;
+				$row[] = $aRow['mobile_no'];
 				$row[] = $aRow['order_status'];
 				$row[] = $aRow['order_total_amount'];
 				
@@ -64,15 +78,31 @@ class Controller_orderreport extends CI_Controller
 		foreach ($ArrDataList as $ArrData) {
 			$no++;
 			$row = array();
+			$city = '';
+				$state = '';
+				$zip = '';
+				if(!empty($ArrData['city'])){
+					$city= ', '.$ArrData['city'];
+				}
+				if(!empty($ArrData['state'])){
+					$state = ', '.$ArrData['state'];
+				}
+				if(!empty($ArrData['zip'])){
+					$zip = ', '.$ArrData['zip'];
+				}
+
 			$row[] = $ArrData['order_id'];
 			$row[] = $ArrData['order_datetime'];
 			$row[] = $ArrData['display_name'];
+			$row[] = $ArrData['email'];
+			$row[] = $ArrData['address'].''.$city.''.$zip;
+			$row[] = $ArrData['mobile_no'];
 			$row[] = $ArrData['order_status'];
 			$row[] = $ArrData['order_total_amount'];
 			$data[] = $row;
     	}
 		$report_title = "order_report_".time();
-		$ArrHeading = array('Order Number','Date','Customer Name','Order Status','Total amount');
+		$ArrHeading = array('Order Number','Date','Customer Name','Email Address','Local Address','Phone No','Order Status','Total amount');
 		array_to_csv($ArrHeading,$data,$report_title);		
 	}
 

@@ -140,6 +140,7 @@ $is_payment_received = true;
          </label>
 
       </div>
+
       <?php if (!empty($ArrFieldData['substitution_products'])) { ?>
       <div class="col-sm-12">
          <strong>Substitution Products: </strong>
@@ -290,7 +291,7 @@ $is_payment_received = true;
       </div>
    </div>
    <div class="row">
-
+   <input type="hidden" name="total_or_qty" id="total_or_qty">
       <div class="col-sm-4">
          <!--<select class="form-control select_product_ajax" style="width: 100%;" name="ddIsActive" id="ddIsActive">
                   <option value="1">one</option>
@@ -358,6 +359,7 @@ $is_payment_received = true;
 		 }
          ?>
       </div>
+
       <div class="col-sm-4">
 
          <label>Delivery Date : </label>
@@ -374,6 +376,20 @@ $is_payment_received = true;
 
       </div>
 
+      <div class="col-sm-4">
+         <label>Earned Credit: </label>
+         <input type="hidden" name="order_credit_per" value="<?php echo $ArrFieldData['order_credit_per']; ?>">
+         <input type="text" placeholder="Earned Credit" class="form-control" id="earned_credit" name="earned_credit"
+           value="<?php echo $ArrFieldData['earned_trans_credit']; ?>"required readonly>
+      </div>
+
+      <div class="col-sm-4">
+         <label>Used Credit: </label>
+         <input type="text" placeholder="Used Credit" class="form-control" id="used_credit" name="used_credit"
+           value="<?php echo $ArrFieldData['used_trans_credit']; ?>"
+            required readonly>
+      </div>
+      
    </div>
 
    <div class="row">
@@ -512,12 +528,12 @@ $is_payment_received = true;
 
 <?php if($ArrFieldData['is_capture'] == 1){
          if(!empty($ArrFieldData['diff_coupon_discount'])){     
-            $tval = number_format($ArrFieldData['DiffAmount'],2);
+            $tval = $ArrFieldData['DiffAmount'] ;
          }else{
-            $tval = number_format($ArrFieldData['DiffAmount'],2);
+            $tval = $ArrFieldData['DiffAmount'];
          }
     }  else {
-      $tval = number_format($ArrFieldData['DiffAmount'],2);
+      $tval = $ArrFieldData['DiffAmount'];
     }
 
     ?>
@@ -699,7 +715,11 @@ $is_payment_received = true;
          // alert($(this).val());
       });
       $('#total_order_without_taxw').val(NewTotalA);
-
+      var QTYTotals = 0;
+      $('.qty').each(function () {
+         QTYTotals = QTYTotals + parseInt($(this).val());
+      });
+      $('#total_or_qty').val(QTYTotals);
    function updateFooterTotal() {
       var QTYTotal = 0;
       var NetTotal = 0;
@@ -722,6 +742,7 @@ $is_payment_received = true;
       });
 
       $("#divQTYTotal").html(QTYTotal);
+      $('#total_or_qty').val(QTYTotal);
       //$("#divNetTotal").html(NetTotal);
       //NetTotal = Math.round(NetTotal).toFixed(2);
       $("#divNetTotal").html(NetTotal.toFixed(2));

@@ -189,6 +189,8 @@ class Controller_checkout extends CI_Controller
 				$ArrUserData['billing_address_count'] 	= count($response['data']['billing_address']);
 				$ArrUserData['card_count'] 				= count($response['data']['cards']);
 				$ArrUserData['card_id'] 				= $response['data']['card_id'];
+				$ArrUserData['earned_credit'] 			= $response['data']['earned_credit'];
+				$ArrUserData['last_credit_per'] 			= $response['data']['last_credit_per'];
 			}
 		}
 
@@ -948,15 +950,16 @@ class Controller_checkout extends CI_Controller
 		$ArrCustomer['state_tax'] = $_POST['state_tax'];
 		$ArrCustomer['discount_amount'] = $_POST['discount_amount'];
 		$ArrCustomer['coupon_id'] = $_POST['discount_id'];
-		
+		$ArrCustomer['earned_credit_val'] = $_POST['earned_credit_val'];
+		$ArrCustomer['earned_credit_checkbox'] = $_POST['earned_credit_checkbox'];
 
 		if ($_POST['delivery_type'] == 'two_hour') {
 			$delivery_date_time = date("Y-m-d H:i:s", strtotime("+1 hours"));
 			$ArrCustomer['delivery_datetime'] = $delivery_date_time;
 		}
 		if ($_POST['delivery_type'] == 'one_day') {
-			$delivery_date_time = date("Y-m-d H:i:s", strtotime($_POST['delivery_one_day_date']));
-			$ArrCustomer['delivery_datetime'] = $delivery_date_time;
+			$delivery_date_time = DateTime::createFromFormat('d/m/Y', $_POST['delivery_one_day_date']);
+			$ArrCustomer['delivery_datetime'] = $delivery_date_time->format('Y-m-d');
 		}
 		if ($_POST['delivery_type'] == 'Twise in a week') {
 
@@ -1065,7 +1068,8 @@ class Controller_checkout extends CI_Controller
 			
 			//$this->payment($order_id, $order_amount, $zip_code,$sms_shipping_phone);
 			
-			$order_amount = $order_amount * 100;
+			//$order_amount = $order_amount * 100;
+			$order_amount = bcmul($order_amount, '100', 0);
 			$this->new_payment_process($order_id, $order_amount, $shipping_details, $billing_details, $_POST);
 
 		} else {

@@ -31,6 +31,10 @@ $route['delete-zipcode'] = 'adminpanel/Controller_zipcode/delete_zipcode';
 $route['website-configuration'] = 'adminpanel/Controller_configuration/website';
 $route['save-configuration'] = 'adminpanel/Controller_configuration/save_website_configuration';
 
+/* CASH CREDITS */
+$route['cash-credits'] = 'adminpanel/Controller_credits/cashcredits';
+$route['save-cashcredits'] = 'adminpanel/Controller_credits/save_cash_credits';
+
 /* CMS */
 $route['cms'] = 'adminpanel/controller_cms';
 $route['cms-add'] = 'adminpanel/controller_cms/add';

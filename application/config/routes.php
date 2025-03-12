@@ -107,6 +107,7 @@ $route['my-address'] = 'Controller_users/address';
 $route['my-account'] = 'Controller_users/edit_account';
 $route['sucess-login'] = 'Controller_users/login_sucess';
 $route['my-orders'] = 'Controller_users/orders';
+$route['credit-transactions'] = 'Controller_users/credit_transactions';
 $route['contact'] = 'Controller_login/contact';
 $route['change_password_process'] = 'Controller_users/change_password_process';
 $route['edit-profile'] = 'Controller_users/edit_profile';

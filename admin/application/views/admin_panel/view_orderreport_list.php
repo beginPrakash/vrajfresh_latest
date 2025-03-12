@@ -31,7 +31,7 @@
                      <select class="form-control select2" style="width: 100%;" name="ddIsActive" id="ddIsActive">
                         <option value="" selected="selected">--Order Status--</option>
                         <option value="Pending Payment">Pending Payment</option>
-                        <option value="Processing">Processing</option>
+                        <option value="Processing" selected>Processing</option>
                         <option value="On Hold">On Hold</option>
                         <option value="Completed">Completed</option>
                         <option value="Cancelled">Cancelled</option>
@@ -74,6 +74,9 @@
                      <th>Order Number</th>
                      <th>Order Date</th>
                      <th>Customer Name</th>
+                     <th>Email Address</th>
+                     <th>Local Address</th>
+                     <th>Phone Number</th>
                      <th>Order Status</th>
                      <th>Total Amount</th>
                      
@@ -112,9 +115,15 @@
    }, {
       "bSortable": true
    }, {
+      "bSortable": true
+   }, {
+      "bSortable": true
+   }, {
+      "bSortable": true
+   }, {
       "bSortable": false
    }];
-   var colDef = [0, 5];
+   var colDef = [0, 8];
    var aoColumnDefs = [];
    var aoColumnDefsCenter = [];
    var ajaxURL1 = {

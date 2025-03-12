@@ -754,6 +754,24 @@ $('input[type=radio][name=refund_for_unavailable]').change(function() {
     }
 });
 
+if($("input[type=radio][name=refund_for_unavailable]").is(':checked')){
+    var selectedCardId = $("input[type=radio][name=refund_for_unavailable]:checked").val();
+        if(selectedCardId == "2"){
+            $(".substitution_products_div").show();
+            $('input[type=checkbox][name="substitution_product_ids[]"]').prop('checked', false);
+            $('input[type=checkbox][name="substitution_product_ids[]"]').prop('disabled', false);
+            $(".substitution_products_div").show();
+        } else if(selectedCardId == "3"){
+            $('input[type=checkbox][name="substitution_product_ids[]"]').prop('checked', true);
+            $('input[type=checkbox][name="substitution_product_ids[]"]').prop('disabled', true);
+            $(".substitution_products_div").show();
+        } else if(selectedCardId == "4"){
+            $('input[type=checkbox][name="substitution_product_ids[]"]').prop('checked', false);
+            $('input[type=checkbox][name="substitution_product_ids[]"]').prop('disabled', true);
+            $(".substitution_products_div").hide();
+        }
+}
+
 $('input[type=radio][name=card_id]').change(function() {
     if ($(this).is(':checked')) {
         var selectedCardId = $(this).val();
@@ -1052,6 +1070,35 @@ function taxCalc() {
 
     }
 
+    var total_cr_val = $('#earned_credit_val').val();
+    if (total_cr_val != "" && total_cr_val != null) {
+            if($('#earned_credit_checkbox').is(':checked')) {
+                console.log('sdsd');
+                var total_c_amount = total_tax_sub;
+
+                var total_c_amount_after_discount = total_c_amount - total_cr_val;
+
+                var total_c_amount_after_discount = total_c_amount_after_discount.toFixed(2);
+
+                $("#cart-total").html(parseFloat(total_c_amount_after_discount));
+
+                $("#hdn_order_amount").val(parseFloat(total_c_amount_after_discount));
+
+                $("#cart_total").val(parseFloat(total_c_amount_after_discount));
+
+            }else{
+                var total_c_amount = total_tax_sub;
+
+                $("#cart-total").html(parseFloat(total_c_amount));
+
+                $("#hdn_order_amount").val(parseFloat(total_c_amount));
+
+                $("#cart_total").val(parseFloat(total_c_amount));
+            }
+       
+    }
+
+
 
 
     if (tip != null && tip != '' && tip != undefined && discount != null && discount != '' && discount != undefined) {
@@ -1112,7 +1159,12 @@ function taxCalc() {
 
     }
 
-
+    //calculate credit percentage for currunt order
+    var or_am_val = parseFloat($("#hdn_order_amount").val());
+    var last_cr_per = $('#last_credit_per').val();
+    var total_er_cr_val = last_cr_per/100*or_am_val;
+    var find_er_cr_val = total_er_cr_val.toFixed(2);
+    $('#earn_cr_txtval').text('$'+find_er_cr_val);
 
     UpdateCartTax(selectedValue);
 
@@ -1243,7 +1295,12 @@ function isNumber(evt) {
 
 $(document).ready(function() {
 
+    var earned_cr = parseFloat($('#earned_credit_val').val());
+    var order_total_amt = $('#cart_total').val();
 
+    if(order_total_amt < earned_cr || earned_cr <= 0){
+        $('#earned_credit_checkbox').attr('disabled',true);
+    }
 
     <?php
 
@@ -1289,6 +1346,18 @@ $(document).ready(function() {
 
     }
 
+    var total_cr_val = $('#earned_credit_val').val();
+    if (total_cr_val != "" && total_cr_val != null) {
+        $('#earned_credit_checkbox').click(function() {
+            if($(this).is(':checked')) {
+                $("#sub_credit_val").html('-$' + total_cr_val);
+                $('#sub_credit_div').show();
+            }else{
+                $('#sub_credit_div').hide();
+            }
+        });
+    }
+
     if (order_amount != "" && order_amount != null) {
 
         $("#cart-total").html((parseFloat(order_amount) + parseFloat( <?php echo $preparation_cost + $packaging_cost; ?>)).toFixed(2));
@@ -1331,7 +1400,12 @@ $(document).ready(function() {
 
     });
 
-
+    //calculate credit percentage for currunt order
+    var or_am_val = parseFloat($("#hdn_order_amount").val());
+    var last_cr_per = $('#last_credit_per').val();
+    var total_er_cr_val = last_cr_per/100*or_am_val;
+    var find_er_cr_val = total_er_cr_val.toFixed(2);
+    $('#earn_cr_txtval').text('$'+find_er_cr_val);
 
     var current = new Date();
 
@@ -1436,6 +1510,12 @@ $(document).ready(function() {
 
 
     $('#state').on('change', function() {
+
+        taxCalc();
+
+    });
+
+    $('#earned_credit_checkbox').on('change', function() {
 
         taxCalc();
 

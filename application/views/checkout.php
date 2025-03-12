@@ -24,6 +24,11 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
       border-radius: 5px;
       margin: 5px 0;
     }
+
+    .cash_cr_text{
+      color: green;
+      font-weight: 600;
+    }
    
 </style>
 <section class="categories-banner">
@@ -109,6 +114,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                      <p><b>Same As Shipping Address</b></p>
                   </div>
                </div>
+
                <?php if(!empty($billing_address)){ 
                   for($i = 0; $i < count($billing_address); $i++){ ?>
                   <div class="address-box">
@@ -340,16 +346,16 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
          ?>
       <div class="billing-right" id="SubstitutiondeData">
          <h3 id="required_policy">SUBSTITUTION PREFERENCES<small title="required">*</small></h3>
+         <div class="substitue-box">
+            <input name="refund_for_unavailable" id="substitute_on_entire_order" type="radio" value="3" checked>
+            <label for="refund_for_unavailable">Substitute on entire order</label>
+         </div>
 		   <div class="substitue-box">
             <input name="refund_for_unavailable" id="substitute_on_selected_products" type="radio" value="2">
             <label for="substitute_unavailable">Substitute on selected products only</label>
          </div>
 		   <div class="substitue-box">
-            <input name="refund_for_unavailable" id="substitute_on_entire_order" type="radio" value="3">
-            <label for="refund_for_unavailable">Substitute on entire order</label>
-         </div>
-		   <div class="substitue-box">
-            <input name="refund_for_unavailable" id="no_please_refund" type="radio" value="4" checked>
+            <input name="refund_for_unavailable" id="no_please_refund" type="radio" value="4">
             <label for="refund_for_unavailable">No, please refund</label>
 		   </div>
          <span id="replace-policy-error" class="error"></span>
@@ -412,13 +418,27 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
             <?php } ?>
             <?php } ?>
          </table>
+         <p class="or_text">Order Summary</p>
          <div class="cart_totals">
+            <ul>
+            <li class="cart-subtotal">
+                  <p class="cash_cr_text">Use Cashback Credits</p>
+                  <input type="hidden" id="earned_credit_val" name="earned_credit_val" value="<?php echo number_format($earned_credit,2); ?>">
+                  <input type="hidden" id="last_credit_per" name="last_credit_per" value="<?php echo $last_credit_per; ?>">
+               </li>
+               <li class="cart-subtotal cash_credits" id="cash_credits">
+                  <p><b>Available Credits: </b><span id="cash_credits">$<?php echo number_format($earned_credit,2); ?></span></p>
+                  <span><input type="checkbox" id="earned_credit_checkbox" name="earned_credit_checkbox" value="1"></span>
+               </li>
+            </ul>
+         </div>
+         <div class="cart_totals" style="background:#efefef !important;">
             <ul>
                <li class="cart-subtotal coupon_detail" id="coupon_detail">
                   <p>Applyed Coupon Code:</p>
                   <span id="apply_coupon_code"></span>
                </li>
-               <li class="cart-subtotal">
+               <li class="cart-subtotal" style="margin:0px !important;">
                   <p>Subtotal:</p>
                   <span id="subtotal">
                   <?php
@@ -455,6 +475,12 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                   <p>Discount:</p>
                   <span>
                   <span id="discount"></span>
+                  </span>
+               </li>
+               <li class="cart-subtotal" id="sub_credit_div" style="display:none";>
+                  <p>Credit Value:</p>
+                  <span>
+                  <span id="sub_credit_val"></span>
                   </span>
                </li>
                <li class="cart-subtotal">
@@ -531,6 +557,9 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
             <input type="hidden" name="discount_amount" id="dis_count_amount">
             <input type="hidden" name="discount_id" id="discount_id">
             <input type="hidden" name="product_tax" id="product_tax">
+            <?php if ($last_credit_per > 0) { ?>
+            <p><span>You'll receive <b id="earn_cr_txtval"></b> credit when you place an order.</span></p>
+            <?Php } ?>
             <p>
                <b>Note: </b>Orders placed before 3:00PM, will be delivered same day between 5:00 PM - 9:00 PM.
                Orders placed after 3:00PM, will be delivered next day 5:00 PM - 9:00 PM
@@ -748,6 +777,8 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
             maxDate: 7,
             defaultDate: today
       }).datepicker("setDate", today);
+
+     
    });
    
    let checkoutformsubmit = 0;

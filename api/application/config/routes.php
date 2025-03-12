@@ -146,6 +146,7 @@ $route['get-order-by-id'] = 'Controller_orders/get_order_by_id';
 $route['deliveryboy-order-by-id'] = 'Controller_orders/deliveryboy_order_by_id';
 $route['update-order'] = 'Controller_orders/update_order';
 $route['get-order-by-user-id'] = 'Controller_orders/get_order_by_user_id';
+$route['get-credit-transaction-by-user-id'] = 'Controller_credittransaction/get_credit_transaction_by_user_id';
 $route['deliveryboy-get-order-by-user-id'] = 'Controller_orders/deliveryboy_get_order_by_user_id';
 $route['report-order'] = 'Controller_orders/report_order';
 $route['requested-product'] = 'Controller_orders/requested_product';

@@ -1082,9 +1082,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     }
                 });
             } else {
-                $("#zipcode_message1").html('Please enter zipcode');
-                $("#zipcode_popup_message1").html('Please enter zipcode');
-                $("#success_center").hide();
+                if (zipcode != '') {
+                    $("#zipcode_message1").html('Please enter zipcode');
+                    $("#zipcode_popup_message1").html('Please enter zipcode');
+                    $("#success_center").hide();
+                }
             }
 
             return false;
@@ -1176,9 +1178,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     }
                 });
             } else {
+                if (zipcode != '') {
                 $("#zipcode_message1").html('Please enter zipcode');
                 $("#zipcode_popup_message1").html('Please enter zipcode');
                 $("#success_center").hide();
+                }
             }
 
             return false;

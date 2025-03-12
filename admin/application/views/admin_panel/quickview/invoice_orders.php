@@ -431,6 +431,39 @@ Order Note:
 
                 <td colspan="5"
 
+                    style="text-align: right ; height:30px; border:1px solid rgb(218 218 218);padding-right: 1%;">Earned Credit Value
+
+                </td>
+
+                <td style="height:30px;border:1px solid rgb(218 218 218);text-align: center;">$
+
+                    <?php echo $earned_cr_val; ?>
+
+                </td>
+
+            </tr>
+
+            
+            <tr>
+
+                <td colspan="5"
+
+                    style="text-align: right ; height:30px; border:1px solid rgb(218 218 218);padding-right: 1%;">Used Credit Value
+
+                </td>
+
+                <td style="height:30px;border:1px solid rgb(218 218 218);text-align: center;">$
+
+                    <?php echo $used_cr_val; ?>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td colspan="5"
+
                     style="text-align: right ; height:30px; border:1px solid rgb(218 218 218);padding-right: 1%;">Tip
 
                 </td>

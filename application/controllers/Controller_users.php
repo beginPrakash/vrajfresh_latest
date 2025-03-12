@@ -335,6 +335,12 @@ class Controller_users extends CI_Controller
             $this->load->view('request_special');
         }
     }
+
+    public function credit_transactions()
+    {
+        $this->load->view('credit-transactions');
+    }
+
     public function logout()
     {
         delete_cookie('user_id');
@@ -353,4 +359,6 @@ class Controller_users extends CI_Controller
         $this->session->sess_destroy();
         redirect(BASE_URL);
     }
+
+    
 }

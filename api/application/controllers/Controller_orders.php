@@ -15,6 +15,8 @@ class Controller_orders extends CI_Controller
 		$this->load->model('orders_model');
 		$this->load->model('coupons_model');
 		$this->load->model('users_model');
+		$this->load->model('cashcredit_model');
+		$this->load->model('credittransaction_model');
 		$this->load->model('Master_model', 'master');
 		//error_reporting(0);
 	}
@@ -127,6 +129,17 @@ class Controller_orders extends CI_Controller
 			$NewArrData['card_id'] = 0;
 			$NewArrData['usercart_arr'] = $json_obj->cart_data;
 			
+			//get total credit sum
+			$credit_total_date = $this->credittransaction_model->get_credit_sum($user_id);
+			$credit_total = $credit_total_date['amount'] ?? 0.00;
+			$NewArrData['earned_credit'] = $credit_total;
+
+			//get last credit per
+			$find_last_credit =  $this->cashcredit_model->get_last_creditdetail();
+			$last_credit_per = $find_last_credit['credit_per'] ?? 0;
+			$NewArrData['last_credit_per'] = $last_credit_per;
+
+
 			$UserDetails = $this->master->get_row_detail('tbl_users', array('user_id' => $user_id));
 			if(!empty($user_id)){
 				$newInsertArr = array(
@@ -138,6 +151,7 @@ class Controller_orders extends CI_Controller
 				$this->master->insertData('tbl_cart_to_checkout_log', $newInsertArr);
 				
 			}
+			
 			$shiiping_address = $this->master->get_list_of_data('tbl_shipping_address', array('user_id' => $user_id, 'is_active' => 1));
 			if(empty($shiiping_address)){
 				if(!empty($UserDetails)){
@@ -450,7 +464,7 @@ class Controller_orders extends CI_Controller
 				'shipping_phone' => $shipping_phone,
 				'shipping_email' => $shipping_email,
 				'delivery_type' => trim($json_obj->ArrCustomer->delivery_type),
-				'delivery_datetime' => $json_obj->ArrCustomer->delivery_datetime,
+				'delivery_datetime' => date('Y-m-d', strtotime($json_obj->ArrCustomer->delivery_datetime)),
 				'is_replace_item' => trim($json_obj->ArrCustomer->is_replace_item),
 				'substitution_product_ids' => $substitution_product_ids,
 				'created_by' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $user_id))),
@@ -515,13 +529,14 @@ class Controller_orders extends CI_Controller
 			$state_tax = $json_obj->ArrCustomer->state_tax;
 			$coupon_id = $json_obj->ArrCustomer->coupon_id;
 			$fedex_tracking_id = 0;
+			$earned_credit_checkbox = $json_obj->ArrCustomer->earned_credit_checkbox;
 			/*$track_id = get_ship();
 					 if ($track_id->output->transactionShipments[0]->masterTrackingNumber != null) {
 						 $fedex_tracking_id = $track_id->output->transactionShipments[0]->masterTrackingNumber;
 					 } else {
 						 return $track_id->errors[0]->message;
 					 }*/
-
+			
 
 			$order_data = array(
 				'order_amount' => trim($total_order_amount),
@@ -541,6 +556,19 @@ class Controller_orders extends CI_Controller
 				//	'stripe_raw_response' =>''
 			);
 			$order_id = $this->orders_model->update_order($order_data, $result, 'tbl_orders');
+
+			//find credits percentage
+			$find_credit_per =  $this->cashcredit_model->get_last_creditdetail();
+			$find_credit_id = $this->cashcredit_model->get_last_creditid();
+			$earned_credit_val = 0;
+			$used_credit_val = 0;
+			//calculate credit percentage
+			if(!empty($total_order_amount) && !empty($find_credit_per['credit_per'])){
+				
+				$earned_credit_val = ($find_credit_per['credit_per'] / 100) * $order_data['order_total_amount'];
+				$earned_credit_val = number_format($earned_credit_val,2);
+			}
+			//print_r($find_credit_per);exit;
 
 			if(!empty($user_details['user_id'])){
 				$newInsertArr = array(
@@ -580,6 +608,34 @@ class Controller_orders extends CI_Controller
 					'CardPaymentMethodId' => $CardPaymentMethodId,
 				)
 			);
+
+			//save earned credit value
+			if(!empty($earned_credit_val)){
+				$earn_cr_data = array(
+					'user_id' => $user_id,
+					'cash_credit_id' => $find_credit_id ?? 0,
+					'order_id' => $result,
+					'type' => 'earned',
+					'amount' => $earned_credit_val,
+					'updated_datetime' => date('Y-m-d H:i:s'),
+				);
+				$crt_id = $this->credittransaction_model->add_credittrans($earn_cr_data);
+			}
+
+			//save used and earned value
+			if(!empty($earned_credit_checkbox)){
+				$used_crval = $json_obj->ArrCustomer->earned_credit_val;
+				$used_cr_data = array(
+					'user_id' => $user_id,
+					'order_id' => $result,
+					'type' => 'used',
+					'amount' => -$used_crval,
+					'updated_datetime' => date('Y-m-d H:i:s'),
+				);
+
+				$crt_id = $this->credittransaction_model->add_credittrans($used_cr_data);
+			}
+
 			if ($result) {
 				$success_message = 'Order added successfully';
 				$users = $this->orders_model->get_users_data($result);
@@ -1095,7 +1151,8 @@ class Controller_orders extends CI_Controller
 					'image2' => $image2,
 					'created_by' => $json_obj->user_id,
 					'created_datetime' => date('Y-m-d h:i:s'),
-					'is_active' => '1'
+					'is_active' => '1',
+					'is_read' => 1
 				);
 
 				$result = $this->orders_model->add_order($data, ' tbl_order_complains');

@@ -684,7 +684,8 @@ class Controller_orders extends CI_Controller
 				'product_detail' => $json_obj->message,
 				'created_by' => $json_obj->user_id,
 				'created_datetime' => date('Y-m-d h:i:s'),
-				'is_active' => '1'
+				'is_active' => '1',
+				'is_read' => 1
 			);
 			$result = $this->orders_model->add_order($data, ' tbl_requested_product');
 			$ArrData = $result;

@@ -23,6 +23,17 @@ span.noti_count {
     font-weight: bold;
     margin-left: -3px;
 }
+span.noti_count_or {
+    border: 2px solid red;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-top: -4px !important;
+    position: absolute;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-weight: bold;
+    margin-left: 0px;
+}
 </style>
 <ul class="sidebar-menu">
 
@@ -66,7 +77,7 @@ span.noti_count {
 
 			<ul class="treeview-menu">
 
-				<li><a href="<?php echo base_url(); ?>orders">My Orders <?php if($processing_order_count > 0){ ?> <span class="noti_count"> <?php echo $processing_order_count; ?></span> <?php } ?></a></li>
+				<li><a href="<?php echo base_url(); ?>orders">My Orders <?php if($processing_order_count > 0){ ?> <span class="noti_count_or"> <?php echo $processing_order_count; ?></span> <?php } ?></a></li>
 
 				<li><a href="<?php echo base_url(); ?>historic-orders">My Historic Orders</a></li>
 
@@ -301,6 +312,8 @@ span.noti_count {
 				<li><a href="<?php echo base_url(); ?>website-configuration">Website Configuration</a></li>
 
 				<li><a href="<?php echo base_url(); ?>state-wise-tax">State Wise Tax</a></li>
+
+				<li><a href="<?php echo base_url(); ?>cash-credits">Cash Credits</a></li>
 
 
 

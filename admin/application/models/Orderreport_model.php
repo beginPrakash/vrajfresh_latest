@@ -7,9 +7,9 @@ class orderreport_model extends CI_Model
 
         if(!empty(@$_REQUEST['txtSearchFrom']) || !empty(@$_REQUEST['txtSearchTo']) || !empty(@$_REQUEST['ddIsActive'])
             || !empty(@$_REQUEST['paymentStatus']) || !empty(@$_REQUEST['txtSearchZipcode'])){
-		$column_order = array(null, 'tbl_orders.order_id', 'tbl_orders.order_datetime', 'tbl_users.display_name', 'tbl_users.mobile_no', 'tbl_orders.order_total_amount', 'tbl_orders.order_status', 'tbl_orders.is_active', 'tbl_orders.created_datetime');
+		$column_order = array(null, 'tbl_orders.order_id', 'tbl_orders.order_datetime', 'tbl_users.display_name', 'tbl_users.mobile_no','tbl_users.email','tbl_users.address','tbl_users.city','tbl_users.state','tbl_users.zip','tbl_orders.order_total_amount', 'tbl_orders.order_status', 'tbl_orders.is_active', 'tbl_orders.created_datetime');
 
-            $aColumns = array('tbl_orders.order_id', 'tbl_orders.order_datetime', 'tbl_users.display_name', 'tbl_users.mobile_no', 'tbl_orders.order_total_amount', 'tbl_orders.order_status', 'tbl_orders.is_active', 'tbl_orders.created_datetime');
+            $aColumns = array('tbl_orders.order_id', 'tbl_orders.order_datetime', 'tbl_users.display_name', 'tbl_users.mobile_no','tbl_users.email','tbl_users.address','tbl_users.city','tbl_users.state','tbl_users.zip','tbl_orders.order_total_amount', 'tbl_orders.order_status', 'tbl_orders.is_active', 'tbl_orders.created_datetime');
 
             $column_search = array('tbl_orders.order_id', 'tbl_users.display_name', 'tbl_users.first_name', 'tbl_users.last_name', 'tbl_users.email', 'tbl_orders.order_status', 'tbl_users.mobile_no');
 
@@ -79,7 +79,7 @@ class orderreport_model extends CI_Model
 	{
         if(!empty(@$_REQUEST['txtSearchFrom']) || !empty(@$_REQUEST['txtSearchTo']) || !empty(@$_REQUEST['ddIsActive'])
         || !empty(@$_REQUEST['paymentStatus']) || !empty(@$_REQUEST['txtSearchZipcode'])){
-            $aColumns = array('tbl_orders.order_id', 'tbl_orders.order_datetime', 'tbl_users.display_name', 'tbl_users.mobile_no', 'tbl_orders.order_total_amount', 'tbl_orders.order_status', 'tbl_orders.is_active', 'tbl_orders.created_datetime');
+            $aColumns = array('tbl_orders.order_id', 'tbl_orders.order_datetime', 'tbl_users.display_name', 'tbl_users.mobile_no','tbl_users.email','tbl_users.address','tbl_users.city','tbl_users.state','tbl_users.zip','tbl_orders.order_total_amount', 'tbl_orders.order_status', 'tbl_orders.is_active', 'tbl_orders.created_datetime');
 
             $column_search = array('tbl_orders.order_id', 'tbl_users.display_name', 'tbl_users.first_name', 'tbl_users.last_name', 'tbl_users.email', 'tbl_orders.order_status', 'tbl_users.mobile_no');
 

@@ -12,6 +12,7 @@ class Controller_order extends CI_Controller
 		$this->load->model('product_model');
 		$this->load->model('transactions_model');
 		$this->load->model('user_model');
+		$this->load->model('credittransaction_model');
 		$this->load->model('Master_model', 'master');
 		$this->module_name = 'order';
 
@@ -89,6 +90,10 @@ class Controller_order extends CI_Controller
 		$data['ArrFieldDatashow'] = $this->order_model->getOrderById($id);
 		$data['ArrOrderProductshow'] = $this->order_product_model->getOrderProductByOrderId($id);
 		$data['ArrOrderStatusshow'] = getOrderStatus();
+		$earned_trans_credit = $this->credittransaction_model->getCredittransdetails($id,'earned');
+		$used_trans_credit = $this->credittransaction_model->getCredittransdetails($id,'used');
+		$data['earned_cr_val'] = $earned_trans_credit ?? 0;
+		$data['used_cr_val'] = $used_trans_credit ?? 0;
 		$this->load->view('admin_panel/quickview/invoice_orders.php', $data);
 	}
 
@@ -99,6 +104,10 @@ class Controller_order extends CI_Controller
 		$data['ArrOrderProductshow'] = $this->order_product_model->getOrderProductByOrderId($id);
 
 		$data['ArrOrderStatusshow'] = getOrderStatus();
+		$earned_trans_credit = $this->credittransaction_model->getCredittransdetails($id,'earned');
+		$used_trans_credit = $this->credittransaction_model->getCredittransdetails($id,'used');
+		$data['earned_cr_val'] = $earned_trans_credit ?? 0;
+		$data['used_cr_val'] = $used_trans_credit ?? 0;
 		$this->load->view('admin_panel/quickview/table.php', $data);
 	}
 
@@ -468,6 +477,13 @@ class Controller_order extends CI_Controller
 		
 		$ArrPageData['ArrOrderStatus'] = getOrderStatus();
 
+		$earned_trans_credit = $this->credittransaction_model->getCredittransdetails($id,'earned');
+		$used_trans_credit = $this->credittransaction_model->getCredittransdetails($id,'used');
+		$order_credit_per = $this->credittransaction_model->getCreditperbycreditid($id);
+
+		$ArrPageData['ArrFieldData']['earned_trans_credit'] = $earned_trans_credit ?? 0;
+		$ArrPageData['ArrFieldData']['used_trans_credit'] = $used_trans_credit ?? 0;
+		$ArrPageData['ArrFieldData']['order_credit_per'] = $order_credit_per ?? 0;
 		$ArrPageData['view_name'] = 'view_' . $this->module_name . '_details.php';
 
 		$js_assets = array(
@@ -745,10 +761,11 @@ class Controller_order extends CI_Controller
 					if($dis_type=='%'){
 						$total_dis_amount = ($promo_dis_val/100) * $final_order_amount;
 					}else{
-						$total_prod = count($ArrOrderProduct);
-						$total_order_sum = $orderdetails['order_amount'];
-						$find_perc = ($total_prod / $total_order_sum) * 100;
-						$total_dis_amount = ($find_perc/100) * $final_order_amount;
+						// $total_prod = intval($this->input->post('total_or_qty'));
+						// $total_order_sum = $orderdetails['order_amount'];
+						// $find_perc = ($total_prod / $total_order_sum) * 100;
+						// $total_dis_amount = ($find_perc/100) * $final_order_amount;
+						$total_dis_amount = $promo_dis_val;
 					}
 				}
 
@@ -761,7 +778,24 @@ class Controller_order extends CI_Controller
 			$preparation_cost = $this->input->post('preparation_cost');
 			$packaging_cost = $this->input->post('packaging_cost');
 			$delivery_datetime = (trim($this->input->post('delivery_datetime'))) ? date('Y-m-d H:i:s', strtotime(trim($this->input->post('delivery_datetime')))) : null;
-			$order_total_amount = $total_order_amount + $shipping_charge + $preparation_cost + $packaging_cost + $order_tip - $discount_amount;
+			//calculate credit per
+			$total_ear_cr_amount = 0;
+			$order_credit_per = $this->input->post('order_credit_per');
+			$used_credit_v = $this->input->post('used_credit');
+
+			if(!empty($order_credit_per)):
+				$ord_total_amount = $final_order_amount + $shipping_charge + $preparation_cost + $packaging_cost + $order_tip + $used_credit_v;
+				$total_ear_cr_amount = ($order_credit_per/100) * $ord_total_amount;
+				if(!empty($total_ear_cr_amount)):
+					$crtr_data = array(
+						'amount' => number_format($total_ear_cr_amount,2),
+					);
+					$this->credittransaction_model->update_earned_credittrans($crtr_data, $order_id);
+				endif;
+			endif;
+			
+			
+			$order_total_amount = $total_order_amount + $shipping_charge + $preparation_cost + $packaging_cost + $order_tip + $used_credit_v;
 			// if($total_updated_order_diff > 0){
 			// 	$diff_c_dis = $orderdetails['totaldiff_coupon_discount'];
 			// 	$order_data = array(
