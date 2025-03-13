@@ -54,7 +54,7 @@
 
 <?php
 for ($k = 1 ; $k <= $no_of_box; $k++){ ?>
-   <table style="width: 100%;">
+   <table style="width: 100%;margin-top:-20px;">
       <tr>
          <td style="text-align: left;padding-bottom: 10px;width:70%;vertical-align: top;">
             <div>
@@ -79,7 +79,6 @@ for ($k = 1 ; $k <= $no_of_box; $k++){ ?>
                <p style="font-weight:bold;font-size:15px;margin-top:-5px"><?php echo ucfirst($order_data['shipping_first_name']); ?> <?php echo $order_data['shipping_last_name']; ?></p>
                <p style="font-size:15px;margin-top:-10px;"><?php echo $order_data['shipping_street_name'] . ' ' . $order_data['shipping_apartment_name'];?></p>
                <p style="font-size:15px;margin-top:-10px;"><?php echo $order_data['shipping_city'] . ', ' . $order_data['shipping_state_name'] . ', ' . $order_data['shipping_zipcode'];?></p>
-            
             </div>
          </td>
         
@@ -121,20 +120,20 @@ for ($k = 1 ; $k <= $no_of_box; $k++){ ?>
     </tr>
    </table>
    <hr style="border:1px solid #000;margin-top:-40px;"></hr>
-   <table style="width: 100%;">
+   <table style="width: 100%;margin-bottom:20px;">
     <tr>
        <td style="text-align: center;width:50%;vertical-align: top;">
           
           <div>
           
-             <p style="font-size:15px;margin-top:0px">Like us:</p>
-             <img src="https://vrajfresh.com/admin/assets/images/follow_us.png" alt="Logo" width="80" style="margin-top:-15px;">
+             <p style="font-size:15px;margin-top:10px">Like us:</p>
+             <img src="https://vrajfresh.com/admin/assets/images/follow_us.png" alt="Logo" width="80" style="margin-top:-10px;">
           
           </div>
        </td>
        <td style="text-align: center;width:50%">
-        <p style="font-size:15px;margin-top:0px">Follow us:</p>
-        <img src="https://vrajfresh.com/admin/assets/images/like_us.png" alt="Logo" width="80" style="margin-top:-15px;">
+        <p style="font-size:15px;margin-top:10px">Follow us:</p>
+        <img src="https://vrajfresh.com/admin/assets/images/like_us.png" alt="Logo" width="80" style="margin-top:-10px;">
        </td>
     </tr>
  </table>
