@@ -35,7 +35,7 @@
                      <select class="form-control select2" style="width: 100%;" name="ddIsActive" id="ddIsActive">
                         <option value="" selected="selected">--Order Status--</option>
                         <option value="Pending Payment">Pending Payment</option>
-                        <option value="Processing">Processing</option>
+                        <option value="Processing" selected>Processing</option>
                         <option value="On Hold">On Hold</option>
                         <option value="Completed">Completed</option>
                         <option value="Cancelled">Cancelled</option>

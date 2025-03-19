@@ -40,6 +40,9 @@ $(document).on('change', 'input[type=radio][name=shipping_id]', function() {
                 //console.log(front_urls + "cart-detail");
                 window.location.href = front_urls + "cart-detail?zipcode="+zipcode;
                 return false;
+            }else{
+                $("#zipcode").val(zipcode);
+                setZipCodeCookie('header');
             }
         } else {
             $('input[type=radio][name=shipping_id]').prop('checked', false);
@@ -175,51 +178,6 @@ $(document).on('click', '.edit_shipping_data_btn', function() {
 
     
 });
-$(document).on('click', '.edit_billing_data_btn', function() {
-    
-    var user_id = '<?php echo $this->session->userdata['logged_in']['user_id']; ?>';
-    var id = $(this).attr('data-id');
-    var type = 'billing';
-
-    var json_request = {
-        "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
-        "user_id": user_id,
-        "id": id,
-        "type": type,
-    };
-    $.ajax({
-        "type": "POST",
-        "url": api_url_prefix + 'get-checkout-address-details',
-        "data": JSON.stringify(json_request),
-        "dataType": "JSON",
-        "success": function(response) {
-            
-            if (response.data != null) {
-                
-                $("#FrmEdit_billing_Address")[0].reset();
-
-                $("#edit_billing_first_name").val(response.data.first_name);
-                $("#edit_billing_last_name").val(response.data.last_name);
-                $("#edit_billing_street_address").val(response.data.billing_street_address);
-                $("#edit_billing_apartment").val(response.data.billing_apartment);
-                $("#edit_billing_city").val(response.data.billing_city);
-                $("#edit_billing_zipcode").val(response.data.billing_zipcode);
-                $("#edit_billing_phone").val(response.data.billing_phone);
-                $('#edit_billing_state_id option[data-id="' + response.data.billing_state_id + '"]').prop('selected', true);
-                $("#edit_billing_id").val(response.data.billing_id);
-                CloseCheckoutModels();
-                
-                jQuery("body").addClass("open-login");
-                jQuery("div#EditBillingAddressModal").show();
-            } else {
-                CloseCheckoutModels();
-            }
-        },
-        "error": function(response) {
-            CloseCheckoutModels();
-        }
-    }); 
-});
 
 $(document).on('click', '.delete_shipping_data_btn', function() {
     
@@ -275,6 +233,52 @@ $(document).on('click', '.delete_billing_data_btn', function() {
         },
         "error": function(response) {
          
+        }
+    }); 
+});
+
+$(document).on('click', '.edit_billing_data_btn', function() {
+    
+    var user_id = '<?php echo $this->session->userdata['logged_in']['user_id']; ?>';
+    var id = $(this).attr('data-id');
+    var type = 'billing';
+
+    var json_request = {
+        "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+        "user_id": user_id,
+        "id": id,
+        "type": type,
+    };
+    $.ajax({
+        "type": "POST",
+        "url": api_url_prefix + 'get-checkout-address-details',
+        "data": JSON.stringify(json_request),
+        "dataType": "JSON",
+        "success": function(response) {
+            
+            if (response.data != null) {
+                
+                $("#FrmEdit_billing_Address")[0].reset();
+
+                $("#edit_billing_first_name").val(response.data.first_name);
+                $("#edit_billing_last_name").val(response.data.last_name);
+                $("#edit_billing_street_address").val(response.data.billing_street_address);
+                $("#edit_billing_apartment").val(response.data.billing_apartment);
+                $("#edit_billing_city").val(response.data.billing_city);
+                $("#edit_billing_zipcode").val(response.data.billing_zipcode);
+                $("#edit_billing_phone").val(response.data.billing_phone);
+                $('#edit_billing_state_id option[data-id="' + response.data.billing_state_id + '"]').prop('selected', true);
+                $("#edit_billing_id").val(response.data.billing_id);
+                CloseCheckoutModels();
+                
+                jQuery("body").addClass("open-login");
+                jQuery("div#EditBillingAddressModal").show();
+            } else {
+                CloseCheckoutModels();
+            }
+        },
+        "error": function(response) {
+            CloseCheckoutModels();
         }
     }); 
 });
@@ -518,19 +522,30 @@ function addFixedTipAmount(tip_amount) {
 
         var total = parseFloat(sub_total + tip_amount).toFixed(2);
 
+        var total_cr_val = $('#earned_credit_val').val();
+        if (total_cr_val != "" && total_cr_val != null) {
+            if($('#earned_credit_checkbox').is(':checked')) {
+                var totals = parseFloat(sub_total + tip_amount - total_cr_val).toFixed(2);
+            }else{
+                var totals = parseFloat(sub_total + tip_amount).toFixed(2);
+            }
+        }else{
+            var totals = parseFloat(sub_total + tip_amount).toFixed(2);
+        }
+
         console.log("total:" + total);
 
         //$("#tip_remove_button").show();
 
         $(".cart-tip").show();
 
-        $("#cart-total").html(total);
+        $("#cart-total").html(totals);
 
         $("#tip").html(tip_amount);
 
         $("#hdn_order_amount").val(parseFloat(total - tip_amount).toFixed(2));
 
-        $("#cart_total").val(parseFloat(total));
+        $("#cart_total").val(parseFloat(totals));
 
         $("#hdn_tip_amount").val(tip_amount);
 
@@ -544,7 +559,18 @@ function addFixedTipAmount(tip_amount) {
 
         $("#added_order_tip").val('0');
 
-        $("#cart-total").html(sub_total);
+        var total_cr_val = $('#earned_credit_val').val();
+        if (total_cr_val != "" && total_cr_val != null) {
+            if($('#earned_credit_checkbox').is(':checked')) {
+                var totals = parseFloat(sub_total - total_cr_val).toFixed(2);
+            }else{
+                var totals = parseFloat(sub_total).toFixed(2);
+            }
+        }else{
+            var totals = parseFloat(sub_total).toFixed(2);
+        }
+
+        $("#cart-total").html(totals);
 
         $("#tip").html("$0");
 
@@ -552,7 +578,7 @@ function addFixedTipAmount(tip_amount) {
 
         $("#hdn_order_amount").val(parseFloat(sub_total));
 
-        $("#cart_total").val(parseFloat(sub_total));
+        $("#cart_total").val(parseFloat(totals));
 
         $("#hdn_tip_amount").val(0);
 
@@ -656,7 +682,19 @@ function removeTipAmount() {
 
     //var cart_net_total = parseFloat(total + cart_tax).toFixed(2);
     //var cart_net_total = parseFloat(total) + parseFloat(cart_tax);
-    var cart_net_total = parseFloat(total);
+    
+    var total_cr_val = $('#earned_credit_val').val();
+        if (total_cr_val != "" && total_cr_val != null) {
+            if($('#earned_credit_checkbox').is(':checked')) {
+                var totals = parseFloat(total - total_cr_val).toFixed(2);
+            }else{
+                var totals = parseFloat(total).toFixed(2);
+            }
+        }else{
+            var totals = parseFloat(total).toFixed(2);
+        }
+
+    var cart_net_total = parseFloat(totals);
     cart_net_total = cart_net_total.toFixed(2);
 
 
@@ -1070,35 +1108,6 @@ function taxCalc() {
 
     }
 
-    var total_cr_val = $('#earned_credit_val').val();
-    if (total_cr_val != "" && total_cr_val != null) {
-            if($('#earned_credit_checkbox').is(':checked')) {
-                console.log('sdsd');
-                var total_c_amount = total_tax_sub;
-
-                var total_c_amount_after_discount = total_c_amount - total_cr_val;
-
-                var total_c_amount_after_discount = total_c_amount_after_discount.toFixed(2);
-
-                $("#cart-total").html(parseFloat(total_c_amount_after_discount));
-
-                $("#hdn_order_amount").val(parseFloat(total_c_amount_after_discount));
-
-                $("#cart_total").val(parseFloat(total_c_amount_after_discount));
-
-            }else{
-                var total_c_amount = total_tax_sub;
-
-                $("#cart-total").html(parseFloat(total_c_amount));
-
-                $("#hdn_order_amount").val(parseFloat(total_c_amount));
-
-                $("#cart_total").val(parseFloat(total_c_amount));
-            }
-       
-    }
-
-
 
 
     if (tip != null && tip != '' && tip != undefined && discount != null && discount != '' && discount != undefined) {
@@ -1110,6 +1119,58 @@ function taxCalc() {
     }
 
 
+    // var total_cr_val = $('#earned_credit_val').val();
+    // if (total_cr_val != "" && total_cr_val != null) {
+    //         if($('#earned_credit_checkbox').is(':checked')) {
+    //             if (discount != null && discount != '' && discount != undefined) {
+
+    //             var discount_amount = parseFloat(discount);
+
+    //             var total_amount = total_tax_sub;
+
+    //             var total_amount_after_discount = total_amount - discount_amount;
+
+    //             var total_c_amount = total_amount_after_discount.toFixed(2);
+    //             }else{
+    //                 var total_c_amount = total_tax_sub;
+
+    //             }
+               
+    //             var total_c_amount_after_discount = total_c_amount - total_cr_val;
+
+    //             var total_c_amount_after_discount = total_c_amount_after_discount.toFixed(2);
+
+    //             $("#cart-total").html(parseFloat(total_c_amount_after_discount));
+
+    //             $("#hdn_order_amount").val(parseFloat(total_c_amount_after_discount));
+
+    //             $("#cart_total").val(parseFloat(total_c_amount_after_discount));
+
+    //         }else{
+    //             if (discount != null && discount != '' && discount != undefined) {
+
+    //                 var discount_amount = parseFloat(discount);
+
+    //                 var total_amount = total_tax_sub;
+
+    //                 var total_amount_after_discount = total_amount - discount_amount;
+
+    //                 var total_c_amount = total_amount_after_discount.toFixed(2);
+    //             }else{
+    //                 var total_c_amount = total_tax_sub;
+
+    //             }
+
+    //             $("#cart-total").html(parseFloat(total_c_amount));
+
+    //             $("#hdn_order_amount").val(parseFloat(total_c_amount));
+
+    //             $("#cart_total").val(parseFloat(total_c_amount));
+    //         }
+       
+    // }
+
+
 
     if (tip != null && tip != '' && tip != undefined && discount == null && discount == '' && discount == undefined) {
 
@@ -1117,6 +1178,76 @@ function taxCalc() {
 
         $("#cart-total").html(parseFloat(total_tax_sub) + parseFloat(tip));
 
+    }
+
+    var total_cr_val = $('#earned_credit_val').val();
+    if (total_cr_val != "" && total_cr_val != null) {
+        var hdn_sb_to = $('#hdn_subtotal').val();
+        console.log(hdn_sb_to+'hdn_sb_to');
+            if($('#earned_credit_checkbox').is(':checked')) {
+                if (discount != null && discount != '' && discount != undefined) {
+
+                var discount_amount = parseFloat(discount);
+
+                var total_amount = total_tax_sub;
+
+                var total_amount_after_discount = total_amount - discount_amount;
+
+                var total_c_amount = total_amount_after_discount.toFixed(2);
+                }else{
+                    var total_c_amount = total_tax_sub;
+
+                }
+
+                if (tip != null && tip != '' && tip != undefined){
+                    var total_ti_amount = parseFloat(total_c_amount) + parseFloat(tip);
+                }else{
+                    var total_ti_amount = parseFloat(total_c_amount);
+                }
+
+                var total_ti_amount = total_ti_amount.toFixed(2);
+                var total_c_amount_after_discount = total_ti_amount - total_cr_val;
+
+                var total_c_amount_after_discount = total_c_amount_after_discount.toFixed(2);
+
+                
+                $("#cart-total").html(parseFloat(total_c_amount_after_discount));
+
+                //$("#hdn_order_amount").val(parseFloat(total_c_amount_after_discount));
+
+                $("#cart_total").val(parseFloat(total_c_amount_after_discount));
+
+            }else{
+                if (discount != null && discount != '' && discount != undefined) {
+
+                    var discount_amount = parseFloat(discount);
+
+                    var total_amount = total_tax_sub;
+
+                    var total_amount_after_discount = total_amount - discount_amount;
+
+                    var total_c_amount = total_amount_after_discount.toFixed(2);
+                }else{
+                    var total_c_amount = total_tax_sub;
+
+                }
+
+                if (tip != null && tip != '' && tip != undefined && tip!='$0'){
+                    var total_ti_amount = parseFloat(total_c_amount) + parseFloat(tip);
+                }else{
+                    var total_ti_amount = parseFloat(total_c_amount);
+                }
+
+                
+                var total_ti_amount = total_ti_amount.toFixed(2);
+                
+                $("#cart-total").html(parseFloat(total_ti_amount));
+
+                //$("#hdn_order_amount").val(parseFloat(total_ti_amount));
+
+                $("#cart_total").val(parseFloat(total_ti_amount));
+            }
+       
     }
 
 
@@ -1159,7 +1290,7 @@ function taxCalc() {
 
     }
 
-    //calculate credit percentage for currunt order
+   //calculate credit percentage for currunt order
     var or_am_val = parseFloat($("#hdn_order_amount").val());
     var last_cr_per = $('#last_credit_per').val();
     var total_er_cr_val = last_cr_per/100*or_am_val;
@@ -1399,6 +1530,7 @@ $(document).ready(function() {
         }
 
     });
+
 
     //calculate credit percentage for currunt order
     var or_am_val = parseFloat($("#hdn_order_amount").val());
