@@ -32,7 +32,7 @@ span.noti_count_or {
     padding-left: 5px;
     padding-right: 5px;
     font-weight: bold;
-    margin-left: 0px;
+    margin-left: 4px;
 }
 </style>
 <ul class="sidebar-menu">

@@ -784,7 +784,7 @@ class Controller_order extends CI_Controller
 			$used_credit_v = $this->input->post('used_credit');
 
 			if(!empty($order_credit_per)):
-				$ord_total_amount = $final_order_amount + $shipping_charge + $preparation_cost + $packaging_cost + $order_tip + $used_credit_v;
+				$ord_total_amount = $final_order_amount + $shipping_charge + $preparation_cost + $packaging_cost + $order_tip + $used_credit_v - $discount_amount;
 				$total_ear_cr_amount = ($order_credit_per/100) * $ord_total_amount;
 				if(!empty($total_ear_cr_amount)):
 					$crtr_data = array(
@@ -795,7 +795,7 @@ class Controller_order extends CI_Controller
 			endif;
 			
 			
-			$order_total_amount = $total_order_amount + $shipping_charge + $preparation_cost + $packaging_cost + $order_tip + $used_credit_v;
+			$order_total_amount = $total_order_amount + $shipping_charge + $preparation_cost + $packaging_cost + $order_tip + $used_credit_v - $discount_amount;
 			// if($total_updated_order_diff > 0){
 			// 	$diff_c_dis = $orderdetails['totaldiff_coupon_discount'];
 			// 	$order_data = array(
