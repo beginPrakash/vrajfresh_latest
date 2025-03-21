@@ -1062,7 +1062,10 @@ class Controller_order extends CI_Controller
 
 			if ($order_status == 'Cancelled') {
 				$ArrOrderDetails = $this->order_model->getOrderById($order_id);
-
+				$crtr_data = array(
+					'amount' => number_format(0,2),
+				);
+				$this->credittransaction_model->update_earned_credittrans($crtr_data, $order_id);
 				//send sms
 				$SMSbody = "As requested, we've canceled your Vraj Fresh order. View updated order details: https://www.vrajfresh.com/my-orders";
 				sendSMS($ArrOrderDetails['shipping_phone'], $SMSbody);
