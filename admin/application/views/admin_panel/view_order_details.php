@@ -539,14 +539,15 @@ $is_payment_received = true;
     ?>
             <input hidden="diffamount" name="diffamount" id="diffamount" value="<?php echo $tval; ?>" />
             
-            <?php if($ArrFieldData['is_capture'] == 1) { ?>
+            <?php if(($ArrFieldData['is_capture'] == 1) && ($tval > 0)) { ?>
                <input hidden="difftype" id="difftype" name="difftype" value="capture" />
               
             <button type="button" id="orderdiffBtn" class="btn btn-success">Capture Payment - $ <?php echo $tval; ?></button>
             <?php } else { ?>
+               <?php if($tval > 0){ ?>
                <input hidden="difftype" id="difftype" name="difftype" value="revert" />
                <button type="button" id="orderdiffBtn" class="btn btn-success">Refund Payment - $ <?php echo $tval; ?></button>
-            <?php }?>
+            <?php } }?>
          </div>
       </div>
    </form>

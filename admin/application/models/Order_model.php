@@ -30,7 +30,7 @@ class order_model extends CI_Model
 
 	public function getOrderById($order_id, $parm = "*")
 	{
-		$this->db->select('tbl_orders.' . $parm . ',tblpromotional_code.promotional_code,tblpromotional_code.discount_type as promo_dis_type,,tblpromotional_code.discount_value as promo_dis_val, stb.state as billing_state_name, sts.state as shipping_state_name');
+		$this->db->select('tbl_orders.' . $parm . ',tblpromotional_code.promotional_code,tblpromotional_code.discount_type as promo_dis_type,tblpromotional_code.maximum_order_discount as maximum_order_discount,tblpromotional_code.discount_value as promo_dis_val, stb.state as billing_state_name, sts.state as shipping_state_name');
 		$this->db->from('tbl_orders');
 		$this->db->where('order_id', $order_id);
 		$this->db->where('tbl_orders.is_deleted', 0);
