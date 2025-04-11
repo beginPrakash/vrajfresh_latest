@@ -445,17 +445,22 @@ class Controller_order extends CI_Controller
 			
 			$TotalReceivedAmount = $TotalCaptureAmount - $TotalReturnAmount;
 			$order_total_amount = $orderdetails['order_total_amount'];
-			if(intval($order_total_amount) > intval($TotalReceivedAmount)){
+			if(floatval($order_total_amount) > floatval($TotalReceivedAmount)){
 				$is_capture = 1;
 				$DiffAmount = ($order_total_amount - $TotalReceivedAmount);
-			} else if(intval($order_total_amount) < intval($TotalReceivedAmount)){
+			} else if(floatval($order_total_amount) < floatval($TotalReceivedAmount)){
 				$is_revert = 1;
 				$DiffAmount = $TotalReceivedAmount - $order_total_amount;
 			}
 		}
+
+		if (abs($DiffAmount) < 0.00001) {
+			$DiffAmount = 0;
+		}
+
 		$orderdetails['is_revert'] = $is_revert;
 		$orderdetails['is_capture'] = $is_capture;
-		$orderdetails['DiffAmount'] = $DiffAmount;
+		$orderdetails['DiffAmount'] = ($DiffAmount > 0) ? number_format($DiffAmount,2) : $DiffAmount;
 		$orderdetails['TotalCaptureAmount'] = $TotalCaptureAmount;
 		//echo '<pre>';print_r($orderdetails);exit;
 		$ArrPageData['ArrFieldData'] = $orderdetails;
@@ -720,7 +725,7 @@ class Controller_order extends CI_Controller
 							'product_variant_id' => $product_variant_id,
 							'unit_price' => $ArrNewUnit_price[$key],
 							'product_tax_amount' => $ArrNewprod_tax[$key],
-							'total_amount' => $ArrNewTotal_amount[$key],
+							'total_amount' => $ArrNewTotal_amount[$key] - $ArrNewprod_tax[$key],
 							'created_datetime' => date('Y-m-d H:i:s'),
 							'created_by' => get_current_admin_id(),
 						);
@@ -758,8 +763,14 @@ class Controller_order extends CI_Controller
 				if ($orderdetails['promotional_code'] != '') { 
 					$promo_dis_val = $orderdetails['promo_dis_val'];
 					$dis_type=$orderdetails['promo_dis_type'];
+					$maximum_dis_val=$orderdetails['maximum_order_discount'];
 					if($dis_type=='%'){
 						$total_dis_amount = ($promo_dis_val/100) * $final_order_amount;
+						if($total_dis_amount < $maximum_dis_val){
+							$total_dis_amount = $total_dis_amount;
+						}else{
+							$total_dis_amount = $maximum_dis_val;
+						}
 					}else{
 						// $total_prod = intval($this->input->post('total_or_qty'));
 						// $total_order_sum = $orderdetails['order_amount'];

@@ -100,7 +100,7 @@
       </thead>
       <tbody>
          <?php
-        
+        //echo'<pre>';print_r($order_products);exit;
          if (!empty($order_products)) {
             $category_name_prev = '';
             $product_sku_prev = '';
@@ -108,7 +108,7 @@
             $product_qty_prev = '';
             $qty = 0;
             foreach ($order_products as $key => $products_row) {
-               $product_sku = $products_row['product_sku'];
+               $product_sku = $products_row['product_name'].' '.$products_row['product_variant_size'];
                $pqty = $products_row['qty'];
                
                if ($product_sku != $product_sku_prev) {
@@ -120,10 +120,11 @@
                   
                }
                $order_products[$key]['qtys'] = $qty;
+               $order_products[$key]['check_product_sku'] = $product_sku;
                
             }
          }
-//echo'<pre>';print_r($order_products);exit;
+
          function keepLastDuplicateByKey(&$array, $key) {
             $seen = [];
             
@@ -147,7 +148,7 @@
         }
         
         // Keep only the last occurrence of duplicate 'name'
-        keepLastDuplicateByKey($order_products, 'product_sku');
+        keepLastDuplicateByKey($order_products, 'check_product_sku');
 
          if (!empty($order_products)) {
            
