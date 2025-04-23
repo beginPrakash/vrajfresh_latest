@@ -106,7 +106,7 @@
             $product_sku_prev = '';
             $product_skur_prev = '';
             $product_qty_prev = '';
-            $qty = 0;
+            $qty = '';
             foreach ($order_products as $key => $products_row) {
                $product_sku = $products_row['product_name'].' '.$products_row['product_variant_size'];
                $pqty = $products_row['qty'];
@@ -116,7 +116,7 @@
                   $product_qty_prev = $products_row['qty'];
                   $qty = $products_row['qty'];
                }else{
-                  $qty = $products_row['qty'] + $qty;
+                  $qty = $products_row['qty'] .'+'.$qty;
                   
                }
                $order_products[$key]['qtys'] = $qty;
@@ -124,7 +124,7 @@
                
             }
          }
-
+//echo'<pre>';print_r($order_products);exit;
          function keepLastDuplicateByKey(&$array, $key) {
             $seen = [];
             
