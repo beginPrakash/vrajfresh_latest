@@ -70,7 +70,7 @@
             <table id="tblListData" class="display nowrap" cellspacing="0" width="100%">
                <thead>
                   <tr>
-                     
+                     <th>Customer ID</th>
                      <th>Order Number</th>
                      <th>Order Date</th>
                      <th>Customer Name</th>
@@ -122,8 +122,10 @@
       "bSortable": true
    }, {
       "bSortable": false
+   }, {
+      "bSortable": false
    }];
-   var colDef = [0, 8];
+   var colDef = [0, 9];
    var aoColumnDefs = [];
    var aoColumnDefsCenter = [];
    var ajaxURL1 = {

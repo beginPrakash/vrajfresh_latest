@@ -140,7 +140,6 @@ $is_payment_received = true;
          </label>
 
       </div>
-
       <?php if (!empty($ArrFieldData['substitution_products'])) { ?>
       <div class="col-sm-12">
          <strong>Substitution Products: </strong>
@@ -359,7 +358,6 @@ $is_payment_received = true;
 		 }
          ?>
       </div>
-
       <div class="col-sm-4">
 
          <label>Delivery Date : </label>
@@ -389,7 +387,7 @@ $is_payment_received = true;
            value="<?php echo $ArrFieldData['used_trans_credit']; ?>"
             required readonly>
       </div>
-      
+
    </div>
 
    <div class="row">
@@ -402,8 +400,9 @@ $is_payment_received = true;
 
       <div class="col-sm-6">
          <label>Shipping Address : </label>
+         <?php $shipping_emails = empty($ArrFieldData['shipping_email']) ?  $ArrUser['email'] : $ArrFieldData['shipping_email']; ?>
          <div>
-            <?php echo 'Name:' . $ArrFieldData['shipping_first_name'] . ' ' . $ArrFieldData['shipping_last_name'] . '<br>' . $ArrFieldData['shipping_street_name'] . ' ' . $ArrFieldData['shipping_apartment_name'] . ' , ' . $ArrFieldData['shipping_city'] . ' , ' . $ArrFieldData['shipping_state_name'] . ' , ' . $ArrFieldData['shipping_zipcode'] . '<br> Email: ' . $ArrFieldData['shipping_email'] . '<br>Contact No. ' . $ArrFieldData['shipping_phone']; ?>
+            <?php echo 'Name:' . $ArrFieldData['shipping_first_name'] . ' ' . $ArrFieldData['shipping_last_name'] . '<br>' . $ArrFieldData['shipping_street_name'] . ' ' . $ArrFieldData['shipping_apartment_name'] . ' , ' . $ArrFieldData['shipping_city'] . ' , ' . $ArrFieldData['shipping_state_name'] . ' , ' . $ArrFieldData['shipping_zipcode'] . '<br> Email: ' . $shipping_emails . '<br>Contact No. ' . $ArrFieldData['shipping_phone']; ?>
          </div>
       </div>
    </div>
@@ -528,12 +527,12 @@ $is_payment_received = true;
 
 <?php if($ArrFieldData['is_capture'] == 1){
          if(!empty($ArrFieldData['diff_coupon_discount'])){     
-            $tval = $ArrFieldData['DiffAmount'] ;
+            $tval = number_format($ArrFieldData['DiffAmount'],2);
          }else{
-            $tval = $ArrFieldData['DiffAmount'];
+            $tval = number_format($ArrFieldData['DiffAmount'],2);
          }
     }  else {
-      $tval = $ArrFieldData['DiffAmount'];
+      $tval = number_format($ArrFieldData['DiffAmount'],2);
     }
 
     ?>
@@ -716,11 +715,12 @@ $is_payment_received = true;
          // alert($(this).val());
       });
       $('#total_order_without_taxw').val(NewTotalA);
-      var QTYTotals = 0;
-      $('.qty').each(function () {
-         QTYTotals = QTYTotals + parseInt($(this).val());
-      });
-      $('#total_or_qty').val(QTYTotals);
+   
+   var QTYTotals = 0;
+   $('.qty').each(function () {
+      QTYTotals = QTYTotals + parseInt($(this).val());
+   });
+   $('#total_or_qty').val(QTYTotals);
    function updateFooterTotal() {
       var QTYTotal = 0;
       var NetTotal = 0;

@@ -32,6 +32,7 @@ class Controller_prodreport extends CI_Controller
 				$row[] = $aRow['product_name'];
 				$row[] = $aRow['unit_price'];
 				$row[] = $aRow['pro_qty'];
+				$row[] = $aRow['porder_id'];
 				$row[] = $aRow['pro_total_amount'];
 				
 				$i++;
@@ -68,13 +69,14 @@ class Controller_prodreport extends CI_Controller
 			$row[] = $ArrData['product_name'];
 			$row[] = $ArrData['unit_price'];
 			$row[] = $ArrData['pro_qty'];
+			$row[] = $ArrData['porder_id'];
 			$row[] = $ArrData['pro_total_amount'];
 			$data[] = $row;
 			$no++;
     	}
 		//exit;
 		$report_title = "product_report_".time();
-		$ArrHeading = array('Date','Product Name','Product Price','Quantity','Total');
+		$ArrHeading = array('Date','Product Name','Product Price','Quantity','Order ID','Total');
 		array_to_csv($ArrHeading,$data,$report_title);		
 	}
 

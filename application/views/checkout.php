@@ -24,24 +24,11 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
       border-radius: 5px;
       margin: 5px 0;
     }
-    .red-link {
-    width: 100%;
-    background: #45629f !important;
-    color: #fff !important;
-    height: 40px !important;
-    border: none;
-    font-size: 16px;
-    border-radius: 30px;
-    margin: 0 auto;
-    padding: 10px 80px;
-    width: 180px;
-    display: block;
-}
-
-   .cash_cr_text{
+    .cash_cr_text{
       color: green;
       font-weight: 600;
     }
+   
 </style>
 <section class="categories-banner">
    <h2>CHECKOUT</h2>
@@ -249,12 +236,12 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
             <div><label>Billing Mobile <small title="required">*</small>
                </label>
                <input placeholder="Mobile" value="<?php echo $shipping_phone; ?>" name="shiping_phone" id="shiping_phone"
-                  type="text" class="numberonly" maxlength="10">
+                  class="numberonly" type="text" maxlength="10">
                <span id="shiping-phone-error" class="error"></span>
             </div>
          </div>
          <?php if ($_COOKIE['delivery_type'] == 'Express Delivery' || $_COOKIE['delivery_type'] == 'Same Day Delivery') { ?>
-		   <h3>Delivery Type</h3>
+		<h3>Delivery Type</h3>
          <div>
             <!-- <input name="delivery_type" id="delivery_type_hour" type="radio" value="two_hour" class="chk_delivery_type"> -->
             <!-- <label for="delivery_type_hour" id="delivery_after_hr"> 2 Hours Delivery</label> -->
@@ -275,14 +262,12 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                $delivery_days = $_COOKIE['delivery_days'];
                $dayArray = explode(',', $delivery_days);
                $deliveryDate = date('d-m-Y');
-               $expdeliveryDate = date('d-m-Y');
                
                $hours = date('H');
                $today = date('l');
                
                if(in_array($today, $dayArray) && $hours < 15){
                	$deliveryDate = date('d-m-Y');
-                  $expdeliveryDate = date('d-m-Y');
                } else {
                	for ($i = 1; $i <= 7; $i++) {
                		// Get the date for the next iteration
@@ -292,13 +277,11 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                		// Check if the day of the next date is in the dayArray
                		if (in_array($nextDate->format('l'), $dayArray)) {
                			$deliveryDate = $nextDate->format('l (d F, Y)');
-                        $expdeliveryDate = $nextDate->format('d-m-Y');
                			break; // Exit the loop once a suitable delivery date is found
                		}
                	}
                }
                echo $deliveryDate;
-               echo $expdeliveryDate;
                
                /* $t = date('d-m-Y');
                
@@ -453,7 +436,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                   <p>Applyed Coupon Code:</p>
                   <span id="apply_coupon_code"></span>
                </li>
-               <li class="cart-subtotal" style="margin:0px !important;">
+               <li class="cart-subtotal">
                   <p>Subtotal:</p>
                   <span id="subtotal">
                   <?php
@@ -575,12 +558,10 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
             <?php if ($last_credit_per > 0) { ?>
             <p><span>You'll receive <b id="earn_cr_txtval"></b> credit when you place an order.</span></p>
             <?Php } ?>
-
             <p>
                <b>Note: </b>Orders placed before 3:00PM, will be delivered same day between 5:00 PM - 9:00 PM.
                Orders placed after 3:00PM, will be delivered next day 5:00 PM - 9:00 PM
             </p>
-
             <?php if ($_COOKIE['delivery_type'] == 'Twise in a week') { ?>
          <label><b>Expected Delivery Date:</b></label>
             <p>
@@ -611,19 +592,18 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                	}
                }
                echo $deliveryDate;
-              
+              echo $expdeliveryDate;
                
                ?>
             </p>
         
          <?php } ?>
          <?php if ($_COOKIE['delivery_type'] == 'Express Delivery' || $_COOKIE['delivery_type'] == 'Same Day Delivery') { ?>
-            <?php $deliveryDate = date('d-m-Y'); ?>
+            <?php $deliveryDate = date('d-m-Y');$expdeliveryDate = date('d-m-Y'); ?>
             <p><label class="expected_d_date_label"><b>Expected Delivery Date : </b><?php echo $deliveryDate; ?></label></p>
             <?php } ?>
             <input type="hidden" name="expec_delivery_date" id="expec_delivery_date" value="<?php echo $expdeliveryDate; ?>">
            <br/>
-          
             <?php
                if ($_COOKIE['valid_zipcode']) {
                
@@ -734,7 +714,6 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
     </div>
   </div>
 </div>
-
 <div class="login-popup" id="BillingAddressModal" style="padding: 20px 0 !important;">
   <div class="social-login-item">
     <h3>Add Billing Address</h3>
@@ -819,6 +798,9 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
 
 <?php require_once('common/common_js.php'); ?>
 <?php require_once('common/footer.php'); ?>
+<script>
+    gtag("event", "billing_page");
+</script>
 <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
@@ -846,7 +828,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
          $('.expected_d_date_label').html('');
          $('#expec_delivery_date').val(text);
          $('.expected_d_date_label').html('<b>Expected Delivery Date : </b></label>'+text);
-         
+        
       });
    });
    
@@ -890,11 +872,6 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
     $(document).on('click', '.close-vraj-checkout', function() {
       CloseCheckoutModels();
     });
-    $(document).on('click', '.close-vraj-redchec', function() {
-      CloseCheckoutModels();
-      $('input[type=radio][name=shipping_id]').prop('checked', false);
-    });
-
     $('.numberonly').keypress(function (e) {
 		var charCode = (e.which) ? e.which : event.keyCode
 		if (String.fromCharCode(charCode).match(/[^0-9]/g))

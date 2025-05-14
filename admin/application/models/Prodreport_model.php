@@ -9,7 +9,7 @@ class prodreport_model extends CI_Model
             || !empty(@$_REQUEST['src_product'])){
 		    $column_order = array(null,'tbl_orders.order_datetime','tbl_order_products.product_name', 'tbl_order_products.product_id', 'tbl_order_products.unit_price');
 
-            $aColumns = array('sum(tbl_order_products.qty) as pro_qty','sum(tbl_order_products.total_amount) as pro_total_amount','tbl_orders.order_id', 'tbl_orders.order_datetime','tbl_order_products.unit_price', 'tbl_order_products.product_name','tbl_order_products.product_id');
+            $aColumns = array('sum(tbl_order_products.qty) as pro_qty','sum(tbl_order_products.total_amount) as pro_total_amount','GROUP_CONCAT(tbl_order_products.order_id SEPARATOR ",") as porder_id','tbl_orders.order_id', 'tbl_orders.order_datetime','tbl_order_products.unit_price', 'tbl_order_products.product_name','tbl_order_products.product_id');
 
             $column_search = array('tbl_orders.order_id');
 
@@ -75,7 +75,7 @@ class prodreport_model extends CI_Model
 	{
         if(!empty(@$_REQUEST['txtSearchFrom']) || !empty(@$_REQUEST['txtSearchTo']) 
             || !empty(@$_REQUEST['src_product'])){
-            $aColumns = array('sum(tbl_order_products.qty) as pro_qty','sum(tbl_order_products.total_amount) as pro_total_amount','tbl_orders.order_id', 'tbl_orders.order_datetime','tbl_order_products.unit_price', 'tbl_order_products.product_name','tbl_order_products.product_id');
+            $aColumns = array('sum(tbl_order_products.qty) as pro_qty','sum(tbl_order_products.total_amount) as pro_total_amount','GROUP_CONCAT(tbl_order_products.order_id SEPARATOR ",") as porder_id','tbl_orders.order_id', 'tbl_orders.order_datetime','tbl_order_products.unit_price', 'tbl_order_products.product_name','tbl_order_products.product_id');
 
             $column_search = array('tbl_orders.order_id');
 

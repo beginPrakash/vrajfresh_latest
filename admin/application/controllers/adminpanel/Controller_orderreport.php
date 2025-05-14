@@ -39,7 +39,9 @@ class Controller_orderreport extends CI_Controller
 				if(!empty($aRow['zip'])){
 					$zip = ', '.$aRow['zip'];
 				}
-				
+				// $get_total_order_unitcost = $this->orderreport_model->get_total_order_unitcost($aRow['order_id']);
+				// echo $get_total_order_unitcost;exit;
+				$row[] = $aRow['user_id'];
 				$row[] = $aRow['order_id'];
 				$row[] = $aRow['order_datetime'];
 				$row[] = $aRow['display_name'];
@@ -91,6 +93,7 @@ class Controller_orderreport extends CI_Controller
 					$zip = ', '.$ArrData['zip'];
 				}
 
+			$row[] = $ArrData['user_id'];
 			$row[] = $ArrData['order_id'];
 			$row[] = $ArrData['order_datetime'];
 			$row[] = $ArrData['display_name'];
@@ -102,7 +105,7 @@ class Controller_orderreport extends CI_Controller
 			$data[] = $row;
     	}
 		$report_title = "order_report_".time();
-		$ArrHeading = array('Order Number','Date','Customer Name','Email Address','Local Address','Phone No','Order Status','Total amount');
+		$ArrHeading = array('Customer ID','Order Number','Date','Customer Name','Email Address','Local Address','Phone No','Order Status','Total amount');
 		array_to_csv($ArrHeading,$data,$report_title);		
 	}
 
