@@ -93,6 +93,7 @@ class Controller_product extends CI_Controller
 				$row[] = $aRow['product_price'];
 				$row[] = $aRow['sale_price'];
 				$row[] = $aRow['unit_cost'];
+
 				if ($aRow['product_image'] == '') {
 					$row[] = $imag = '<img height="70px" width="70px" src="' . $base_url . 'uploads/noimg.gif" border=0 alt="No-Image">';
 				} else {
@@ -275,6 +276,7 @@ class Controller_product extends CI_Controller
 			//$this->form_validation->set_rules('short_desc', 'Short Desc', 'required');
 			$this->form_validation->set_rules('product_price', 'Regular Price', 'required');
 			$this->form_validation->set_rules('sale_price', 'Member Price', 'required');
+			$this->form_validation->set_rules('unit_cost', 'Unit Cost', 'required');
 			/* validation Process End */
 			if ($this->form_validation->run()) {
 				if ($product_id > 0) { //update process
@@ -390,9 +392,9 @@ class Controller_product extends CI_Controller
 						//$ArrVariantColor = $_POST['ArrVariantColor'];
 						$ArrVariantSize = $_POST['ArrVariantSize'];
 						$ArrVariantPrice = $_POST['ArrVariantPrice'];
-						$ArrVariantUnitcost = $_POST['ArrVariantUnitcost'];
 						//$ArrVariantQTY = $_POST['ArrVariantQTY'];
 						$ArrVariantSKU = $_POST['ArrVariantSKU'];
+						$ArrUnitCost = $_POST['ArrUnitCost'];
 						$ArrOutOfStock = $_POST['ArrOutOfStock'];
 						$ArrVariantImagePath = $_POST['ArrVariantImagePath'];
 						$ArrProducVariants = $_FILES['ArrProducVariants'];
@@ -421,9 +423,9 @@ class Controller_product extends CI_Controller
 									//'product_variant_color' => $product_variant_color,
 									'product_variant_size' => $product_variant_size,
 									'variant_price' => $ArrVariantPrice[$i],
-									'variant_unitcost' => $ArrVariantUnitcost[$i],
 									//'variant_qty' =>  $ArrVariantQTY[$i],
 									'variant_sku' => $ArrVariantSKU[$i],
+									'unit_cost' => $ArrUnitCost[$i],
 									'is_out_of_stock' => $ArrOutOfStock[$i],
 								);
 								if (isset($_FILES['image']) && is_uploaded_file($_FILES['image']['tmp_name'])) {
@@ -461,9 +463,9 @@ class Controller_product extends CI_Controller
 									//'product_variant_color' => $product_variant_color,
 									'product_variant_size' => $product_variant_size,
 									'variant_price' => $ArrVariantPrice[$i],
-									'variant_unitcost' => $ArrVariantUnitcost[$i],
 									//'variant_qty' =>  $ArrVariantQTY[$i],
 									'variant_sku' => $ArrVariantSKU[$i],
+									'unit_cost' => $ArrUnitCost[$i],
 									'is_out_of_stock' => $ArrOutOfStock[$i],
 								);
 								if (isset($_FILES['image']) && is_uploaded_file($_FILES['image']['tmp_name'])) {
@@ -576,6 +578,7 @@ class Controller_product extends CI_Controller
 						$product_data['sale_price'] = $this->input->post('sale_price');
 					if ($this->input->post('unit_cost') != '')
 						$product_data['unit_cost'] = $this->input->post('unit_cost');
+
 					$product_id = $this->product_model->add($product_data);
 					if ($product_id > 0) {
 
@@ -618,9 +621,9 @@ class Controller_product extends CI_Controller
 							//$ArrVariantColor = $_POST['ArrVariantColor'];
 							$ArrVariantSize = $_POST['ArrVariantSize'];
 							$ArrVariantPrice = $_POST['ArrVariantPrice'];
-							$ArrVariantUnitcost = $_POST['ArrVariantUnitcost'];
 							//$ArrVariantQTY = $_POST['ArrVariantQTY'];
 							$ArrVariantSKU = $_POST['ArrVariantSKU'];
+							$ArrUnitCost = $_POST['ArrUnitCost'];
 							$ArrOutOfStock = $_POST['ArrOutOfStock'];
 							$ArrVariantImagePath = $_POST['ArrVariantImagePath'];
 							$ArrProducVariants = $_FILES['ArrProducVariants'];
@@ -650,9 +653,9 @@ class Controller_product extends CI_Controller
 									//'product_variant_color' => $product_variant_color,
 									'product_variant_size' => $product_variant_size,
 									'variant_price' => $ArrVariantPrice[$i],
-									'variant_unitcost' => $ArrVariantUnitcost[$i],
 									//'variant_qty' =>  $ArrVariantQTY[$i],
 									'variant_sku' => $ArrVariantSKU[$i],
+									'unit_cost' => $ArrUnitCost[$i],
 									'is_out_of_stock' => $ArrOutOfStock[$i],
 								);
 								/*if(isset($_FILES['image']) && is_uploaded_file($_FILES['image']['tmp_name']))
@@ -743,14 +746,14 @@ class Controller_product extends CI_Controller
 			<td>
 				<input type="text" placeholder="Price" class="form-control" name="ArrVariantPrice[]" value="" required>
 			</td>
-			<td>
-				<input type="text" placeholder="Unit Cost" class="form-control" name="ArrVariantUnitcost[]" value="" required>
-			</td>
 			<!--<td>
 					<input type="text" placeholder="Stock QTY" class="form-control" name="ArrVariantQTY[]"  value="" required>
 				</td>-->
 			<td>
 				<input type="text" placeholder="Stock SKU" class="form-control" name="ArrVariantSKU[]" value="" required>
+			</td>
+			<td>
+				<input type="text" placeholder="Unit Cost" class="form-control" name="ArrUnitCost[]" value="" required>
 			</td>
 			<td>
 				<select name="ArrOutOfStock[]" class="form-control" title="Is sold out?">

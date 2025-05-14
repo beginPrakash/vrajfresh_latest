@@ -7,9 +7,9 @@ class orderreport_model extends CI_Model
 
         if(!empty(@$_REQUEST['txtSearchFrom']) || !empty(@$_REQUEST['txtSearchTo']) || !empty(@$_REQUEST['ddIsActive'])
             || !empty(@$_REQUEST['paymentStatus']) || !empty(@$_REQUEST['txtSearchZipcode'])){
-		$column_order = array(null, 'tbl_orders.order_id', 'tbl_orders.order_datetime', 'tbl_users.display_name', 'tbl_users.mobile_no','tbl_users.email','tbl_users.address','tbl_users.city','tbl_users.state','tbl_users.zip','tbl_orders.order_total_amount', 'tbl_orders.order_status', 'tbl_orders.is_active', 'tbl_orders.created_datetime');
+		$column_order = array(null, 'tbl_orders.order_id', 'tbl_orders.order_datetime', 'tbl_users.display_name', 'tbl_users.mobile_no','tbl_users.email','tbl_users.address','tbl_users.city','tbl_users.state','tbl_users.zip','tbl_users.user_id','tbl_orders.order_total_amount', 'tbl_orders.order_status', 'tbl_orders.is_active', 'tbl_orders.created_datetime');
 
-            $aColumns = array('tbl_orders.order_id', 'tbl_orders.order_datetime', 'tbl_users.display_name', 'tbl_users.mobile_no','tbl_users.email','tbl_users.address','tbl_users.city','tbl_users.state','tbl_users.zip','tbl_orders.order_total_amount', 'tbl_orders.order_status', 'tbl_orders.is_active', 'tbl_orders.created_datetime');
+            $aColumns = array('tbl_orders.order_id', 'tbl_orders.order_datetime', 'tbl_users.display_name', 'tbl_users.mobile_no','tbl_users.email','tbl_users.address','tbl_users.city','tbl_users.state','tbl_users.zip','tbl_users.user_id','tbl_orders.order_total_amount', 'tbl_orders.order_status', 'tbl_orders.is_active', 'tbl_orders.created_datetime');
 
             $column_search = array('tbl_orders.order_id', 'tbl_users.display_name', 'tbl_users.first_name', 'tbl_users.last_name', 'tbl_users.email', 'tbl_orders.order_status', 'tbl_users.mobile_no');
 
@@ -79,7 +79,7 @@ class orderreport_model extends CI_Model
 	{
         if(!empty(@$_REQUEST['txtSearchFrom']) || !empty(@$_REQUEST['txtSearchTo']) || !empty(@$_REQUEST['ddIsActive'])
         || !empty(@$_REQUEST['paymentStatus']) || !empty(@$_REQUEST['txtSearchZipcode'])){
-            $aColumns = array('tbl_orders.order_id', 'tbl_orders.order_datetime', 'tbl_users.display_name', 'tbl_users.mobile_no','tbl_users.email','tbl_users.address','tbl_users.city','tbl_users.state','tbl_users.zip','tbl_orders.order_total_amount', 'tbl_orders.order_status', 'tbl_orders.is_active', 'tbl_orders.created_datetime');
+            $aColumns = array('tbl_orders.order_id', 'tbl_orders.order_datetime', 'tbl_users.display_name', 'tbl_users.mobile_no','tbl_users.email','tbl_users.address','tbl_users.city','tbl_users.state','tbl_users.zip','tbl_users.user_id','tbl_orders.order_total_amount', 'tbl_orders.order_status', 'tbl_orders.is_active', 'tbl_orders.created_datetime');
 
             $column_search = array('tbl_orders.order_id', 'tbl_users.display_name', 'tbl_users.first_name', 'tbl_users.last_name', 'tbl_users.email', 'tbl_orders.order_status', 'tbl_users.mobile_no');
 
@@ -123,5 +123,27 @@ class orderreport_model extends CI_Model
             return [];
         }
 	}
+
+    public function get_total_order_unitcost($order_id){
+        $order_id=1669;
+        // $sql = "SELECT order_id,GROUP_CONCAT(product_id SEPARATOR ', ') AS prodsid,GROUP_CONCAT(product_variant_id SEPARATOR ', ') AS prodvarid FROM `tbl_order_products` WHERE order_id=$order_id GROUP BY order_id";
+		// $query = $this->db->query($sql);
+		// if ($query->num_rows() > 0) {
+        //     $pro_ids_arr = $query->result_array();
+        //     echo $pro_ids_arr[0]['prodsid'];
+        //     print_r($query->result_array());exit;
+		// 	return $query->result_array();
+		// }
+        $sql = "SELECT op.*,`tbl_products`.*,`tblproduct_variant`.`variant_sku`,`tblproduct_variant`.`unit_cost` as vunit_cost,(SELECT `tbl_categories`.`category_name` FROM `tbl_categories_products_mapping` JOIN `tbl_categories` ON `tbl_categories`.`category_id` = `tbl_categories_products_mapping`.`category_id` AND `tbl_categories_products_mapping`.`product_id` = op.`product_id` LIMIT 1 ) AS category_name FROM `tbl_order_products` AS op JOIN `tbl_products` ON `tbl_products`.`product_id` = op.`product_id` LEFT JOIN `tblproduct_variant` ON `tblproduct_variant`.`id` = op.`product_variant_id` WHERE op.`order_id` =$order_id AND op.`is_deleted` = 0 ORDER BY category_name,product_sku,variant_sku ASC";
+
+			$query = $this->db->query($sql);
+			// echo $this->db->last_query();exit;
+			if ($query->num_rows() > 0) {
+                echo"<pre>";print_r($query->result_array());exit;
+				return $query->result_array();
+			} else {
+				return false;
+			}
+    }
 }
 ?>

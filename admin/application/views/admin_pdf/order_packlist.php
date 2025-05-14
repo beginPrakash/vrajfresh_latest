@@ -108,7 +108,7 @@
             $product_qty_prev = '';
             $qty = '';
             foreach ($order_products as $key => $products_row) {
-               $product_sku = $products_row['product_name'].' '.$products_row['product_variant_size'];
+               $product_sku = $products_row['product_name'].' '.$products_row['variant_sku'];
                $pqty = $products_row['qty'];
                
                if ($product_sku != $product_sku_prev) {
@@ -158,7 +158,7 @@
             $product_qty_prev = '';
             foreach ($order_products as $key => $products_row) {
                $category_name = $products_row['category_name'];
-               $product_sku = $products_row['product_sku'];
+               $product_sku = $products_row['variant_sku'];
                $pqty = $products_row['qty'];
                if ($category_name != $category_name_prev) {
                   $category_name_prev = $category_name;
@@ -177,9 +177,9 @@
                   $total_weight=$product_variant_size;
                }
 
-              
+              $dis_sku = empty($products_row['variant_sku']) ? $products_row['product_sku'] : $products_row['variant_sku'];
                   echo '<tr>';
-                  echo '<td>' . $products_row['product_sku'] . '</td>';
+                  echo '<td>' . $dis_sku . '</td>';
                   echo '<td>' . $products_row['product_name'] .'</td>';
                   echo '<td>' . $products_row['qtys'] .'</td>';
                   echo '<td>' . $total_weight .'</td>';

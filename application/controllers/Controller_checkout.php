@@ -952,27 +952,29 @@ class Controller_checkout extends CI_Controller
 		$ArrCustomer['coupon_id'] = $_POST['discount_id'];
 		$ArrCustomer['earned_credit_val'] = $_POST['earned_credit_val'];
 		$ArrCustomer['earned_credit_checkbox'] = $_POST['earned_credit_checkbox'];
+		$delivery_date_time = date("Y-m-d", strtotime($_POST['expec_delivery_date']));
 
-		if ($_POST['delivery_type'] == 'two_hour') {
-			$delivery_date_time = date("Y-m-d H:i:s", strtotime("+1 hours"));
-			$ArrCustomer['delivery_datetime'] = $delivery_date_time;
-		}
-		if ($_POST['delivery_type'] == 'one_day') {
-			$delivery_date_time = DateTime::createFromFormat('d/m/Y', $_POST['delivery_one_day_date']);
-			$ArrCustomer['delivery_datetime'] = $delivery_date_time->format('Y-m-d');
-		}
-		if ($_POST['delivery_type'] == 'Twise in a week') {
+		// if ($_POST['delivery_type'] == 'two_hour') {
+		// 	$delivery_date_time = date("Y-m-d H:i:s", strtotime("+1 hours"));
+		// 	$ArrCustomer['delivery_datetime'] = $delivery_date_time;
+		// }
+		// if ($_POST['delivery_type'] == 'one_day') {
+		// 	$delivery_date_time = DateTime::createFromFormat('d/m/Y', $_POST['delivery_one_day_date']);
+		// 	$ArrCustomer['delivery_datetime'] = $delivery_date_time->format('Y-m-d');
+		// }
+		// if ($_POST['delivery_type'] == 'Twise in a week') {
 
-			$t = date('d-m-Y');
-			if (date("l", strtotime($t)) == "Tuesday" || date("l", strtotime($t)) == "Wednesday" || date("l", strtotime($t)) == "Thursday") {
-				$date = new DateTime();
-				$ArrCustomer['delivery_datetime'] = $date->modify('next thursday')->format('Y-m-d H:i:s');
-			}
-			if (date("l", strtotime($t)) == "Friday" || date("l", strtotime($t)) == "Saturday" || date("l", strtotime($t)) == "Sunday" || date("l", strtotime($t)) == "Monday") {
-				$date = new DateTime();
-				$ArrCustomer['delivery_datetime'] = $date->modify('next monday')->format('Y-m-d H:i:s');
-			}
-		}
+		// 	$t = date('d-m-Y');
+		// 	if (date("l", strtotime($t)) == "Tuesday" || date("l", strtotime($t)) == "Wednesday" || date("l", strtotime($t)) == "Thursday") {
+		// 		$date = new DateTime();
+		// 		$ArrCustomer['delivery_datetime'] = $date->modify('next thursday')->format('Y-m-d H:i:s');
+		// 	}
+		// 	if (date("l", strtotime($t)) == "Friday" || date("l", strtotime($t)) == "Saturday" || date("l", strtotime($t)) == "Sunday" || date("l", strtotime($t)) == "Monday") {
+		// 		$date = new DateTime();
+		// 		$ArrCustomer['delivery_datetime'] = $date->modify('next monday')->format('Y-m-d H:i:s');
+		// 	}
+		// }
+		$ArrCustomer['delivery_datetime'] = $delivery_date_time;
 		//echo "<pre>";print_r($ArrCustomer);exit;
 		$ArrProduct = array();
 		foreach ($this->cart->contents() as $items) {

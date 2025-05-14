@@ -67,7 +67,7 @@ class order_product_model extends CI_Model
 
 		public function getCategoryWiseOrderProducts($order_ids, $parm = "*", $searchString = '')
 		{		
-			$sql = "SELECT op.*,`tbl_products`.*,`tblproduct_variant`.`variant_sku`,`tblproduct_variant`.`product_variant_size`,(SELECT `tbl_categories`.`category_name` FROM `tbl_categories_products_mapping` JOIN `tbl_categories` ON `tbl_categories`.`category_id` = `tbl_categories_products_mapping`.`category_id` AND `tbl_categories_products_mapping`.`product_id` = op.`product_id` LIMIT 1 ) AS category_name FROM `tbl_order_products` AS op JOIN `tbl_products` ON `tbl_products`.`product_id` = op.`product_id` LEFT JOIN `tblproduct_variant` ON `tblproduct_variant`.`id` = op.`product_variant_id` WHERE op.`order_id` in (".implode(',',$order_ids).") AND op.`is_deleted` = 0 ORDER BY category_name,product_sku ASC";
+			$sql = "SELECT op.*,`tbl_products`.*,`tblproduct_variant`.`variant_sku`,`tblproduct_variant`.`product_variant_size`,(SELECT `tbl_categories`.`category_name` FROM `tbl_categories_products_mapping` JOIN `tbl_categories` ON `tbl_categories`.`category_id` = `tbl_categories_products_mapping`.`category_id` AND `tbl_categories_products_mapping`.`product_id` = op.`product_id` LIMIT 1 ) AS category_name FROM `tbl_order_products` AS op JOIN `tbl_products` ON `tbl_products`.`product_id` = op.`product_id` LEFT JOIN `tblproduct_variant` ON `tblproduct_variant`.`id` = op.`product_variant_id` WHERE op.`order_id` in (".implode(',',$order_ids).") AND op.`is_deleted` = 0 ORDER BY category_name,product_sku,variant_sku ASC";
 
 			$query = $this->db->query($sql);
 			// echo $this->db->last_query();exit;

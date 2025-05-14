@@ -337,14 +337,15 @@ $(document).ready(function() {
                                              <td>
                                                 <input type="text" placeholder="Price" class="form-control" name="ArrVariantPrice[]" value="<?php echo $value['variant_price']; ?>" required>
                                              </td>
-                                             <td>
-                                                <input type="text" placeholder="Unit Cost" class="form-control" name="ArrVariantUnitcost[]" value="<?php echo $value['variant_unitcost']; ?>" required>
-                                             </td>
                                              <!--<td>
                            <input type="text" placeholder="Stock QTY" class="form-control" name="ArrVariantQTY[]"  value="<?php echo $value['variant_qty']; ?>" required>
                         </td>-->
                                              <td>
                                                 <input type="text" placeholder="SKU" class="form-control" name="ArrVariantSKU[]" value="<?php echo $value['variant_sku']; ?>" required>
+                                             </td>
+
+                                             <td>
+                                                <input type="text" placeholder="Unit Cost" class="form-control" name="ArrUnitCost[]" value="<?php echo $value['unit_cost']; ?>" required>
                                              </td>
 
                                              <td>
@@ -812,6 +813,11 @@ $(document).ready(function() {
                                  });
                               }
                         <?php } ?>
+                        $('.only_number').keypress(function(event) {
+                           if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                                 event.preventDefault();
+                           }
+                        });
                      </script>
 
                   </div>
