@@ -9,7 +9,7 @@ class customreport_model extends CI_Model
             || !empty(@$_REQUEST['src_type'])){
 		    $column_order = array(null,'tbl_users.created_datetime','tbl_orders.order_id','tbl_orders.user_id');
 
-            $aColumns = array('tbl_orders.order_id','tbl_orders.user_id','tbl_users.created_datetime','tbl_users.email','count(tbl_orders.order_id) as cnt','GROUP_CONCAT(tbl_orders.order_id SEPARATOR ",") as order_id','sum(tbl_orders.order_total_amount) as order_total_amount','GROUP_CONCAT(tbl_orders.order_datetime SEPARATOR ",") as order_date');
+            $aColumns = array('tbl_orders.order_id','tbl_orders.user_id','tbl_users.created_datetime','tbl_users.email','count(tbl_orders.created_by) as cnt','GROUP_CONCAT(tbl_orders.order_id SEPARATOR ",") as order_id','sum(tbl_orders.order_total_amount) as order_total_amount','GROUP_CONCAT(tbl_orders.order_datetime SEPARATOR ",") as order_date');
 
             $column_search = array('tbl_orders.order_id');
 
@@ -31,9 +31,23 @@ class customreport_model extends CI_Model
             }
             if (@$_REQUEST['src_type'] != "") {
                 if(@$_REQUEST['src_type'] == "returning_customer"){
-                    $this->db->having("cnt > 1", null, false);
+                    $this->db->having('cnt >', 1);
                 }else{
-                    $this->db->having("cnt <= 1", null, false);
+                    if (@$_REQUEST['txtSearchFrom'] != "" && @$_REQUEST['txtSearchTo'] != "") {
+                        $txtSearchFrom = date('Y-m-d', strtotime(@$_REQUEST['txtSearchFrom']));
+                        $txtSearchTo = date('Y-m-d', strtotime(@$_REQUEST['txtSearchTo']));
+                        $this->db->where('tbl_users.created_datetime >=', $txtSearchFrom . " 00:00:00");
+                        $this->db->where('tbl_users.created_datetime <=', $txtSearchTo . " 23:59:59");
+                    }
+                    if (@$_REQUEST['txtSearchFrom'] != "" && @$_REQUEST['txtSearchTo'] == "") {
+                        $txtSearchFrom = date('Y-m-d', strtotime(@$_REQUEST['txtSearchFrom']));
+                        $this->db->where('tbl_users.created_datetime >=', $txtSearchFrom . " 00:00:00");
+                    }
+                    if (@$_REQUEST['txtSearchTo'] != "" && @$_REQUEST['txtSearchFrom'] == "") {
+                        $txtSearchTo = date('Y-m-d', strtotime(@$_REQUEST['txtSearchTo']));
+                        $this->db->where('tbl_users.created_datetime <=', $txtSearchTo . " 23:59:59");
+                    }
+                    $this->db->having('cnt <=', 1);
                 }
             }
             
