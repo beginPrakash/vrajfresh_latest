@@ -27,10 +27,13 @@ class Controller_prodreport extends CI_Controller
 
 			$i = $_REQUEST['start'] + 1;
 			foreach ($ArrData['result'] as $aRow) {
+				$prod_unitcost = $this->prodreport_model->get_prod_unitcost($aRow['product_id'],$aRow['unit_price'],$aRow['product_variant_id']);
+				$total_cost = $prod_unitcost ?? 0;
 				$row = $category_name = array();
 				$row[] = date('d-m-Y',strtotime($aRow['order_datetime']));
 				$row[] = $aRow['product_name'];
 				$row[] = $aRow['unit_price'];
+				$row[] = number_format($total_cost,2);
 				$row[] = $aRow['pro_qty'];
 				$row[] = $aRow['porder_id'];
 				$row[] = $aRow['pro_total_amount'];
@@ -63,11 +66,13 @@ class Controller_prodreport extends CI_Controller
         $cat_name = '';
 		
 		foreach ($ArrDataList as $key => $ArrData) {
-
+			$prod_unitcost = $this->prodreport_model->get_prod_unitcost($ArrData['product_id'],$ArrData['unit_price'],$ArrData['product_variant_id']);
+			$total_cost = $prod_unitcost ?? 0;
 			$row = array();
 			$row[] = date('d-m-Y',strtotime($ArrData['order_datetime']));
 			$row[] = $ArrData['product_name'];
 			$row[] = $ArrData['unit_price'];
+			$row[] = number_format($total_cost,2);
 			$row[] = $ArrData['pro_qty'];
 			$row[] = $ArrData['porder_id'];
 			$row[] = $ArrData['pro_total_amount'];
@@ -76,7 +81,7 @@ class Controller_prodreport extends CI_Controller
     	}
 		//exit;
 		$report_title = "product_report_".time();
-		$ArrHeading = array('Date','Product Name','Product Price','Quantity','Order ID','Total');
+		$ArrHeading = array('Date','Product Name','Product Price','Unit Cost','Quantity','Order ID','Total');
 		array_to_csv($ArrHeading,$data,$report_title);		
 	}
 

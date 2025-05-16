@@ -60,6 +60,7 @@
                      <th>Date</th>
                      <th>Product Name</th>
                      <th>Product Price</th>
+                     <th>Unit Cost</th>
                      <th>Quantity</th>
                      <th>Order Id</th>
                      <th>Total</th>
@@ -96,8 +97,10 @@
       "bSortable": true
    }, {
       "bSortable": true
+   }, {
+      "bSortable": true
    }];
-   var colDef = [0, 6];
+   var colDef = [0, 7];
    var aoColumnDefs = [];
    var aoColumnDefsCenter = [];
    var ajaxURL1 = {
