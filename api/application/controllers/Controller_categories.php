@@ -537,7 +537,12 @@ class Controller_categories extends CI_Controller
 
 						$ArrFinal[$i] = $arr;
 
-						$ArrFinal[$i]->product_size = $tempArray;
+						$unique = array_map("unserialize", array_unique(array_map("serialize", $tempArray)));
+						usort($unique, function($a, $b) {
+							return $a['size'] <=> $b['size']; // Ascending sort by 'price'
+						});
+
+						$ArrFinal[$i]->product_size = $unique;
 
 						$i++;
 					}
@@ -756,7 +761,11 @@ class Controller_categories extends CI_Controller
 
 						$ArrFinal[$i] = $arr;
 
-						$ArrFinal[$i]->product_size = $tempArray;
+						$unique = array_map("unserialize", array_unique(array_map("serialize", $tempArray)));
+						usort($unique, function($a, $b) {
+							return $a['size'] <=> $b['size']; // Ascending sort by 'price'
+						});
+						$ArrFinal[$i]->product_size = $unique;
 
 						$i++;
 					}

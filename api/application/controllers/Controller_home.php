@@ -218,16 +218,21 @@ class Controller_home extends CI_Controller
 									
 									if(!empty($arr1->product_variant_size)):
 										
-									$t['size'] = $arr1->product_variant_size;
-									$t['price'] = $arr1->variant_price;
-									$t['product_variant_id'] = $arr1->product_variant_id;
-									$tempArray[] = $t;
+										$t['size'] = $arr1->product_variant_size;
+										$t['price'] = $arr1->variant_price;
+										$t['product_variant_id'] = $arr1->product_variant_id;
+										$tempArray[] = $t;
 									endif;
 									// $t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
 									
 								}
+
+							$unique = array_map("unserialize", array_unique(array_map("serialize", $tempArray)));
+							usort($unique, function($a, $b) {
+								return $a['size'] <=> $b['size']; // Ascending sort by 'price'
+							});
 							$ArrFinal[$i] = $arr;
-							$ArrFinal[$i]->product_size = $tempArray;
+							$ArrFinal[$i]->product_size = $unique;
 							$i++;
 						}
 						$prev_product_id = $arr->product_id;
