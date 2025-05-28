@@ -48,11 +48,19 @@
          text-align: left;
          background-color: #F5F5F5;
       }
+      table {
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
    </style>
 </head>
 
 <body class="body">
-
+<div style="page-break-after: always;">
 
    <table style="width: 100%;">
       <tr>
@@ -191,8 +199,8 @@
          ?>
       </tbody>
    </table>
-
+      
 </body>
-
+</div>
 </html>
 <?php //exit; ?>

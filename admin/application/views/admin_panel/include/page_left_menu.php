@@ -77,9 +77,9 @@ span.noti_count_or {
 
 			<ul class="treeview-menu">
 
-				<li><a href="<?php echo base_url(); ?>orders">My Orders <?php if($processing_order_count > 0){ ?> <span class="noti_count_or"> <?php echo $processing_order_count; ?></span> <?php } ?></a></li>
+			<li><a href="<?php echo base_url(); ?>orders">My Orders <?php if($processing_order_count > 0){ ?> <span class="noti_count_or"> <?php echo $processing_order_count; ?></span> <?php } ?></a></li>
 
-				<li><a href="<?php echo base_url(); ?>historic-orders">My Historic Orders</a></li>
+<li><a href="<?php echo base_url(); ?>historic-orders">My Historic Orders</a></li>
 
 			</ul>
 
@@ -243,7 +243,7 @@ span.noti_count_or {
 
 				<?php
 
-				if ($user_role_id != 'Kaivan' && $user_role_id != 'Tirth' && $user_role_id != 'kaivan' && $user_role_id != 'tirth') { ?>
+				if ($user_role_id != 'Kaivan' && $user_role_id != 'kaivan') { ?>
 
 					<li><a href="<?php echo base_url(); ?>import-product">Import Product</a></li>
 
@@ -251,7 +251,7 @@ span.noti_count_or {
 
 				<?php
 
-				if ($user_role_id != 'Kaivan' && $user_role_id != 'Tirth' && $user_role_id != 'kaivan' && $user_role_id != 'tirth') { ?>
+				if ($user_role_id != 'Kaivan' && $user_role_id != 'kaivan') { ?>
 
 					<li><a href="<?php echo base_url(); ?>product-add">Add Product</a></li>
 
@@ -263,7 +263,7 @@ span.noti_count_or {
 
 				<?php
 
-				if ($user_role_id != 'Kaivan' && $user_role_id != 'Tirth' && $user_role_id != 'kaivan' && $user_role_id != 'tirth') { ?>
+				if ($user_role_id != 'Kaivan' && $user_role_id != 'kaivan') { ?>
 
 					<li><a href="<?php echo base_url(); ?>tag-add">Add Product Tag</a></li>
 
@@ -314,8 +314,6 @@ span.noti_count_or {
 				<li><a href="<?php echo base_url(); ?>state-wise-tax">State Wise Tax</a></li>
 
 				<li><a href="<?php echo base_url(); ?>cash-credits">Cash Credits</a></li>
-
-
 
 
 
@@ -433,7 +431,7 @@ span.noti_count_or {
 
 	<?php
 
-	if ($user_role_id != 'Kaivan' && $user_role_id != 'Tirth' && $user_role_id != 'kaivan' && $user_role_id != 'tirth') { ?>
+	if ($user_role_id != 'Kaivan' && $user_role_id != 'kaivan') { ?>
 
 		<li class="treeview <?php if ($active_menu == 'inquires')
 
@@ -463,7 +461,7 @@ span.noti_count_or {
 
 	<?php
 
-	if ($user_role_id != 'Kaivan' && $user_role_id != 'Tirth' && $user_role_id != 'kaivan' && $user_role_id != 'tirth') { ?>
+	if ($user_role_id != 'Kaivan' && $user_role_id != 'kaivan') { ?>
 
 		<li class="treeview <?php if ($active_menu == 'promotion')
 
