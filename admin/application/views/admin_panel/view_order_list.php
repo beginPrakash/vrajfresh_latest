@@ -42,6 +42,7 @@
                         <option value="Refunded">Refunded</option>
                         <option value="Failed">Failed</option>
                         <option value="Out For Delivery">Out For Delivery</option>
+                        <option value="Processed">Processed</option>
                      </select>
                   </div>
                   <div class="col-sm-3">

@@ -2101,3 +2101,4 @@
 2024-11-20 21:43:35 | To: reema.pradhan@hotmail.com | Subject: VrajFresh Order Place Successful | Status: Success 
 2024-11-20 22:58:58 | To: vanny12@gmail.com | Subject: VrajFresh Order Place Successful | Status: Success 
 2024-11-21 00:26:50 | To: vineetsneha@aol.com | Subject: VrajFresh Order Place Successful | Status: Success 
+2025-05-30 05:17:04 | To: hetal.spotarrow1@gmail.com | Subject: Vrajfresh Registration Successfully | Status: Failed | Error: SMTP connect() failed. https://github.com/PHPMailer/PHPMailer/wiki/Troubleshooting

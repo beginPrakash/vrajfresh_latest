@@ -5,8 +5,26 @@
 // print_r($_SESSION['cart_contents']);
 // echo current_url(true);
 ?>
-<head>
 
+<head>
+    <!-- Google Tag Manager -->
+    <script>
+        (function(w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({
+                'gtm.start': new Date().getTime(),
+                event: 'gtm.js'
+            });
+            var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s),
+                dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true;
+            j.src =
+                'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-NL8J4LCB');
+    </script>
+    <!-- End Google Tag Manager -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -15,10 +33,10 @@
     <title>VrajFresh</title>
     <link rel="shortcut icon" type="image/png" href=<?php echo ASSET_URL . "images/favicon.png"; ?>>
     <link href='<?php echo ASSET_URL . "css/slick.css?v=1.1"; ?>' rel="stylesheet">
-    <link href='<?php echo ASSET_URL . "css/vraj-fresh-custom.css?v=".date("d.H.m.s"); ?>' rel="stylesheet"> 
+    <link href='<?php echo ASSET_URL . "css/vraj-fresh-custom.css?v=" . date("d.H.m.s"); ?>' rel="stylesheet">
     <link href='<?php echo ASSET_URL . "css/style.css?v=1.1"; ?>' rel="stylesheet">
-    <link href='<?php echo ASSET_URL . "css/vraj-fresh-responsive.css?v=".date("d.H.m.s"); ?>' rel="stylesheet">
-    <link href='<?php echo ASSET_URL . "css/vrjcst.css?v=".date("d.H.m.s"); ?>' rel="stylesheet">
+    <link href='<?php echo ASSET_URL . "css/vraj-fresh-responsive.css?v=" . date("d.H.m.s"); ?>' rel="stylesheet">
+    <link href='<?php echo ASSET_URL . "css/vrjcst.css?v=" . date("d.H.m.s"); ?>' rel="stylesheet">
     <link rel="stylesheet" href=<?php echo ASSET_URL . "css/font-awesome.min.css?v=1.1"; ?>>
     <script src='<?php echo ASSET_URL . "js/jquery.js"; ?>'>
     </script>
@@ -40,13 +58,43 @@
         }
     </style>
     <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    <!-- <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-59WDGKMS');</script>
-<!-- End Google Tag Manager -->
- <meta name="google-site-verification" content="xaJvsYfgjva1zg6alJmoQ0Er7XPWoDt0zunyKPNcHiE" />
+})(window,document,'script','dataLayer','GTM-59WDGKMS');</script> -->
+    <!-- End Google Tag Manager -->
+    <meta name="google-site-verification" content="xaJvsYfgjva1zg6alJmoQ0Er7XPWoDt0zunyKPNcHiE" />
+
+    <!-- Facebook Pixel Code -->
+    <script>
+        ! function(f, b, e, v, n, t, s) {
+            if (f.fbq) return;
+            n = f.fbq = function() {
+                n.callMethod ?
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n;
+            n.push = n;
+            n.loaded = !0;
+            n.version = '2.0';
+            n.queue = [];
+            t = b.createElement(e);
+            t.async = !0;
+            t.src = v;
+            s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '996549885017760');
+        fbq('track', 'PageView');
+    </script>
+    <noscript>
+        <img height="1" width="1"
+            src="https://www.facebook.com/tr?id=996549885017760&ev=PageView
+&noscript=1" />
+    </noscript>
+    <!-- End Facebook Pixel Code -->
 
 </head>
 <?php
@@ -56,9 +104,29 @@ $actual_link = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP
 
 <body class="banner-empty">
     <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-59WDGKMS"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
+    <!-- <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-59WDGKMS"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript> -->
+    <!-- End Google Tag Manager (noscript) -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T2DPW5CY6X"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-T2DPW5CY6X');
+    </script>
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NL8J4LCB"
+            height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+
+    <!-- End Google Tag Manager (noscript) -->
     <div class="top-banner" style="display: none;"></div>
     <header>
         <div class="container container-flex header">
@@ -85,12 +153,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     } ?>
                 </div>
             </div>
-            <?php 
-            $ch_ur= (isset($_SERVER['PATH_INFO']) && !empty($_SERVER['PATH_INFO'])) ? $_SERVER['PATH_INFO'] : '';
-            if ($ch_ur == '/checkout'){ ?>
+            <?php
+            $ch_ur = (isset($_SERVER['PATH_INFO']) && !empty($_SERVER['PATH_INFO'])) ? $_SERVER['PATH_INFO'] : '';
+            if ($ch_ur == '/checkout') { ?>
                 <div class="home-search" id="search-autocomplete">
                 </div>
-            <?php }else{ ?>
+            <?php } else { ?>
                 <div class="home-search" id="search-autocomplete">
                     <form action="<?php echo BASE_URL . 'products/search'; ?>" method="get">
                         <button type="submit" class="header_button">
@@ -99,7 +167,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         <input name="search" class="myinput" placeholder="Search for items..." type="text" id="search" required maxlength="4000">
                         <div class="search-autocomplete-result">
                             <!-- load product -->
-                        <div class="myspinner"></div>
+                            <div class="myspinner"></div>
                         </div>
                     </form>
                 </div>
@@ -107,21 +175,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <input type="hidden" value="<?Php echo $ch_ur; ?>" class="curs_name">
             <div class="my-account">
                 <ul>
-                <li class="mobile-show">
+                    <li class="mobile-show">
                         <a href="javascript:void(0)" class="toggel-zipcode"><img src=<?php echo ASSET_URL . "images/mappin.svg"; ?> class="left-arrow"></a>
                     </li>
                     <?php if (!IsUserLogin()) { ?>
-                        <?php if(isset($_COOKIE['user_id'])){ ?>
+                        <?php if (isset($_COOKIE['user_id'])) { ?>
                             <li class="vraj-login1">
                                 <a href="<?php echo BASE_URL . 'my-orders'; ?>"><img src=<?php echo ASSET_URL . "images/user-icon.png"; ?>></a>
                             </li>
-                        <?php } else  { ?>
+                        <?php } else { ?>
 
                             <li class="vraj-login">
-                                <!-- <a href="<?php echo current_url().'?login=true'; ?>"> <img src=<?php echo ASSET_URL . "images/user-icon.png"; ?>></a> -->
-                                <a href="<?php echo BASE_URL.'login'; ?>"> <img src=<?php echo ASSET_URL . "images/user-icon.png"; ?>></a>
+                                <!-- <a href="<?php echo current_url() . '?login=true'; ?>"> <img src=<?php echo ASSET_URL . "images/user-icon.png"; ?>></a> -->
+                                <a href="<?php echo BASE_URL . 'login'; ?>"> <img src=<?php echo ASSET_URL . "images/user-icon.png"; ?>></a>
                             </li>
-                            <?php } ?>
+                        <?php } ?>
                     <?php } else { ?>
                         <li class="vraj-login1">
                             <a href="<?php echo BASE_URL . 'my-orders'; ?>"><img src=<?php echo ASSET_URL . "images/user-icon.png"; ?>></a>
@@ -142,49 +210,49 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <img src=<?php echo ASSET_URL . "images/hamburger-menu.svg"; ?> alt="">
         </div>
         <script>
-           
-            document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 const leftArrow = document.querySelector('.menu-left-arrow');
                 const rightArrow = document.querySelector('.menu-right-arrow');
                 const menu = document.querySelector('.main-menu');
 
                 function InitialupdateArrowState() {
                     if (menu.scrollLeft === 0) {
-                    leftArrow.classList.add('disabled');
+                        leftArrow.classList.add('disabled');
                     } else {
-                    leftArrow.classList.remove('disabled');
+                        leftArrow.classList.remove('disabled');
                     }
-                    
+
                 }
+
                 function updateArrowState() {
                     if (menu.scrollLeft === 0) {
-                    leftArrow.classList.add('disabled');
+                        leftArrow.classList.add('disabled');
                     } else {
-                    leftArrow.classList.remove('disabled');
+                        leftArrow.classList.remove('disabled');
                     }
-                    
+
                     if (menu.scrollLeft + menu.clientWidth >= menu.scrollWidth) {
-                    rightArrow.classList.add('disabled');
+                        rightArrow.classList.add('disabled');
                     } else {
-                    rightArrow.classList.remove('disabled');
+                        rightArrow.classList.remove('disabled');
                     }
                 }
 
-                leftArrow.addEventListener('click', function () {
+                leftArrow.addEventListener('click', function() {
                     if (menu.scrollLeft > 0) {
-                    menu.scrollBy({
-                        left: -200, // Adjust the value as needed
-                        behavior: 'smooth'
-                    });
+                        menu.scrollBy({
+                            left: -200, // Adjust the value as needed
+                            behavior: 'smooth'
+                        });
                     }
                 });
 
-                rightArrow.addEventListener('click', function () {
+                rightArrow.addEventListener('click', function() {
                     if (menu.scrollLeft + menu.clientWidth < menu.scrollWidth) {
-                    menu.scrollBy({
-                        left: 200, // Adjust the value as needed
-                        behavior: 'smooth'
-                    });
+                        menu.scrollBy({
+                            left: 200, // Adjust the value as needed
+                            behavior: 'smooth'
+                        });
                     }
                 });
 
@@ -193,7 +261,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 // Initial check
                 InitialupdateArrowState();
             });
-
         </script>
         <nav class="menu">
             <div class="container container-flex">
@@ -219,9 +286,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </nav>
         <div class="wrapper begin-wrapper">
             <nav class="navigation">
-            <div class="container">
+                <div class="container">
                     <ul class="nav__list" id="nav__list"></ul>
-            </div>
+                </div>
             </nav>
         </div>
     </header>
@@ -233,21 +300,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         const api_url_prefix = "<?php echo API_URL ?>";
         const front_url = "<?php echo BASE_URL ?>";
 
-        $(document).on('mouseenter','.nav__item', function (event) {
+        $(document).on('mouseenter', '.nav__item', function(event) {
             $(this).children('.mainsubmenu').slideDown('fast');
-        }).on('mouseleave','.nav__item',  function(){
-            $(this).children('.mainsubmenu').slideUp('fast');
+        }).on('mouseleave', '.nav__item', function() {
+            $(this).children('.mainsubmenu').stop(true, true).hide(); // instant close
         });
 
 
         var login_user_id = 0;
-        <?php if(IsUserLogin()){ ?>
+        <?php if (IsUserLogin()) { ?>
             var login_user_id = '<?php echo $this->session->userdata['logged_in']['user_id']; ?>';
         <?php } ?>
 
         $(document).ready(function() {
 
-            if(login_user_id  > 0){
+            if (login_user_id > 0) {
                 var currentUrl = window.location.href;
                 // Create a URL object
                 var urlObj = new URL(currentUrl);
@@ -256,15 +323,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 login_cart_data(webpathname);
             }
 
-            $('.nav__item').hover(
-                function(){
-                    console.log('sds');
-                    $(this).children('.mainsubmenu').slideDown('fast');
-                },
-                function () {
-                    console.log('sdss');
-                    $(this).children('.mainsubmenu').slideUp('fast');
-            });
 
             showProgress('div#spinner');
             get_top_menus(api_url_prefix);
@@ -274,7 +332,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             hideProgress('div#spinner');
             $("#zipcode").val(Cookies.get("zipcode"));
             $("#zipcode_popup").val(Cookies.get("zipcode"));
-            jQuery('.toggel-zipcode').on('click',function(){
+            jQuery('.toggel-zipcode').on('click', function() {
                 $('.zip-code.mobile-hide').toggle();
             });
 
@@ -302,7 +360,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         "data": JSON.stringify(json_request),
                         "dataType": "JSON",
                         "success": function(response) {
-                            var product='';
+                            var product = '';
                             if (response.data != null) {
                                 if (response.data.product_id != null) {
                                     //product_title = '<h2>' + response.data.category.category_name + '</h2>';
@@ -310,8 +368,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                         var out_of_stock = "<div class='product-stock-message'></div>";
                                         var out_of_stock_class = "";
                                         var variant_in_stock_count = 0;
-                                        var variant_size=response.data.products[a].product_variant_size;
-                                        
+                                        var variant_size = response.data.products[a].product_variant_size;
+
                                         /*if (response.data.products[a].is_out_of_stock == 0) {
                                             out_of_stock = "<div class='product-stock-message'>Sold out</div>";
                                             out_of_stock_class = "out_of_stock";
@@ -342,7 +400,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                         var out_of_stock = "<div class='product-stock-message'></div>";
                                         var out_of_stock_class = "";
 
-                                        // console.log("product Sold out:" + response.data.products[a].is_out_of_stock + " and variant Sold out:" + variant_in_stock_count);
+                                        // console.log("product sold out:" + response.data.products[a].is_out_of_stock + " and variant sold out:" + variant_in_stock_count);
                                         if (response.data.products[a].is_out_of_stock == 0) {
                                             out_of_stock = "<div class='product-stock-message'>Product Sold out</div>";
                                             out_of_stock_class = "out_of_stock";
@@ -361,12 +419,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                                 <div><a href="<?php echo BASE_URL; ?>product/${response.data.products[a].product_slug}">${response.data.products[a].product_name}</a></div>
                                                 <div>${response.data.products[a].product_price}</div>
                                             </div>`;
-                                            product +=`<div class="cart-box">
+                                        product += `<div class="cart-box">
                                             ${out_of_stock}
                                             <ul>`;
-                                            if (variant_size == null || out_of_stock_class!='') {
-                                                
-                                                product +=`<li>
+                                        if (variant_size == null || out_of_stock_class != '') {
+
+                                            product += `<li>
                                                 <div class="quantity ${out_of_stock_class}">
                                                 <button type="button" id="sub" class="sub">-</button>
                                                 <input type="text" class = "prod_add1 search_${response.data.products[a].product_id}" id="search_${response.data.products[a].product_id} " value="1" min="1" max="3" disabled />
@@ -376,16 +434,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                                 <li>
                                                 <button type="button" id= "btn_${response.data.products[a].product_id}" class="add_cart_search ${out_of_stock_class}" data-isperisible="${response.data.products[a].is_perisible_products}" data-productslug="${response.data.products[a].product_slug}" data-productimage= "${response.data.products[a].product_image}" data-productname="${response.data.products[a].product_name}" data-price="${response.data.products[a].product_price}" data-productid = "${response.data.products[a].product_id}" data-productweight ="${response.data.products[a].product_weight_gms}" data-producttax="${response.data.products[a].product_tax}" >Add</button>
                                                 </li>`;
-                                                
-                                            }else{
-                                                product +=`<li>
+
+                                        } else {
+                                            product += `<li>
                                                 <a href="<?php echo BASE_URL; ?>product/${response.data.products[a].product_slug}" class="search-view ${out_of_stock_class}" >View</a>
                                                 </li>`;
-                                            }
-                                            product +=`</ul>
+                                        }
+                                        product += `</ul>
                                             </div>`;
-                                            
-                                        product +=`</div>`;
+
+                                        product += `</div>`;
 
                                         // <div class="col-md-2">
                                         //     <ul>
@@ -402,7 +460,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                         //     </div>
 
                                     }
-                                    product +=`<button type="submit" class="vraj-btn" style="width: 100%;margin-top: 20px;padding: 10px 30px;">View All</button>`
+                                    product += `<button type="submit" class="vraj-btn" style="width: 100%;margin-top: 20px;padding: 10px 30px;">View All</button>`
                                     $(".search-autocomplete-result").html(product);
                                     var first_variant_out_of_stock = false;
                                     // console.log(product);
@@ -475,7 +533,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         "success": function(response) {
 
                             $("#btn_" + product_id).text('Added');
-                            if(curs_name == '/cart-detail'){
+                            if (curs_name == '/cart-detail') {
                                 location.reload();
                             }
                             setTimeout(() => {
@@ -501,9 +559,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
             });
 
-            <?php 
-                $cartContents = isset($_SESSION["cart_contents"]) ? json_encode($_SESSION["cart_contents"]) : '';
-                $escapedCartContents = addslashes($cartContents);
+            <?php
+            $cartContents = isset($_SESSION["cart_contents"]) ? json_encode($_SESSION["cart_contents"]) : '';
+            $escapedCartContents = addslashes($cartContents);
 
             ?>
 
@@ -516,7 +574,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     email: "This field is required",
                     password: "This field is required",
                 },
-                submitHandler: function (form) {
+                submitHandler: function(form) {
                     var form = $("#Frmlogin");
 
                     // form.submit();
@@ -536,7 +594,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         contentType: false,
                         processData: false,
                         dataType: "JSON",
-                        success: function (response) {
+                        success: function(response) {
                             if (response.data != null) {
                                 $("#message").html('<div class="alert-success">' + response.success_message + "</div>");
                                 Cookies.set("user_id", response.data[0].user_id);
@@ -581,19 +639,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 } else {
                                     Cookies.set("city", response.data[0].city);
                                 }
-                                
+
                                 $.ajax({
                                     type: "POST",
                                     url: front_url + "cart/logincartdata",
                                     // data: form.serialize(),
                                     data: {
-                                        'oauth_key':'F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT',
-                                        'user_id':response.data[0].user_id
+                                        'oauth_key': 'F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT',
+                                        'user_id': response.data[0].user_id
                                     },
                                     // contentType: false,
                                     // processData: false,
                                     dataType: "JSON",
-                                    success: function (response_cart) {
+                                    success: function(response_cart) {
                                         console.log('logincard');
                                         console.log(response_cart);
                                     }
@@ -603,9 +661,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                     window.location = front_url + "change-password";
                                 } else {
                                     //window.location = front_url + "my-orders";
-                                    if(response.data['prev_url'] != ''){
+                                    if (response.data['prev_url'] != '') {
                                         window.location = front_url + response.data['prev_url'];
-                                    }else{
+                                    } else {
                                         window.location = front_url + "my-orders";
                                     }
                                 }
@@ -630,7 +688,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                             //     window.location.replace(front_url);
                             // }, 2000);
                         },
-                        error: function (response) {
+                        error: function(response) {
                             $("#message").html(
                                 '<div class="alert-danger">' + response.errors + "</div>"
                             );
@@ -639,7 +697,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     return false;
                 },
             });
-            
+
             $("#Frmregistration").validate({
                 rules: {
                     first_name: 'required',
@@ -661,7 +719,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 messages: {
                     first_name: 'First name is required',
                     last_name: 'Last name is required',
-                    password: { 
+                    password: {
                         required: 'Password is required',
                         minlength: "Your password must be at least 5 characters long"
                     },
@@ -676,16 +734,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     //zipcode: 'This field is required'
                 },
                 submitHandler: function(form) {
-                // form.submit();
+                    // form.submit();
                     var form = $("#Frmregistration");
                     $.ajax({
                         "type": "POST",
                         "url": api_url_prefix + 'add-user',
                         "data": form.serialize(),
                         "success": function(response) {
-                            if(response.data != null)
-                            {
-                                $("#signup_message").html('<div class="alert-success">'+response.success_message+'</div>');
+                            if (response.data != null) {
+                                $("#signup_message").html('<div class="alert-success">' + response.success_message + '</div>');
                                 console.log(response, 'reg data');
                                 Cookies.set("user_id", response.data[0].user_id);
                                 Cookies.set("email", response.data[0].email);
@@ -731,11 +788,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 }
                                 window.location = front_url + "my-orders";
                             } else {
-                                $("#signup_message").html('<div class="alert-danger">'+response.errors+'</div>');
+                                $("#signup_message").html('<div class="alert-danger">' + response.errors + '</div>');
                             }
                         },
                         "error": function(response) {
-                            $("#signup_message").html('<div class="alert-danger">'+response.errors+'</div>');
+                            $("#signup_message").html('<div class="alert-danger">' + response.errors + '</div>');
                         }
                     });
                     return false;
@@ -889,45 +946,44 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     const moreBtn = moreLi.querySelector('button')
 
                     moreBtn.addEventListener('click', (e) => {
-                    e.preventDefault()
-                    container.classList.toggle('nav__active')
-                    moreBtn.setAttribute('aria-expanded',     container.classList.contains('nav__active'))
+                        e.preventDefault()
+                        container.classList.toggle('nav__active')
+                        moreBtn.setAttribute('aria-expanded', container.classList.contains('nav__active'))
                     })
 
                     // adapt tabs
                     const doAdapt = () => {
-                    // reveal all ite  ms for the calculation
-                    allItems.forEach((item) => {
-                        //console.log(item);
-                        item.classList.remove('nav__hidden')
-                    })
-                    console.log(allItems);
-                    // hide items that won't fit in the Primary
-                    let stopWidth = moreBtn.offsetWidth
-                    let hiddenItems = []
-                    const primaryWidth = primary.offsetWidth
-                    primaryItems.forEach((item, i) => {
-                        if(primaryWidth >= stopWidth + item.offsetWidth) {
-                        stopWidth += item.offsetWidth
-                        } else {
-                        item.classList.add('nav__hidden')
-                        hiddenItems.push(i)
-                        }
-                    })
-                    
-                    // toggle the visibility of More button and items in Secondary
-                    if(!hiddenItems.length) {
-                        moreLi.classList.add('nav__hidden')
-                        container.classList.remove('nav__active')
-                        moreBtn.setAttribute('aria-expanded', false)
-                    }
-                    else {  
-                        secondaryItems.forEach((item, i) => {
-                        if(!hiddenItems.includes(i)) {
-                            item.classList.add('nav__hidden')
-                        }
+                        // reveal all ite  ms for the calculation
+                        allItems.forEach((item) => {
+                            //console.log(item);
+                            item.classList.remove('nav__hidden')
                         })
-                    }
+                        console.log(allItems);
+                        // hide items that won't fit in the Primary
+                        let stopWidth = moreBtn.offsetWidth
+                        let hiddenItems = []
+                        const primaryWidth = primary.offsetWidth
+                        primaryItems.forEach((item, i) => {
+                            if (primaryWidth >= stopWidth + item.offsetWidth) {
+                                stopWidth += item.offsetWidth
+                            } else {
+                                item.classList.add('nav__hidden')
+                                hiddenItems.push(i)
+                            }
+                        })
+
+                        // toggle the visibility of More button and items in Secondary
+                        if (!hiddenItems.length) {
+                            moreLi.classList.add('nav__hidden')
+                            container.classList.remove('nav__active')
+                            moreBtn.setAttribute('aria-expanded', false)
+                        } else {
+                            secondaryItems.forEach((item, i) => {
+                                if (!hiddenItems.includes(i)) {
+                                    item.classList.add('nav__hidden')
+                                }
+                            })
+                        }
                     }
 
                     doAdapt() // adapt immediately on load
@@ -936,15 +992,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     // hide Secondary on the outside click
 
                     document.addEventListener('click', (e) => {
-                    let el = e.target
-                    while(el) {
-                        if(el === secondary || el === moreBtn) {
-                        return;
+                        let el = e.target
+                        while (el) {
+                            if (el === secondary || el === moreBtn) {
+                                return;
+                            }
+                            el = el.parentNode
                         }
-                        el = el.parentNode
-                    }
-                    container.classList.remove('nav__active')
-                    moreBtn.setAttribute('aria-expanded', false)
+                        container.classList.remove('nav__active')
+                        moreBtn.setAttribute('aria-expanded', false)
                     });
                 },
                 "error": function(response) {
@@ -997,24 +1053,23 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         }
 
         function setZipCodeCookie(call_from) {
-            
+
             if (call_from == 'header') {
                 var zipcode = $("#zipcode").val();
             } else if (call_from == 'cart') {
                 var zipcode = $("#zipcode_cart").val();
-            }
-            else if (call_from == 'popup') {
+            } else if (call_from == 'popup') {
                 $('#zipcode_popup').trigger('change');
                 var zipcode = $("#zipcode_popup_value").val();
-                if(zipcode==''){
+                if (zipcode == '') {
                     var firstItem = $("#zipcode_popup_data ul").find("li:first").text();
-                    zipcode =firstItem.replace(/ *\([^)]*\) */g, "");
+                    zipcode = firstItem.replace(/ *\([^)]*\) */g, "");
                 }
                 console.log(zipcode);
                 // return false;
             }
             if (zipcode != '') {
-                
+
                 var json_request = {
                     "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
                     "zipcode": zipcode
@@ -1030,7 +1085,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
                             // Cookies.set('zipcode', zipcode);
                             setCookie('zipcode', zipcode, 7);
-                            
+
                             // Cookies.set('minimum_order_value', '');
                             //Cookies.set('is_deliver_perishable_products', '');
                             //Cookies.set('delivery_type', '');
@@ -1054,7 +1109,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         } else {
                             // Cookies.set('zipcode', zipcode);
                             setCookie('zipcode', zipcode, 7);
-                            
+
                             Cookies.set('minimum_order_value', '');
                             Cookies.set('is_deliver_perishable_products', '');
                             Cookies.set('delivery_type', '');
@@ -1093,24 +1148,23 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         }
 
         function setZipCodeCookie1(call_from) {
-            
+
             if (call_from == 'header') {
                 var zipcode = $("#zipcode").val();
             } else if (call_from == 'cart') {
                 var zipcode = $("#zipcode_cart").val();
-            }
-            else if (call_from == 'popup') {
+            } else if (call_from == 'popup') {
                 $('#zipcode_popup').trigger('change');
                 var zipcode = $("#zipcode_popup_value").val();
-                if(zipcode==''){
+                if (zipcode == '') {
                     var firstItem = $("#zipcode_popup_data ul").find("li:first").text();
-                    zipcode =firstItem.replace(/ *\([^)]*\) */g, "");
+                    zipcode = firstItem.replace(/ *\([^)]*\) */g, "");
                 }
                 console.log(zipcode);
                 // return false;
             }
             if (zipcode != '') {
-                
+
                 var json_request = {
                     "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
                     "zipcode": zipcode
@@ -1126,7 +1180,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
                             // Cookies.set('zipcode', zipcode);
                             setCookie('zipcode', zipcode, 7);
-                            
+
                             // Cookies.set('minimum_order_value', '');
                             //Cookies.set('is_deliver_perishable_products', '');
                             //Cookies.set('delivery_type', '');
@@ -1150,7 +1204,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         } else {
                             // Cookies.set('zipcode', zipcode);
                             setCookie('zipcode', zipcode, 7);
-                            
+
                             Cookies.set('minimum_order_value', '');
                             Cookies.set('is_deliver_perishable_products', '');
                             Cookies.set('delivery_type', '');
@@ -1179,9 +1233,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 });
             } else {
                 if (zipcode != '') {
-                $("#zipcode_message1").html('Please enter zipcode');
-                $("#zipcode_popup_message1").html('Please enter zipcode');
-                $("#success_center").hide();
+                    $("#zipcode_message1").html('Please enter zipcode');
+                    $("#zipcode_popup_message1").html('Please enter zipcode');
+                    $("#success_center").hide();
                 }
             }
 
@@ -1201,7 +1255,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 "dataType": "JSON",
                 "success": function(response) {
                     console.log(response);
-                    if(response.is_successful == 1){   
+                    if (response.is_successful == 1) {
                         for (let a = 0; a < response.data.length; a++) {
                             var top_banner = `${response.data[a].title} <a href="${response.data[a].url}">Click Here</a>`;
 
@@ -1212,7 +1266,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 }
             });
         }
-        
+
         $('.numberonly').keypress(function(e) {
             var charCode = (e.which) ? e.which : event.keyCode;
             if (String.fromCharCode(charCode).match(/[^0-9]/g))
@@ -1243,12 +1297,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 "dataType": "JSON",
                 "data": json_request,
                 "success": function(response) {
-                    
+
                     if (response.is_successful == "1") {
                         console.log("cartData", response.data);
                         $("#cartCount").text('0');
                         $("#cartCount").text(response.data.total_items);
-                        if(webpathname == "/cart-detail"){
+                        if (webpathname == "/cart-detail") {
                             $.ajax({
                                 "type": "POST",
                                 "url": front_url + 'load-cart-data',
@@ -1268,7 +1322,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         }
                     } else {
                         $("#cartCount").text('0');
-                        if(webpathname == "/cart-detail"){
+                        if (webpathname == "/cart-detail") {
                             $('#cart-data').empty();
                             $("#zipcode_cart").val(Cookies.get("zipcode"));
                         }
@@ -1277,11 +1331,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 },
                 "error": function(response) {
                     $("#cartCount").text('0');
-                    if(webpathname == "/cart-detail"){
+                    if (webpathname == "/cart-detail") {
                         $('#cart-data').empty();
                     }
                 }
             });
         }
-
     </script>

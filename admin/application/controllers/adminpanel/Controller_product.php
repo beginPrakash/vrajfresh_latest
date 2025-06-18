@@ -297,7 +297,7 @@ class Controller_product extends CI_Controller
 							$data = array('error_message' => $this->upload->display_errors());
 						} else {
 							$data['icon_image'] = $this->upload->data();
-							$this->textWatermark($data['icon_image']['file_name']);
+							//$this->textWatermark($data['icon_image']['file_name']);
 						}
 
 					} else {
@@ -433,7 +433,7 @@ class Controller_product extends CI_Controller
 										$ArrProductVariant['variant_image'] = $this->upload->data()['file_name'];
 
 										//for text watermark
-										$this->textWatermark($ArrProductVariant['variant_image']);
+										//$this->textWatermark($ArrProductVariant['variant_image']);
 									}
 								} else {
 									$ArrProductVariant['variant_image'] = $ArrVariantImagePath[$i];
@@ -476,7 +476,7 @@ class Controller_product extends CI_Controller
 												$ArrProductVariant['variant_image'] = $this->upload->data()['file_name'];
 
 												//for text watermark
-												$this->textWatermark($ArrProductVariant['variant_image']);
+												//$this->textWatermark($ArrProductVariant['variant_image']);
 											}
 										}
 									}
@@ -506,7 +506,7 @@ class Controller_product extends CI_Controller
 								$this->product_image_model->add($ArrProductImage);
 
 								//for text watermark
-								$this->textWatermark($ArrProductImage['image']);
+								//$this->textWatermark($ArrProductImage['image']);
 							}
 						}
 
@@ -535,7 +535,7 @@ class Controller_product extends CI_Controller
 						} else {
 							$data['icon_image'] = $this->upload->data();
 							$file_name = $data['icon_image']['file_name'];
-							$this->textWatermark($data['icon_image']['file_name']);
+							//$this->textWatermark($data['icon_image']['file_name']);
 						}
 
 					} else {
@@ -686,7 +686,7 @@ class Controller_product extends CI_Controller
 										'image' => $this->upload->data()['file_name'],
 									);
 									$this->product_image_model->add($ArrProductImage);
-									$this->textWatermark($ArrProductImage['image']);
+									//$this->textWatermark($ArrProductImage['image']);
 								}
 							}
 						}

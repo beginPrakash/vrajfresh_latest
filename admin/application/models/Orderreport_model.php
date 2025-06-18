@@ -7,9 +7,9 @@ class orderreport_model extends CI_Model
 
         if(!empty(@$_REQUEST['txtSearchFrom']) || !empty(@$_REQUEST['txtSearchTo']) || !empty(@$_REQUEST['ddIsActive'])
             || !empty(@$_REQUEST['paymentStatus']) || !empty(@$_REQUEST['txtSearchZipcode'])){
-		$column_order = array(null, 'tbl_orders.order_id', 'tbl_orders.order_datetime', 'tbl_users.display_name', 'tbl_users.mobile_no','tbl_users.email','tbl_users.address','tbl_users.city','tbl_users.state','tbl_users.zip','tbl_users.user_id','tbl_orders.order_total_amount', 'tbl_orders.order_status', 'tbl_orders.is_active', 'tbl_orders.created_datetime');
+		$column_order = array(null, 'tbl_orders.order_id', 'tbl_orders.order_datetime','tbl_users.display_name', 'tbl_users.mobile_no','tbl_users.email','tbl_users.address','tbl_users.city','tbl_users.state','tbl_users.zip','tbl_users.user_id','tbl_orders.order_total_amount', 'tbl_orders.order_status', 'tbl_orders.is_active', 'tbl_orders.created_datetime');
 
-            $aColumns = array('tbl_orders.order_id', 'tbl_orders.order_datetime', 'tbl_users.display_name', 'tbl_users.mobile_no','tbl_users.email','tbl_users.address','tbl_users.city','tbl_users.state','tbl_users.zip','tbl_users.user_id','tbl_orders.order_total_amount', 'tbl_orders.order_status', 'tbl_orders.is_active', 'tbl_orders.created_datetime');
+            $aColumns = array('tbl_orders.order_id', 'tbl_orders.order_datetime', 'tbl_orders.shipping_street_name','tbl_orders.shipping_apartment_name','tbl_orders.shipping_city','sts.state as shipping_state_name','tbl_orders.shipping_zipcode','tbl_users.display_name', 'tbl_users.mobile_no','tbl_users.email','tbl_users.address','tbl_users.city','tbl_users.state','tbl_users.zip','tbl_users.user_id','tbl_orders.order_total_amount', 'tbl_orders.order_status', 'tbl_orders.is_active', 'tbl_orders.created_datetime');
 
             $column_search = array('tbl_orders.order_id', 'tbl_users.display_name', 'tbl_users.first_name', 'tbl_users.last_name', 'tbl_users.email', 'tbl_orders.order_status', 'tbl_users.mobile_no');
 
@@ -60,6 +60,7 @@ class orderreport_model extends CI_Model
                 }
                 $this->db->where('tbl_orders.is_deleted', 0);
                 $this->db->join('tbl_users', 'tbl_users.user_id = tbl_orders.user_id', 'left');
+                $this->db->join('state sts', 'sts.state_id = tbl_orders.shipping_state_id', 'left');
                 $rResult = $this->db->get($sTable);
                 //echo '<pre>'; print_r( $this->db->last_query() );exit;
                 $this->db->select('FOUND_ROWS() AS found_rows');
@@ -79,7 +80,7 @@ class orderreport_model extends CI_Model
 	{
         if(!empty(@$_REQUEST['txtSearchFrom']) || !empty(@$_REQUEST['txtSearchTo']) || !empty(@$_REQUEST['ddIsActive'])
         || !empty(@$_REQUEST['paymentStatus']) || !empty(@$_REQUEST['txtSearchZipcode'])){
-            $aColumns = array('tbl_orders.order_id', 'tbl_orders.order_datetime', 'tbl_users.display_name', 'tbl_users.mobile_no','tbl_users.email','tbl_users.address','tbl_users.city','tbl_users.state','tbl_users.zip','tbl_users.user_id','tbl_orders.order_total_amount', 'tbl_orders.order_status', 'tbl_orders.is_active', 'tbl_orders.created_datetime');
+            $aColumns = array('tbl_orders.order_id', 'tbl_orders.order_datetime', 'tbl_orders.shipping_street_name','tbl_orders.shipping_apartment_name','tbl_orders.shipping_city','sts.state as shipping_state_name','tbl_orders.shipping_zipcode', 'tbl_users.display_name', 'tbl_users.mobile_no','tbl_users.email','tbl_users.address','tbl_users.city','tbl_users.state','tbl_users.zip','tbl_users.user_id','tbl_orders.order_total_amount', 'tbl_orders.order_status', 'tbl_orders.is_active', 'tbl_orders.created_datetime');
 
             $column_search = array('tbl_orders.order_id', 'tbl_users.display_name', 'tbl_users.first_name', 'tbl_users.last_name', 'tbl_users.email', 'tbl_orders.order_status', 'tbl_users.mobile_no');
 
@@ -115,6 +116,7 @@ class orderreport_model extends CI_Model
 
             $this->db->where('tbl_orders.is_deleted', 0);
             $this->db->join('tbl_users', 'tbl_users.user_id = tbl_orders.user_id', 'left');
+            $this->db->join('state sts', 'sts.state_id = tbl_orders.shipping_state_id', 'left');
             $this->db->order_by('tbl_orders.order_id', 'desc');
             $rResult = $this->db->get($sTable);
             //echo $this->db->last_query();exit;

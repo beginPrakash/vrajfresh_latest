@@ -27,18 +27,27 @@ class Controller_orderreport extends CI_Controller
 			$i = $_REQUEST['start'] + 1;
 			foreach ($ArrData['result'] as $aRow) {
 				$row = $category_name = array();
-				$city = '';
-				$state = '';
-				$zip = '';
-				if(!empty($aRow['city'])){
-					$city= ', '.$aRow['city'];
+				$street_name = '';
+				$aprt_name = '';
+				$scity = '';
+				$sstate='';
+				$szip='';
+				if(!empty($aRow['shipping_street_name'])){
+					$street_name= $aRow['shipping_street_name'];
 				}
-				if(!empty($aRow['state'])){
-					$state = ', '.$aRow['state'];
+				if(!empty($aRow['shipping_apartment_name'])){
+					$aprt_name = ' '.$aRow['shipping_apartment_name'];
 				}
-				if(!empty($aRow['zip'])){
-					$zip = ', '.$aRow['zip'];
+				if(!empty($aRow['shipping_city'])){
+					$scity = ', '.$aRow['shipping_city'];
 				}
+				if(!empty($aRow['shipping_state_name'])){
+					$sstate = ', '.$aRow['shipping_state_name'];
+				}
+				if(!empty($aRow['shipping_zipcode'])){
+					$szip = ', '.$aRow['shipping_zipcode'];
+				}
+				
 				// $get_total_order_unitcost = $this->orderreport_model->get_total_order_unitcost($aRow['order_id']);
 				// echo $get_total_order_unitcost;exit;
 				$row[] = $aRow['user_id'];
@@ -46,7 +55,7 @@ class Controller_orderreport extends CI_Controller
 				$row[] = $aRow['order_datetime'];
 				$row[] = $aRow['display_name'];
 				$row[] = $aRow['email'];
-				$row[] = $aRow['address'].''.$city.''.$zip;
+				$row[] = $street_name.''.$aprt_name.''.$scity.''.$sstate.''.$szip;
 				$row[] = $aRow['mobile_no'];
 				$row[] = $aRow['order_status'];
 				$row[] = $aRow['order_total_amount'];
@@ -80,25 +89,33 @@ class Controller_orderreport extends CI_Controller
 		foreach ($ArrDataList as $ArrData) {
 			$no++;
 			$row = array();
-			$city = '';
-				$state = '';
-				$zip = '';
-				if(!empty($ArrData['city'])){
-					$city= ', '.$ArrData['city'];
-				}
-				if(!empty($ArrData['state'])){
-					$state = ', '.$ArrData['state'];
-				}
-				if(!empty($ArrData['zip'])){
-					$zip = ', '.$ArrData['zip'];
-				}
+			$street_name = '';
+			$aprt_name = '';
+			$scity = '';
+			$sstate='';
+			$szip='';
+			if(!empty($ArrData['shipping_street_name'])){
+				$street_name= $ArrData['shipping_street_name'];
+			}
+			if(!empty($ArrData['shipping_apartment_name'])){
+				$aprt_name = ' '.$ArrData['shipping_apartment_name'];
+			}
+			if(!empty($ArrData['shipping_city'])){
+				$scity = ', '.$ArrData['shipping_city'];
+			}
+			if(!empty($ArrData['shipping_state_name'])){
+				$sstate = ', '.$ArrData['shipping_state_name'];
+			}
+			if(!empty($ArrData['shipping_zipcode'])){
+				$szip = ', '.$ArrData['shipping_zipcode'];
+			}
 
 			$row[] = $ArrData['user_id'];
 			$row[] = $ArrData['order_id'];
 			$row[] = $ArrData['order_datetime'];
 			$row[] = $ArrData['display_name'];
 			$row[] = $ArrData['email'];
-			$row[] = $ArrData['address'].''.$city.''.$zip;
+			$row[] = $street_name.''.$aprt_name.''.$scity.''.$sstate.''.$szip;
 			$row[] = $ArrData['mobile_no'];
 			$row[] = $ArrData['order_status'];
 			$row[] = $ArrData['order_total_amount'];

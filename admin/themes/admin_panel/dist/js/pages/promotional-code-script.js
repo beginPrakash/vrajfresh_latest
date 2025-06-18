@@ -63,7 +63,8 @@ $(document).ready(function(){
 				required: "Please add start from Date."
 			},
 			valid_upto: {
-				required: "Please add valid upto date."
+				required: "Please add valid upto date.",
+				greaterThanStart: true
 			},			
 			promotional_type: {
 				required: "Please select promotional type."
@@ -183,6 +184,7 @@ function showHideClientGroupDiv(apply_to)
 		$("#customer_div").hide();
 	}	
 }
+
 function validation()
 {
 	//$('#to option').prop('selected', true);
@@ -191,7 +193,7 @@ function validation()
 	var submitFlag = true;
 	/* alert(startDate);
 	alert(endDate); */
-	if(startDate>endDate){
+	if(new Date(startDate) > new Date(endDate)){
 		alert('Please select end data greater than start date');
 		return false;
 	}	

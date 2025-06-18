@@ -397,12 +397,19 @@ class Controller_categories extends CI_Controller
 									$previous_variant_id = $arr1->id;
 								}
 							}
-                            usort($tempArray, function($a, $b) {
-                            	return $a['size'] <=> $b['size'];
-                            });
+                            // usort($tempArray, function($a, $b) {
+                            // 	return $a['size'] <=> $b['size'];
+                            // });
+
+							$unique = array_map("unserialize", array_unique(array_map("serialize", $tempArray)));
+							usort($unique, function($a, $b) {
+								return $a['price'] - $b['price']; // Ascending sort by 'price'
+							});
+							
+
 							$ArrFinal[$i] = $arr;
 
-							$ArrFinal[$i]->product_size = $tempArray;
+							$ArrFinal[$i]->product_size = $unique;
 
 							$i++;
 						}
@@ -539,7 +546,7 @@ class Controller_categories extends CI_Controller
 
 						$unique = array_map("unserialize", array_unique(array_map("serialize", $tempArray)));
 						usort($unique, function($a, $b) {
-							return $a['size'] <=> $b['size']; // Ascending sort by 'price'
+							return $a['price'] - $b['price']; // Ascending sort by 'price'
 						});
 
 						$ArrFinal[$i]->product_size = $unique;
@@ -763,7 +770,7 @@ class Controller_categories extends CI_Controller
 
 						$unique = array_map("unserialize", array_unique(array_map("serialize", $tempArray)));
 						usort($unique, function($a, $b) {
-							return $a['size'] <=> $b['size']; // Ascending sort by 'price'
+							return $a['price'] - $b['price']; // Ascending sort by 'price'
 						});
 						$ArrFinal[$i]->product_size = $unique;
 
