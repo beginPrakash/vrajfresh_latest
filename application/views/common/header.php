@@ -836,7 +836,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 }
 
                             }
-                            menus = menus.concat("<li><a href='<?php echo BASE_URL; ?>category/" + response.data[a].category_slug + "'>" + response.data[a].category_name + "</a><button class='but'></button><div class='submenu'><ul>" + child_menus + "</ul></div></li>");
+                            menus = menus.concat("<li><a href='javascript:void();'>" + response.data[a].category_name + "</a><button class='but'></button><div class='submenu'><ul>" + child_menus + "</ul></div></li>");
                         } else {
                             var menu_link = response.data[a].menu_link;
                             var category_slug = response.data[a].category_slug;
@@ -895,7 +895,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 }
 
                             }
-                            menus = menus.concat("<li class='nav__item'><a href='<?php echo BASE_URL; ?>category/" + response.data[a].category_slug + "'>" + response.data[a].category_name + "</a><button class='but'></button><div class='mainsubmenu'><ul>" + child_menus + "</ul></div></li>");
+                            menus = menus.concat("<li class='nav__item'><a href='javascript:void();'>" + response.data[a].category_name + "</a><button class='but'></button><div class='mainsubmenu'><ul>" + child_menus + "</ul></div></li>");
                         } else {
                             var category_slug = response.data[a].category_slug;
                             var menu_link = response.data[a].menu_link;

@@ -565,7 +565,22 @@ class product_model extends CI_Model
 
 
 		// CATEGORY SEARCH
+		//product status search
+		if (isset($_POST['prod_status']) && !empty($_POST['prod_status'])):
 
+			$prod_status = $_POST['prod_status'];
+			if($prod_status == 'out_of_stock'){
+				$this->db->where_in('tbl_products.is_out_of_stock', 0);
+			}else if($prod_status == 'active'){
+				$this->db->where_in('tbl_products.is_active', 1);
+			}else if($prod_status == 'inactive'){
+				$this->db->where_in('tbl_products.is_active', 0);
+			}
+			
+
+			
+
+		endif;
 
 
 		if (@$_REQUEST['columns'] != "") {

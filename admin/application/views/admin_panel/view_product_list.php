@@ -37,6 +37,14 @@
                      </select>
 
                   </div>
+                  <div class="col-sm-2">
+                     <select class="form-control select2" style="width: 100%;" name="prodStatus" id="prodStatus">
+                        <option value="" selected="selected">--Product Status--</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">In Active</option>
+                        <option value="out_of_stock">Out Of Stock</option>
+                     </select>
+                  </div>
 
                   <div class="col-sm-2">
 
@@ -161,6 +169,8 @@
          d.txtSearchKeyWord = $("#txtSearchKeyWord").val();
 
          d.src_category = $("#src_category").val();
+
+         d.prod_status = $("#prodStatus").val();
 
       }
 
