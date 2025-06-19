@@ -60,6 +60,17 @@ class Coupons_model extends CI_Model
 
 	}
 
+	public function cust_order_count($user_id)
+	{
+		$this->db->select('COUNT(*) AS total');
+		$this->db->from('tbl_orders');
+		$this->db->where('user_id', $user_id);
+		$query = $this->db->get();
+		$result = $query->row();
+		return $result->total;
+
+	}
+
 
 	public function getGroupCustomerIds($ArrClientGroup)
 	{

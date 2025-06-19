@@ -178,7 +178,8 @@
                if (!@file_get_contents($imag_path)) {
                   $imag_path = SITE_URL . 'uploads/no-image.png';
                }
-               $total_weight=$products_row['product_weight_gms'] * $products_row['qty'] . ' lb';
+               //$total_weight=$products_row['product_weight_gms'] * $products_row['qty'] . ' lb';
+               $total_weight=$products_row['product_weight_gms']. ' lb';
                $product_variant_size = '';
                if (!empty($products_row['product_variant_size'])) {
                   $product_variant_size = '<br>Size: ' . $products_row['product_variant_size'] . '';
