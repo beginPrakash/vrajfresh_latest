@@ -552,7 +552,7 @@ class Controller_order extends CI_Controller
 			]);
 
 			$response = curl_exec($curl);
-			
+			//print_r($response);exit;
 			if ($response === false || $response == null) {
 				$error = curl_error($curl);
 			}

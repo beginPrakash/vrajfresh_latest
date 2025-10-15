@@ -819,7 +819,7 @@
 								var price_weight = '<form name="form" id="form"><select id="product_varient_'+ response.data.product_details[a].product_id+'" data-productid="'+ response.data.product_details[a].product_id +'" name="variants" class="variants product_varient' + out_of_stock_class + '">';
 								for (let j = 0; j < response.data.product_details[a].product_size.length; j++) {
 									if (!first_variant_out_of_stock || (first_variant_out_of_stock && j > 0)) {
-										price_weight = price_weight.concat('<option class"' + out_of_stock_variant + '"value="' + response.data.product_details[a].product_size[j].size + '-' + response.data.product_details[a].product_size[j].price + '-' + response.data.product_details[a].product_size[j].variant_id + '">' + response.data.product_details[a].product_size[j].size + 'lb - $' + response.data.product_details[a].product_size[j].price + '</option>');
+										price_weight = price_weight.concat('<option class="' + out_of_stock_variant + '"value="' + response.data.product_details[a].product_size[j].size + '-' + response.data.product_details[a].product_size[j].price + '-' + response.data.product_details[a].product_size[j].variant_id + '">' + response.data.product_details[a].product_size[j].size + 'lb - $' + response.data.product_details[a].product_size[j].price + '</option>');
 									}
 								}
 								price_weight += '</select></form>';

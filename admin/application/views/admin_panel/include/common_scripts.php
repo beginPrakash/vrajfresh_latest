@@ -242,6 +242,32 @@
 			}
 		});
 	}
+
+	/* IS SOLD - UPDATE AJAX CALL */
+	function updateIsSoldValue(primary_id, tablename, column_name) {
+		console.log('soldout'+primary_id);
+		$(document.body).css({ 'cursor': 'wait' });
+		$.ajax({
+			type: "POST",
+			url: "<?php echo base_url() ?>controller_common/ajaxStatusSoldUpdate",
+			data: "cms_id=" + primary_id + "&tablename=" + tablename + "&column_name=" + column_name,
+			success: function (results) {
+				var obj = JSON.parse(results);
+				$(document.body).css({ 'cursor': 'default' });
+				if (obj.message == "success" && obj.is_active == '1') {
+					$(".update_sold_status_i" + primary_id).html('<small class="label label-warning">No</small>');
+				}
+				if (obj.message == "success" && obj.is_active == '0') {
+					$(".update_sold_status_i" + primary_id).html('<small class="label label-info">Yes</small>');
+				}
+				toastr.success('Staus has been updated successfully!');
+			},
+			error: function () {
+				$(document.body).css({ 'cursor': 'default' });
+				toastr.error('Oops...! active status updating failed, please try again.');
+			}
+		});
+	}
 	/* DELETE SINGLE RECORD -AJAX CALL */
 	$(document).on('click', '.deleteRecord', function () {
 		var action_url = $(this).attr('rel');

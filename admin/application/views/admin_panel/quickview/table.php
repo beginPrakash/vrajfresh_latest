@@ -50,7 +50,7 @@
 
             <div style="float:left;text-align:left;width:50%;font-size:14px;margin-top:20px;">
 
-                <b>Delivery Address:</b><br>
+                <b>Delivery Addresss:</b><br>
 
                 <?php echo $ArrFieldDatashow['shipping_first_name'] . ' &nbsp' . $ArrFieldDatashow['shipping_last_name'] ?><br>
 
@@ -103,6 +103,10 @@
 
                     <?php echo $ArrFieldDatashow['delivery_datetime']; ?><br>
                 <?php } ?>
+
+                <b>Payment Method:</b>
+
+                    <?php echo $ArrFieldDatashow['payment_methodtype']; ?><br>
 
 
             </div>

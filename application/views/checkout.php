@@ -15,8 +15,10 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
    $shipping_state = $_COOKIE['shipping_state'];
 }
 ?>
+ <script src="https://pay.google.com/gp/p/js/pay.js"></script>
 <script type="text/javascript" src="https://js.stripe.com/v3/"></script>
 <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+
 <style>
    .StripeElement {
       padding: 10px 12px;
@@ -144,65 +146,79 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
             </div>
          </div>
          <div class="billing-left" id="CardData">
-            <h3>Payment</h3>
+            <h3><input type="radio" name="payment_methodtype" value="stripe_paymethod" checked=""> Payment</h3>
             <span>All transactions are secure and encrypted.</span>
             </br>
-         <div>
-			<div class="add-card">
-				<input type="radio" name="card_id" id="card_id_" value="0" <?php if($card_count == 0){ echo 'CHECKED'; } ?>> <label>Add Another Credit Card</label>
-				<input type="hidden" name="card_count" id="card_count" value="<?php echo $card_count; ?>" >
-			</div>
-            <select name="state" id="state" style="display:none;" data-tax="">
-               <?php
-                  $tax_percentage = 0;
-                  
-                  foreach ($ArrStateOption as $key => $state_data) {
-                  
-                  	$ArrStateData = explode('|', $key);
-                  
-                  	$billing_state_id = $ArrStateData[1];
-                  
-                  	if ($billing_state_id == $shipping_state || $state_data == $shipping_state) {
-                  
-                  	$tax_percentage = $ArrStateData[0];
-                  
-                  	}
-                  
-                  	?>
-               <option value="<?php echo $key; ?>" data-id="<?php echo $billing_state_id; ?>" <?php if ($billing_state_id == $shipping_state || $state_data == $shipping_state) {
-                  echo 'selected';
-                  
-                  } ?>><?php echo $state_data; ?></option>
-               <?php } ?>
-            </select>
-         </div>
-         <div id="card-element" class="StripeElement"  role="group" aria-labelledby="card-label" <?php if($card_count > 0){ ?> style="display:none;" <?php } ?>>
-         <!-- A Stripe Element will be inserted here. -->
+            <div class="stripe_pay_div">
+               <div>
+                  <div class="add-card">
+                     <input type="radio" name="card_id" id="card_id_" value="0" <?php //if($card_count == 0){ echo 'CHECKED'; } ?>> <label>Add Another Credit Card</label>
+                     <input type="hidden" name="card_count" id="card_count" value="<?php echo $card_count; ?>" >
+                  </div>
+                  <select name="state" id="state" style="display:none;" data-tax="">
+                     <?php
+                        $tax_percentage = 0;
+                        
+                        foreach ($ArrStateOption as $key => $state_data) {
+                        
+                           $ArrStateData = explode('|', $key);
+                        
+                           $billing_state_id = $ArrStateData[1];
+                        
+                           if ($billing_state_id == $shipping_state || $state_data == $shipping_state) {
+                        
+                           $tax_percentage = $ArrStateData[0];
+                        
+                           }
+                        
+                           ?>
+                     <option value="<?php echo $key; ?>" data-id="<?php echo $billing_state_id; ?>" <?php if ($billing_state_id == $shipping_state || $state_data == $shipping_state) {
+                        echo 'selected';
+                        
+                        } ?>><?php echo $state_data; ?></option>
+                     <?php } ?>
+                  </select>
+               </div>
+               <div id="card-element" class="StripeElement"  role="group" aria-labelledby="card-label" <?php if($card_count > 0){ ?> style="display:none;" <?php } ?>>
+               <!-- A Stripe Element will be inserted here. -->
+            </div>
          </div>
          <!-- Used to display form errors. -->
-         <div id="card-errors" role="alert" aria-live="assertive" class="error"></div>
-         <div class="card-form" <?php if($card_count > 0){ ?> style="display:none;" <?php } ?>> 
-         
-            <input type="hidden" name="CardToken" id="CardToken" />
-            <input type="hidden" name="StripeCardID" id="StripeCardID" />
-            <input type="hidden" name="CardPaymentMethod" id="CardPaymentMethod" />
+         <div class="stripe_pay_div">
+            <div id="card-errors" role="alert" aria-live="assertive" class="error"></div>
+            <div class="card-form" <?php if($card_count > 0){ ?> style="display:none;" <?php } ?>> 
             
-            <br>
-            <input type="checkbox" name="save_card" id="save_card" value="1" /> <lable for="save_card">Save my information for a faster checkout </lable>
-         </div>
-         <hr><br>
-         
-         <?php if(!empty($cards)){ ?>
-         <?php for($i = 0; $i < count($cards); $i++){ ?>
-            <div class="type-box">
-               <input type="radio" name="card_id" id="card_id<?php echo $i; ?>" value="<?php echo $cards[$i]['card_id']; ?>" <?php if($cards[$i]['card_id'] == $card_id){ echo 'CHECKED'; } ?>>
-               <p><?php echo $cards[$i]['card_brand']. " - " . $cards[$i]['card_holder'] ." ". $cards[$i]['card_no']; ?></p>
+               <input type="hidden" name="CardToken" id="CardToken" />
+               <input type="hidden" name="StripeCardID" id="StripeCardID" />
+               <input type="hidden" name="CardPaymentMethod" id="CardPaymentMethod" />
+               
+               <br>
+               <input type="checkbox" name="save_card" id="save_card" value="1" /> <lable for="save_card">Save my information for a faster checkout </lable>
             </div>
-         <?php } ?>
+            <hr><br>
+            
+            <?php if(!empty($cards)){ ?>
+            <?php for($i = 0; $i < count($cards); $i++){ ?>
+               <div class="type-box">
+                  <input type="radio" name="card_id" id="card_id<?php echo $i; ?>" value="<?php echo $cards[$i]['card_id']; ?>" <?php //if($cards[$i]['card_id'] == $card_id){ echo 'CHECKED'; } ?>>
+                  <p><?php echo $cards[$i]['card_brand']. " - " . $cards[$i]['card_holder'] ." ". $cards[$i]['card_no']; ?></p>
+               </div>
+            <?php } ?>
 
-         <?php } ?>
+            <?php } ?>
+         </div>
+         
       </div>
-
+      <div class="billing-left" id="CardData">
+         <h3><input type="radio" name="payment_methodtype"  value="gpay_paymethod">GPAY Payment</h3>
+         <div class="gpay_pay_div">
+            <div id="gpay_div_container"></div>
+            <div id="error-message"></div>
+            <input type="hidden" name="gpay_token_serialize" id="gpay_token_serialize">
+         </div>
+         
+      </div>
+      
       <div class="billing-left">
          <div id="shipingAddressBox" style="display:none;">
             <div>
@@ -795,16 +811,6 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
     </div>
   </div>
 </div>
-
-<?php require_once('common/common_js.php'); ?>
-<?php require_once('common/footer.php'); ?>
-<script>
-    gtag("event", "billing_page");
-</script>
-<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-<?php require_once('scripts/checkout_js.php'); ?>
 <script>
    $(function() {
       var today = new Date();
@@ -831,7 +837,18 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
         
       });
    });
-   
+   </script>
+<?php require_once('common/common_js.php'); ?>
+<?php require_once('common/footer.php'); ?>
+<?php require_once('scripts/checkout_js.php'); ?>
+
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+
+<script>
+    gtag("event", "billing_page");
+    
    let checkoutformsubmit = 0;
    
    var stripe = Stripe('<?php echo STRIPE_PUBLISHABLE_KEY; ?>');
@@ -877,6 +894,24 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
 		if (String.fromCharCode(charCode).match(/[^0-9]/g))
 			return false;
 	});
+   $('.gpay_pay_div').hide();
+   $(document).on('change', 'input[type=radio][name=payment_methodtype]', function () {
+      var r_checkedval = $(this).val();
+      if(r_checkedval == "gpay_paymethod"){
+         $('.gpay_pay_div').show();
+         $('.stripe_pay_div').hide();
+      }else if(r_checkedval == "stripe_paymethod"){
+         $('.stripe_pay_div').show();
+         $('.gpay_pay_div').hide();
+      }
+   });
+</script>
+<?php require_once('scripts/gpay_js.php'); ?>
+<script>
+  
+   
+   
+   
 </script>
 
 <style>

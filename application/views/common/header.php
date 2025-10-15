@@ -127,7 +127,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
     <!-- End Google Tag Manager (noscript) -->
-    <div class="top-banner" style="display: none;"></div>
+    <div class="top-banner" style="display: none;"><div class="top-banner-text"></div></div>
     <header>
         <div class="container container-flex header">
             <div class="logo">
@@ -699,6 +699,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             });
 
             $("#Frmregistration").validate({
+              
                 rules: {
                     first_name: 'required',
                     last_name: 'required',
@@ -715,6 +716,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         required: true,
                         number: true
                     }
+
                 },
                 messages: {
                     first_name: 'First name is required',
@@ -731,10 +733,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         required: 'Phone number is required',
                         email: 'Please enter only digits'
                     }
+                   
                     //zipcode: 'This field is required'
                 },
                 submitHandler: function(form) {
                     // form.submit();
+                    if (grecaptcha.getResponse().length === 0) {
+                        $('#recaptcha-error').show();
+                        $('#recaptcha-error').html('Please complete the CAPTCHA');
+                        return false;
+                    }else{  
+                        $('#recaptcha-error').html('');
+
+                    }
+
                     var form = $("#Frmregistration");
                     $.ajax({
                         "type": "POST",
@@ -1257,11 +1269,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     console.log(response);
                     if (response.is_successful == 1) {
                         for (let a = 0; a < response.data.length; a++) {
-                            var top_banner = `${response.data[a].title} <a href="${response.data[a].url}">Click Here</a>`;
-
+                            //var top_banner = `${response.data[a].title} <a href="${response.data[a].url}">Click Here</a>`;
+                             var top_banner = `${response.data[a].title}`;
                         }
                     }
-                    $(".top-banner").html(top_banner);
+                    $(".top-banner-text").html(top_banner);
                     $(".top-banner").show();
                 }
             });

@@ -174,6 +174,10 @@ Order Note:
                     <?php echo $ArrFieldDatashow['delivery_datetime']; ?><br>
                 <?php } ?>
 
+                <b>Payment Method:</b>
+
+                <?php echo $ArrFieldDatashow['payment_methodtype']; ?><br>
+
 
             </div>
 

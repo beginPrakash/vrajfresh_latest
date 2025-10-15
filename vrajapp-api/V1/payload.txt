@@ -1,0 +1,84 @@
+{
+        "rateRequestControlParameters": {
+          "returnTransitTimes": true
+        },
+        "accountNumber": {
+          "value": "740561073"
+        },
+        "freightRequestedShipment": {
+          "serviceType": "FEDEX_FREIGHT_PRIORITY",
+          "shipper": {
+            "address": {
+              "city": "HARRISON",
+              "stateOrProvinceCode": "AR",
+              "postalCode": "72601",
+              "countryCode": "US"
+            }
+          },
+          "recipient": {
+            "address": {
+              "city": "",
+              "stateOrProvinceCode": "",
+              "postalCode": "",
+              "countryCode": "US"
+            }
+          },
+          "shippingChargesPayment": {
+            "paymentType": "SENDER",
+            "payor": {
+              "responsibleParty": {
+                "accountNumber": {
+                  "value": "510087020"
+                }
+              }
+            }
+          },
+          "freightShipmentDetail": {
+            "role": "SHIPPER",
+            "accountNumber": {
+              "value": "510087020"
+            },
+            "fedExFreightBillingContactAndAddress": {
+              "address": {
+                "streetLines": [
+                  "1202 CHALET LN"
+                ],
+                "city": "NEW YORK",
+                "stateOrProvinceCode": "NY",
+                "postalCode": "10001",
+                "countryCode": "US"
+              }
+            },
+            "lineItem": [
+              {
+                "freightClass": "CLASS_050",
+                "handlingUnits": "",
+                "pieces": 1,
+                "subPackagingType": "BUNDLE",
+                "id": "books",
+                "weight": {
+                  "units": "KG",
+                  "value": "0"
+                }
+              }
+            ]
+          },
+          "rateRequestType": [
+            "LIST"
+          ],
+          "requestedPackageLineItems": [
+            {
+              "associatedFreightLineItems": [
+                {
+                  "id": "books"
+                }
+              ],
+              "weight": {
+                "units": "KG",
+                "value": "0"
+              },
+              "subPackagingType": "BUNDLE"
+            }
+          ]
+        }
+      }

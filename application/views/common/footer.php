@@ -55,7 +55,7 @@
 					<li><img src="<?php echo ASSET_URL . "images/map-pin.png"; ?>">449, Market Street Saddle Brook, NJ
 						07663</li>
 					<li><a href="tel:201-688-7887"><img src="<?php echo ASSET_URL . "images/phone-icon.png"; ?>">201-688-7887</a></li>
-					<li><a href="mailto:info@vrajfresh.com"><img src="<?php echo ASSET_URL . "images/mail-icon.png"; ?>">info@vrajfresh.com</a></li>
+					<li><a href="mailto:orders@vrajfresh.com"><img src="<?php echo ASSET_URL . "images/mail-icon.png"; ?>">orders@vrajfresh.com</a></li>
 					<li><img src="<?php echo ASSET_URL . "images/watch-icon.png"; ?>">Work hours: 10:00 - 21:00, Monday
 						- Sunday</li>
 				</ul>

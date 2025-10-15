@@ -100,7 +100,7 @@ class Controller_product extends CI_Controller
 					$image = $aRow['product_image'];
 					$row[] = $imag = '<img height="70px" width="70px" src="' . $base_url . 'uploads/products/' . $image . '" alt="No Image found" border=0 >';
 				}
-
+				$row[] = getIssoldoutButtonForList($aRow['is_out_of_stock'], $product_id, 'tbl_products', 'product_id');
 				$row[] = getIsactiveButtonForList($aRow['is_active'], $product_id, 'tbl_products', 'product_id');
 				$i++;
 				$output['aaData'][] = $row;
