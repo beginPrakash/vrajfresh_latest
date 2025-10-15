@@ -1,0 +1,342 @@
+220 vedikin.com ESMTP Postfix
+
+<br /><pre>hello: 250-vedikin.com
+
+250-PIPELINING
+
+250-SIZE 30720000
+
+250-ETRN
+
+250-STARTTLS
+
+250-ENHANCEDSTATUSCODES
+
+250-8BITMIME
+
+250-DSN
+
+250 CHUNKING
+
+</pre>Failed to send AUTH LOGIN command. Error: 530 5.7.0 Must issue a STARTTLS command first
+
+<br />Unable to s
+Return-Path: &lt;vrajfresh@vedikin.com&gt;
+To: gmkmsm@gmail.com
+Reply-To: &lt;vrajfresh@vedikin.com&gt;
+User-Agent: CodeIgniter
+X-Mailer: CodeIgniter
+X-Priority: 3 (Normal)
+Message-ID: &lt;64f5506aa6f2b@v
+
+
+This is a multi-part message in MIME format.
+Your email application may not support this format.
+
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Your invoice for order #2564
+
+
+
+ Hi Gagan Malik
+ Here are the details of your order placed
+ [Order #2564]
+
+
+ Product NameQuantityPriceTaxTotal PriceFresh Methi Thepla(25 Pcs |
+1.56)1$11.99$0.00$11.99Desi Natural Masala Chaas (Buttermilk)(50oz |
+3.1)1$6.99$0.00$6.99Haldiram Choley Kulcha (320g
+11.3Oz)()4$5.99$0.00$23.96Haldiram Punjabi Choley (283g
+10Oz)()4$4.99$0.00$19.96Onion Red(10)1$9.49$0.00$9.49Pomegranate -
+Each()1$6.99$0.00$6.99Tomato Plum (3-4 Pcs) 1 LB()2$2.49$0.00$4.98Cucumber
+(Desi) - 1 LB()1$3.99$0.00$3.99Fresh Cilantro / 
+Ginger(0.5)1$1.99$0.00$1.99Red Bell Pepper - Each()1$2.49$0.00$2.49Orange
+Bell Pepper - Each()1$1.29$0.00$1.29Green Bell Pepper -
+Eac
+
+Pumpkin (1 Piece Approx. 1 lb)()1$3.99$0.00$3.99Shan Red Chilli Powder (1kg
+35.27Oz)()1$12.4
+Discount:$0.00Order Tip:$5.00Total:$152.46Notes:
+
+ Orders placed before 3:00 pm will be delivered the same day between
+ 4:00 to 8:00 pm. After 3:00 pm All orders, will be delivered the following
+day
+
+
+
+ Gagan Malik
+ 245 McCloud Dr
+ Fort Lee , 0
+
+
+
+
+ Gagan Malik
+ 245 McCloud Dr
+ Fort Lee , 07024
+
+
+
+ Thanks for using https://www.vrajfresh.com/!
+
+
+--B_ALT_64f5506aa6f38
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+=3Chtml lang=3D=22en=22=3E
+
+=3Ch
+ale=3D1.0=22=3E
+=3Cstyle=3E
+ .link =7B
+ tex
+
+ .contain =7B
+ fon
+
+ .customer=5Fdetails =7B
+ bor
+
+ =7D
+
+ color: rgb(61, 61, 61)=3B
+ =7D
+
+ th =7B
+ background-color: rgba(249, 249, 249, 1)=3B
+ =7D
+ .t1 td =7B
+ padding: 10px 3px=3B
+ =7D
+
+
+ table,
+ td,
+ border: 1px solid black=3B
+ =7D
+
+
+ table =7B
+ border-collapse: collapse=3B
+ width: 50=25=3B
+ =7D
+=3C/style=3E
+=3C/head=3E
+
+=3Cbody style=3D=22width: 700px=22=3E
+ =3Cdiv class=3D=22container=22 style=3D=22width: 550px=3B=22=3E
+ =3Cform=3E
+ =3Cdiv class=3D=22main=5Fcontainer=22=3E
+ =3Cdiv class=3D=22heading=22 style=3D=22background-color: =231e53a5=3B col=
+or: =23ffff=3B padding: 20px=3B width: 550px=22=3E
+ =3Ch1=3EYour invoice for order =232564=3C/h1=3E
+ =3C/div=3E
+ =3C/div=3E
+ =3Cdiv class=3D=22box=5Fcontainer=22
+ style=3D=22width: 492px=3B border: 1px solid =23e6e6e6=3Bpadding-top: 2rem=
+=3Bpadding-left: 3rem=3Bpadding-right: 3rem=3B=22=3E
+ =3Cp class=3D=22contain contain=5Fcolor=22=3EHi Gagan Malik=3C/p=3E
+ =3Cp class=3D=22contain contain=5Fcolor=22=3EHere are the details of your =
+order placed=3C/p=3E
+ =3Ch4 class=3D=22heading=5Fof=5Fdetails=22 style=3D=22color: =231e53a5=3B=
+=22=3E=5BOrder =232564=5D=3C/h4=3E
+ =3Cbr=3E
+ =3Cdiv class=3D=22d3=5F2=22=3E
+ =3Ctable style=3D=22border-collapse: collapse=3B width: 100=25=3B=22=3E=3C=
+tr=3E=3Cth=3EProduct Name=3C/th=3E=3Cth=3EQuantity=3C/th=3E=3Cth=3EPrice=3C=
+/th=3E=3Cth=3ETax=3C/th=3E=3Cth=3ETotal Price=3C/th=3E=3C/tr=3E=3Ctr=3E=3Ct=
+d style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3EFresh Methi The=
+pla(25 Pcs =7C 1.56)=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B pad=
+ding: 5px=3B=22=3E1=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padd=
+ing: 5px=3B=22=3E=2411.99=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=
+=3B padding: 5px=3B=22=3E=240.00=3C/td=3E=3Ctd style=3D=22border: 1px solid=
+ grey=3B padding: 5px=3B=22=3E=2411.99=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd style=
+=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3EDesi Natural Masala Ch=
+aas (Buttermilk)(50oz =7C 3.1)=3C/td=3E=3Ctd style=3D=22border: 1px solid g=
+rey=3B padding: 5px=3B=22=3E1=3C/td=3E=3Ctd style=3D=22border: 1px solid gr=
+ey=3B padding: 5px=3B=22=3E=246.99=3C/td=3E=3Ctd style=3D=22border: 1px sol=
+id grey=3B padding: 5px=3B=22=3E=240.00=3C/td=3E=3Ctd style=3D=22border: 1p=
+x solid grey=3B padding: 5px=3B=22=3E=246.99=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd=
+ style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3EHaldiram Choley =
+Kulcha (320g 11.3Oz)()=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B p=
+adding: 5px=3B=22=3E4=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B pa=
+dding: 5px=3B=22=3E=245.99=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=
+=3B padding: 5px=3B=22=3E=240.00=3C/td=3E=3Ctd style=3D=22border: 1px solid=
+ grey=3B padding: 5px=3B=22=3E=2423.96=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd style=
+=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3EHaldiram Punjabi Chole=
+y (283g 10Oz)()=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding:=
+ 5px=3B=22=3E4=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: =
+5px=3B=22=3E=244.99=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padd=
+ing: 5px=3B=22=3E=240.00=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B=
+ padding: 5px=3B=22=3E=2419.96=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd style=3D=22bo=
+rder: 1px solid grey=3B padding: 5px=3B=22=3EOnion Red(10)=3C/td=3E=3Ctd st=
+yle=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E1=3C/td=3E=3Ctd sty=
+le=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=249.49=3C/td=3E=3Ct=
+d style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=240.00=3C/td=
+=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=249.49=
+=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd style=3D=22border: 1px solid grey=3B paddin=
+g: 5px=3B=22=3EPomegranate - Each()=3C/td=3E=3Ctd style=3D=22border: 1px so=
+lid grey=3B padding: 5px=3B=22=3E1=3C/td=3E=3Ctd style=3D=22border: 1px sol=
+id grey=3B padding: 5px=3B=22=3E=246.99=3C/td=3E=3Ctd style=3D=22border: 1p=
+x solid grey=3B padding: 5px=3B=22=3E=240.00=3C/td=3E=3Ctd style=3D=22borde=
+r: 1px solid grey=3B padding: 5px=3B=22=3E=246.99=3C/td=3E=3C/tr=3E=3Ctr=3E=
+=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3ETomato Plum=
+ (3-4 Pcs) 1 LB()=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B paddin=
+g: 5px=3B=22=3E2=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding=
+: 5px=3B=22=3E=242.49=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B pa=
+dding: 5px=3B=22=3E=240.00=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=
+=3B padding: 5px=3B=22=3E=244.98=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd style=3D=22=
+border: 1px solid grey=3B padding: 5px=3B=22=3ECucumber (Desi) - 1 LB()=3C/=
+td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E1=3C/t=
+d=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=243.99=
+=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=
+=240.00=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=
+=22=3E=243.99=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd style=3D=22border: 1px solid g=
+rey=3B padding: 5px=3B=22=3EFresh Cilantro / Coriander / Dhana - Bunch()=3C=
+/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E2=3C/=
+td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=241.4=
+9=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=
+=240.00=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=
+=22=3E=242.98=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd style=3D=22border: 1px solid g=
+rey=3B padding: 5px=3B=22=3EChilli Medium Green(0.5)=3C/td=3E=3Ctd style=3D=
+=22border: 1px solid grey=3B padding: 5px=3B=22=3E1=3C/td=3E=3Ctd style=3D=
+=22border: 1px solid grey=3B padding: 5px=3B=22=3E=242.49=3C/td=3E=3Ctd sty=
+le=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=240.00=3C/td=3E=3Ct=
+d style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=242.49=3C/td=
+=3E=3C/tr=3E=3Ctr=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=
+=3B=22=3EFresh Ginger(0.5)=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=
+=3B padding: 5px=3B=22=3E1=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=
+=3B padding: 5px=3B=22=3E=241.99=3C/td=3E=3Ctd style=3D=22border: 1px solid=
+ grey=3B padding: 5px=3B=22=3E=240.00=3C/td=3E=3Ctd style=3D=22border: 1px =
+solid grey=3B padding: 5px=3B=22=3E=241.99=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd s=
+tyle=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3ERed Bell Pepper - =
+Each()=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=
+=22=3E1=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=
+=22=3E=242.49=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5=
+px=3B=22=3E=240.00=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B paddi=
+ng: 5px=3B=22=3E=242.49=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd style=3D=22border: 1=
+px solid grey=3B padding: 5px=3B=22=3EOrange Bell Pepper - Each()=3C/td=3E=
+=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E1=3C/td=3E=
+=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=241.29=3C/=
+td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=240.0=
+0=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=
+=241.29=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd style=3D=22border: 1px solid grey=3B=
+ padding: 5px=3B=22=3EGreen Bell Pepper - Each()=3C/td=3E=3Ctd style=3D=22b=
+order: 1px solid grey=3B padding: 5px=3B=22=3E1=3C/td=3E=3Ctd style=3D=22bo=
+rder: 1px solid grey=3B padding: 5px=3B=22=3E=241.69=3C/td=3E=3Ctd style=3D=
+=22border: 1px solid grey=3B padding: 5px=3B=22=3E=240.00=3C/td=3E=3Ctd sty=
+le=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=241.69=3C/td=3E=3C/=
+tr=3E=3Ctr=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=
+=3EYellow Bell Pepper - Each()=3C/td=3E=3Ctd style=3D=22border: 1px solid g=
+rey=3B padding: 5px=3B=22=3E1=3C/td=3E=3Ctd style=3D=22border: 1px solid gr=
+ey=3B padding: 5px=3B=22=3E=241.49=3C/td=3E=3Ctd style=3D=22border: 1px sol=
+id grey=3B padding: 5px=3B=22=3E=240.00=3C/td=3E=3Ctd style=3D=22border: 1p=
+x solid grey=3B padding: 5px=3B=22=3E=241.49=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd=
+ style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3ESpinach / Palak =
+- Bunch()=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=
+=3B=22=3E2=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=
+=3B=22=3E=242.99=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding=
+: 5px=3B=22=3E=240.00=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B pa=
+dding: 5px=3B=22=3E=245.98=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd style=3D=22border=
+: 1px solid grey=3B padding: 5px=3B=22=3ECauliflower - Each()=3C/td=3E=3Ctd=
+ style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E1=3C/td=3E=3Ctd =
+style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=244.49=3C/td=3E=
+=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=240.00=3C/=
+td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=244.4=
+9=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd style=3D=22border: 1px solid grey=3B paddi=
+ng: 5px=3B=22=3ECello Carrots Bag - Each()=3C/td=3E=3Ctd style=3D=22border:=
+ 1px solid grey=3B padding: 5px=3B=22=3E1=3C/td=3E=3Ctd style=3D=22border: =
+1px solid grey=3B padding: 5px=3B=22=3E=241.79=3C/td=3E=3Ctd style=3D=22bor=
+der: 1px solid grey=3B padding: 5px=3B=22=3E=240.00=3C/td=3E=3Ctd style=3D=
+=22border: 1px solid grey=3B padding: 5px=3B=22=3E=241.79=3C/td=3E=3C/tr=3E=
+=3Ctr=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3EStr=
+ing Beans (Fansi) - LB()=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B=
+ padding: 5px=3B=22=3E1=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B =
+padding: 5px=3B=22=3E=244.49=3C/td=3E=3Ctd style=3D=22border: 1px solid gre=
+y=3B padding: 5px=3B=22=3E=240.00=3C/td=3E=3Ctd style=3D=22border: 1px soli=
+d grey=3B padding: 5px=3B=22=3E=244.49=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd style=
+=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3EOkra Fresh (Bhindi) - =
+1LB()=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=
+=3E1=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=
+=3E=244.99=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=
+=3B=22=3E=240.00=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding=
+: 5px=3B=22=3E=244.99=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd style=3D=22border: 1px=
+ solid grey=3B padding: 5px=3B=22=3EYellow Pumpkin (1 Piece Approx. 1 lb)()=
+=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E1=
+=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=
+=243.99=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=
+=22=3E=240.00=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5=
+px=3B=22=3E=243.99=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd style=3D=22border: 1px so=
+lid grey=3B padding: 5px=3B=22=3EShan Red Chilli Powder (1kg 35.27Oz)()=3C/=
+td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E1=3C/t=
+d=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=2412.4=
+9=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=
+=240.00=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=
+=22=3E=2412.49=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd style=3D=22border: 1px solid =
+grey=3B padding: 5px=3B=22=3ESwad Cumin Powder(7 Oz =7C 0.44)=3C/td=3E=3Ctd=
+ style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E1=3C/td=3E=3Ctd =
+style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=244.49=3C/td=3E=
+=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=240.00=3C/=
+td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=244.4=
+9=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd colspan=3D=224=22 style=3D=22border: 1px s=
+olid grey=3B padding: 5px=3B=22=3EDelivery:=3C/td=3E=3Ctd style=3D=22border=
+: 1px solid grey=3B padding: 5px=3B=22=3EFree Delivery=3C/td=3E=3C/tr=3E=3C=
+tr=3E=3Ctd colspan=3D=224=22 style=3D=22border: 1px solid grey=3B padding: =
+5px=3B=22=3EState Tax:=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B p=
+adding: 5px=3B=22=3E=240=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd colspan=3D=224=22 s=
+tyle=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3EOrder Discount:=3C=
+/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=240.=
+00=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd colspan=3D=224=22 style=3D=22border: 1px =
+solid grey=3B padding: 5px=3B=22=3EOrder Tip:=3C/td=3E=3Ctd style=3D=22bord=
+er: 1px soli
+x=3B=22=3ETotal:=3C/td=3E=3Ctd style=3D=22border: 1px solid grey=3B padding=
+: 5px=3B=22=3E=24152.46=3C/td=3E=3C/tr=3E=3Ctr=3E=3Ctd colspan=3D=224=22 st=
+yle=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3ENotes:=3C/td=3E=3Ct=
+d style=3D=22border: 1px solid grey=3B padding: 5px=3B=22=3E=3C/td=3E=3C/tr=
+=3E=3C/table=3E
+ =3C/div=3E
+ =3Cp class=3D=22contain contain=5Fcolor=22=3EOrders placed before 3:00 pm =
+will be delivered the same day between
+ 4:00 to 8:00 pm. After 3:00 pm All orders, will be delivered the following=
+ day=3C/p=3E
+
+ =3Ctable style=3D=22border:1px solid lightgrey=3Bwidth: 100=25=3B=22=3E
+ =3Ctr=3E
+ =3Ctd style=3D=22vertical-align: top=3B=22=3E
+ =3Ch4 class=3D=22heading=5Fof=5Fdetails=22=3EBilling address=3C/h4=3E
+ =3Cdiv class=3D=22customer=5Fdetails =22=3E
+ =3Clabel class=3D=22contain=5Fcolor=22=3EGagan Malik=3C/label=3E=3Cbr=3E
+ =3Clabel class=3D=22contain=5Fcolor=22=3E245 McCloud Dr =3C/label=3E=3Cbr=
+=3E
+ =3Clabel class=3D=22contain=5Fcolor=22=3EFort Lee , 07024=3C/label=3E=3Cbr=
+=3E
+ =3Clabel class=3D=22contain=5Fcolor=22=3E201-551-2568=3C/label=3E=3Cbr=3E
+ =3Clabel class=3D=22contain=5Fcolor=22=3Egmkmsm=40gmail.com=3C/label=3E=3C=
+br=3E
+ =3C/div=3E
+ =3C/td=3E
+ =3Ctd style=3D=22padding-left: 20px=3B vertical-align: top=3B=22=3E
+ =3Ch4 class=3D=22heading=5Fof=5Fdetails=22=3EDelivery address=3C/h4=3E
+ =3Cdiv class=3D=22customer=5Fdetails =22=3E
+ =3Clabel class=3D=22contain=5Fcolor=22=3EGagan Malik=3C/label=3E=3Cbr=3E
+ =3Clabel class=3D=22contain=5Fcolor=22=3E245 McCloud Dr =3C/label=3E=3Cbr=
+=3E
+=3E
+ =3Clabel c
+ =3C/td=3E
+ =3C/table=
+://www.vrajfresh.com/=22 class=3D=22contain=5Fcolor=22=3Ehttps://www.vrajfr=
+esh.com/=3C/a=3E=21=3C/p=3E
+ =3C/div=3E
+
+ =3C/form=3E
+ =3C/div=3E
+
+=3C/body=3E
+
+=3C/html=3E
+
+--B_ALT_64f5506aa6f38--</pre>

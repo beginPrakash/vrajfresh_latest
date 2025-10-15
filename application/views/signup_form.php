@@ -44,6 +44,11 @@
                             </div>
                             <input type="hidden" name="oauth_key" value="F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT">
                             <input type="hidden" name="user_role_id" value="4">
+                             <br>
+                            <!-- Google reCAPTCHA Widget -->
+                            <div class="g-recaptcha" data-sitekey="6Lcv6OQrAAAAAIuJAukHw8QlDHwbdi39bIhYfXqP"></div>
+                            <label id="recaptcha-error" class="error" for="recaptcha"></label>
+                          
                         </div>
                         <!-- <button id="" onclick="signup()" class="login-btm">Create an account</button> -->
                         <button id="" type="submit" class="login-btm">Create an account</button>
@@ -58,7 +63,7 @@
 
 <link href="<?php echo ASSET_URL; ?>css/toastr.css" rel="stylesheet" />
 <script src="<?php echo ASSET_URL; ?>js/toastr.js"></script>
-
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <?php require_once('scripts/home_js.php'); ?>
 <?php require_once('common/footer.php'); ?>
 <script>

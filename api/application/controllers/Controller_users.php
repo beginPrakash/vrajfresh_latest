@@ -13,6 +13,7 @@ class Controller_users extends CI_Controller
 		header('Access-Control-Allow-Headers: AccountKey,x-requested-with, Content-Type, content-type, origin, authorization, accept, client-security-token, host, date, cookie, cookie2');
 		header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 		$this->load->model('users_model');
+		$this->load->model('contactus_model');
 		$this->load->library('cart');
 		error_reporting(0);
 	}
@@ -544,33 +545,34 @@ class Controller_users extends CI_Controller
 		if (check_oauth_key($oauth_key)) {
 
 			$data = array(
-				'to_email' => $json_obj->to_email,
-				'email' => $json_obj->email,
+				'email' => $json_obj->user_email,
 				'first_name' => $json_obj->first_name,
 				'last_name' => $json_obj->last_name,
-				'phone' => $json_obj->phone,
-				'message' => $json_obj->message,
+				'phone_no' => $json_obj->mobile_no,
+				'description' => $json_obj->description,
+				'created_datetime' => date('Y-m-d H:i:s'),
+				'modified_datetime' => date('Y-m-d H:i:s')
 
 			);
 
+			$contact_id = $this->contactus_model->add_contact($data, 'tbl_contactus');
+			if ($contact_id) {
+				$ArrData = [];
 
-			$subject = "New Enquiry Received";
-			$email_content = file_get_contents('templates/contact_mail.html');
-			$email_content = str_replace('##first_name##', $data['first_name'], $email_content);
-			$email_content = str_replace('##last_name##', $data['last_name'], $email_content);
-			$email_content = str_replace('##phone##', $data['phone'], $email_content);
-			$email_content = str_replace('##message##', $data['message'], $email_content);
+				$subject = "Contact Us";
+				$email_content = file_get_contents('templates/contact_mail.html');
+				$email_content = str_replace('##first_name##', $data['first_name'], $email_content);
+				$email_content = str_replace('##last_name##', $data['last_name'], $email_content);
+				$email_content = str_replace('##phone##', $data['phone_no'], $email_content);
+				$email_content = str_replace('##message##', $data['description'], $email_content);
 
-			if (send_contact_mail($data["to_email"], $data["email"], $subject, $email_content)) {
-
-				$success_message = 'Mail Sent successfully';
+				send_mail($json_obj->user_email, $subject, $email_content);
+				$success_message = 'Form Submitted Successfully.';
 			} else {
-				$error = 'Mail Not Sent successfully';
+				$errors = 'Form Not Submitted!';
 			}
 
-
-
-			//send_response_to_api($ArrData,$errors,$success_message);
+			send_response_to_api($ArrData,$errors,$success_message);
 		}
 	}
 	public function user_activate()

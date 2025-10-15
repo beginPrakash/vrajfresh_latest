@@ -186,6 +186,16 @@ if (!function_exists('getIsactiveButtonForList')) {
         return $is_active;
     }
 }
+
+/* RETURN IS ACTIVE BUTTON IN LIST PAGE */
+if (!function_exists('getIssoldoutButtonForList')) {
+    function getIssoldoutButtonForList($is_soldout, $primary_key_value, $table_name, $primary_key_name)
+    {
+        $is_soldout = ($is_soldout == '1') ? '<a href="javascript:void(0)" onclick=\'updateIsSoldValue(' . $primary_key_value . ',"' . $table_name . '","' . $primary_key_name . '")\'class="update_sold_status_i' . $primary_key_value . '"><small class="label label-warning">No</small></a>' : '<a href="javascript:void(0)" onclick=\'updateIsSoldValue(' . $primary_key_value . ',"' . $table_name . '","' . $primary_key_name . '")\' class="update_sold_status_i' . $primary_key_value . '"><small class="label label-info">Yes</small></a>';
+        return $is_soldout;
+    }
+}
+
 /* RETURN IS ACTIVE BUTTON IN LIST PAGE */
 if (!function_exists('getActionButtonForList')) {
     function getActionButtonForList($primary_key_value, $module_name, $ArrButton = array("V", "E", "D"))

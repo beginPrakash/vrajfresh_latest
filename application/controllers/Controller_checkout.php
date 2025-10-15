@@ -803,100 +803,6 @@ class Controller_checkout extends CI_Controller
 		$total_items = 0;
 		$cart_total = 0.00;
 		
-		// if($cookiezipcode != ""){
-
-		// 	$url = API_URL . 'remove-zipcode-products';
-
-		// 	$data = array(
-		// 		"oauth_key" => "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
-		// 		"user_id" => $user_id,
-		// 		"zipcode" => $cookiezipcode,
-		// 		"cart" => $CARTDATA
-		// 	);
-
-		// 	$curl = curl_init();
-		// 	curl_setopt($curl, CURLOPT_URL, $url);
-		// 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		// 	curl_setopt($curl, CURLOPT_POST, true);
-		// 	curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
-		// 	curl_setopt($curl, CURLOPT_HTTPHEADER, [
-		// 		'X-RapidAPI-Host: kvstore.p.rapidapi.com',
-		// 		'X-RapidAPI-Key: test',
-		// 		'Content-Type: application/json'
-		// 	]);
-		// 	$response = curl_exec($curl);
-		// 	//echo "<pre>zipcode response:- <pre>";print_r($response);
-		// 	curl_close($curl);
-		// 	$response = json_decode($response, true);
-		// 	//echo "<pre>";print_r($response);exit;
-			
-		// 	if($response['is_successful'] == 1){
-		// 		$this->cart->destroy();
-		// 		$products = $response['data'];
-		// 		$remove_product_from_cart = $response['data2']['remove_product'];
-				
-		// 		if(!empty($products)){
-					
-		// 			unset($products['cart_total'], $products['total_items']);
-					
-		// 			if(!empty($products)){
-
-		// 				foreach ($products as $key => $value){
-							
-		// 					$newCartItem = array(
-		// 						"id" => $value['id'],
-		// 						"name" => $value['name'],
-		// 						"image" => $value['image'],
-		// 						"price" => number_format($value['price'],2),
-		// 						"qty" => $value['qty'],
-		// 						"product_slug" => $value['product_slug'],
-		// 						"is_perisible" => $value['is_perisible'],
-		// 						"product_tax" => number_format($value['product_tax']),
-		// 						"created_date" => date("Y-m-d"),
-		// 						"options" => array(
-		// 							"weight" => $value['options']['weight'],
-		// 							"variant_id" => $value['options']['variant_id']
-		// 						),
-		// 						"rowid" => $key,
-		// 						"subtotal" => $value['subtotal'],
-		// 					);
-		// 					$total_items += $value['qty'];
-		// 					$cart_total += $value['subtotal'];
-		// 					$this->cart->insert($newCartItem);
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-
-		// 	$contain = $this->cart->contents();
-		// 	if(!empty($contain)){
-		// 		if(!isset($contain['total_items']) || !isset($contain['cart_total'])){
-		// 			if($total_items > 0 && $cart_total >= $_COOKIE['minimum_order_value']){
-						
-		// 				$contain['total_items'] = $total_items;
-		// 				$contain['cart_total'] = $cart_total;
-
-		// 				if($remove_product_from_cart == 1){
-		// 					$this->session->set_flashdata('success', 'We have remove some items due to not valid. Please process again.');
-		// 					redirect(base_url('cart-detail'));
-		// 					exit(0);		
-		// 				}
-						
-		// 			} else {
-		// 				$this->session->set_flashdata('error', 'A minimum $'.$_COOKIE['minimum_order_value'].' Order Required.');
-		// 				redirect(base_url('cart-detail'));
-		// 				exit(0);		
-		// 			}
-		// 		} else {
-		// 			if($contain['total_items'] == 0 && $contain['cart_total'] < $_COOKIE['minimum_order_value']){
-		// 				$this->session->set_flashdata('error', 'A minimum $'.$_COOKIE['minimum_order_value'].' Order Required.');
-		// 				redirect(base_url('cart-detail'));
-		// 				exit(0);
-		// 			}
-		// 		}
-				
-		// 	}
-		// }
 
 		$ArrCustomer = array();
 
@@ -927,13 +833,26 @@ class Controller_checkout extends CI_Controller
 		$ArrCustomer['same_address'] = $same_address;
 		$ArrCustomer['billing_id'] = $billing_id;
 		$ArrCustomer['shipping_id'] = $shipping_id;
-		$ArrCustomer['card_id'] = $_POST['card_id'];
-		$ArrCustomer['save_card'] = (isset($_POST['save_card'])) ? $_POST['save_card'] : 0;
-		$ArrCustomer['CardToken'] = ($_POST['CardToken']) ? $_POST['CardToken'] : '';
-		$ArrCustomer['CardPaymentMethod'] = $_POST['CardPaymentMethod'];
-		$ArrCustomer['StripeCardID'] = $_POST['StripeCardID'];
 		
+		if($_POST['payment_methodtype'] == 'gpay_paymethod'){
+			$gpay_seriali_arr = $_POST['gpay_token_serialize'];
+			$gpay_Arr = json_decode($gpay_seriali_arr);
+			//echo'<pre>';print_r($gpay_Arr);exit;
+			$gpay_card_arr = $gpay_Arr->card ?? '';
+			$ArrCustomer['card_id'] = '';
+			$ArrCustomer['save_card'] = 0;
+			$ArrCustomer['CardToken'] = $gpay_Arr->id ?? '';
+			$ArrCustomer['CardPaymentMethod'] = '';
+			$ArrCustomer['StripeCardID'] = $gpay_card_arr->id;
+		}else if($_POST['payment_methodtype'] == 'stripe_paymethod'){
+			$ArrCustomer['card_id'] = $_POST['card_id'];
+			$ArrCustomer['save_card'] = (isset($_POST['save_card'])) ? $_POST['save_card'] : 0;
+			$ArrCustomer['CardToken'] = ($_POST['CardToken']) ? $_POST['CardToken'] : '';
+			$ArrCustomer['CardPaymentMethod'] = $_POST['CardPaymentMethod'];
+			$ArrCustomer['StripeCardID'] = $_POST['StripeCardID'];
+		}
 		
+		$ArrCustomer['payment_methodtype'] = $_POST['payment_methodtype'];
 		$ArrCustomer['order_tip'] = $_POST['hdn_tip_amount']; 
 		$ArrCustomer['user_id'] = $this->session->userdata['logged_in']['user_id'];
 
@@ -1014,11 +933,10 @@ class Controller_checkout extends CI_Controller
 			'Content-Type: application/json'
 		]);
 		$response = curl_exec($curl);
-		// echo "<pre>";print_r($response);exit;
+		 
 		curl_close($curl);
 		$response = json_decode($response);
-		
-
+		//echo'<pre>';print_r($response);exit;
 		if ($response->is_successful == 1) {
 			$order_id = $response->data->order_id;
 			$shipping_details = $response->data->shipping_details;
@@ -1069,9 +987,11 @@ class Controller_checkout extends CI_Controller
 
 			
 			//$this->payment($order_id, $order_amount, $zip_code,$sms_shipping_phone);
-			
+			//$order_amount = 65.55;
 			//$order_amount = $order_amount * 100;
-			$order_amount = bcmul($order_amount, '100', 0);
+			$order_amount = intval(round($order_amount * 100));
+			//echo $order_amount;exit;
+			//$order_amount = bcmul($order_amount, '100', 0);
 			$this->new_payment_process($order_id, $order_amount, $shipping_details, $billing_details, $_POST);
 
 		} else {

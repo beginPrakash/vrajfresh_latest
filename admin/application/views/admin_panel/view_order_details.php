@@ -159,13 +159,19 @@ $is_payment_received = true;
       </div>
       <?php } ?>
 
-      <div class="col-sm-4">
+      <div class="col-sm-3">
          <label>Total Amount : </label>
          <label style="font-weight:400; line-height: 20px;" id="total_amount_final">$
             <?php echo $ArrFieldData['order_total_amount']; ?>
          </label>
       </div>
 
+      <div class="col-sm-4">
+         <label>Payment Method : </label>
+         <label style="font-weight:400; line-height: 20px;">
+            <?php echo $ArrFieldData['payment_methodtype']; ?>
+         </label>
+      </div>
 
    </div>
 

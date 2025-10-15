@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head></head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    .link {
+        color: #1e53a5;
+        text-decoration-line: underline;
+    }
+    .contain {
+        font-size: 18px;
+    }
+    .customer_details {
+        border: 1px solid #e6e6e6;
+        width: auto;
+    }
+    .contain_color {
+        color: rgb(61, 61, 61);
+    }
+    th {
+        background-color: rgba(249, 249, 249, 1);
+    }
+    .t1 td {
+        padding: 10px 3px;
+    }
+
+    table,
+    td,
+    th {
+        border: 1px solid black;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 50%;
+    }
+</style>
+</head>
+<body style="width: 700px">
+    <div class="container" style="width: 550px;">
+        <form>
+            <div class="main_container">
+                <div class="heading" style="background-color: #1e53a5; color: #ffff; padding: 20px; width: 550px">
+                    <h1>Your invoice for order ###order_id##</h1>
+                </div>
+            </div>
+            <div class="box_container"
+                style="width: 492px; border: 1px solid #e6e6e6;padding-top: 2rem;padding-left: 3rem;padding-right: 3rem;">
+                <p class="contain contain_color">Hi ##user_name##</p>
+                <p class="contain contain_color">Here are the details of your order placed</p>
+                <h4 class="heading_of_details" style="color: #1e53a5;">[Order ###order_id##]</h4>
+                <br>
+                <div class="d3_2">
+                    ##product_table##
+                </div>
+                <p class="contain contain_color">Orders placed before 3:00 pm will be delivered the same day between
+                    4:00 to 8:00 pm. After 3:00 pm All orders, will be delivered the following day</p>
+                <table style="border:1px solid lightgrey;width: 100%;">
+                    <tr>
+                        <td style="vertical-align: top;">
+                            <h4 class="heading_of_details">Billing address</h4>
+                            <div class="customer_details ">
+                                <label class="contain_color">##user_name##</label><br>
+                                <label class="contain_color">##address1## ##address2##</label><br>
+                                <label class="contain_color">##city## , ##zip##</label><br>
+                                <label class="contain_color">##phone##</label><br>
+                                <label class="contain_color">##email##</label><br>
+                            </div>
+                        </td>
+                        <td style="padding-left: 20px; vertical-align: top;">
+                            <h4 class="heading_of_details">Delivery address</h4>
+                            <div class="customer_details ">
+                                <label class="contain_color">##firstname##</label><br>
+                                <label class="contain_color">##address_ship## ##address2_ship##</label><br>
+                                <label class="contain_color">##city_ship## , ##zip_ship##</label><br>
+                                <label class="contain_color">##phone_ship##</label><br>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <p class="contain_color">Thanks for using <a href="##link##" class="contain_color">##link##</a>!</p>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

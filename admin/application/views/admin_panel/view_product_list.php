@@ -43,6 +43,7 @@
                         <option value="active">Active</option>
                         <option value="inactive">In Active</option>
                         <option value="out_of_stock">Out Of Stock</option>
+                        <option value="in_stock">In Stock</option>
                      </select>
                   </div>
 
@@ -95,6 +96,8 @@
                      <th>Unit Cost</th>
 
                      <th>Product Image</th>
+
+                     <th>Is Sold Out</th>
 
                      <th>Is Active</th>
 
@@ -150,9 +153,9 @@
 
    var orderCol = [[1, "desc"]];
 
-   var cols = [{ "bSortable": false }, { "bSortable": true }, { "bSortable": true }, { "bSortable": true }, { "bSortable": true }, { "bSortable": true }, { "bSortable": false }, { "bSortable": true }];
+   var cols = [{ "bSortable": false }, { "bSortable": true }, { "bSortable": true }, { "bSortable": true }, { "bSortable": true }, { "bSortable": true }, { "bSortable": true }, { "bSortable": false }, { "bSortable": false }];
 
-   var colDef = [0, 8];
+   var colDef = [0, 9];
 
    var aoColumnDefs = [];
 

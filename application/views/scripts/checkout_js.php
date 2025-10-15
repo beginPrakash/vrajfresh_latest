@@ -983,9 +983,23 @@ function validateForm() {
     if(SubstituteError == 0 && ShippingAddressError == 0 && BillingAddressError == 0 && DeliveryTypeError == 0 && DeliveryTypeDateError == 0){
         AllErrorFixed = 1;
     }
-
+    var selectedpaytype = $('input[name="payment_methodtype"]:checked').val();
+    var gpay_token_serialize_val = $('#gpay_token_serialize').val();
     if(AllErrorFixed == 1){
-        checkstripeCard();
+        if(selectedpaytype == 'gpay_paymethod'){
+            if(gpay_token_serialize_val != ''){
+                $("#submit").click();
+            }else{
+                $("#checkout-submit").prop('disabled', false);
+                $("#checkout-submit").text('Proceed to Pay');
+                alert("Please make payment.");
+                return false;
+            }
+            
+        }else if(selectedpaytype == 'stripe_paymethod'){
+            checkstripeCard();
+        }
+        
     } else {
         $("#checkout-submit").prop('disabled', false);
         $("#checkout-submit").text('Proceed to Pay');

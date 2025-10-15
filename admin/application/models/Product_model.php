@@ -474,7 +474,7 @@ class product_model extends CI_Model
 
 
 
-		$aColumns = array('tbl_products.product_sku', 'tbl_products.product_name', 'tbl_products.product_price', 'tbl_products.sale_price','tbl_products.unit_cost', 'tbl_products.product_image', 'tbl_products.is_active', 'tbl_products.product_id');
+		$aColumns = array('tbl_products.product_sku', 'tbl_products.product_name', 'tbl_products.product_price', 'tbl_products.sale_price','tbl_products.unit_cost', 'tbl_products.product_image', 'tbl_products.is_active', 'tbl_products.product_id','tbl_products.is_out_of_stock');
 
 
 
@@ -571,6 +571,8 @@ class product_model extends CI_Model
 			$prod_status = $_POST['prod_status'];
 			if($prod_status == 'out_of_stock'){
 				$this->db->where_in('tbl_products.is_out_of_stock', 0);
+			}else if($prod_status == 'in_stock'){
+				$this->db->where_in('tbl_products.is_out_of_stock', 1);
 			}else if($prod_status == 'active'){
 				$this->db->where_in('tbl_products.is_active', 1);
 			}else if($prod_status == 'inactive'){

@@ -100,8 +100,8 @@ defined('GOOGLE_CLIENT_ID')  OR define('GOOGLE_CLIENT_ID', '705571454677-3su3mmo
 defined('GOOGLE_CLIENT_SECRET') OR define('GOOGLE_CLIENT_SECRET', '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'); //Google secret id
 */
 
- /*defined('STRIPE_SECRET_KEY')    OR define('STRIPE_SECRET_KEY','sk_test_Nf5qbJOgwQg3chjObUc7TimG006zBZcXbI'); // Stripe secret key
-defined('STRIPE_PUBLISHABLE_KEY')    OR define('STRIPE_PUBLISHABLE_KEY','pk_test_yd5gvyIjhcQuvcys2VGQY9yj00PXtsIsOU'); // Stripe secret key */
+defined('STRIPE_SECRET_KEY')    OR define('STRIPE_SECRET_KEY','sk_test_Nf5qbJOgwQg3chjObUc7TimG006zBZcXbI'); // Stripe secret key
+defined('STRIPE_PUBLISHABLE_KEY')    OR define('STRIPE_PUBLISHABLE_KEY','pk_test_yd5gvyIjhcQuvcys2VGQY9yj00PXtsIsOU'); // Stripe secret key
 
 /* LIVE CREDENTIALS */
 /*defined('STRIPE_SECRET_KEY')    OR define('STRIPE_SECRET_KEY','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'); // Stripe secret key
