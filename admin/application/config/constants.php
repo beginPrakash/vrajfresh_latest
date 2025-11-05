@@ -100,17 +100,8 @@ defined('API_URL')      OR define('API_URL', 'http://localhost/vrajfresh_latest/
 defined('PRODUCT_IMAGE_PATH')      OR define('PRODUCT_IMAGE_PATH', $_SERVER['DOCUMENT_ROOT'] . "/admin/");
 
 
-defined('STRIPE_SECRET_KEY')    OR define('STRIPE_SECRET_KEY','sk_test_Nf5qbJOgwQg3chjObUc7TimG006zBZcXbI'); // Stripe secret key
-defined('STRIPE_PUBLISHABLE_KEY')    OR define('STRIPE_PUBLISHABLE_KEY','pk_test_yd5gvyIjhcQuvcys2VGQY9yj00PXtsIsOU'); // Stripe secret key
-
-
 /* CART SESSION EXPIRATION TIME */
 defined('CART_SESSION_EXPIRATION_TIME')    OR define('CART_SESSION_EXPIRATION_TIME', 1296000); // In seconds (15 Days)
-
-/* LIVE CREDENTIALS */
-/*defined('STRIPE_SECRET_KEY')    OR define('STRIPE_SECRET_KEY','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'); // Stripe secret key
-defined('STRIPE_PUBLISHABLE_KEY')    OR define('STRIPE_PUBLISHABLE_KEY','pk_live_51HwVYoBuuwY7F4Wu1XJEb9GWhec9XTSRxQNt0TAhfKL2bHxYE9us9ak7gXgKRYk4uYfZ3jp5Hbxj3SEnIlSiEtOq00p8oOOFBw'); // Stripe secret key*/
-
 
 defined('MODE') or define('MODE', 'PROD');
 if(MODE=="DEV")
