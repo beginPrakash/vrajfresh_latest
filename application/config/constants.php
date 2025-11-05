@@ -95,10 +95,9 @@ defined('FACEBOOK_APP_ID')         OR define('FACEBOOK_APP_ID','907828336842418'
 defined('FACEBOOK_APP_SECRET')     OR define('FACEBOOK_APP_SECRET','c5bb3f45e33d3f264693e6f0d2dd86a0');  //Facebook App secret
 //defined('FACEBOOK_URL')            OR define('FACEBOOK_URL','http://localhost/git/vraj-fresh-front/Facebook');  //Facebook callback url
 defined('FACEBOOK_URL')            OR define('FACEBOOK_URL','https://dev.thcitsolutions.com/vrajfresh/front/Facebook');  //Facebook callback url
-/*
-defined('GOOGLE_CLIENT_ID')  OR define('GOOGLE_CLIENT_ID', '705571454677-3su3mmo7crjv12o2bers84rnu6ou7opn.apps.googleusercontent.com'); //Google Client id
-defined('GOOGLE_CLIENT_SECRET') OR define('GOOGLE_CLIENT_SECRET', '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'); //Google secret id
-*/
+
+defined('STRIPE_SECRET_KEY')    OR define('STRIPE_SECRET_KEY','sk_test_Nf5qbJOgwQg3chjObUc7TimG006zBZcXbI'); // Stripe secret key
+defined('STRIPE_PUBLISHABLE_KEY')    OR define('STRIPE_PUBLISHABLE_KEY','pk_test_yd5gvyIjhcQuvcys2VGQY9yj00PXtsIsOU'); // Stripe secret key
 
 /* CART SESSION EXPIRATION TIME */
 defined('CART_SESSION_EXPIRATION_TIME')    OR define('CART_SESSION_EXPIRATION_TIME', 1296000); // In seconds (15 Days)
