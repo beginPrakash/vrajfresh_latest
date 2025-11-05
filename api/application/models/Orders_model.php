@@ -127,9 +127,9 @@ class Orders_model extends CI_Model
     {
 
         $query = $this->db->select("o.*,s.state,b.state as billing_state,c.country_name as shipping_country, CASE 
-        WHEN o.payment_methodtype = 'gpay_paymethod' THEN 'Google Pay'
-        WHEN o.payment_methodtype = 'apple_paymethod' THEN 'Apple Pay'
-        ELSE 'Stripe'
+        WHEN o.payment_methodtype = 'google_pay' THEN 'Google Pay'
+        WHEN o.payment_methodtype = 'apple_pay' THEN 'Apple Pay'
+        ELSE 'Stripe Card'
     END as payment_methodtype", false)
 
             ->join('state s', 'o.shipping_state_id=s.state_id')
@@ -302,9 +302,9 @@ class Orders_model extends CI_Model
 
         $query = $this->db->select("order_id,order_total_amount,order_datetime,order_status,user_id,
          CASE 
-        WHEN payment_methodtype = 'gpay_paymethod' THEN 'Google Pay'
-        WHEN payment_methodtype = 'apple_paymethod' THEN 'Apple Pay'
-        ELSE 'Stripe'
+        WHEN payment_methodtype = 'google_pay' THEN 'Google Pay'
+        WHEN payment_methodtype = 'apple_pay' THEN 'Apple Pay'
+        ELSE 'Stripe Card'
     END as payment_method", false)
 
             ->where('user_id', $data)

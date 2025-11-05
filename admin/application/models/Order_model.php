@@ -31,9 +31,9 @@ class order_model extends CI_Model
 	public function getOrderById($order_id, $parm = "*")
 	{
 		$this->db->select('tbl_orders.' . $parm . ',tblpromotional_code.promotional_code,tblpromotional_code.discount_type as promo_dis_type,tblpromotional_code.maximum_order_discount as maximum_order_discount,tblpromotional_code.discount_value as promo_dis_val, stb.state as billing_state_name, sts.state as shipping_state_name, CASE 
-        WHEN tbl_orders.payment_methodtype = "gpay_paymethod" THEN "Google Pay"
-        WHEN tbl_orders.payment_methodtype = "apple_paymethod" THEN "Apple Pay"
-        ELSE "Stripe"
+        WHEN tbl_orders.payment_methodtype = "google_pay" THEN "Google Pay"
+        WHEN tbl_orders.payment_methodtype = "apple_pay" THEN "Apple Pay"
+        ELSE "Stripe Card"
     END as payment_methodtype', false);
 		$this->db->from('tbl_orders');
 		$this->db->where('order_id', $order_id);

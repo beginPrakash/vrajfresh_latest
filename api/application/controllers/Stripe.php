@@ -492,7 +492,7 @@ class Stripe extends CI_Controller
 
 					"stripe_raw_response" => $stripe_raw_response,
 
-					"payment_intent_id" => $payment_details['id'],
+					"payment_intent_id" => $payment_response['payment_i_id'],
 
 					"payment_process_type" => 'Automatic',
 					
@@ -531,7 +531,7 @@ class Stripe extends CI_Controller
 
 						'amount_received_status' => $payment_details['status'],
 
-						'payment_intent_id' => $payment_details['id'],
+						'payment_intent_id' => $payment_response['payment_i_id'],
 
 						"CardPaymentMethodId" => $payment_response['CardPaymentMethodId'],
 

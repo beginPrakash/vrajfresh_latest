@@ -125,3 +125,6 @@ $route['cart/total-items'] = 'Controller_cart/total_items';
 
 $route['/(:any)'] = 'Controller_products/products_list/$1';
 $route['special-category/(:any)'] = 'Controller_special_category/get_special_category_list/$1';
+
+
+$route['stripe/create-intent'] = 'StripeController/createIntent';
