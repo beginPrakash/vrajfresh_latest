@@ -883,8 +883,208 @@ function checkstripeCard ()
     }
 }
 
-	
-function validateForm() {
+const stripe = Stripe('<?php echo STRIPE_PUBLISHABLE_KEY; ?>');
+
+
+
+let elements;
+
+var ctoalamt =  $("#cart_total").val();
+var suser_id = '<?php echo $this->session->userdata['logged_in']['user_id']; ?>';
+var szipcode = $('#zip_code').val();
+console.log('szipcode'+szipcode);
+// The items the customer wants to buy
+const items = [{amount: ctoalamt,suser_id:suser_id,szipcode:szipcode }];
+
+// Fetches a payment intent and captures the client secret
+async function initialize() {
+  const { clientSecret, paymentId } = await fetch("/api/stripe/create-intent", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ctoalamt, suser_id }),
+  }).then((r) => r.json());
+paymentIntentId = paymentId;
+  elements = stripe.elements({ clientSecret , paymentMethodCreation: 'manual' });
+
+  const paymentElementOptions = {
+    layout: "accordion",
+  };
+
+
+  const paymentElement = elements.create("payment", paymentElementOptions);
+  paymentElement.mount("#payment-element");
+  
+}
+
+$('#checkout-submit').on('click', async function (e) {
+  e.preventDefault();
+ctoalamt =  $("#cart_total").val();
+  $(this).prop('disabled', true).text('Loading...');
+
+    var isValid = false;
+    var AllErrorFixed = 0;
+    
+    var SubstituteError = 1;
+    var ShippingAddressError = 1;
+    var BillingAddressError = 1;
+    var CardAllError = 1;
+    //var CardNumberError = 1;
+    //var CardExpiryError = 1;
+    //var CardSecurityCodeError = 1;
+    //var CardHolderError = 1;
+    var DeliveryTypeError = 1;
+    var DeliveryTypeDateError = 0;
+
+    if($('input[type=radio][name=delivery_type]:checked').val() == "one_day"){
+        DeliveryTypeDateError = 1;
+        if($("#delivery_one_day_date").val() != ""){
+            DeliveryTypeError = 0;
+            DeliveryTypeDateError = 0;
+        }
+        
+    } else {
+        if($('input[type=radio][name=delivery_type]:checked').val() != ""){
+            DeliveryTypeError = 0;
+        }
+    }
+    if(DeliveryTypeDateError == 0){
+        $("#delivery_one_day_date-error").text("");
+    } else {
+        $("#delivery_one_day_date-error").text("Please select delivery date.");
+    }
+
+    if($("#shipping_address_count").val() > 0){
+        if($('input[type=radio][name=shipping_id]:checked').val() > 0){
+            ShippingAddressError = 0;
+        }
+    }
+
+    /* if($("#billing_address_count").val() > 0){
+        if($('input[type=radio][name=billing_id]:checked').val() > 0){
+            BillingAddressError = 0;
+        }
+    } */
+    if($('input[type=radio][name=billing_id]:checked').val() != ""){
+        if(typeof($('input[type=radio][name=billing_id]:checked').val()) == 'undefined'){
+            $('#billing-address-error').text("Please select billing address.");
+        } else {
+            BillingAddressError = 0;
+            $('#billing-address-error').text("");
+        }    
+    } else {
+        $('#billing-address-error').text("Please select billing address.");
+    }
+
+    var substitute = document.getElementsByName("refund_for_unavailable");
+    for (var i = 0; i < substitute.length; i++) {
+        if (substitute[i].checked) {
+            SubstituteError = 0;
+            //isValid = true;
+            break;
+        }
+    }
+
+    if(ShippingAddressError == 1){
+        if($("#shipping_address_count").val() > 0){
+            $('#shipping-address-error').text("Please select shipping address.");
+        } else {
+            $('#shipping-address-error').text("Please add new shipping address.");
+        }
+    } else {
+        $('#shipping-address-error').text("");
+    }
+
+    /* if(BillingAddressError == 1){
+        if($("#billing_address_count").val() > 0){
+            $('#billing-address-error').text("Please select billing address.");
+        } else {
+            $('#billing-address-error').text("Please add new billing address.");
+        }
+    } else {
+        $('#billing-address-error').text("");
+    } */
+
+    if(SubstituteError == 1){
+        $("#replace-policy-error").text("Please select an option.");
+    } else {
+        $("#replace-policy-error").text("");
+    }
+    
+    if(SubstituteError == 0 && ShippingAddressError == 0 && BillingAddressError == 0 && DeliveryTypeError == 0 && DeliveryTypeDateError == 0){
+        AllErrorFixed = 1;
+    }
+   
+    if(AllErrorFixed == 1){
+
+        const updateRes = await fetch("/api/stripe/update-intent", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      intent_id: paymentIntentId,
+      amount: ctoalamt // new amount
+    })
+  });
+
+  const data = await updateRes.json();
+  
+    clientSecret = data.clientSecret;
+    intent_id = data.paymentId;
+        // STEP 1: Validate payment element input
+    const { error: submitError } = await elements.submit();
+    if (submitError) {
+        alert(submitError.message);
+        $(this).prop('disabled', false).text('Proceed to Pay');
+        return;
+    }
+
+    // STEP 2: Create payment method manually
+    const { error, paymentMethod } = await stripe.createPaymentMethod({ elements });
+
+    if (error) {
+        alert(error.message);
+        $(this).prop('disabled', false).text('Proceed to Pay');
+    } else {
+        console.log("✅ PaymentMethod update  created:", paymentMethod.id);
+        //$('#payment_method_id').val(paymentMethod.id);
+        $("#CardPaymentMethod").val(paymentMethod.id);
+        $("#CardToken").val(intent_id);
+
+        // STEP 3: Submit form to backend for confirmation
+    // document.getElementById("checkoutForm").submit();
+
+    const { error, paymentIntent } = await stripe.confirmPayment({
+    elements,
+    redirect: "if_required",  // ✅ prevents redirect
+  });
+
+  if (error) {
+    console.error(error.message);
+  } else if (paymentIntent && paymentIntent.status === "succeeded") {
+    console.log("✅ Payment successful", paymentIntent.id);
+    console.log(paymentIntent);
+    $('#checkoutForm')[0].requestSubmit();
+    // call your backend to mark order as paid
+  }
+
+   // $('#checkoutForm')[0].requestSubmit();
+    }
+        
+    } else {
+        $("#checkout-submit").prop('disabled', false);
+        $("#checkout-submit").text('Proceed to Pay');
+        alert("Please fill out all required fields or Select an option for replacement policy.");
+        return false;
+    }
+
+
+  
+});
+
+
+initialize();
+
+
+function validateFormsd() {
 
     
 

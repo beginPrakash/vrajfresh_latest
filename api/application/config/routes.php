@@ -203,3 +203,7 @@ $route['get-advertise_bottom'] = 'Controller_home/get_advertise_bottom';
 
 $route['get_special_category_product'] = 'Controller_home/get_special_category_product';
 
+
+$route['stripe/create-intent'] = 'Controller_orders/createIntent';
+$route['stripe/update-intent'] = 'Controller_orders/updateIntent';
+

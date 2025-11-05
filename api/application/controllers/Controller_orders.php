@@ -464,7 +464,7 @@ class Controller_orders extends CI_Controller
 				'shipping_phone' => $shipping_phone,
 				'shipping_email' => $shipping_email,
 				'delivery_type' => trim($json_obj->ArrCustomer->delivery_type),
-				'payment_methodtype' => trim($json_obj->ArrCustomer->payment_methodtype),
+				'payment_methodtype' => trim($json_obj->ArrCustomer->payment_methodtype ?? ''),
 				'delivery_datetime' => date('Y-m-d', strtotime($json_obj->ArrCustomer->delivery_datetime)),
 				'is_replace_item' => trim($json_obj->ArrCustomer->is_replace_item),
 				'substitution_product_ids' => $substitution_product_ids,
@@ -1250,4 +1250,129 @@ class Controller_orders extends CI_Controller
 		}
 		send_response_to_api($ArrData, $errors, $success_message);
 	}
+
+
+	public function createIntent() {
+		$stripe = array(
+			"secret_key" => STRIPE_SECRET_KEY,
+			"publishable_key" => STRIPE_PUBLISHABLE_KEY
+		);
+
+		// retrieve JSON from POST body
+		$jsonStr = file_get_contents('php://input');
+		$jsonObj = json_decode($jsonStr);
+		\Stripe\Stripe::setApiKey($stripe['secret_key']);
+		$stripe = new \Stripe\StripeClient($stripe['secret_key']);
+
+		$amount = isset($jsonObj->ctoalamt) ? $jsonObj->ctoalamt : 0;
+		$suser_id = isset($jsonObj->suser_id) ? $jsonObj->suser_id : 0;
+		$szipcode = isset($jsonObj->szipcode) ? $jsonObj->szipcode : 0;
+		//find user details
+		$user_details = $this->master->get_row_detail('tbl_users', array('user_id' => $suser_id));
+
+		if(!empty($user_details)){
+			$stripeCustId = $user_details['stripe_cus_id'];
+			$uemail = $user_details['email'];
+		}
+
+		// Convert to cents (Stripe requires smallest currency unit)
+		$amountInCents = intval($amount * 100);
+		
+		$cus_id='';
+		if(!empty($stripeCustId)):
+			$cus_id = $stripeCustId;
+		else:
+		
+			try{			
+				$customer = \Stripe\Customer::create(
+					array(
+						'email' => $uemail,
+						'address' => array('postal_code' => $szipcode),
+					)
+				);
+				$cus_id = $customer->id;
+
+				/* Add Cutomer Id In User Details */
+				$updateData = array(
+					'stripe_cus_id' => $cus_id
+				);
+				$this->master->update_detail('tbl_users', $updateData, array('user_id' => $suser_id));
+
+			}  catch (\Stripe\Exception\ApiErrorException $e) {
+
+				$msg = 'New Card & New Customer Error creating customer: ' . $e->getMessage();
+				$returnArr['msg'] = $msg;
+			}
+		endif;
+        try {
+
+            // Create a PaymentIntent with amount and currency
+            $paymentIntent = $stripe->paymentIntents->create([
+                'amount' => $amountInCents,
+                'currency' => 'usd',
+				'customer' => $cus_id,          
+                // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
+                'automatic_payment_methods' => [
+                    'enabled' => true,
+                ],
+				'setup_future_usage' => 'off_session',   
+				
+            ]);
+
+            $output = [
+                'clientSecret' => $paymentIntent->client_secret,
+				'paymentId' => $paymentIntent->id
+            ];
+		//print_r($paymentIntent);exit;
+            echo json_encode($output);
+        } catch (Error $e) {
+            http_response_code(500);
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+
+
+    }
+
+	public function updateIntent() {
+
+		$stripe = array(
+			"secret_key" => STRIPE_SECRET_KEY,
+			"publishable_key" => STRIPE_PUBLISHABLE_KEY
+		);
+		// retrieve JSON from POST body
+		$jsonStr = file_get_contents('php://input');
+		$jsonObj = json_decode($jsonStr);
+		$stripe = new \Stripe\StripeClient($stripe['secret_key']);
+		$intentId = $jsonObj->intent_id;
+		$amount = isset($jsonObj->amount) ? $jsonObj->amount : 0;
+
+		// Convert to cents (Stripe requires smallest currency unit)
+		$amountInCents = intval($amount * 100);
+		try {
+
+			// Create a PaymentIntent with amount and currency
+			$paymentIntent = $stripe->paymentIntents->update($intentId,[
+				'amount' => $amountInCents,
+				//'currency' => 'usd',
+				// In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
+				// 'automatic_payment_methods' => [
+				// 	'enabled' => true,
+				// 		'allow_redirects' => 'never',
+				// ],
+				
+			]);
+
+			$output = [
+				'clientSecret' => $paymentIntent->client_secret,
+				'paymentId' => $paymentIntent->id
+			];
+
+			echo json_encode($output);
+		} catch (Error $e) {
+			http_response_code(500);
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+
+    }
+
 }

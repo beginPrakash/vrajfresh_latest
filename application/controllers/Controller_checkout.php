@@ -834,23 +834,12 @@ class Controller_checkout extends CI_Controller
 		$ArrCustomer['billing_id'] = $billing_id;
 		$ArrCustomer['shipping_id'] = $shipping_id;
 		
-		if($_POST['payment_methodtype'] == 'gpay_paymethod'){
-			$gpay_seriali_arr = $_POST['gpay_token_serialize'];
-			$gpay_Arr = json_decode($gpay_seriali_arr);
-			//echo'<pre>';print_r($gpay_Arr);exit;
-			$gpay_card_arr = $gpay_Arr->card ?? '';
-			$ArrCustomer['card_id'] = '';
-			$ArrCustomer['save_card'] = 0;
-			$ArrCustomer['CardToken'] = $gpay_Arr->id ?? '';
-			$ArrCustomer['CardPaymentMethod'] = '';
-			$ArrCustomer['StripeCardID'] = $gpay_card_arr->id;
-		}else if($_POST['payment_methodtype'] == 'stripe_paymethod'){
 			$ArrCustomer['card_id'] = $_POST['card_id'];
 			$ArrCustomer['save_card'] = (isset($_POST['save_card'])) ? $_POST['save_card'] : 0;
 			$ArrCustomer['CardToken'] = ($_POST['CardToken']) ? $_POST['CardToken'] : '';
 			$ArrCustomer['CardPaymentMethod'] = $_POST['CardPaymentMethod'];
 			$ArrCustomer['StripeCardID'] = $_POST['StripeCardID'];
-		}
+		
 		
 		$ArrCustomer['payment_methodtype'] = $_POST['payment_methodtype'];
 		$ArrCustomer['order_tip'] = $_POST['hdn_tip_amount']; 
@@ -1074,15 +1063,12 @@ class Controller_checkout extends CI_Controller
 
 		if (isset($response->is_successful) && $response->is_successful == 1) {
 
-			
-
-			
-
+		
 			//send sms
 
 			$SMSbody = "Your Vraj Fresh order ".$order_id." has been placed. It will be delivered soon. We will send you an update when your order is shipped. Thank you for shopping.";
 
-			sendSMS($sms_shipping_phone, $SMSbody);
+			//sendSMS($sms_shipping_phone, $SMSbody);
 
 			
 
@@ -1143,7 +1129,7 @@ class Controller_checkout extends CI_Controller
 			redirect(base_url('order-success/' . base64_encode($order_id)));
 
 		} else {
-
+//echo"fail";
 			redirect(base_url('order-falied'));
 			//$this->order_failed();
 

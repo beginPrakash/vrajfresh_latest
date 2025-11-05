@@ -580,457 +580,571 @@ function stripe_payment_process_new($stripeCustId, $card_id, $save_card, $cardTo
 		/* Load Master Model */
 		$CI =& get_instance();		
 		$CI->load->model('master_model', 'master');
+
 		
-		if($payment_methodtype == 'stripe_paymethod'){		
-			if($card_id > 0){ // When use existing card
-				
-				$card_details = $CI->master->get_row_detail('tbl_cards', array('card_id' => $card_id));
-				if(!empty($card_details)){
-					
-					if($stripeCustId != ""){ // When use existing card & existing customer
-
-						$stripe = array(
-							"secret_key" => STRIPE_SECRET_KEY,
-							"publishable_key" => STRIPE_PUBLISHABLE_KEY
-						);
-					
-						\Stripe\Stripe::setApiKey($stripe['secret_key']);
-
-						/* Existing Card - Retrieve Card Payment Method Details */
-						try{
-							$paymentMethod = \Stripe\PaymentMethod::retrieve($card_details['CardPaymentMethodId']);
-						}  catch (\Stripe\Exception\ApiErrorException $e) {
-							$msg = 'Existing Card Error retrieve PaymentMethod  : ' . $e->getMessage();
-							$returnArr['msg'] = $msg;
-						}
-
-						/* Existing Card - Update the PaymentMethod to associate it with the customer */
-						try{
-							$paymentMethod->attach(['customer' => $stripeCustId]);
-						}  catch (\Stripe\Exception\ApiErrorException $e) {
-							$msg = 'Existing Card Error attach PaymentMethod : ' . $e->getMessage();
-							$returnArr['msg'] = $msg;
-						}
-
-						$itemPrice = $items['itemPrice'];
-						$currency = $items['currency'];
-						try{
-
-							/* Create Charge */
-							$charge = \Stripe\PaymentIntent::create([
-								'amount' => $itemPrice,
-								'currency' => $currency,
-								'customer' => $stripeCustId,
-								'payment_method' => $card_details['CardPaymentMethodId'],
-								'capture_method' => 'automatic',
-								'confirm' => true,
-								'metadata' => array(
-									'order_id'=>$order_id,
-									'description'=>"Order ".$order_id." from Vraj Fresh"
-								),
-								'description'=>"Order ".$order_id." from Vraj Fresh"
-							]);
-
-						}  catch (\Stripe\Exception\ApiErrorException $e) {
-							$msg = 'Existing Card Error creating paymentIntent : ' . $e->getMessage();
-							$returnArr['msg'] = $msg;
-						}
-
-						$chargeJson = $charge->jsonSerialize();
-						if ($chargeJson['id'] != '') {
-							
-							$returnArr['status'] = true;
-							$returnArr['data'] = $chargeJson;
-							$returnArr['CardPaymentMethodId'] = $card_details['CardPaymentMethodId'];
-							$returnArr['msg'] = 'Payment is processing by existing card & customer.';
-						}
-
-					} else {
-						$returnArr['msg'] = "Customer Id Not Found In Database When Existing Card Use";
-					}
-				} else {
-					$returnArr['msg'] = "Card Details Not Found";
-				}
-			} else {			
-				
-				if($stripeCustId != ""){ // When Customer Exist & Card Is New
-
-					$stripe = array(
-						"secret_key" => STRIPE_SECRET_KEY,
-						"publishable_key" => STRIPE_PUBLISHABLE_KEY
-					);
-				
-					\Stripe\Stripe::setApiKey($stripe['secret_key']);
-
-					/* Retrieve Card Payment Method Details */
-					try{
-						$paymentMethod = \Stripe\PaymentMethod::retrieve($CardPaymentMethodId);
-					}  catch (\Stripe\Exception\ApiErrorException $e) {
-						$msg = 'New Card & Exist Customer Error retrieve PaymentMethod  : ' . $e->getMessage();
-						$returnArr['msg'] = $msg;
-					}
-					
-					/* Update the PaymentMethod to associate it with the customer */
-					try{
-						$paymentMethod->attach(['customer' => $stripeCustId]);
-					}  catch (\Stripe\Exception\ApiErrorException $e) {
-						$msg = 'New Card & Exist Customer Error attach PaymentMethod : ' . $e->getMessage();
-						$returnArr['msg'] = $msg;
-					}
-
-					$itemPrice = $items['itemPrice'];
-					$currency = $items['currency'];
-					try{
-
-						/* Create Charge */
-						$charge = \Stripe\PaymentIntent::create([
-							'amount' => $itemPrice,
-							'currency' => $currency,
-							'customer' => $stripeCustId,
-							'payment_method' => $CardPaymentMethodId,
-							'capture_method' => 'automatic',
-							'confirm' => true,
-							'metadata' => array(
-								'order_id'=>$order_id,
-								'description'=>"Order ".$order_id." from Vraj Fresh"
-							),
-							'description'=>"Order ".$order_id." from Vraj Fresh"
-						]);
-
-					}  catch (\Stripe\Exception\ApiErrorException $e) {
-						$msg = 'New Card & Exist Customer Error creating paymentIntent : ' . $e->getMessage();
-						$returnArr['msg'] = $msg;
-					}
-
-					if($save_card == 1){ // When user have selected card save option
-						
-						/* Fetch Card Details By Payment Method */
-						try{
-							$StripeCardDetails = $paymentMethod->card;
-						}  catch (\Stripe\Exception\ApiErrorException $e) {
-							$msg = 'New Card & Exist Customer Error retrieve card details For Card Save From PaymentMethod : ' . $e->getMessage();
-							$returnArr['msg'] = $msg;
-						}
-						try{
-						
-							$ExistCard_details = $CI->master->get_row_detail('tbl_cards', array('user_id' => $user_id, 'card_uniqe_id' => $StripeCardID, 'is_active' => 1));
-							if(empty($ExistCard_details)){
-								/* Card Details Save For User */
-								$CardInsertArr = array(
-									'user_id' => $user_id,
-									'card_holder' => $name,
-									'card_uniqe_id' => $StripeCardID,
-									'CardPaymentMethodId' => $CardPaymentMethodId,
-									'card_no' => $StripeCardDetails->last4,
-									'card_brand' => $StripeCardDetails->brand,
-									'created_date' => date("Y-m-d H:i:s"),
-									'is_active' => 1
-								);
-								$CI->master->insertData('tbl_cards', $CardInsertArr);
-							} 
-
-						} catch (Exception $e) {
-							$returnArr['msg'] = "New Card & Exist Customer Card Insert In DB Problem : " . $e->getMessage();
-						}
-					}
-
-					$chargeJson = $charge->jsonSerialize();
-					if ($chargeJson['id'] != '') {
-						$returnArr['status'] = true;
-						$returnArr['data'] = $chargeJson;
-						$returnArr['CardPaymentMethodId'] = $CardPaymentMethodId;
-						$returnArr['msg'] = 'Payment is processing by new card with existing customer.';
-					}
-
-				} else { // When Customer Not Exist & New Card
 								
-					$stripe = array(
-						"secret_key" => STRIPE_SECRET_KEY,
-						"publishable_key" => STRIPE_PUBLISHABLE_KEY
-					);
-				
-					\Stripe\Stripe::setApiKey($stripe['secret_key']);
+		$stripe = array(
+			"secret_key" => STRIPE_SECRET_KEY,
+			"publishable_key" => STRIPE_PUBLISHABLE_KEY
+		);
+	
+		\Stripe\Stripe::setApiKey($stripe['secret_key']);
 
-					/* Create New Customer */
-					try{			
-						$customer = \Stripe\Customer::create(
-							array(
-								'email' => $user_details['email'],
-								'address' => array('postal_code' => $user_details['zip_code']),
-							)
-						);
-					}  catch (\Stripe\Exception\ApiErrorException $e) {
-						$msg = 'New Card & New Customer Error creating customer: ' . $e->getMessage();
-						$returnArr['msg'] = $msg;
-					}
-					
-					/* Retrieve Card Payment Method Details */
-					try{
-						$paymentMethod = \Stripe\PaymentMethod::retrieve($CardPaymentMethodId);
-					}  catch (\Stripe\Exception\ApiErrorException $e) {
-						$msg = 'New Card & New Customer Error retrieve PaymentMethod  : ' . $e->getMessage();
-						$returnArr['msg'] = $msg;
-					}	
-					
-					/* Update the PaymentMethod to associate it with the customer */
-					try{
-						$paymentMethod->attach(['customer' => $customer->id]);
-					}  catch (\Stripe\Exception\ApiErrorException $e) {
-						$msg = 'New Card & New Customer Error attach PaymentMethod : ' . $e->getMessage();
-						$returnArr['msg'] = $msg;
-					}
+		
+		$stripe = new \Stripe\StripeClient($stripe['secret_key']);
+		try {
+		
+
+			// Retrieve the intent first
+			$intent = \Stripe\PaymentIntent::retrieve($cardToken);
+			$charge = $intent->charges->data[0];
+			$details = $charge->payment_method_details;
+
+			$paymentTypem = 'unknown';
+
+			if ($details->type === 'card' && isset($details->card->wallet->type)) {
+				$paymentTypem = $details->card->wallet->type; // apple_pay or google_pay
+			}elseif ($details->type === 'card') {
+				$paymentTypem = 'stripe card';
+			}
+
+			// Confirm it manually
+			// $charge = $intent->confirm([
+			//     'payment_method' => $CardPaymentMethodId,
+			// ]);
+
+			
+
+		} catch (\Stripe\Exception\ApiErrorException $e) {
+			echo $e;
+		$msg = 'Error PaymentMethod : ' . $e->getMessage();
+		$returnArr['msg'] = $msg;
+		}
+
 
 					$itemPrice = $items['itemPrice'];
 					$currency = $items['currency'];
-					try{
+					// try{
 
-						/* Create Charge */
-						$charge = \Stripe\PaymentIntent::create([
-							'amount' => $itemPrice,
-							'currency' => $currency,
-							'customer' => $customer->id,
-							'payment_method' => $CardPaymentMethodId,
-							'capture_method' => 'automatic',
-							'confirm' => true,
-							'metadata' => array(
-								'order_id'=>$order_id,
-								'description'=>"Order ".$order_id." from Vraj Fresh"
-							),
-							'description'=>"Order ".$order_id." from Vraj Fresh"
-						]);
+					// 	/* Create Charge */
+					// 	$charge = \Stripe\PaymentIntent::create([
+					// 		'amount' => $itemPrice,
+					// 		'currency' => $currency,
+					// 		'customer' => $customer->id,
+					// 		'payment_method' => $CardPaymentMethodId,
+					// 		'capture_method' => 'automatic',
+					// 		'confirm' => true,
+					// 		'metadata' => array(
+					// 			'order_id'=>$order_id,
+					// 			'description'=>"Order ".$order_id." from Vraj Fresh"
+					// 		),
+					// 		'description'=>"Order ".$order_id." from Vraj Fresh"
+					// 	]);
 
-					}  catch (\Stripe\Exception\ApiErrorException $e) {
-						$msg = 'New Card & New Customer Error creating paymentIntent : ' . $e->getMessage();
-						$returnArr['msg'] = $msg;
-					}
+					// }  catch (\Stripe\Exception\ApiErrorException $e) {
+					// 	$msg = 'New Card & New Customer Error creating paymentIntent : ' . $e->getMessage();
+					// 	$returnArr['msg'] = $msg;
+					// }
 
-					/* Add Cutomer Id In User Details */
-					$updateData = array(
-						'stripe_cus_id' => $customer->id
-					);
-					$CI->master->update_detail('tbl_users', $updateData, array('user_id' => $user_id));
+					// /* Add Cutomer Id In User Details */
+					// $updateData = array(
+					// 	'stripe_cus_id' => $customer->id
+					// );
+					// $CI->master->update_detail('tbl_users', $updateData, array('user_id' => $user_id));
 
-					if($save_card == 1){ // When user have selected card save option
+					// if($save_card == 1){ // When user have selected card save option
 						
-						/* Fetch Card Details By Payment Method */
-						try{
-							$StripeCardDetails = $paymentMethod->card;
-						}  catch (\Stripe\Exception\ApiErrorException $e) {
-							$msg = 'New Card & New Customer Error retrieve card details For Card Save From PaymentMethod : ' . $e->getMessage();
-							$returnArr['msg'] = $msg;
-						}
-						try{
-							$ExistCard_details = $CI->master->get_row_detail('tbl_cards', array('user_id' => $user_id, 'card_uniqe_id' => $StripeCardID, 'is_active' => 1));
-							if(empty($ExistCard_details)){
-								/* Card Details Save For User */
-								$CardInsertArr = array(
-									'user_id' => $user_id,
-									'card_holder' => $name,
-									'card_uniqe_id' => $StripeCardID,
-									'CardPaymentMethodId' => $CardPaymentMethodId,
-									'card_no' => $StripeCardDetails->last4,
-									'card_brand' => $StripeCardDetails->brand,
-									'created_date' => date("Y-m-d H:i:s"),
-									'is_active' => 1
-								);
-								$CI->master->insertData('tbl_cards', $CardInsertArr);
-							}
-						} catch (Exception $e) {
-							$returnArr['msg'] = "New Card & New Customer Card Insert In DB Problem : " . $e->getMessage();
-						}
-					}
+					// 	/* Fetch Card Details By Payment Method */
+					// 	try{
+					// 		$StripeCardDetails = $paymentMethod->card;
+					// 	}  catch (\Stripe\Exception\ApiErrorException $e) {
+					// 		$msg = 'New Card & New Customer Error retrieve card details For Card Save From PaymentMethod : ' . $e->getMessage();
+					// 		$returnArr['msg'] = $msg;
+					// 	}
+					// 	try{
+					// 		$ExistCard_details = $CI->master->get_row_detail('tbl_cards', array('user_id' => $user_id, 'card_uniqe_id' => $StripeCardID, 'is_active' => 1));
+					// 		if(empty($ExistCard_details)){
+					// 			/* Card Details Save For User */
+					// 			$CardInsertArr = array(
+					// 				'user_id' => $user_id,
+					// 				'card_holder' => $name,
+					// 				'card_uniqe_id' => $StripeCardID,
+					// 				'CardPaymentMethodId' => $CardPaymentMethodId,
+					// 				'card_no' => $StripeCardDetails->last4,
+					// 				'card_brand' => $StripeCardDetails->brand,
+					// 				'created_date' => date("Y-m-d H:i:s"),
+					// 				'is_active' => 1
+					// 			);
+					// 			$CI->master->insertData('tbl_cards', $CardInsertArr);
+					// 		}
+					// 	} catch (Exception $e) {
+					// 		$returnArr['msg'] = "New Card & New Customer Card Insert In DB Problem : " . $e->getMessage();
+					// 	}
+					// }
 					
 					$chargeJson = $charge->jsonSerialize();
+
 					if ($chargeJson['id'] != '') {
 						$returnArr['status'] = true;
 						$returnArr['data'] = $chargeJson;
+						$returnArr['payment_i_id'] = $cardToken;
 						$returnArr['CardPaymentMethodId'] = $CardPaymentMethodId;
 						$returnArr['msg'] = 'Payment is processing by new card & customer.';
 					}
-				}
-			}
-		}elseif($payment_methodtype == 'gpay_paymethod'){
+
+
 		
-					$gpay_encode = json_decode($gpay_arr, true);
-			
-					$stripe = array(
-						"secret_key" => STRIPE_SECRET_KEY,
-						"publishable_key" => STRIPE_PUBLISHABLE_KEY
-					);
+		// if($payment_methodtype == 'stripe_paymethod'){		
+		// 	if($card_id > 0){ // When use existing card
 				
-					\Stripe\Stripe::setApiKey($stripe['secret_key']);
-
-					$token = $gpay_encode['id'] ?? null;
-					if (!$token) {
-						echo json_encode(['error' => 'No token provided']);
-						exit;
-					}
-
-					// Create a PaymentMethod using the token from Google Pay
-					try{
-						$gen_paymentMethod = \Stripe\PaymentMethod::create([
-							'type' => 'card',
-							'card' => [
-								'token' => $token
-							]
-						]);
-					}catch (\Stripe\Exception\ApiErrorException $e) {
-						$msg = 'Customer Error retrieve PaymentMethod  : ' . $e->getMessage();
-						$returnArr['msg'] = $msg;
-					}
+		// 		$card_details = $CI->master->get_row_detail('tbl_cards', array('card_id' => $card_id));
+		// 		if(!empty($card_details)){
 					
-					if($stripeCustId != ""){
+		// 			if($stripeCustId != ""){ // When use existing card & existing customer
+
+		// 				$stripe = array(
+		// 					"secret_key" => STRIPE_SECRET_KEY,
+		// 					"publishable_key" => STRIPE_PUBLISHABLE_KEY
+		// 				);
 					
-						/* Retrieve Card Payment Method Details */
-						try{
-							$paymentMethod = \Stripe\PaymentMethod::retrieve($gen_paymentMethod->id);
-						}  catch (\Stripe\Exception\ApiErrorException $e) {
-							$msg = 'Customer Error retrieve PaymentMethod  : ' . $e->getMessage();
-							$returnArr['msg'] = $msg;
-						}
+		// 				\Stripe\Stripe::setApiKey($stripe['secret_key']);
 
-						/* Update the PaymentMethod to associate it with the customer */
-						try{
-							$paymentMethod->attach(['customer' => $stripeCustId]);
-						}  catch (\Stripe\Exception\ApiErrorException $e) {
-							$msg = 'Customer Error attach PaymentMethod : ' . $e->getMessage();
-							$returnArr['msg'] = $msg;
-						}
+		// 				/* Existing Card - Retrieve Card Payment Method Details */
+		// 				try{
+		// 					$paymentMethod = \Stripe\PaymentMethod::retrieve($card_details['CardPaymentMethodId']);
+		// 				}  catch (\Stripe\Exception\ApiErrorException $e) {
+		// 					$msg = 'Existing Card Error retrieve PaymentMethod  : ' . $e->getMessage();
+		// 					$returnArr['msg'] = $msg;
+		// 				}
 
-						$itemPrice = $items['itemPrice'];
-						$currency = $items['currency'];
-						try{
-							// /* Create Charge */
-							// $charge = \Stripe\PaymentIntent::create([
-							// 	'amount' => $itemPrice,
-							// 	'currency' => $currency,
-							// 	'payment_method' => $paymentMethod->id,
-							// 	'confirm' => true,
-							// 	'customer' => $customer->id,
-							// 	'automatic_payment_methods' => [
-							// 		'enabled' => true,
-							// 		'allow_redirects' => 'never', // block redirect-based methods
-							// 	],
-							// 	'metadata' => array(
-							// 		'order_id'=>$order_id,
-							// 		'description'=>"Order ".$order_id." from Vraj Fresh"
-							// 	),
-							// 	'description'=>"Order ".$order_id." from Vraj Fresh"
-							// ]);
+		// 				/* Existing Card - Update the PaymentMethod to associate it with the customer */
+		// 				try{
+		// 					$paymentMethod->attach(['customer' => $stripeCustId]);
+		// 				}  catch (\Stripe\Exception\ApiErrorException $e) {
+		// 					$msg = 'Existing Card Error attach PaymentMethod : ' . $e->getMessage();
+		// 					$returnArr['msg'] = $msg;
+		// 				}
 
-							$charge = \Stripe\PaymentIntent::create([
-								'amount' => $itemPrice,
-								'currency' => $currency,
-								'customer' => $stripeCustId,
-								'payment_method' => $paymentMethod->id,
-								'capture_method' => 'automatic',
-								'confirm' => true,
-								'metadata' => array(
-									'order_id'=>$order_id,
-									'description'=>"Order ".$order_id." from Vraj Fresh"
-								),
-								'description'=>"Order ".$order_id." from Vraj Fresh"
-							]);
+		// 				$itemPrice = $items['itemPrice'];
+		// 				$currency = $items['currency'];
+		// 				try{
 
-						}  catch (\Stripe\Exception\ApiErrorException $e) {
-							$msg = 'Google Pay Error creating paymentIntent : ' . $e->getMessage();
-							$returnArr['msg'] = $msg;
-						}
+		// 					/* Create Charge */
+		// 					$charge = \Stripe\PaymentIntent::create([
+		// 						'amount' => $itemPrice,
+		// 						'currency' => $currency,
+		// 						'customer' => $stripeCustId,
+		// 						'payment_method' => $card_details['CardPaymentMethodId'],
+		// 						'capture_method' => 'automatic',
+		// 						'confirm' => true,
+		// 						'metadata' => array(
+		// 							'order_id'=>$order_id,
+		// 							'description'=>"Order ".$order_id." from Vraj Fresh"
+		// 						),
+		// 						'description'=>"Order ".$order_id." from Vraj Fresh"
+		// 					]);
 
-					}else{
-						/* Create New Customer */
-						try{			
-							$customer = \Stripe\Customer::create(
-								array(
-									'email' => $user_details['email'],
-									'address' => array('postal_code' => $user_details['zip_code']),
-								)
-							);
-						}  catch (\Stripe\Exception\ApiErrorException $e) {
-							$msg = 'New Card & New Customer Error creating customer: ' . $e->getMessage();
-							$returnArr['msg'] = $msg;
-						}
+		// 				}  catch (\Stripe\Exception\ApiErrorException $e) {
+		// 					$msg = 'Existing Card Error creating paymentIntent : ' . $e->getMessage();
+		// 					$returnArr['msg'] = $msg;
+		// 				}
+
+		// 				$chargeJson = $charge->jsonSerialize();
+		// 				if ($chargeJson['id'] != '') {
+							
+		// 					$returnArr['status'] = true;
+		// 					$returnArr['data'] = $chargeJson;
+		// 					$returnArr['CardPaymentMethodId'] = $card_details['CardPaymentMethodId'];
+		// 					$returnArr['msg'] = 'Payment is processing by existing card & customer.';
+		// 				}
+
+		// 			} else {
+		// 				$returnArr['msg'] = "Customer Id Not Found In Database When Existing Card Use";
+		// 			}
+		// 		} else {
+		// 			$returnArr['msg'] = "Card Details Not Found";
+		// 		}
+		// 	} else {			
+				
+		// 		if($stripeCustId != ""){ // When Customer Exist & Card Is New
+
+		// 			$stripe = array(
+		// 				"secret_key" => STRIPE_SECRET_KEY,
+		// 				"publishable_key" => STRIPE_PUBLISHABLE_KEY
+		// 			);
+				
+		// 			\Stripe\Stripe::setApiKey($stripe['secret_key']);
+
+		// 			/* Retrieve Card Payment Method Details */
+		// 			try{
+		// 				$paymentMethod = \Stripe\PaymentMethod::retrieve($CardPaymentMethodId);
+		// 			}  catch (\Stripe\Exception\ApiErrorException $e) {
+		// 				$msg = 'New Card & Exist Customer Error retrieve PaymentMethod  : ' . $e->getMessage();
+		// 				$returnArr['msg'] = $msg;
+		// 			}
+					
+		// 			/* Update the PaymentMethod to associate it with the customer */
+		// 			try{
+		// 				$paymentMethod->attach(['customer' => $stripeCustId]);
+		// 			}  catch (\Stripe\Exception\ApiErrorException $e) {
+		// 				$msg = 'New Card & Exist Customer Error attach PaymentMethod : ' . $e->getMessage();
+		// 				$returnArr['msg'] = $msg;
+		// 			}
+
+		// 			$itemPrice = $items['itemPrice'];
+		// 			$currency = $items['currency'];
+		// 			try{
+
+		// 				/* Create Charge */
+		// 				$charge = \Stripe\PaymentIntent::create([
+		// 					'amount' => $itemPrice,
+		// 					'currency' => $currency,
+		// 					'customer' => $stripeCustId,
+		// 					'payment_method' => $CardPaymentMethodId,
+		// 					'capture_method' => 'automatic',
+		// 					'confirm' => true,
+		// 					'metadata' => array(
+		// 						'order_id'=>$order_id,
+		// 						'description'=>"Order ".$order_id." from Vraj Fresh"
+		// 					),
+		// 					'description'=>"Order ".$order_id." from Vraj Fresh"
+		// 				]);
+
+		// 			}  catch (\Stripe\Exception\ApiErrorException $e) {
+		// 				$msg = 'New Card & Exist Customer Error creating paymentIntent : ' . $e->getMessage();
+		// 				$returnArr['msg'] = $msg;
+		// 			}
+
+		// 			if($save_card == 1){ // When user have selected card save option
 						
-						/* Retrieve Card Payment Method Details */
-						try{
-							$paymentMethod = \Stripe\PaymentMethod::retrieve($gen_paymentMethod->id);
-						}  catch (\Stripe\Exception\ApiErrorException $e) {
-							$msg = 'New Card & New Customer Error retrieve PaymentMethod  : ' . $e->getMessage();
-							$returnArr['msg'] = $msg;
-						}	
+		// 				/* Fetch Card Details By Payment Method */
+		// 				try{
+		// 					$StripeCardDetails = $paymentMethod->card;
+		// 				}  catch (\Stripe\Exception\ApiErrorException $e) {
+		// 					$msg = 'New Card & Exist Customer Error retrieve card details For Card Save From PaymentMethod : ' . $e->getMessage();
+		// 					$returnArr['msg'] = $msg;
+		// 				}
+		// 				try{
 						
-						/* Update the PaymentMethod to associate it with the customer */
-						try{
-							$paymentMethod->attach(['customer' => $customer->id]);
-						}  catch (\Stripe\Exception\ApiErrorException $e) {
-							$msg = 'New Card & New Customer Error attach PaymentMethod : ' . $e->getMessage();
-							$returnArr['msg'] = $msg;
-						}
+		// 					$ExistCard_details = $CI->master->get_row_detail('tbl_cards', array('user_id' => $user_id, 'card_uniqe_id' => $StripeCardID, 'is_active' => 1));
+		// 					if(empty($ExistCard_details)){
+		// 						/* Card Details Save For User */
+		// 						$CardInsertArr = array(
+		// 							'user_id' => $user_id,
+		// 							'card_holder' => $name,
+		// 							'card_uniqe_id' => $StripeCardID,
+		// 							'CardPaymentMethodId' => $CardPaymentMethodId,
+		// 							'card_no' => $StripeCardDetails->last4,
+		// 							'card_brand' => $StripeCardDetails->brand,
+		// 							'created_date' => date("Y-m-d H:i:s"),
+		// 							'is_active' => 1
+		// 						);
+		// 						$CI->master->insertData('tbl_cards', $CardInsertArr);
+		// 					} 
 
+		// 				} catch (Exception $e) {
+		// 					$returnArr['msg'] = "New Card & Exist Customer Card Insert In DB Problem : " . $e->getMessage();
+		// 				}
+		// 			}
 
+		// 			$chargeJson = $charge->jsonSerialize();
+		// 			if ($chargeJson['id'] != '') {
+		// 				$returnArr['status'] = true;
+		// 				$returnArr['data'] = $chargeJson;
+		// 				$returnArr['CardPaymentMethodId'] = $CardPaymentMethodId;
+		// 				$returnArr['msg'] = 'Payment is processing by new card with existing customer.';
+		// 			}
+
+		// 		} else { // When Customer Not Exist & New Card
+								
+		// 			$stripe = array(
+		// 				"secret_key" => STRIPE_SECRET_KEY,
+		// 				"publishable_key" => STRIPE_PUBLISHABLE_KEY
+		// 			);
+				
+		// 			\Stripe\Stripe::setApiKey($stripe['secret_key']);
+
+		// 			/* Create New Customer */
+		// 			try{			
+		// 				$customer = \Stripe\Customer::create(
+		// 					array(
+		// 						'email' => $user_details['email'],
+		// 						'address' => array('postal_code' => $user_details['zip_code']),
+		// 					)
+		// 				);
+		// 			}  catch (\Stripe\Exception\ApiErrorException $e) {
+		// 				$msg = 'New Card & New Customer Error creating customer: ' . $e->getMessage();
+		// 				$returnArr['msg'] = $msg;
+		// 			}
+					
+		// 			/* Retrieve Card Payment Method Details */
+		// 			try{
+		// 				$paymentMethod = \Stripe\PaymentMethod::retrieve($CardPaymentMethodId);
+		// 			}  catch (\Stripe\Exception\ApiErrorException $e) {
+		// 				$msg = 'New Card & New Customer Error retrieve PaymentMethod  : ' . $e->getMessage();
+		// 				$returnArr['msg'] = $msg;
+		// 			}	
+					
+		// 			/* Update the PaymentMethod to associate it with the customer */
+		// 			try{
+		// 				$paymentMethod->attach(['customer' => $customer->id]);
+		// 			}  catch (\Stripe\Exception\ApiErrorException $e) {
+		// 				$msg = 'New Card & New Customer Error attach PaymentMethod : ' . $e->getMessage();
+		// 				$returnArr['msg'] = $msg;
+		// 			}
+
+		// 			$itemPrice = $items['itemPrice'];
+		// 			$currency = $items['currency'];
+		// 			try{
+
+		// 				/* Create Charge */
+		// 				$charge = \Stripe\PaymentIntent::create([
+		// 					'amount' => $itemPrice,
+		// 					'currency' => $currency,
+		// 					'customer' => $customer->id,
+		// 					'payment_method' => $CardPaymentMethodId,
+		// 					'capture_method' => 'automatic',
+		// 					'confirm' => true,
+		// 					'metadata' => array(
+		// 						'order_id'=>$order_id,
+		// 						'description'=>"Order ".$order_id." from Vraj Fresh"
+		// 					),
+		// 					'description'=>"Order ".$order_id." from Vraj Fresh"
+		// 				]);
+
+		// 			}  catch (\Stripe\Exception\ApiErrorException $e) {
+		// 				$msg = 'New Card & New Customer Error creating paymentIntent : ' . $e->getMessage();
+		// 				$returnArr['msg'] = $msg;
+		// 			}
+
+		// 			/* Add Cutomer Id In User Details */
+		// 			$updateData = array(
+		// 				'stripe_cus_id' => $customer->id
+		// 			);
+		// 			$CI->master->update_detail('tbl_users', $updateData, array('user_id' => $user_id));
+
+		// 			if($save_card == 1){ // When user have selected card save option
 						
-						$itemPrice = $items['itemPrice'];
-						$currency = $items['currency'];
-						try{
-							// /* Create Charge */
-							// $charge = \Stripe\PaymentIntent::create([
-							// 	'amount' => $itemPrice,
-							// 	'currency' => $currency,
-							// 	'payment_method' => $paymentMethod->id,
-							// 	'confirm' => true,
-							// 	'customer' => $customer->id,
-							// 	'automatic_payment_methods' => [
-							// 		'enabled' => true,
-							// 		'allow_redirects' => 'never', // block redirect-based methods
-							// 	],
-							// 	'metadata' => array(
-							// 		'order_id'=>$order_id,
-							// 		'description'=>"Order ".$order_id." from Vraj Fresh"
-							// 	),
-							// 	'description'=>"Order ".$order_id." from Vraj Fresh"
-							// ]);
-
-							$charge = \Stripe\PaymentIntent::create([
-								'amount' => $itemPrice,
-								'currency' => $currency,
-								'customer' => $customer->id,
-								'payment_method' => $paymentMethod->id,
-								'capture_method' => 'automatic',
-								'confirm' => true,
-								'metadata' => array(
-									'order_id'=>$order_id,
-									'description'=>"Order ".$order_id." from Vraj Fresh"
-								),
-								'description'=>"Order ".$order_id." from Vraj Fresh"
-							]);
-
-						}  catch (\Stripe\Exception\ApiErrorException $e) {
-							$msg = 'Google Pay Error creating paymentIntent : ' . $e->getMessage();
-							$returnArr['msg'] = $msg;
-						}
-
-						/* Add Cutomer Id In User Details */
-						$updateData = array(
-							'stripe_cus_id' => $customer->id
-						);
-						$CI->master->update_detail('tbl_users', $updateData, array('user_id' => $user_id));
-
-					}
-
-
-					//print_r($charge);exit;
-					$chargeJson = $charge->jsonSerialize();
-					if ($chargeJson['id'] != '') {
-						$returnArr['status'] = true;
-						$returnArr['data'] = $chargeJson;
-						$returnArr['CardPaymentMethodId'] = $charge->payment_method;
-						$returnArr['msg'] = 'Payment is processing by gpay card.';
-					}
+		// 				/* Fetch Card Details By Payment Method */
+		// 				try{
+		// 					$StripeCardDetails = $paymentMethod->card;
+		// 				}  catch (\Stripe\Exception\ApiErrorException $e) {
+		// 					$msg = 'New Card & New Customer Error retrieve card details For Card Save From PaymentMethod : ' . $e->getMessage();
+		// 					$returnArr['msg'] = $msg;
+		// 				}
+		// 				try{
+		// 					$ExistCard_details = $CI->master->get_row_detail('tbl_cards', array('user_id' => $user_id, 'card_uniqe_id' => $StripeCardID, 'is_active' => 1));
+		// 					if(empty($ExistCard_details)){
+		// 						/* Card Details Save For User */
+		// 						$CardInsertArr = array(
+		// 							'user_id' => $user_id,
+		// 							'card_holder' => $name,
+		// 							'card_uniqe_id' => $StripeCardID,
+		// 							'CardPaymentMethodId' => $CardPaymentMethodId,
+		// 							'card_no' => $StripeCardDetails->last4,
+		// 							'card_brand' => $StripeCardDetails->brand,
+		// 							'created_date' => date("Y-m-d H:i:s"),
+		// 							'is_active' => 1
+		// 						);
+		// 						$CI->master->insertData('tbl_cards', $CardInsertArr);
+		// 					}
+		// 				} catch (Exception $e) {
+		// 					$returnArr['msg'] = "New Card & New Customer Card Insert In DB Problem : " . $e->getMessage();
+		// 				}
+		// 			}
+					
+		// 			$chargeJson = $charge->jsonSerialize();
+		// 			if ($chargeJson['id'] != '') {
+		// 				$returnArr['status'] = true;
+		// 				$returnArr['data'] = $chargeJson;
+		// 				$returnArr['CardPaymentMethodId'] = $CardPaymentMethodId;
+		// 				$returnArr['msg'] = 'Payment is processing by new card & customer.';
+		// 			}
+		// 		}
+		// 	}
+		// }elseif($payment_methodtype == 'gpay_paymethod'){
+		
+		// 			$gpay_encode = json_decode($gpay_arr, true);
 			
-		}
+		// 			$stripe = array(
+		// 				"secret_key" => STRIPE_SECRET_KEY,
+		// 				"publishable_key" => STRIPE_PUBLISHABLE_KEY
+		// 			);
+				
+		// 			\Stripe\Stripe::setApiKey($stripe['secret_key']);
+
+		// 			$token = $gpay_encode['id'] ?? null;
+		// 			if (!$token) {
+		// 				echo json_encode(['error' => 'No token provided']);
+		// 				exit;
+		// 			}
+
+		// 			// Create a PaymentMethod using the token from Google Pay
+		// 			try{
+		// 				$gen_paymentMethod = \Stripe\PaymentMethod::create([
+		// 					'type' => 'card',
+		// 					'card' => [
+		// 						'token' => $token
+		// 					]
+		// 				]);
+		// 			}catch (\Stripe\Exception\ApiErrorException $e) {
+		// 				$msg = 'Customer Error retrieve PaymentMethod  : ' . $e->getMessage();
+		// 				$returnArr['msg'] = $msg;
+		// 			}
+					
+		// 			if($stripeCustId != ""){
+					
+		// 				/* Retrieve Card Payment Method Details */
+		// 				try{
+		// 					$paymentMethod = \Stripe\PaymentMethod::retrieve($gen_paymentMethod->id);
+		// 				}  catch (\Stripe\Exception\ApiErrorException $e) {
+		// 					$msg = 'Customer Error retrieve PaymentMethod  : ' . $e->getMessage();
+		// 					$returnArr['msg'] = $msg;
+		// 				}
+
+		// 				/* Update the PaymentMethod to associate it with the customer */
+		// 				try{
+		// 					$paymentMethod->attach(['customer' => $stripeCustId]);
+		// 				}  catch (\Stripe\Exception\ApiErrorException $e) {
+		// 					$msg = 'Customer Error attach PaymentMethod : ' . $e->getMessage();
+		// 					$returnArr['msg'] = $msg;
+		// 				}
+
+		// 				$itemPrice = $items['itemPrice'];
+		// 				$currency = $items['currency'];
+		// 				try{
+		// 					// /* Create Charge */
+		// 					// $charge = \Stripe\PaymentIntent::create([
+		// 					// 	'amount' => $itemPrice,
+		// 					// 	'currency' => $currency,
+		// 					// 	'payment_method' => $paymentMethod->id,
+		// 					// 	'confirm' => true,
+		// 					// 	'customer' => $customer->id,
+		// 					// 	'automatic_payment_methods' => [
+		// 					// 		'enabled' => true,
+		// 					// 		'allow_redirects' => 'never', // block redirect-based methods
+		// 					// 	],
+		// 					// 	'metadata' => array(
+		// 					// 		'order_id'=>$order_id,
+		// 					// 		'description'=>"Order ".$order_id." from Vraj Fresh"
+		// 					// 	),
+		// 					// 	'description'=>"Order ".$order_id." from Vraj Fresh"
+		// 					// ]);
+
+		// 					$charge = \Stripe\PaymentIntent::create([
+		// 						'amount' => $itemPrice,
+		// 						'currency' => $currency,
+		// 						'customer' => $stripeCustId,
+		// 						'payment_method' => $paymentMethod->id,
+		// 						'capture_method' => 'automatic',
+		// 						'confirm' => true,
+		// 						'metadata' => array(
+		// 							'order_id'=>$order_id,
+		// 							'description'=>"Order ".$order_id." from Vraj Fresh"
+		// 						),
+		// 						'description'=>"Order ".$order_id." from Vraj Fresh"
+		// 					]);
+
+		// 				}  catch (\Stripe\Exception\ApiErrorException $e) {
+		// 					$msg = 'Google Pay Error creating paymentIntent : ' . $e->getMessage();
+		// 					$returnArr['msg'] = $msg;
+		// 				}
+
+		// 			}else{
+		// 				/* Create New Customer */
+		// 				try{			
+		// 					$customer = \Stripe\Customer::create(
+		// 						array(
+		// 							'email' => $user_details['email'],
+		// 							'address' => array('postal_code' => $user_details['zip_code']),
+		// 						)
+		// 					);
+		// 				}  catch (\Stripe\Exception\ApiErrorException $e) {
+		// 					$msg = 'New Card & New Customer Error creating customer: ' . $e->getMessage();
+		// 					$returnArr['msg'] = $msg;
+		// 				}
+						
+		// 				/* Retrieve Card Payment Method Details */
+		// 				try{
+		// 					$paymentMethod = \Stripe\PaymentMethod::retrieve($gen_paymentMethod->id);
+		// 				}  catch (\Stripe\Exception\ApiErrorException $e) {
+		// 					$msg = 'New Card & New Customer Error retrieve PaymentMethod  : ' . $e->getMessage();
+		// 					$returnArr['msg'] = $msg;
+		// 				}	
+						
+		// 				/* Update the PaymentMethod to associate it with the customer */
+		// 				try{
+		// 					$paymentMethod->attach(['customer' => $customer->id]);
+		// 				}  catch (\Stripe\Exception\ApiErrorException $e) {
+		// 					$msg = 'New Card & New Customer Error attach PaymentMethod : ' . $e->getMessage();
+		// 					$returnArr['msg'] = $msg;
+		// 				}
+
+
+						
+		// 				$itemPrice = $items['itemPrice'];
+		// 				$currency = $items['currency'];
+		// 				try{
+		// 					// /* Create Charge */
+		// 					// $charge = \Stripe\PaymentIntent::create([
+		// 					// 	'amount' => $itemPrice,
+		// 					// 	'currency' => $currency,
+		// 					// 	'payment_method' => $paymentMethod->id,
+		// 					// 	'confirm' => true,
+		// 					// 	'customer' => $customer->id,
+		// 					// 	'automatic_payment_methods' => [
+		// 					// 		'enabled' => true,
+		// 					// 		'allow_redirects' => 'never', // block redirect-based methods
+		// 					// 	],
+		// 					// 	'metadata' => array(
+		// 					// 		'order_id'=>$order_id,
+		// 					// 		'description'=>"Order ".$order_id." from Vraj Fresh"
+		// 					// 	),
+		// 					// 	'description'=>"Order ".$order_id." from Vraj Fresh"
+		// 					// ]);
+
+		// 					$charge = \Stripe\PaymentIntent::create([
+		// 						'amount' => $itemPrice,
+		// 						'currency' => $currency,
+		// 						'customer' => $customer->id,
+		// 						'payment_method' => $paymentMethod->id,
+		// 						'capture_method' => 'automatic',
+		// 						'confirm' => true,
+		// 						'metadata' => array(
+		// 							'order_id'=>$order_id,
+		// 							'description'=>"Order ".$order_id." from Vraj Fresh"
+		// 						),
+		// 						'description'=>"Order ".$order_id." from Vraj Fresh"
+		// 					]);
+
+		// 				}  catch (\Stripe\Exception\ApiErrorException $e) {
+		// 					$msg = 'Google Pay Error creating paymentIntent : ' . $e->getMessage();
+		// 					$returnArr['msg'] = $msg;
+		// 				}
+
+		// 				/* Add Cutomer Id In User Details */
+		// 				$updateData = array(
+		// 					'stripe_cus_id' => $customer->id
+		// 				);
+		// 				$CI->master->update_detail('tbl_users', $updateData, array('user_id' => $user_id));
+
+		// 			}
+
+
+		// 			//print_r($charge);exit;
+		// 			$chargeJson = $charge->jsonSerialize();
+		// 			if ($chargeJson['id'] != '') {
+		// 				$returnArr['status'] = true;
+		// 				$returnArr['data'] = $chargeJson;
+		// 				$returnArr['CardPaymentMethodId'] = $charge->payment_method;
+		// 				$returnArr['msg'] = 'Payment is processing by gpay card.';
+		// 			}
+			
+		// }
 
 		$updateErrorData = array(
-			'payment_log' => $returnArr['msg']
+			'payment_log' => $returnArr['msg'],
+			'payment_methodtype' => $paymentTypem,
 		);
 		$CI->master->update_detail('tbl_orders', $updateErrorData, array('order_id' => $order_id));
 		return $returnArr;
@@ -1081,7 +1195,7 @@ function stripe_capture_extra_payment($stripeCustId, $user_details, $payment_int
 			);
 		
 			\Stripe\Stripe::setApiKey($stripe['secret_key']);
-			
+			$stripe = new \Stripe\StripeClient($stripe['secret_key']);
 
 			/* Create Charge */
 			$charge = \Stripe\PaymentIntent::create([
@@ -1089,7 +1203,7 @@ function stripe_capture_extra_payment($stripeCustId, $user_details, $payment_int
 				'currency' => $currency,
 				'customer' => $stripeCustId,
 				'payment_method' => $CardPaymentMethodId,
-				'capture_method' => 'automatic',
+				'off_session' => true,
 				'confirm' => true,
 				'metadata' => array(
 					'order_id'=>$order_id,
@@ -1100,7 +1214,13 @@ function stripe_capture_extra_payment($stripeCustId, $user_details, $payment_int
 
 
 		}  catch (\Stripe\Exception\ApiErrorException $e) {
-			$returnArr['msg'] = 'Error creating paymentIntent : ' . $e->getMessage();
+			$err = $e->getError();
+			if ($err->code === 'authentication_required') {
+				// Card/wallet needs re-authentication
+				$returnArr['msg'] = "Payment requires customer action.";
+			} else {
+				$returnArr['msg'] = "Payment failed: " . $e->getMessage();
+			}
 		}
 
 		$chargeJson = $charge->jsonSerialize();
@@ -1150,8 +1270,9 @@ function stripe_refund_extra_payment($stripeCustId, $user_details, $payment_inte
 				"publishable_key" => STRIPE_PUBLISHABLE_KEY
 			);
 		
+			//\Stripe\Stripe::setApiKey($stripe['secret_key']);
 			\Stripe\Stripe::setApiKey($stripe['secret_key']);
-
+			$stripe = new \Stripe\StripeClient($stripe['secret_key']);
 			$refund = \Stripe\Refund::create([
 				'payment_intent' => $payment_intent_id,
 				'amount' => $itemPrice,
