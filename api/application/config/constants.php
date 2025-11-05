@@ -94,6 +94,9 @@ defined('FEDEX_CLIENT_ID')  OR define('FEDEX_CLIENT_ID', 'l7da850e647e304b0faba0
 defined('FEDEX_CLIENT_SECRET') OR define('FEDEX_CLIENT_SECRET', '799e545107064f38b283ff16fe3e0fa0'); //Fedex secret id
 
 
+defined('STRIPE_SECRET_KEY')    OR define('STRIPE_SECRET_KEY','sk_test_Nf5qbJOgwQg3chjObUc7TimG006zBZcXbI'); // Stripe secret key
+defined('STRIPE_PUBLISHABLE_KEY')    OR define('STRIPE_PUBLISHABLE_KEY','pk_test_yd5gvyIjhcQuvcys2VGQY9yj00PXtsIsOU'); // Stripe secret key 
+
 /* CART SESSION EXPIRATION TIME */
 defined('CART_SESSION_EXPIRATION_TIME')    OR define('CART_SESSION_EXPIRATION_TIME', 1296000); // In seconds (15 Days)
 
