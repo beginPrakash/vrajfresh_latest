@@ -1107,12 +1107,18 @@ class Controller_order extends CI_Controller
 				$name = 'ArrNewProducts[]';
 				$ArrOptions = array('' => "Select");
 				foreach ($ArrProducts as $key => $value) {
+
+					if(!empty($value['sale_price'])){
+						$p_price = $value['sale_price'];
+					}else{
+						$p_price = $value['product_price'];
+					}
 					
 					if (isset($value['id']) && $value['id'] > 0) {
 						$val = $value['product_id'] . "|" . $value['id'] . "|" . $value['variant_price'] . "|" . $value['product_name'] . "|" . $value['product_tax'];
 						$data = $value['product_name'] . " - " . $value['product_variant_size'] . " gms";
 					} else {
-						$val = $value['product_id'] . "||" . $value['product_price'] . "|" . $value['product_name'] . "|" . $value['product_tax'];
+						$val = $value['product_id'] . "||" . $p_price . "|" . $value['product_name'] . "|" . $value['product_tax'];
 						$data = $value['product_name'];
 					}
 

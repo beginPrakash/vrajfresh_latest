@@ -440,6 +440,15 @@ class Controller_categories extends CI_Controller
 							} else {
 								$products[$key] = $value;
 							}
+
+							$p_sale_price = $product_result[$i]->sale_price;
+							$p_prod_price = $product_result[$i]->product_price;
+							$cal_tag_dicount = $this->products_model->calculate_tag_discount($p_prod_price,$p_sale_price);
+							if(!empty($cal_tag_dicount)){
+								$products['tag_discount'] = $cal_tag_dicount.'% OFF';
+							}else{
+								$products['tag_discount'] = '';
+							}
 						}
 						$result['products'][] = $products;
 					}
@@ -569,6 +578,15 @@ class Controller_categories extends CI_Controller
 							$products[$key] = FILE_UPLOAD_PATH . 'products/' . $value;
 						} else {
 							$products[$key] = $value;
+						}
+
+						$p_sale_price = $product_result[$i]->sale_price;
+						$p_prod_price = $product_result[$i]->product_price;
+						$cal_tag_dicount = $this->products_model->calculate_tag_discount($p_prod_price,$p_sale_price);
+						if(!empty($cal_tag_dicount)){
+							$products['tag_discount'] = $cal_tag_dicount.'% OFF';
+						}else{
+							$products['tag_discount'] = '';
 						}
 					}
 					$result['product_details'][] = $products;

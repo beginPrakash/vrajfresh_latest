@@ -530,13 +530,25 @@ function get_product_detail(api_url_prefix) {
                         var simple_price_weight = '';
                         var max_price = Math.max.apply(Math, price); // 3
                         var min_price = Math.min.apply(Math, price); // 1
-                        var price_weight = '<span id="variant-price">$' + min_price + '- $' + max_price + '</span>';
+                        //var price_weight = '<span id="variant-price">$' + min_price + '- $' + max_price + '</span>';
+                        var price_weight = '<span id="variant-price">$' + min_price + '</span>';
                     }
                     price_weight1 += '</ul></div>';
                 } else {
-                    var simple_price_weight = +response.data.product_weight_gms;
+                    var simple_price_weight = '';
+                    if(response.data.product_weight_gms != 0){
+                        simple_price_weight = +response.data.product_weight_gms;
+                    }
+                   
+                    var tagdiscounttext = '';
+                    if (response.data.tag_discount != '') {
+                        tagdiscounttext = '<p class="detailtag_img_container">'+response.data.tag_discount+'</p>';
+                    }else{
+                        tagdiscounttext = '';
+                    }
+
                     if(response.data.product_price != response.data.sale_price){
-                        var price_weight = '<del>$' + response.data.product_price + '</del><span>$' + response.data.sale_price + '</span>';
+                        var price_weight = '<del>$' + response.data.product_price + '</del>'+tagdiscounttext+'<span>$' + response.data.sale_price + '</span>';
                     } else {
                         var price_weight = '<span>$' + response.data.sale_price + '</span>';
                     }
