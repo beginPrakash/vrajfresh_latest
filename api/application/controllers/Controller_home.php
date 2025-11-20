@@ -248,6 +248,16 @@ class Controller_home extends CI_Controller
 							} else {
 								$product_result[$key] = $value;
 							}
+
+							$p_sale_price = $result_val[$i]->sale_price;
+							$p_prod_price = $result_val[$i]->product_price;
+							$cal_tag_dicount = $this->products_model->calculate_tag_discount($p_prod_price,$p_sale_price);
+							if(!empty($cal_tag_dicount)){
+								$product_result['tag_discount'] = $cal_tag_dicount.'% OFF';
+							}else{
+								$product_result['tag_discount'] = '';
+							}
+
 						}
 						// $result[] = $product_result;
 						$product_result_data[]=$product_result;
@@ -792,6 +802,16 @@ class Controller_home extends CI_Controller
 					} else {
 						$product_result[$key] = $value;
 					}
+
+					$p_sale_price = $result_val[$i]->sale_price;
+					$p_prod_price = $result_val[$i]->product_price;
+					$cal_tag_dicount = $this->products_model->calculate_tag_discount($p_prod_price,$p_sale_price);
+					if(!empty($cal_tag_dicount)){
+						$product_result['tag_discount'] = $cal_tag_dicount.'% OFF';
+					}else{
+						$product_result['tag_discount'] = '';
+					}
+
 				}
 				$result[] = $product_result;
 			}

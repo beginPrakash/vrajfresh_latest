@@ -80,7 +80,7 @@ class Controller_users extends CI_Controller
 			);
 			$user_exist = $this->users_model->user_exist($user_data);
 			if ($user_exist > 0) {
-				$errors = 'Email Already Exist.Please try another Email';
+				$errors = 'Mobile number Already Exist.Please try another Mobile number';
 			} else {
 				
 				$user_id = $this->users_model->add_user($user_data, 'tbl_users');
@@ -191,18 +191,19 @@ class Controller_users extends CI_Controller
 					'user_name' => $json_obj->email,
 					'user_role_id' => $json_obj->user_role_id
 				);
+
 				$result = $this->users_model->check_user($data);
-				$ArrData = $result;
-				if ($result) {
+				
+				if ($verifyotp_result) {
 					$ArrData = $result;
 					$success_message = 'OTP Verified Successfully';
 				} else {
 					$errors = 'OTP Not Verified Successfully';
 				}
 			}else{
-				$errors = 'Wrong Email Id';
+				$errors = 'Wrong Mobile Number';
 			}
-			
+		
 			send_response_to_api($ArrData, $errors, $success_message);
 		}
 	}

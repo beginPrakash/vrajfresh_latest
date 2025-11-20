@@ -162,7 +162,7 @@ class Categories_model extends CI_Model
         // print_r($data);exit;
 
         $query = $this->db->from('tbl_products p')
-            ->select('p.product_id,p.product_name,p.product_slug,p.product_price,p.product_weight_gms,p.product_image,p.is_perisible_products,p.product_tax,pv.is_out_of_stock as variant_is_out_of_stock, p.is_out_of_stock, pv.id AS variant_id')
+            ->select('p.product_id,p.product_name,p.product_slug,p.product_price,p.sale_price,p.product_weight_gms,p.product_image,p.is_perisible_products,p.product_tax,pv.is_out_of_stock as variant_is_out_of_stock, p.is_out_of_stock, pv.id AS variant_id')
             ->join('tbl_categories_products_mapping cpm', 'p.product_id = cpm.product_id')
             ->join('tbl_categories c', 'c.category_id=cpm.category_id')
             ->join('tblproduct_variant pv', 'p.product_id=pv.product_id', "LEFT")

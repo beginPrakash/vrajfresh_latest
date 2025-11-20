@@ -506,4 +506,11 @@ class Products_model extends CI_Model
 
     }
 
+    public function calculate_tag_discount($prod_price,$sale_price){
+        if(!empty($prod_price) && !empty($sale_price)){
+            $percentageDifference = (abs($prod_price - $sale_price) / (($prod_price))) * 100;
+            return round($percentageDifference);
+        }
+    }
+
 }

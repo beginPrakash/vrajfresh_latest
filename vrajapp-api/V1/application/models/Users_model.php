@@ -96,8 +96,9 @@ class Users_model extends CI_Model
     }
     public function user_exist($data)
     {
-        $query = $this->db->select('user_name,email,user_id')
-            ->where('email', $data['email'])
+        $query = $this->db->select('user_name,mobile_no,user_id')
+            ->where('mobile_no', $data['mobile_no'])
+            ->or_where('email', $data['email'])
             ->where('user_role_id', $data['user_role_id'])
             ->get('tbl_users');
         return $query->num_rows();
@@ -144,6 +145,7 @@ class Users_model extends CI_Model
     {
         $query = $this->db->select('user_id,user_name,first_name,last_name,display_name,zipcode,user_role_id,email,address,address2,city')
             ->where('email', $data)
+            ->or_where('mobile_no', $data)
             ->where('is_active', '1')
             ->get('tbl_users');
         // echo $this->db->last_query();exit;

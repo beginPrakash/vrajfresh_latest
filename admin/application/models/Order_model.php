@@ -149,14 +149,17 @@ class order_model extends CI_Model
 			$txtSearchTo = date('Y-m-d', strtotime(@$_REQUEST['txtSearchTo']));
 			$this->db->where('tbl_orders.order_datetime >=', $txtSearchFrom . " 00:00:00");
 			$this->db->where('tbl_orders.order_datetime <=', $txtSearchTo . " 23:59:59");
+			$this->db->order_by('tbl_orders.order_datetime', 'asc');
 		}
 		if (@$_REQUEST['txtSearchFrom'] != "") {
 			$txtSearchFrom = date('Y-m-d', strtotime(@$_REQUEST['txtSearchFrom']));
 			$this->db->where('tbl_orders.order_datetime >=', $txtSearchFrom . " 00:00:00");
+			$this->db->order_by('tbl_orders.order_datetime', 'asc');
 		}
 		if (@$_REQUEST['txtSearchTo'] != "") {
 			$txtSearchTo = date('Y-m-d', strtotime(@$_REQUEST['txtSearchTo']));
 			$this->db->where('tbl_orders.order_datetime <=', $txtSearchTo . " 23:59:59");
+			$this->db->order_by('tbl_orders.order_datetime', 'asc');
 		}
 		if (@$_REQUEST['ddIsActive'] != "") {
 			$this->db->where('tbl_orders.order_status', $_REQUEST['ddIsActive']);
@@ -178,7 +181,7 @@ class order_model extends CI_Model
 			if (isset($_POST['order'])) { // here order processing
 				$this->db->order_by($column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
 			} else {
-				$this->db->order_by('tbl_orders.user_id', 'desc');
+				$this->db->order_by('tbl_orders.order_id', 'desc');
 			}
 			$this->db->where('tbl_orders.is_deleted', 0);
 			$this->db->join('tbl_users', 'tbl_users.user_id = tbl_orders.user_id', 'left');

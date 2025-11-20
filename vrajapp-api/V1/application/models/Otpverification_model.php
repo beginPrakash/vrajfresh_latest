@@ -21,11 +21,20 @@ class Otpverification_model extends CI_Model
 
     public function verify_otp($data, $user_id,$user_otp)
     {
-        $this->db->where('is_verify', '0')
+       $query = $this->db->where('is_verify', '0')
             ->where('user_id', $user_id)
-            ->where('otp', $user_otp);
-        $update = $this->db->update('tbl_otp_verification', $data);
-        
+            ->where('otp', $user_otp)
+            ->order_by('id', 'desc')
+            ->limit(1)->get('tbl_otp_verification');
+
+            if(!empty($query->result())){
+                $query = $this->db->where('is_verify', '0')
+                ->where('user_id', $user_id)
+                ->where('otp', $user_otp);
+                    $update = $this->db->update('tbl_otp_verification', $data);
+            }
+       // $update = $this->db->update('tbl_otp_verification', $data);
+       
         if ($update) {
             return true;
         } else {

@@ -28,7 +28,7 @@ class Controller_prodreport extends CI_Controller
 			$i = $_REQUEST['start'] + 1;
 			foreach ($ArrData['result'] as $aRow) {
 				$prod_unitcost = $this->prodreport_model->get_prod_unitcost($aRow['product_id'],$aRow['unit_price'],$aRow['product_variant_id']);
-				$total_cost = $prod_unitcost ?? 0;
+				$total_cost = $prod_unitcost ?? 0.00;
 				$row = $category_name = array();
 				$row[] = date('d-m-Y',strtotime($aRow['order_datetime']));
 				$row[] = $aRow['product_name'];
@@ -72,7 +72,7 @@ class Controller_prodreport extends CI_Controller
 			$row[] = date('d-m-Y',strtotime($ArrData['order_datetime']));
 			$row[] = $ArrData['product_name'];
 			$row[] = $ArrData['unit_price'];
-			$row[] = number_format($total_cost,2);
+			$row[] = $total_cost;
 			$row[] = $ArrData['pro_qty'];
 			$row[] = $ArrData['porder_id'];
 			$row[] = $ArrData['pro_total_amount'];
