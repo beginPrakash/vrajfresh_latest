@@ -310,13 +310,13 @@ class Controller_categories extends CI_Controller
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
 
-		$oauth_key = $json_obj->oauth_key;
+	
 		$zipcode = $json_obj->zipcode;
 		$errors = $success_message = '';
 		$ArrData = array();
 		$category_result = "";
 		$zipcodeData = array();
-		if (check_oauth_key($oauth_key)) {
+		
 			$data = array(
 				'category_slug' => $json_obj->category_slug
 			);
@@ -468,7 +468,7 @@ class Controller_categories extends CI_Controller
 				$errors = 'No data available';
 			}
 			send_response_to_api($ArrData, $errors, $success_message);
-		}
+		
 	}
 	public function get_category_product_detail_by_id()
 	{
@@ -476,7 +476,7 @@ class Controller_categories extends CI_Controller
 		$json_obj = json_decode($json_str);
 		// print_r($json_obj);
 
-		$oauth_key = $json_obj->oauth_key;
+
 		$errors = $success_message = '';
 		$ArrData = array();
 		$category_result = "";
@@ -494,8 +494,7 @@ class Controller_categories extends CI_Controller
 		}
 		$category_id = implode(",", $category_id_arr);
 
-		if (check_oauth_key($oauth_key)) {
-			
+		
 			$data = array(
 				'category_id' => $category_id,
 				// 'category_id' => implode(",", $json_obj->category_id),
@@ -593,7 +592,7 @@ class Controller_categories extends CI_Controller
 				$errors = 'No data available';
 			}
 			send_response_to_api($ArrData, $errors, $success_message);
-		}
+		
 	}
 	public function get_filters()
 	{
@@ -601,18 +600,146 @@ class Controller_categories extends CI_Controller
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
 
-		$oauth_key = $json_obj->oauth_key;
+
 		$errors = $success_message = '';
 		$ArrData = array();
 		$category_result = "";
 		$zipcodeData = array();
-		if (check_oauth_key($oauth_key)) {
+		$zipcodeDatas = array();
+		$zipcode = $json_obj->zipcode;
+
 			$data = array(
-				'product_ids' => $json_obj->product_ids,
-				'zipcode' => $json_obj->zipcode
+				//'product_ids' => $json_obj->product_ids,
+				'zipcode' => $json_obj->zipcode,
+				'category_slug' => $json_obj->category_slug
 			);
 
-			$product_ids = implode(',', $data['product_ids']);
+			$data = array(
+				'category_slug' => $json_obj->category_slug
+			);
+
+			if($zipcode != ""){
+				$zipcodeData = $this->zipcodes_model->get_zipcode_by_data($zipcode);
+				if (count($zipcodeData) > 0) {
+					$data['is_perisible_zipcode'] = $zipcodeData[0]->can_deliver_perishable_products;
+					$data['is_liker_zipcode'] = $zipcodeData[0]->can_deliver_liker_products;
+					$data['is_cook_food_zipcode'] = $zipcodeData[0]->can_deliver_cook_food_products;
+				}
+			}
+			$category_result = $this->categories_model->get_category_by_slug($data);
+			if(!empty($category_result)){
+				
+				$category_id = $category_result[0]->category_id;
+				$category_is_perisible_products = $category_result[0]->is_perisible_products;
+				$category_is_liker_category = $category_result[0]->is_liker_category;
+				$category_is_cook_food_category = $category_result[0]->is_cook_food_category;
+				
+				$temp_result = $this->categories_model->get_product_by_category_id($category_result[0]->category_id);
+				//$result["category"] = $category_result[0];
+				$ArrFinal = array();
+				$i = 0;
+				$prev_product_id = 0;
+				$ArrFilter = array();
+				$ArrNum = 0;
+
+				for ($p = 0; $p < count($temp_result); $p++) {
+					
+					$ProductValid = 1;
+					if(isset($zipcodeData[0]->can_deliver_perishable_products) && $zipcodeData[0]->can_deliver_perishable_products == "No")
+					{
+						if($category_is_perisible_products == '2' && $temp_result[$p]->is_perisible_products != '1'){
+							$ProductValid = 0;
+						}
+					}
+					if($ProductValid == 1 && isset($zipcodeData[0]->can_deliver_liker_products) && $zipcodeData[0]->can_deliver_liker_products == "No")
+					{
+						if($category_is_liker_category == '2' && $temp_result[$p]->is_liker_products != '1'){
+							$ProductValid = 0;
+						}
+					}
+					if($ProductValid == 1 && isset($zipcodeData[0]->can_deliver_cook_food_products) && $zipcodeData[0]->can_deliver_cook_food_products == "No")
+					{
+						if($category_is_cook_food_category == '2' && $temp_result[$p]->is_liker_products != '1'){
+							$ProductValid = 0;
+						}
+					}
+
+					if($ProductValid == 1) {
+						$ArrFilter[$ArrNum] = $temp_result[$p];
+						$ArrNum++;
+					}
+
+				}
+				$temp_result = $ArrFilter;
+				if(!empty($temp_result)){
+					foreach ($temp_result as $arr) {
+
+						if ($prev_product_id != $arr->product_id) {
+
+							$ArrFinal[$i] = $arr;
+
+							$tempArray = array();
+							$previous_variant_id = "";
+							foreach ($temp_result as $arr1) {
+
+								if ($arr->product_id == $arr1->product_id && $previous_variant_id != $arr1->id) {
+									$t = array();
+									if ($arr1->id > 0) {
+										$t['size'] = $arr1->product_variant_size;
+										$t['price'] = $arr1->variant_price;
+										$t['variant_id'] = $arr1->id;
+										$t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
+									}
+									$tempArray[] = $t;
+									$previous_variant_id = $arr1->id;
+								}
+							}
+                            // usort($tempArray, function($a, $b) {
+                            // 	return $a['size'] <=> $b['size'];
+                            // });
+
+							$unique = array_map("unserialize", array_unique(array_map("serialize", $tempArray)));
+							usort($unique, function($a, $b) {
+								return $a['price'] - $b['price']; // Ascending sort by 'price'
+							});
+							
+
+							$ArrFinal[$i] = $arr;
+
+							$ArrFinal[$i]->product_size = $unique;
+
+							$i++;
+						}
+
+						$prev_product_id = $arr->product_id;
+					}
+					$variants = array();
+					foreach ($temp_result as $arr) {
+						$temp_variant_result = $this->products_model->get_variant_by_product_id($arr->product_id);
+
+						// print_r($temp_variant_result);
+
+
+						for ($i = 0; $i < count($temp_variant_result); $i++) {
+							$variants[] = $temp_variant_result[$i];
+						}
+
+					
+					}
+
+					$product_result = $ArrFinal;
+
+					//$filter_result=$this->categories_model->get_category_filter($product_result[0]->product_id);
+					foreach ($product_result as $products) {
+						$product_id[] = $products->product_id;
+					}
+					
+					
+				}
+			}
+
+
+			$product_ids = implode(',', $product_id);
 			$filter_result = $this->categories_model->get_category_filter($product_ids);
 
 			$filter1 = str_replace('"{\"', '{"', $filter_result[0]->category);
@@ -640,18 +767,19 @@ class Controller_categories extends CI_Controller
 			$check_extra_cond = 0;
 			if ($json_obj->zipcode != "") {
 				
-				$zipcodeData = $this->zipcodes_model->get_zipcode_by_data($json_obj->zipcode);
-				if (count($zipcodeData) > 0) {
+				$zipcodeDatas = $this->zipcodes_model->get_zipcode_by_data($json_obj->zipcode);
+				if (count($zipcodeDatas) > 0) {
 					
-					$Z_perisible = $zipcodeData[0]->can_deliver_perishable_products;
-					$Z_liker = $zipcodeData[0]->can_deliver_liker_products;
-					$Z_cook_food = $zipcodeData[0]->can_deliver_cook_food_products;
+					$Z_perisible = $zipcodeDatas[0]->can_deliver_perishable_products;
+					$Z_liker = $zipcodeDatas[0]->can_deliver_liker_products;
+					$Z_cook_food = $zipcodeDatas[0]->can_deliver_cook_food_products;
 
 					if($Z_perisible == "No" || $Z_liker == "No" || $Z_cook_food == "No"){
 						$check_extra_cond = 1;
 					}
 				}
 			}
+			$catg_arr = [];
 			if (is_array($category_filters) && count($category_filters) > 0 || $category_filters != "" || $category_filters != null) {
 				for ($i = 0; $i < count($category_filters); $i++) {
 					if($check_extra_cond == 1){
@@ -666,28 +794,65 @@ class Controller_categories extends CI_Controller
 								$CatAdd = 0;
 							}
 							if($CatAdd == 1){
-								$arr_final_category['category'][$category_filters[$i]->category_id] = $category_filters[$i]->category_name;
+								$catg_arr['category_old'][$category_filters[$i]->category_id] = $category_filters[$i]->category_name;
 							}
 						}
 					} else {
-						$arr_final_category['category'][$category_filters[$i]->category_id] = $category_filters[$i]->category_name;
+						$catg_arr['category_old'][$category_filters[$i]->category_id] = $category_filters[$i]->category_name;
 					}
 					
 				}
+				$newCateg = [];
+
+				foreach ($catg_arr['category_old'] as $key => $value) {
+					$newCateg[] = [
+						"category_id" => $key,
+						"category_name" => $value
+					];
+
+				}
+				
+				$arr_final_category['category'] = $newCateg;
 			} else {
 				$arr_final_category['category'] = "";
 			}
+			$brand_arr = [];
 			if (is_array($brand_filters) && count($brand_filters) > 0 || $brand_filters != "" || $brand_filters != null) {
 				for ($j = 0; $j < count($brand_filters); $j++) {
-					$arr_final_category['brand'][$brand_filters[$j]->brand_id] = $brand_filters[$j]->brand_name;
+					//$arr_final_category['brand']['brand_id'][$brand_filters[$j]->brand_id] = $brand_filters[$j]->brand_name;
+					$brand_arr['brand_old'][$brand_filters[$j]->brand_id]  = $brand_filters[$j]->brand_name;
 				}
+				$newBrand = [];
+
+				foreach ($brand_arr['brand_old'] as $key => $value) {
+					$newBrand[] = [
+						"brand_id" => $key,
+						"brand_name" => $value
+					];
+
+				}
+				
+				$arr_final_category['brand'] = $newBrand;
 			} else {
 				$arr_final_category['brand'] = "";
 			}
+			$tag_arr = [];
 			if (is_array($tag_filters) && count($tag_filters) > 0 || $tag_filters != "" || $tag_filters != null) {
 				for ($k = 0; $k < count($tag_filters); $k++) {
-					$arr_final_category['tag'][$tag_filters[$k]->tag_id] = $tag_filters[$k]->tag;
+					$tag_arr['tag_old'][$tag_filters[$k]->tag_id] = $tag_filters[$k]->tag;
 				}
+
+				$newTag = [];
+
+				foreach ($tag_arr['tag_old'] as $key => $value) {
+					$newTag[] = [
+						"tag_id" => $key,
+						"tag_name" => $value
+					];
+
+				}
+				
+				$arr_final_category['tag'] = $newTag;
 			} else {
 				$arr_final_category['tag'] = "";
 			}
@@ -704,7 +869,7 @@ class Controller_categories extends CI_Controller
 				$errors = 'No data available';
 			}
 			send_response_to_api($ArrData, $errors, $success_message);
-		}
+		
 	}
 	public function get_category_product_search()
 	{

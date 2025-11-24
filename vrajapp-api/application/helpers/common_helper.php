@@ -34,15 +34,21 @@ function send_response_to_api_with_extra_parameters($ArrData, $extra_parameters 
 function check_oauth_key($oauth_key)
 {
 
-	if ($oauth_key != 'F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT') {
-		$errors = "Error: The api oAuth key is not valid.";
-
-		$ArrError = array('is_successful' => '0', 'error_code' => 400, 'data' => null, 'errors' => $errors);
-		$myJSON = json_encode($ArrError);
-		header('Content-Type: application/json');
-		echo $myJSON;
-	} else {
+	
+	$CI =& get_instance();		
+	$CI->load->model('master_model', 'master');
+		
+				
+	$is_token_expired = $CI->master->check_user_token_expired($oauth_key);
+	if ($is_token_expired) {
 		return true;
+	} else {
+		$errors = "Token is expired.";
+
+		$ArrError = array('is_successful' => '0', 'error_code' => 401, 'data' => null, 'errors' => $errors);
+		$myJSON = json_encode($ArrError);
+		header('HTTP/1.1 401 Unauthorized');
+		echo $myJSON;
 	}
 }
 

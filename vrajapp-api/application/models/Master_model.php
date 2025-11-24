@@ -572,4 +572,16 @@ class Master_model extends CI_Model
             return array();
         }
     }
+
+    public function check_user_token_expired($user_token='')
+    {
+
+        $result = $this->db->get_where('tbl_users_token', ['access_token' => $user_token])->row();
+
+        if (!$result || strtotime($result->access_expiry) < time()) {
+            return false;
+        }
+
+        return $result->user_id;
+    }
 }

@@ -737,13 +737,13 @@ class Controller_home extends CI_Controller
         $json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
 
-		$oauth_key = $json_obj->oauth_key;
+		
 		$special_category_slug=$json_obj->special_category_slug;
 
 		$errors = $success_message = '';
 		$ArrData = array();
 		$result = array();
-		if (check_oauth_key($oauth_key)) {
+		
 			$data['special_category_slug']=$special_category_slug;
 			$special_category_product = $this->home_model->get_special_category_product_model($data);
 			$home_product_slider_data = $special_category_product['home_product_slider_data'];
@@ -805,7 +805,7 @@ class Controller_home extends CI_Controller
 				$errors = '';
 			}
 			send_response_to_api($ArrData, $errors, $success_message);
-		}
+		
     }
 	
 }
