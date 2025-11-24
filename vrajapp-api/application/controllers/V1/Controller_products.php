@@ -324,9 +324,6 @@ class Controller_products extends CI_Controller
 
 
 
-		$oauth_key = $json_obj->oauth_key;
-
-
 
 		$errors = $success_message = '';
 
@@ -335,8 +332,6 @@ class Controller_products extends CI_Controller
 		$ArrData = array();
 
 
-
-		if (check_oauth_key($oauth_key)) {
 
 
 
@@ -840,8 +835,6 @@ class Controller_products extends CI_Controller
 			send_response_to_api($ArrData, $errors, $success_message);
 
 
-
-		}
 
 
 
@@ -2699,23 +2692,12 @@ class Controller_products extends CI_Controller
 
 
 
-
-
-
-
-		$oauth_key = $json_obj->oauth_key;
-
-
-
 		$errors = $success_message = '';
 
 
 
 		$ArrData = array();
 
-
-
-		if (check_oauth_key($oauth_key)) {
 
 			$ExtraCondData = array();
 			if($json_obj->zipcode != ""){
@@ -2912,9 +2894,6 @@ class Controller_products extends CI_Controller
 
 			send_response_to_api($ArrData, $errors, $success_message);
 
-
-
-		}
 
 
 

@@ -41,18 +41,13 @@ class Controller_Menus extends CI_Controller
 
 		$json_obj = json_decode($json_str);
 
-
-
-		$oauth_key = $json_obj->oauth_key;
-
 		$errors = $success_message = '';
 
 		$ArrData = array();
 
 		//	$result = array();
 
-		if (check_oauth_key($oauth_key)) {
-
+	
 			try {
 
 				$data = array(
@@ -202,7 +197,7 @@ class Controller_Menus extends CI_Controller
 
 			send_response_to_api($ArrData, $errors, $success_message);
 
-		}
+		
 
 	}
 
