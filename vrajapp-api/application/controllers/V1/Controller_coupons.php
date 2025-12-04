@@ -40,12 +40,20 @@ class Controller_coupons extends CI_Controller
 
 		$json_obj = json_decode($json_str);
 
-
+ 		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
 		$errors = $success_message = '';
 
 		$ArrData = array();
 
 		$applied_flag = '';
+
+		if (check_oauth_key($oauth_key)) {
 
 			if ($json_obj->coupon_code != '') {
 
@@ -448,7 +456,7 @@ class Controller_coupons extends CI_Controller
 			}
 
 			send_response_to_api($ArrData, $errors, $success_message);
-
+		}
 
 	}
 

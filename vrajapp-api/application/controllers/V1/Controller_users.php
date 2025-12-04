@@ -57,10 +57,9 @@ class Controller_users extends CI_Controller
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
 
-		$oauth_key = $json_obj->oauth_key;
+		
 		$errors = $success_message = '';
 		$ArrData = array();
-		if (check_oauth_key($oauth_key)) {
 			$guid = GUID();
 
 			$user_data = array(
@@ -113,7 +112,6 @@ class Controller_users extends CI_Controller
 			}
 
 			send_response_to_api($ArrData, $errors, $success_message);
-		}
 	}
 	public function get_user_by_id()
 	{
@@ -177,10 +175,8 @@ class Controller_users extends CI_Controller
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
 
-		$oauth_key = $json_obj->oauth_key;
 		$errors = $success_message = '';
 		$ArrData = array();
-		if (check_oauth_key($oauth_key)) {
 			$user_otp = $json_obj->otp;
 			$check_email = $this->users_model->check_email($json_obj->email);
 			if(count($check_email) > 0){
@@ -195,18 +191,40 @@ class Controller_users extends CI_Controller
 
 				$result = $this->users_model->check_user($data);
 				
+				//generate and save token
+					
+
+				$accessToken = bin2hex(random_bytes(32));
+				$refreshToken = bin2hex(random_bytes(32));
+				$utoken_data = array(
+					'user_id' => $result[0]->user_id,
+					'access_token' => $accessToken,
+					'refresh_token' => $refreshToken,
+					'access_expiry' => date("Y-m-d H:i:s", strtotime("+24 hours")),
+					'refresh_expiry' => date("Y-m-d H:i:s", strtotime("+30 days"))
+				);
+			
+				$usertoken_code = $this->usertoken_model->add_usetoken($utoken_data);
 				if ($verifyotp_result) {
-					$ArrData = $result;
+					$ArrData['user_data'] = $result;
+					$ArrData['access_token'] = $accessToken;
+        			$ArrData['refresh_token'] = $refreshToken;
+        			$ArrData['expires_in'] = 86400;
 					$success_message = 'OTP Verified Successfully';
+					send_response_to_api($ArrData, $errors, $success_message);
 				} else {
 					$errors = 'OTP Not Verified Successfully';
+					$ArrError = array('is_successful' => '0', 'error_code' => 401, 'data' => null, 'errors' => $errors);
+					$myJSON = json_encode($ArrError);
+					header('HTTP/1.1 401 Unauthorized');
+					echo $myJSON;
 				}
 			}else{
 				$errors = 'Wrong Mobile Number';
+				send_response_to_api($ArrData, $errors, $success_message);
 			}
 		
-			send_response_to_api($ArrData, $errors, $success_message);
-		}
+			
 	}
 
 	public function regenerate_token()
@@ -377,26 +395,10 @@ class Controller_users extends CI_Controller
 				
 					$otp_code = $this->otpverification_model->add_otpcode($otp_data);
 
-					//generate and save token
 					
-
-					$accessToken = bin2hex(random_bytes(32));
-    				$refreshToken = bin2hex(random_bytes(32));
-					$utoken_data = array(
-						'user_id' => $result[0]->user_id,
-						'access_token' => $accessToken,
-						'refresh_token' => $refreshToken,
-						'access_expiry' => date("Y-m-d H:i:s", strtotime("+24 hours")),
-						'refresh_expiry' => date("Y-m-d H:i:s", strtotime("+30 days"))
-					);
-				
-					$usertoken_code = $this->usertoken_model->add_usetoken($utoken_data);
 
 					$ArrData['userdata'] = $result;
 					$ArrData['gen_otp'] = $gen_otp;
-					$ArrData['access_token'] = $accessToken;
-        			$ArrData['refresh_token'] = $refreshToken;
-        			$ArrData['expires_in'] = 86400;
 					$success_message = 'Login Successfully';
 				} else {
 					$errors = 'Please enter valid login details.';
@@ -548,11 +550,8 @@ class Controller_users extends CI_Controller
 		$json_obj = json_decode($json_str);
 
 
-
-		$oauth_key = $json_obj->oauth_key;
 		$result = $errors = $success_message = '';
 		$ArrData = array();
-		if (check_oauth_key($oauth_key)) {
 			$data = array(
 				"user_id" => $json_obj->user_id,
 				"user_role_id" => $json_obj->user_role_id
@@ -568,7 +567,6 @@ class Controller_users extends CI_Controller
 				$errors = 'No Address Found';
 			}
 			send_response_to_api($ArrData, $errors, $success_message);
-		}
 	}
 
 	public function edit_user_address()

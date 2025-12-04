@@ -56,12 +56,12 @@ class Controller_home extends CI_Controller
 	{
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
-		$oauth_key = $json_obj->oauth_key;
+
 		$errors = $success_message = '';
 		$ArrData = array();
 		$result = array();
 		$title = "";
-		if (check_oauth_key($oauth_key)) {
+
 			$data = array(
 				'is_active' => $json_obj->is_active_only,
 				'search_keyword' => $json_obj->search_keyword,
@@ -73,11 +73,16 @@ class Controller_home extends CI_Controller
 			for ($i = 0; $i < count($result_val); $i++) {
 				$banner_result=array();
 				foreach ($result_val[$i] as $key => $value) {
+
 					if ($key == "cat_image") {
 						$banner_result[$key] = FILE_UPLOAD_PATH . 'feature_categories/' . $value;
+					}elseif ($key == "cat_slug") {
+						$cslug = substr($result_val[$i]->cat_link, strrpos($result_val[$i]->cat_link, '/') + 1);
+						$banner_result[$key] = $cslug;
 					} else {
 						$banner_result[$key] = $value;
 					}
+					
 				}
 				
 				$result[] = $banner_result;
@@ -90,19 +95,18 @@ class Controller_home extends CI_Controller
 				$errors = 'No Data Available';
 			}
 			send_response_to_api_with_extra_parameters($ArrData, array('section_title' => $title), $errors, $success_message); 
-		}
 	}
 
 	public function get_stockup_your_frozen()
 	{
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
-		$oauth_key = $json_obj->oauth_key;
+
 		$errors = $success_message = '';
 		$ArrData = array();
 		$result = array();
 		$title = "";
-		if (check_oauth_key($oauth_key)) {
+
 			$data = array(
 				'is_active' => $json_obj->is_active_only,
 				'search_keyword' => $json_obj->search_keyword,
@@ -130,18 +134,17 @@ class Controller_home extends CI_Controller
 				$errors = 'No Data Available';
 			}
 			send_response_to_api_with_extra_parameters($ArrData, array('section_title' => $title), $errors, $success_message);
-		}
 	}
 
 	public function get_refill_pantry()
 	{
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
-		$oauth_key = $json_obj->oauth_key;
+
 		$errors = $success_message = '';
 		$ArrData = array();
 		$result = array();
-		if (check_oauth_key($oauth_key)) {
+
 			$data = array(
 				'is_active' => $json_obj->is_active_only,
 				'search_keyword' => $json_obj->search_keyword,
@@ -169,7 +172,6 @@ class Controller_home extends CI_Controller
 				$errors = 'No Data Available';
 			}
 			send_response_to_api_with_extra_parameters($ArrData, array('section_title' => $title), $errors, $success_message);
-		}
 	}
 
 	public function get_home_product_slider()
@@ -177,11 +179,9 @@ class Controller_home extends CI_Controller
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
 
-		$oauth_key = $json_obj->oauth_key;
 		$errors = $success_message = '';
 		$ArrData = array();
 		$result = array();
-		if (check_oauth_key($oauth_key)) {
 			
 			$get_home_product_slider_data = $this->home_model->get_home_product_slider();
 			if(!empty($get_home_product_slider_data)){
@@ -267,7 +267,6 @@ class Controller_home extends CI_Controller
 				$errors = '';
 			}
 			send_response_to_api($ArrData, $errors, $success_message);
-		}
 	}
 	/*
 	public function get_new_savings()
@@ -523,11 +522,11 @@ class Controller_home extends CI_Controller
 	{
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
-		$oauth_key = $json_obj->oauth_key;
+
 		$errors = $success_message = '';
 		$ArrData = array();
 		$result = array();
-		if (check_oauth_key($oauth_key)) {
+
 			$data = array(
 				'is_active' => $json_obj->is_active_only,
 				'search_keyword' => $json_obj->search_keyword,
@@ -563,17 +562,16 @@ class Controller_home extends CI_Controller
 				$errors = 'No Data Available';
 			}
 			send_response_to_api($ArrData, $errors, $success_message);
-		}
 	}
 	public function get_advertise_top()
 	{
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
-		$oauth_key = $json_obj->oauth_key;
+
 		$errors = $success_message = '';
 		$ArrData = array();
 		$result = array();
-		if (check_oauth_key($oauth_key)) {
+
 			$data = array(
 				'is_active' => $json_obj->is_active_only,
 				'search_keyword' => $json_obj->search_keyword,
@@ -607,19 +605,17 @@ class Controller_home extends CI_Controller
 				$errors = 'No Data Available';
 			}
 			send_response_to_api($ArrData, $errors, $success_message);
-		}
 	}
 
 	public function get_advertise_bottom()
 	{
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
-		$oauth_key = $json_obj->oauth_key;
+
 		$zipcode = (isset($json_obj->zipcode) && $json_obj->zipcode != "") ? $json_obj->zipcode : '';
 		$errors = $success_message = '';
 		$ArrData = array();
 		$result = array();
-		if (check_oauth_key($oauth_key)) {
 		
 			if($zipcode != ""){
 				$newData['zipcode'] = $zipcode;
@@ -729,7 +725,6 @@ class Controller_home extends CI_Controller
 				$errors = 'No Data Available';
 			}
 			send_response_to_api($ArrData, $errors, $success_message);
-		}
 	}
 
 	public function get_special_category_product()
