@@ -11,7 +11,7 @@ function send_response_to_api($ArrData, $errors = '', $success_message = '')
 	} else {
 		$ArrError = array('is_successful' => '0', 'error_code' => 400, 'data' => null, 'errors' => $errors, 'success_message' => '');
 		$myJSON = json_encode($ArrError);
-		header('Content-Type: application/json');
+		header('HTTP/1.1 400 Bad Request');
 		echo $myJSON;
 	}
 }
@@ -38,16 +38,23 @@ function check_oauth_key($oauth_key)
 	$CI =& get_instance();		
 	$CI->load->model('master_model', 'master');
 		
-				
-	$is_token_expired = $CI->master->check_user_token_expired($oauth_key);
-	if ($is_token_expired) {
-		return true;
-	} else {
-		$errors = "Token is expired.";
+	if(!empty($oauth_key)){			
+		$is_token_expired = $CI->master->check_user_token_expired($oauth_key);
+		if ($is_token_expired) {
+			return true;
+		} else {
+			$errors = "Token is expired.";
 
-		$ArrError = array('is_successful' => '0', 'error_code' => 401, 'data' => null, 'errors' => $errors);
-		$myJSON = json_encode($ArrError);
-		header('HTTP/1.1 401 Unauthorized');
+			$ArrError = array('is_successful' => '0', 'error_code' => 401, 'data' => null, 'errors' => $errors);
+			$myJSON = json_encode($ArrError);
+			header('HTTP/1.1 401 Unauthorized');
+			echo $myJSON;
+		}
+	}else{
+		$success_message = 'Token is required';
+		$ArrResponse = array('is_successful' => '1', 'error_code' => -1, 'data' => [], 'errors' => '', 'success_message' => $success_message);
+		$myJSON = json_encode($ArrResponse);
+		header('Content-Type: application/json');
 		echo $myJSON;
 	}
 }

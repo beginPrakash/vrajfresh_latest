@@ -59,10 +59,8 @@ class Controller_zipcodes extends CI_Controller
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
 
-		$oauth_key = $json_obj->oauth_key;
 		$errors = $success_message = '';
 		$ArrData = array();
-		if (check_oauth_key($oauth_key)) {
 			
 			$result = $this->zipcodes_model->select_zipcodes_autocomplete($json_obj->term);
 
@@ -73,7 +71,6 @@ class Controller_zipcodes extends CI_Controller
 				$errors = 'No Data Available';
 			}
 			send_response_to_api($ArrData, $errors, $success_message);
-		}
 
 	}
 
@@ -401,13 +398,10 @@ class Controller_zipcodes extends CI_Controller
 	{
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
-		
 
-		$oauth_key = $json_obj->oauth_key;
 		$user_id = (isset($json_obj->user_id)) ? $json_obj->user_id : 0;
 		$errors = $success_message = '';
 		$ArrData = array();
-		if (check_oauth_key($oauth_key)) {
 			$data = array(
 				'zipcode' => $json_obj->zipcode
 			);
@@ -528,6 +522,6 @@ class Controller_zipcodes extends CI_Controller
 			}
 
 			send_response_to_api($ArrData, $errors, $success_message);
-		}
+	
 	}
 }
