@@ -601,8 +601,8 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
             <p><span>You'll receive <b id="earn_cr_txtval"></b> credit when you place an order.</span></p>
             <?Php } ?>
             <p>
-               <b>Note: </b>Orders placed before 3:00PM, will be delivered same day between 5:00 PM - 9:00 PM.
-               Orders placed after 3:00PM, will be delivered next day 5:00 PM - 9:00 PM
+               <b>Note: </b>Orders placed before 2:00PM, will be delivered same day between 5:00 PM - 9:00 PM.
+               Orders placed after 2:00PM, will be delivered next day 5:00 PM - 9:00 PM
             </p>
             <?php if ($_COOKIE['delivery_type'] == 'Twise in a week') { ?>
          <label><b>Expected Delivery Date:</b></label>

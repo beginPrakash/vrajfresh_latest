@@ -51,6 +51,15 @@ class Controller_order extends CI_Controller
 
 				$actions .= '<a rel="' . $base_url . 'adminpanel/controller_order/invoice_order/?o=' . base64_encode($order_id) . '" id="' . $order_id . '" title="invoice_' . $order_id . '" class="invoiceOrder btn btn-default btn-sm"><i class="fa fa-download"></i></a></div>';
 
+				$d1 = date("Y-m-d", strtotime($aRow['created_datetime']));
+				$d2 = date("Y-m-d", strtotime($aRow['delivery_datetime']));
+
+				$rows_cls='';
+				if (($d1 != $d2) && ($aRow['order_status']!= 'Completed') && ($d2 > $cdate)) {
+					$rows_cls = "deldate_diffrow";
+				}
+				$row["DT_RowClass"] = $rows_cls;
+
 				$row[] = $actions;
 				$row[] = $aRow['order_id'];
 				$row[] = $aRow['created_datetime'];
@@ -1116,7 +1125,7 @@ class Controller_order extends CI_Controller
 					
 					if (isset($value['id']) && $value['id'] > 0) {
 						$val = $value['product_id'] . "|" . $value['id'] . "|" . $value['variant_price'] . "|" . $value['product_name'] . "|" . $value['product_tax'];
-						$data = $value['product_name'] . " - " . $value['product_variant_size'] . " gms";
+						$data = $value['product_name'] . " - " . $value['product_variant_size'] . " lb";
 					} else {
 						$val = $value['product_id'] . "||" . $p_price . "|" . $value['product_name'] . "|" . $value['product_tax'];
 						$data = $value['product_name'];

@@ -15,7 +15,7 @@ $(document).ready(function () {
         var product_id = $(this).data('productid');
         console.log("product_id:" + product_id);
         // var product_name = $(this).data('productname');
-        var product_name = $("div.product-details-name > h2").text().trim();
+        var product_name = $(this).data('productname').trim();
         var image = $(this).data('productimage');
         var quantity = $('#' + product_id).val();
         var product_slug = $(this).data('productslug');
@@ -104,6 +104,84 @@ $(document).ready(function () {
 
     });
 
+    $(document).on('click', '.add_detail_cart', function() {
+			
+			var product_id = $(this).data('productid');
+			var product_name = $(this).data('productname');
+			var price = $(this).data('price');
+			var quantity = $('#' + product_id).val();
+			var image = $(this).data('productimage');
+			var product_slug = $(this).data('productslug');
+			var is_perisible = $(this).data('isperisible');
+			var product_tax = $(this).data('producttax');
+			// alert(product_tax);
+
+			var parent = $("#product_varient_"+product_id).val();
+			
+			if (parent && parent!= "") {
+				var variant_detail = parent.split('-');
+				var weight = variant_detail[0];
+				var price = variant_detail[1];
+				var variant_id = variant_detail[2];
+
+			} else {
+				var price = $(this).data('price');
+				var weight = $(this).data('productweight');
+			}
+
+			var json_request = {
+				"oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+				"product_id": product_id,
+				"product_name": product_name,
+				"price": price,
+				"quantity": quantity,
+				"product_image": image,
+				"weight": weight,
+				"variant_id": variant_id,
+				"product_slug": product_slug,
+				"is_perisible": is_perisible,
+				"product_tax": product_tax,
+
+			};
+			if (quantity != "" || quantity > 0) {
+				var total_qty = parseInt($("#cartCount").html()) + parseInt(1);
+				$("#cartCount").html(total_qty);
+
+				$.ajax({
+					"type": "POST",
+					"url": front_url + 'cart/add',
+					"data": JSON.stringify(json_request),
+					"dataType": "JSON",
+					"success": function(response) {
+
+						$("#btn_" + product_id).text('Added');
+						setTimeout(() => {
+							//$(".add").prev().val(1);
+							$("#btn_" + product_id).text('Add');
+						}, 3000);
+
+
+						//	alert('Product Added Into Cart');
+						//  $("#cart-details").html(data);
+						// setTimeout(function() {
+						// 	location.reload();
+						// }, 1000);
+					},
+					"error": function(response) {
+						console.log(response.errors);
+					}
+				});
+				$('#btn_'+product_id).addClass('d-none');
+                $('#btn_section4_'+product_id).addClass('d-none');
+            	$('#qty_'+product_id).removeClass('d-none');
+
+			} else {
+				alert("Please Enter quantity");
+			}
+
+	});
+
+    
     $(document).on('click', '.qty_change_add', function () {
         var product_id = $(this).data('productid');
         console.log("product_id:" + product_id);
@@ -323,12 +401,181 @@ $(document).ready(function () {
 
     });
 
+     $(document).on('click', '.qty_change_add_detail', function() {
+        var section_id = $(this).data('section');
+        var product_id = $(this).data('productid');
+        var product_name = $(this).data('productname');
+        var image = $(this).data('productimage');
+        var product_slug = $(this).data('productslug');
+        var is_perisible = $(this).data('isperisible');
+		var product_tax = $(this).data('producttax');
+	    //	alert('product_tax'+product_tax);
+        var quantity = $('#' + product_id).val();
+        //var parent = $(this).parent().parent().parent().find("select.variants");
+        var parent = $("#product_varient_"+product_id).val();
+        if (parent && parent != "") {
+            var variant_detail = parent.split('-');
+            var weight = variant_detail[0];
+            var price = variant_detail[1];
+            var variant_id = variant_detail[2];
+        } else {
+            var price = $(this).data('price');
+            var weight = $(this).data('productweight');
+        }
+
+        var json_request = {
+            "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+            "product_id": product_id,
+            "product_name": product_name,
+            "price": price,
+            "quantity": quantity,
+            "product_image": image,
+            "weight": weight,
+            "variant_id": variant_id,
+            "product_slug": product_slug,
+			"product_tax": product_tax,
+            "is_perisible": is_perisible
+        };
+        console.log(json_request, "ADD");
+
+        if (quantity != "" || quantity > 0) {
+            var total_qty = parseInt($("#cartCount").html()) + 1;
+            $("#cartCount").html(total_qty);
+            $.ajax({
+                "type": "POST",
+                "url": front_url + 'cart/add',
+                "data": JSON.stringify(json_request),
+                "dataType": "JSON",
+                "success": function(response) {
+                    // $("#btn_" + section_id + "_" + product_id).text('Added');
+                    // setTimeout(() => {
+                   
+                    //     $("#btn_" + section_id + "_" + product_id).text('Add');
+                    // }, 3000);
+                },
+                "error": function(response) {
+                    console.log(response.errors);
+                }
+            });
+          
+            $('#qty_'+product_id).removeClass('d-none');
+        } else {
+            alert("Please Enter quantity");
+        }
+    });
+
+    $(document).on('click', '.qty_change_sub_detail', function() {
+        var section_id = $(this).data('section');
+        var product_id = $(this).data('productid');
+        var product_name = $(this).data('productname');
+        var image = $(this).data('productimage');
+        var product_slug = $(this).data('productslug');
+        var is_perisible = $(this).data('isperisible');
+		var product_tax = $(this).data('producttax');
+	    //	alert('product_tax'+product_tax);
+        var quantity = $('#' + product_id).val();
+        //var parent = $(this).parent().parent().parent().find("select.variants");
+        var parent = $("#product_varient_"+product_id).val();
+        if (parent && parent != "") {    
+            var variant_detail = parent.split('-');
+            var weight = variant_detail[0];
+            var price = variant_detail[1];
+            var variant_id = variant_detail[2];
+        } else {
+            var price = $(this).data('price');
+            var weight = $(this).data('productweight');
+        }
+        var json_request = {
+            "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+            "product_id": product_id,
+            "product_name": product_name,
+            "price": price,
+            "quantity": quantity,
+            "product_image": image,
+            "weight": weight,
+            "variant_id": variant_id,
+            "product_slug": product_slug,
+			"product_tax": product_tax,
+            "is_perisible": is_perisible
+        };
+        console.log(json_request, 'minus');
+        
+
+
+        if (quantity != "" || quantity > 0) {
+            var total_qty = parseInt($("#cartCount").html()) - 1;
+                $("#cartCount").html(total_qty);
+            if(quantity > 0){
+                $.ajax({
+                    "type": "POST",
+                    "url": front_url + 'cart/add',
+                    "data": JSON.stringify(json_request),
+                    "dataType": "JSON",
+                    "success": function(response) {
+                        console.log(response);
+                        // $("#btn_" + section_id + "_" + product_id).text('Added');
+                        // setTimeout(() => {
+                       
+                        //     $("#btn_" + section_id + "_" + product_id).text('Add');
+                        // }, 3000);
+                    },
+                    "error": function(response) {
+                        console.log(response.errors);
+                    }
+                });
+            }else{
+                
+                var cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
+                cart_arr = JSON.parse(cart_arr);
+                var findDay =product_id; //find price for day 1
+                //find product row id
+                var cart_row_id = $.map(cart_arr, function(value, key) {
+                    if (value.id == findDay)
+                    {
+                        return value.rowid;
+                    }
+                });
+
+                if(cart_row_id.length > 0){
+                    var cart_row_id_val = cart_row_id[0];
+                }else{
+                    var cart_row_id_val = '';
+                }
+
+                
+                $(this).attr('data-productrowid',cart_row_id_val);
+                var product_rowid = $(this).data('productrowid');
+                $.ajax({
+                    "type": "POST",
+                    "url": front_url + 'item-remove',
+                    "data": {row_id:product_rowid},
+                    "dataType": "JSON",
+                    "success": function(response) {
+                        location.reload();
+                    },
+                    "error": function(response) {
+                        console.log(response.errors);
+                    }
+                });
+                //location.reload();
+                console.log('fff'+product_id);
+                $('#qty_'+product_id).addClass('d-none');
+                $('#btn_section4_'+product_id).removeClass('d-none');
+                
+            }
+          
+            
+        } else {
+            alert("Please Enter quantity");
+        }
+    });
+
 });
 
 function enableCartButton(variant_id) {
     
     $(".out_of_stock").removeClass("out_of_stock");
-    $(".product-stock-message").hide();
+    $(".product-stock-message-detail").hide();
     $(".v_options").removeClass('price-current');
     
     $(".variant" + variant_id).addClass('price-current');
@@ -337,15 +584,20 @@ function enableCartButton(variant_id) {
     var parent = $(".variant"+variant_id).data('weight_string');
     var price = $(".variant"+variant_id).data('price');
     var imageURL = $(".variant"+variant_id).data('url');
-    
+
     var product_id = $(".variant"+variant_id).data('productid');
     
     var weight = "";
     if (parent && parent != "") {
-        
-        var variant_detail = parent.split('-');
-        var weight = variant_detail[0];
-    }
+        let parentStr = String(parent);
+
+        if (parentStr.includes("-")) {
+            var variant_detail = parentStr.split('-');
+            var weight = variant_detail[0];
+        }else{
+            var weight = parent;
+        }
+    }   
     $(".qty_change_sub_id"+product_id).attr('data-price', price);
     $(".qty_change_add_id"+product_id).attr('data-price', price);
     $("#btn_"+product_id).attr('data-price', price);
@@ -719,20 +971,20 @@ function get_product_detail(api_url_prefix) {
                 } else {
                     var product_description = '';
                 }
-                var out_of_stock = "<div class='product-stock-message'></div>";
+                var out_of_stock = "<div class='product-stock-message-detail'></div>";
                 var out_of_stock_class = "";
                 /* IF PRODUCR IS sold out ELSE FIRST VARIANT sold out ELSE */
                 if (response.data.is_out_of_stock == 0)
                 {
-                    out_of_stock = "<div class='product-stock-message'>Product is sold out</div>";
+                    out_of_stock = "<div class='product-stock-message-detail'>Product is sold out</div>";
                     out_of_stock_class = "out_of_stock";
                 }
                 else if (first_variant_out_of_stock) {
-                    out_of_stock = "<div class='product-stock-message'>Product is sold out</div>";
+                    out_of_stock = "<div class='product-stock-message-detail'>Product is sold out</div>";
                     out_of_stock_class = "out_of_stock";
                 }
                 else if (response.data.is_out_of_stock == 0 && response.data.variants.length==0) {
-                    out_of_stock = "<div class='product-stock-message'>Product is sold out</div>";
+                    out_of_stock = "<div class='product-stock-message-detail'>Product is sold out</div>";
                     out_of_stock_class = "out_of_stock";
                 }
                 
@@ -768,12 +1020,12 @@ function get_delivery_message() {
     if (delivery_type == 'Same Day Delivery') {
 
         if (hr > 14) {
-            message = 'Order within ' + (24 - hr + 14) + ' hours' + ' : ' + (60 - min) + ' minutes and delivery By Tomorrow <?php $newDate1 = date('l', strtotime('+1 days'));
+            message = 'Order within ' + (24 - hr + 13) + ' hours' + ' : ' + (60 - min) + ' minutes and delivery By Tomorrow <?php $newDate1 = date('l', strtotime('+1 days'));
             echo $newDate1 ?>, ' + ' <?php $newDate = date('d/M/Y', strtotime('+1 days'));
                 echo $newDate; ?> ';
         }
         if (hr <= 14) {
-            message = 'Order within ' + (14 - hr) + ' hours' + ' : ' + (60 - min) + ' minutes and delivery By Today <?php echo date("l") ?>,' + ' <?php echo date("d/M/Y") ?> ';
+            message = 'Order within ' + (13 - hr) + ' hours' + ' : ' + (60 - min) + ' minutes and delivery By Today <?php echo date("l") ?>,' + ' <?php echo date("d/M/Y") ?> ';
         }
     }
     if (delivery_type == 'Twise in a week') {
@@ -875,6 +1127,99 @@ function getDayName(date) {
     return daysOfWeek[date.getDay()];
 }
 
+function get_cart_arr(){
+    return new Promise(function(resolve, reject) {
+        $.ajax({
+            "type": "GET",
+            "url": front_url + 'cart-session-data',
+            "dataType": "JSON",
+            "success": function(response) {
+                if(response.is_successful == 1){
+                    resolve(response.data);
+                } else {
+                    resolve([]);
+                }
+            },
+            "error": function(response) {
+                resolve([]);
+            }
+        });
+    });
+}
+
+$(document).on('change', '.product_varient', function() {
+        
+    var parent = $(this).val();
+    var product_id = $(this).data('productid');
+    
+    if (parent && parent != "") { 
+        
+        var variant_detail = parent.split('-');
+        var weight = variant_detail[0];
+        var price = variant_detail[1];
+        var variant_id = variant_detail[2];
+
+        get_cart_arr().then(function(cart_arr) {
+
+            var cart_qty = $.map(cart_arr, function(value, key) {
+                if (value.id == product_id && variant_id == value.options.variant_id)
+                {
+                    return value.qty;
+                }
+            });
+            //find product row id
+            var cart_row_id = $.map(cart_arr, function(value, key) {
+                if (value.id == product_id && variant_id == value.options.variant_id)
+                {
+                    return value.rowid;
+                }
+            });
+            var varient_id = $.map(cart_arr, function(value, key) {
+                if (value.id == product_id && variant_id == value.options.variant_id)
+                {
+                    return value.options.variant_id;
+                }
+            });
+
+            if(cart_row_id.length > 0){
+                var cart_row_id_val = cart_row_id[0];
+            }else{
+                var cart_row_id_val = '';
+            }
+
+            if(cart_qty.length > 0){
+                var cart_qty_val = cart_qty[0];
+            }else{
+                var cart_qty_val = 1;
+            }
+            if(cart_qty.length > 0){
+                
+                var qty_class="";
+                var add_class="d-none";
+            }else{
+                var qty_class="d-none";
+                var add_class="";
+            }
+            if(varient_id.length > 0){
+                var varient_id_val = varient_id[0];
+            }else{
+                var varient_id_val = 0;
+            }   
+            if(varient_id_val > 0 && cart_row_id_val != ""){
+                
+                $("#btn_section4_"+product_id).addClass("d-none");
+                $("#qty_"+product_id).removeClass("d-none");
+                $('#qty_'+product_id+' input[type="text"]').val(cart_qty_val);
+            } else {
+                $("#btn_section4_"+product_id).removeClass("d-none");
+                $("#qty_"+product_id).addClass("d-none");
+                $('#qty_'+product_id+' input[type="text"]').val('1');
+                
+            }
+        });
+    }
+});
+
 function get_related_product(api_url_prefix, category_slug, product_id) {
     var url = $("#product_slug").val();
     var json_request = {
@@ -901,62 +1246,103 @@ function get_related_product(api_url_prefix, category_slug, product_id) {
                 } else {
                     count = 10;
                 }
-                for (let a = 0; a < count; a++) {
-                    var price_weight = "";
-                    var findDay = response.data[a].product_id; //find price for day 1
-                    
-                            var cart_qty = $.map(cart_arr, function(value, key) {
-                                if (value.id == findDay)
-                                {
-                                    return value.qty;
+                for (let a = 0; a < response.data.length; a++) {
+								var findDay = response.data[a].product_id; //find price for day 1
+                                var cart_qty = $.map(cart_arr, function(value, key) {
+                                    if (value.id == findDay)
+                                    {
+                                        return value.qty;
+                                    }
+                                });
+                                //find product row id
+                                var cart_row_id = $.map(cart_arr, function(value, key) {
+                                    if (value.id == findDay)
+                                    {
+                                        return value.rowid;
+                                    }
+                                });
+
+								var varient_id = $.map(cart_arr, function(value, key) {
+                                    if (value.id == findDay)
+                                    {
+                                        return value.options.variant_id;
+                                    }
+                                });
+        
+        
+                                if(cart_row_id.length > 0){
+                                    cart_row_id_val = cart_row_id[0];
+                                }else{
+                                    cart_row_id_val = '';
                                 }
-                            });
-                            //find product row id
-                            var cart_row_id = $.map(cart_arr, function(value, key) {
-                                if (value.id == findDay)
-                                {
-                                    return value.rowid;
+        
+                                if(cart_qty.length > 0){
+                                    cart_qty_val = cart_qty[0];
+                                }else{
+                                    cart_qty_val = 1;
                                 }
-                            });
-    
-    
-                            if(cart_row_id.length > 0){
-                                var cart_row_id_val = cart_row_id[0];
-                            }else{
-                                var cart_row_id_val = '';
-                            }
-    
-                            if(cart_qty.length > 0){
-                                cart_qty_val = cart_qty[0];
-                            }else{
-                                cart_qty_val = 1;
-                            }
-                            if(cart_qty.length > 0){
-                                var qty_class="";
-                                var add_class="d-none";
-                            }else{
-                                var qty_class="d-none";
-                                var add_class="";
-                            }
+                                if(cart_qty.length > 0){
+                                    var qty_class="";
+                                    var add_class="d-none";
+                                }else{
+                                    var qty_class="d-none";
+                                    var add_class="";
+                                }
+								if(varient_id.length > 0){
+                                    var varient_id_val = varient_id[0];
+                                }else{
+                                    var varient_id_val = 0;
+                                }
+								var out_of_stock = "<div class='product-stock-message'></div>";
+								var out_of_stock_class = "";
+								var variant_in_stock_count = 0;
+								/*if (response.data[a].is_out_of_stock == 0) {
+									out_of_stock = "<div class='product-stock-message'>Out of stock</div>";
+									out_of_stock_class = "out_of_stock";
+								}*/
+								if (response.data[a].product_size.length > 1 && response.data[a].product_size[0] != "") {
+									var price_weight = '<form name="form" id="form"><select id="product_varient_'+ response.data[a].product_id+'" data-productid="'+ response.data[a].product_id +'" name="variants" class="variants product_varient ' + out_of_stock_class + '">';
+									for (let j = 0; j < response.data[a].product_size.length; j++) {
+										var first_variant_out_of_stock = false;
+										var out_of_stock_variant = '';
 
-                    if (response.data[a].product_size.length > 1) {
+										var selected = "";
+                                        if(varient_id_val == response.data[a].product_size[j].variant_id){
+                                            selected = "selected";
+                                        }
 
-                        var price_weight = '<form name="form" id="form"><select name="jumpMenu" id="jumpMenu" class="variants">';
-                        for (let j = 0; j < response.data[a].product_size.length; j++) {
-                            price_weight = price_weight.concat('<option value="' + response.data[a].product_size[j].size + '-' + response.data[a].product_size[j].price + '-' + response.data[a].product_size[j].variant_id + '">' + response.data[a].product_size[j].size + 'lb - $' + response.data[a].product_size[j].price + '</option>');
-                        }
-                        price_weight += '</select></form>';
-                    } else {
-                        // var price_weight = '<span>' + response.data[a].product_weight_gms + 'lb</span> - <strong>$' + response.data[a].product_price + '</strong>';
-                    }
+										if (response.data[a].product_size[j].is_out_of_stock == 0) {
+											out_of_stock_variant = ' out_of_stock_variant';
+											if (response.data[a].product_size[j].is_out_of_stock == 0) {
+												first_variant_out_of_stock = true;
+											}
+										}
+										if (!first_variant_out_of_stock) {
+											price_weight = price_weight.concat('<option '+selected+' class="' + out_of_stock_variant + '" value="' + response.data[a].product_size[j].size + '-' + response.data[a].product_size[j].price + '-' + response.data[a].product_size[j].variant_id + '">' + response.data[a].product_size[j].size + 'lb - $' + response.data[a].product_size[j].price + '</option>');
+											variant_in_stock_count = variant_in_stock_count + 1;
+										}
+									}
+									price_weight += '</select></form>';
+								} else {
+									var price_weight = '<span>' + response.data[a]
+										.product_weight_gms + 'lb</span> - <strong>$' + response.data[a]
+										.product_price + '</strong>';
+								}
 
+								var out_of_stock = "<div class='product-stock-message'></div>";
+								var out_of_stock_class = "";
 
-                    product = product.concat('<div class="product-box"><a href="<?php echo BASE_URL; ?>product/' + response.data[a].product_slug + '"><img src=' +
-                        response.data[a].product_image + ' onerror=this.src="<?php echo ADMIN_URL; ?>uploads/logo-2.png"><h4>' + response.data[a]
-                            .product_name + '</h4></a>' + price_weight + '<ul><li><div id="qty_'+ response.data[a].product_id+'" class="quantity '+ qty_class + '"><button type="button" id="sub" class="sub qty_change_sub" data-isperisible="' + response.data[a].is_perisible_products + '" data-productslug="' + response.data[a].product_slug + '" data-productimage= "' + response.data[a].product_image + '" data-productname="' + response.data[a].product_name + '" data-price=' + response.data[a].product_price + ' data-productid = ' + response.data[a].product_id + ' data-productweight =' + response.data[a].product_weight_gms + ' data-producttax=' + response.data[a].product_tax + ' data-productrowid='+cart_row_id_val+'>-</button><input type="text" id="' + response.data[a].product_id + '" value="'+cart_qty_val+'" min="1" max="3" disabled /><button type="button" id="add" class="add qty_change_add"  data-isperisible="' + response.data[a].is_perisible_products + '" data-productslug="' + response.data[a].product_slug + '" data-productimage= "' + response.data[a].product_image + '" data-productname="' + response.data[a].product_name + '" data-price=' + response.data[a].product_price + ' data-productid = ' + response.data[a].product_id + ' data-productweight =' + response.data[a].product_weight_gms + ' data-producttax=' + response.data[a].product_tax + ' data-productrowid='+cart_row_id_val+'>+</button></div></li><li><button id= "btn_' + response.data[a].product_id + '" class="add_cart '+ add_class+'" data-isperisible="' + response.data[a].is_perisible_products + '" data-productslug="' + response.data[a].product_slug + '" data-productimage= "' + response.data[a].product_image + '" data-productname="' + response.data[a].product_name + '" data-price=' + response.data[a].product_price + ' data-productid = ' + response.data[a].product_id + ' data-productweight =' + response.data[a].product_weight_gms + ' data-producttax=' + response.data[a].product_tax + ' data-productrowid='+cart_row_id_val+'>Add</button></li></ul></div>'
-                    );
+								console.log("product out of stock:" + response.data[a].is_out_of_stock + " and variant out of stock:" + variant_in_stock_count);
+								if (response.data[a].is_out_of_stock == 0) {
+									out_of_stock = "<div class='product-stock-message'>Product Out of stock</div>";
+									out_of_stock_class = "out_of_stock";
+									var price_weight = "";
+								}
 
-                }
+								//product = product.concat('<div class="product-box"><img src='+response.data[a]["image"]+'><h4>'+response.data[a]["product_name"]+'</h4><strong>'+response.data[a]["product_price"]+'</strong> <span>'+response.data[a]["product_weight_gms"]+'</span><ul><li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li><li><button>Add</button></li></ul></div>');
+								product = product.concat('<div class="product-box"><a href="<?php echo BASE_URL; ?>product/' + response.data[a].product_slug + '"><img src=' + response.data[a].product_image + ' onerror=this.src="<?php echo ADMIN_URL; ?>uploads/logo-2.png" ><h4>' + response.data[a].product_name + '</h4></a>' + price_weight + out_of_stock + '<ul><li><div id="qty_'+ response.data[a].product_id+'" class="quantity ' + out_of_stock_class + ' '+ qty_class + '"><button type="button" id="sub" class="sub qty_change_sub_detail" data-isperisible="' + response.data[a].is_perisible_products + '" data-productslug="' + response.data[a].product_slug + '" data-productimage= "' + response.data[a].product_image + '" data-productname="' + response.data[a].product_name + '" data-price=' + response.data[a].product_price + ' data-productid = ' + response.data[a].product_id + ' data-productweight =' + response.data[a].product_weight_gms + ' data-producttax="' + response.data[a].product_tax + '" data-productrowid="' + cart_row_id_val + '">-</button><input type="text" class = "prod_add1" id="' + response.data[a].product_id + '" value="'+cart_qty_val+'" min="1" max="3" disabled /><button type="button" id="add" class="add qty_change_add_detail" data-isperisible="' + response.data[a].is_perisible_products + '" data-productslug="' + response.data[a].product_slug + '" data-productimage= "' + response.data[a].product_image + '" data-productname="' + response.data[a].product_name + '" data-price=' + response.data[a].product_price + ' data-productid = ' + response.data[a].product_id + ' data-productweight =' + response.data[a].product_weight_gms + ' data-producttax="' + response.data[a].product_tax + '" data-productrowid="' + cart_row_id_val + '">+</button></div></li><li><button id= "btn_section4_' + response.data[a].product_id + '" class="add_detail_cart ' + out_of_stock_class + ' '+ add_class+'" data-isperisible="' + response.data[a].is_perisible_products + '" data-productslug="' + response.data[a].product_slug + '" data-productimage= "' + response.data[a].product_image + '" data-productname="' + response.data[a].product_name + '" data-price=' + response.data[a].product_price + ' data-productid = ' + response.data[a].product_id + ' data-productweight =' + response.data[a].product_weight_gms + ' data-producttax="' + response.data[a].product_tax + '" data-productrowid="' + cart_row_id_val + '">Add</button></li></ul></div>');
+
+							}
                 product += '</div>';
                 $("#related-products").html(product);
             } else {

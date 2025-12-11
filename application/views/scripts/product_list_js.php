@@ -846,7 +846,7 @@
                                         price_html=`<del class="pprice_del">$${product_price}</del><strong>$${sale_price}</strong>`;
                                 }
                                 
-								var price_weight = '<span>' + response.data.products[a]
+								var price_weight = '<span>' + response.data.product_details[a]
 									.product_weight_gms + 'lb</span> - '+ price_html;
 							}
 

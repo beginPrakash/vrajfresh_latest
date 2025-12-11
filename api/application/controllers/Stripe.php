@@ -573,7 +573,11 @@ class Stripe extends CI_Controller
 
 						$table_content .= '<tr>';
 
-						$table_content .= '<td style="border: 1px solid grey; padding: 5px;">' . $product['product_name'] . '(' . $product['product_variant_size'] . ')</td>';
+						if(!empty($product['product_variant_size'])){
+							$table_content .= '<td style="border: 1px solid grey; padding: 5px;">' . $product['product_name'] . '(' . $product['product_variant_size'] . ')</td>';
+						}else{
+							$table_content .= '<td style="border: 1px solid grey; padding: 5px;">' . $product['product_name']. '</td>';
+						}
 
 						$table_content .= '<td style="border: 1px solid grey; padding: 5px;">' . $product['qty'] . '</td>';
 
