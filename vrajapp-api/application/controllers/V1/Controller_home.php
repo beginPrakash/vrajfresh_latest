@@ -120,6 +120,9 @@ class Controller_home extends CI_Controller
 				foreach ($result_val[$i] as $key => $value) {
 					if ($key == "stockup_image") {
 						$banner_result[$key] = FILE_UPLOAD_PATH . 'stockup/' . $value;
+					}elseif ($key == "stockup_slug") {
+						$cslug = substr($result_val[$i]->stockup_link, strrpos($result_val[$i]->stockup_link, '/') + 1);
+						$banner_result[$key] = $cslug;
 					} else {
 						$banner_result[$key] = $value;
 					}
@@ -158,6 +161,9 @@ class Controller_home extends CI_Controller
 				foreach ($result_val[$i] as $key => $value) {
 					if ($key == "pantry_image") {
 						$banner_result[$key] = FILE_UPLOAD_PATH . 'pantry/' . $value;
+					}elseif ($key == "pantry_slug") {
+						$cslug = substr($result_val[$i]->pantry_link, strrpos($result_val[$i]->pantry_link, '/') + 1);
+						$banner_result[$key] = $cslug;
 					} else {
 						$banner_result[$key] = $value;
 					}
@@ -583,15 +589,20 @@ class Controller_home extends CI_Controller
 			$ad_banner_mobile=array();
 			for ($i = 0; $i < count($result_val); $i++) {
 				if(!empty($result_val[$i]->adv_image)){
+					$ad_slug = substr($result_val[$i]->adv_link, strrpos($result_val[$i]->adv_link, '/') + 1);
 					$ad_banner[] = [
 						'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->adv_image,
 						'ad_link'=>$result_val[$i]->adv_link,
+						'ad_slug'=>$ad_slug,
+						
 					];
 				}
 				if(!empty($result_val[$i]->adv_mob_image)){
+					$ad_slug = substr($result_val[$i]->adv_link, strrpos($result_val[$i]->adv_link, '/') + 1);
 					$ad_banner_mobile[] = [
 						'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->adv_mob_image,
 						'ad_link'=>$result_val[$i]->adv_link,
+						'ad_slug'=>$ad_slug,
 					];
 				}
 			}
@@ -687,15 +698,19 @@ class Controller_home extends CI_Controller
 				}
 				if($alternate_image == 0){
 					if(!empty($result_val[$i]->adv_image)){
+						$ad_slug = substr($result_val[$i]->adv_link, strrpos($result_val[$i]->adv_link, '/') + 1);
 						$ad_banner[] = [
 							'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->adv_image,
 							'ad_link'=>$result_val[$i]->adv_link,
+							'ad_slug'=>$ad_slug,
 						];
 					}
 					if(!empty($result_val[$i]->adv_mob_image)){
+						$ad_slug = substr($result_val[$i]->adv_link, strrpos($result_val[$i]->adv_link, '/') + 1);
 						$ad_banner_mobile[] = [
 							'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->adv_mob_image,
 							'ad_link'=>$result_val[$i]->adv_link,
+							'ad_slug'=>$ad_slug,
 						];
 					}
 				} else {

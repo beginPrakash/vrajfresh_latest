@@ -583,7 +583,18 @@ ul.tabs {
 }
 
 .product-stock-message {
-	line-height: 16px;
+    color: red;
+    font-style: italic;
+    font-weight: bold;
+    text-align: center;
+	text-transform: capitalize;
+}
+
+.product-stock-message-detail {
+    color: red;
+    font-style: italic;
+    font-weight: bold;
+	text-transform: capitalize;
 }
 
 .product-box img {

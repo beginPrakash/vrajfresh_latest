@@ -476,6 +476,15 @@ class Controller_categories extends CI_Controller
 		$json_obj = json_decode($json_str);
 		// print_r($json_obj);
 
+		// Receive values from POST
+		$page  = $json_obj->page;
+		$limit = $json_obj->limit;
+
+		// Default values
+		$page  = (!empty($page)) ? (int)$page : 1;
+		$limit = (!empty($limit)) ? (int)$limit : 10;
+
+		$offset = ($page - 1) * $limit;
 
 		$errors = $success_message = '';
 		$ArrData = array();
@@ -514,7 +523,9 @@ class Controller_categories extends CI_Controller
 				}
 			}
 
-			$temp_result = $this->categories_model->get_filter_products($data);
+			$total_products_c = $this->categories_model->get_filter_products_count($data);
+			$total = count($total_products_c);
+			$temp_result = $this->categories_model->get_filter_products($data,$limit, $offset);
 			if (count($temp_result) > 0) {
 				$ArrFinal = array();
 				$i = 0;
@@ -532,12 +543,14 @@ class Controller_categories extends CI_Controller
 								$prod_var_arr = $this->products_model->get_variant_by_product_id($arr1->product_id);
 								if(count($prod_var_arr) > 0){
 									foreach($prod_var_arr as $key => $val){
-										$t = array();
-											$t['size'] = $val->product_variant_size;
-											$t['price'] = $val->variant_price;
-											$t['variant_id'] = $val->id;
-											// $t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
-										$tempArray[] = $t;
+										if(!empty($val->id)){
+											$t = array();
+												$t['size'] = $val->product_variant_size;
+												$t['price'] = $val->variant_price;
+												$t['variant_id'] = $val->id;
+												// $t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
+											$tempArray[] = $t;
+										}
 									}
 								}
 								
@@ -571,19 +584,14 @@ class Controller_categories extends CI_Controller
 						}
 					}
 					$result['product_details'][] = $products;
+					$result['current_page'] = $page;
+			$result['per_page'] = $limit;
+			$result['total'] = $total;
+			$result['total_pages'] = ceil($total / $limit);
 				}
 			}
-			//$product_id =array();
-			//$filter_result=$this->categories_model->get_category_filter($product_result[0]->product_id);
-			//  foreach($product_result as $products)
-			//  {
-			//   	$product_id[]=$products->product_id;
-			//  }
-			//  if($product_id != "" || $product_id != null)
-			// 	$result['products']=$product_id;
-			// else
-			// 	$result['products']="";
 
+			
 			//$ArrData = $result;
 			if (is_array($result) && count($result) > 0 && $result != null) {
 				$ArrData = $result;
@@ -985,11 +993,11 @@ class Controller_categories extends CI_Controller
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
 
-		$oauth_key = $json_obj->oauth_key;
+		
 		$errors = $success_message = '';
 		$ArrData = array();
 		$category_result = "";
-		if (check_oauth_key($oauth_key)) {
+
 			$data = array(
 				'search_term' => $json_obj->search_keyword,
 				'zipcode' => $json_obj->zipcode,
@@ -1082,6 +1090,5 @@ class Controller_categories extends CI_Controller
 				$errors = 'No data available';
 			}
 			send_response_to_api($ArrData, $errors, $success_message);
-		}
 	}
 }

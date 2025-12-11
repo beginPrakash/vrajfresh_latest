@@ -1,483 +1,965 @@
-<?php require_once('common/header.php'); ?>
-<style>
-    a {
-        text-decoration: none;
-    }
-
-    .price-filter li.out_of_stock_variant {
-        background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><path d='M1 0 L0 1 L99 100 L100 99' fill='black' /><path d='M0 99 L99 0 L100 1 L1 100' fill='black' /></svg>");
-        background-repeat: no-repeat;
-        background-position: center center;
-        background-size: 100% 100%, auto;
-        pointer-events: none;
-        cursor: default;
-    }
-
-    .product-stock-message {
-        color: red;
-    }
-
-    .out_of_stock {
-        display: none !important;
-    }
-</style>
-<section class="breadcrumb">
-    <div class="container" id="breadcrumb">
-        <input type="hidden" name="product_slug" id="product_slug" value="<?php echo $url; ?>">
-    </div>
-</section>
-<section class="product-details-banner">
-    <div class="container container-flex">
-        <div class="product-details-left">
-            <!--<img class="svg" src="images/Cilantro.jpg">-->
-        </div>
-        <style>
-            .main {
-                font-family: Arial;
-                width: 500px;
-                display: block;
-                margin: 0 auto;
-            }
-        </style>
-        <div class="product-details-right">
-        </div>
-        <div class="product-usp">
-            <ul>
-                <li> <img class="svg" src="<?php echo ASSET_URL; ?>images/same-day-delivery.png"> <span>Same Day
-                        Delivery</span></li>
-                <li><img class="svg" src="<?php echo ASSET_URL; ?>images/same-day-delivery.png"> <span>Free
-                        Delivery</span></li>
-                <li> <img class="svg" src="<?php echo ASSET_URL; ?>images/return-policy.png"> <span>Easy Return
-                        Policy</span></li>
-                <li> <img class="svg" src="<?php echo ASSET_URL; ?>images/fresh-products.png"> <span>Pure And Fresh
-                        Products</span></li>
-                <li> <img class="svg" src="<?php echo ASSET_URL; ?>images/the-market.png"> <span>Best Price In The
-                        Market</span></li>
-            </ul>
-        </div>
-    </div>
-</section>
-<section class="related-products">
-    <div class="container">
-        <h2>Related Products</h2>
-        <div class="product-grid" id="related-products">
-
-        </div>
-    </div>
-</section>
-<?php require_once('common/common_js.php'); ?>
-<script>
-    $(document).ready(function () {
-
-        showProgress('div#spinner');
-        get_product_detail(api_url_prefix);
-        hideProgress('div#spinner');
-        $(document).on('click', '.add_cart', function () {
-            var product_id = $(this).data('productid');
-            console.log("product_id:" + product_id);
-            var product_name = $(this).data('productname');
-            var image = $(this).data('productimage');
-            var quantity = $('#' + product_id).val();
-            var product_slug = $(this).data('productslug');
-            var is_perisible = $(this).data('isperisible');
-            var product_tax = $(this).data('producttax');
-			
-            //jQuery("#" + tab_id).addClass('price-current');
-            var tab_id = $(".price-current").attr('data-tab');
-            console.log("tab_id:" + tab_id);
-            var parent = $(this).parent().parent().parent().find("ul.price-filter");
-            if (parent.length > 0) {
-                $("#price-filter li").removeClass("select");
-                var selected = $(this).closest('li').addClass('select');
-                var tab_id = $(".price-current").attr('data-tab');
-                var variant_price = jQuery(".price-current").attr('data-price');
-                var weight_current = jQuery("li.price-current").attr('value');
-                console.log("variant_price:" + variant_price);
-
-                if (tab_id == undefined || tab_id == null || tab_id == '' && variant_price == undefined || variant_price == null || variant_price == '') {
-                    var selectedLi = $("li[value='" + weight_current + "']");
-                    var tab_id = selectedLi.data("tab");
-                    var variant_price = selectedLi.data("price");
-                }
-
-                var weight = weight_current;
-                var price = variant_price;
-                var variant_id = tab_id;
-            } else {
-                var price = $(this).data('price');
-                var weight = $(this).data('productweight');
-            }
-
-            var json_request = {
-                "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
-                "product_id": product_id,
-                "product_name": product_name,
-                "price": price,
-                "quantity": quantity,
-                "product_image": image,
-                "weight": weight,
-                "variant_id": variant_id,
-                "product_slug": product_slug,
-				"product_tax": product_tax,
-                "is_perisible": is_perisible
-
-            };
-            if (quantity != "" || quantity > 0) {
-                var total_qty = parseInt($("#cartCount").html()) + parseInt(quantity);
-                $("#cartCount").html(total_qty);
-
-                $.ajax({
-                    "type": "POST",
-                    "url": front_url + 'cart/add',
-                    "data": JSON.stringify(json_request),
-                    "dataType": "JSON",
-                    "success": function (response) {
-
-                        $("#btn_" + product_id).text('Added');
-                        $("button#view_cart").show();
-                        setTimeout(() => {
-                            $(".add").prev().val(1);
-                            $("#btn_" + product_id).text('Add');
-                        }, 3000);
-
-                        //	alert('Product Added Into Cart');
-                        //  $("#cart-details").html(data);
-                        // setTimeout(function(){
-                        // 	location.reload();
-                        // 		},1000);
-                    },
-                    "error": function (response) {
-                        console.log(response.errors);
-                    }
-                });
-
-            } else {
-                alert("Please Enter quantity");
-            }
-
-        });
-    });
-
-    function enableCartButton(variant_id) {
-        $(".out_of_stock").removeClass("out_of_stock");
-        $(".product-stock-message").hide();
-        $(".v_options").removeClass('price-current');
-        $(".variant" + variant_id).addClass('price-current');
-        console.log("variant_id:" + variant_id);
-    }
-
-    function get_product_detail(api_url_prefix) {
-        var url = $("#product_slug").val();
-        var json_request = {
-            "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
-            "product_slug": url
-        };
-        var product = "";
-        $.ajax({
-            "type": "POST",
-            "url": api_url_prefix + 'get-product-by-slug',
-            "data": JSON.stringify(json_request),
-            "dataType": "JSON",
-            "success": function (response) {
-                // showProgress('div#spinner');
-                if (response.data != null) {
-
-                    if (response.data.variants.length > 1) {
-                        var price = [];
-                        var price_weight1 = '<div class="product-price"><div class="price-filter-content price-current"></div> <ul class="price-filter" id="price-filter">';
-                        var first_variant_out_of_stock = false;
-                        var is_first_variant = '';
-                        var is_first_variant_flag = true;
-
-                        for (let j = 0; j < response.data.variants.length; j++) {
-							//console.log("variant_price"+response.data.variants[j].variant_price);
-                            price.push(response.data.variants[j].variant_price);
-
-                            console.log(j + "is_first_variant:" + is_first_variant);
-                            if (response.data.variants[j].is_out_of_stock > 0 && is_first_variant_flag) {
-                                is_first_variant = 'price-current ';
-                                is_first_variant_flag = false;
-                            }
-                            else {
-                                is_first_variant = ' ';
-                            }
-                            console.log("is_first_variant:" + is_first_variant);
-                            var out_of_stock_variant = 'v_options variant' + response.data.variants[j].id;
-                            if (response.data.variants[j].is_out_of_stock == 0) {
-                                out_of_stock_variant = ' v_options out_of_stock_variant variant' + response.data.variants[j].id;
-                                if (j == 0) {
-                                    first_variant_out_of_stock = true;
-                                }
-                            }
-                            price_weight1 = price_weight1.concat('<li onClick="enableCartButton(' + response.data.variants[j].id + ');" class="' + is_first_variant + out_of_stock_variant + '" data-tab="' + response.data.variants[j].id + '" data-price="' + response.data.variants[j].variant_price + '"  value = "' + response.data.variants[j].product_variant_size + '" data-url="' + response.data.variants[j].variant_image + '">' + response.data.variants[j].product_variant_size + 'LB' + '</li>');
-
-                            var simple_price_weight = '';
-                            var max_price = Math.max.apply(Math, price); // 3
-                            var min_price = Math.min.apply(Math, price); // 1
-                            var price_weight = '<span id="variant-price">$' + min_price + '- $' + max_price + '</span>';
-                        }
-                        price_weight1 += '</ul></div>';
-                    } else {
-                        var simple_price_weight = +response.data.product_weight_gms;
-                        var price_weight = '<span>$' + response.data.product_price + '</span>';
-                        var price_weight1 = '';
-                    }
-                    var product_large_image = '';
-                    var product_large_image_thumb = '';
-                    if (response.data.images.length > 0) {
-                        for (let a = 0; a < response.data.images.length; a++) {
-                            //product_image = "<div><img src='" + response.data.images[a].image + "'></div>";  
-                            var_product_image = response.data.images[0].image;
-                            product_large_image = product_large_image + '<div class ="zoom ex1"><img src="' + response.data.images[a].image + '" onerror=this.src="<?php echo ADMIN_URL; ?>uploads/logo-2.png" style="width:350px"></div>';
-                            product_large_image_thumb = product_large_image_thumb + '<div><img src="' + response.data.images[a].image + '" onerror=this.src="<?php echo ADMIN_URL; ?>uploads/logo-2.png" style="width:150px;height:150px;"></div>';
-                        }
-
-
-                    } else {
-                        //product_image = "<div><img src='" + response.data.product_images + "'></div>";
-                        var_product_image = response.data.product_images;
-                        product_large_image = product_large_image + '<div class ="zoom ex1"><img src="' + response.data.product_images + '" onerror=this.src="<?php echo ADMIN_URL; ?>uploads/logo-2.png" style="width:150px;height:150px;"></div>';
-                        product_large_image_thumb = product_large_image_thumb + '<div><img src="' + response.data.product_images + '" style="width:150px;height:150px;"></div>';
-                    }
-                    var data = '<div class="main"><div class="slider slider-for">' + product_large_image + '</div><div class="slider slider-nav">' + product_large_image_thumb + '</div></div>';
-                    var data = '<div class=""><div class="slider slider-for">' + product_large_image + '</div><div class="slider slider-nav">' + product_large_image_thumb + '</div></div>';
-                    $(".product-details-left").html(data);
-                    /* PRODUCT IMAGE SLIDER START */
-                    $('.slider-for').slick({
-                        slidesToShow: 1,
-                        slidesToScroll: 1,
-                        arrows: false,
-                        fade: true,
-                        asNavFor: '.slider-nav'
-                    });
-                    $('.slider-nav').slick({
-                        slidesToShow: 5,
-                        slidesToScroll: 1,
-                        asNavFor: '.slider-for',
-                        dots: true,
-                        focusOnSelect: true
-                    });
-                    $('a[data-slide]').click(function (e) {
-                        e.preventDefault();
-                        var slideno = $(this).data('slide');
-                        $('.slider-nav').slick('slickGoTo', slideno - 1);
-                    }); /* PRODUCT IMAGE SLIDER END */
-                    var categories = "";
-                    if (response.data.categories != null && response.data.categories.length > 0) {
-                        categories = "<li>Categories :";
-                        for (let a = 0; a < response.data.categories.length; a++) {
-                            categories = categories.concat("<a href='<?php echo BASE_URL; ?>category/" + response.data.categories[a].category_slug + "'>" + response.data.categories[a].category_name + "</a>, ");
-
-                        }
-                        categories = categories.slice(0, -2);
-                        categories = categories + "</li>";
-
-                    }
-
-                    var tags = "";
-                    if (response.data.tags != null && response.data.tags.length > 0) {
-                        tags = "<li id='tags'>tags :";
-                        for (let a = 0; a < response.data.tags.length; a++) {
-                            tags = tags.concat("<a href='<?php echo BASE_URL; ?>tag/" + response.data.tags[a].tag_id + "'>" + response.data.tags[a].tag + "</a>, ");
-
-                        }
-                        tags = tags.slice(0, -2);
-                        tags = tags + "</li>";
-
-
-                    } else {
-                        $("#tags").hide();
-                    }
-
-                    if (simple_price_weight != "" && simple_price_weight != null) {
-                        simple_price_weight = "<li id='weight'>weight : " + simple_price_weight + " LB</li>";
-                    } else {
-                        $("#weight").hide();
-                    }
-
-                    if (simple_price_weight == 0) {
-                        $("#weight").hide();
-                    }
-
-
-                    if (response.data.product_slug == "oil-beans") {
-                        $("li#weight").hide();
-                        // alert('hide');
-                        simple_price_weight = "<li id='weight1'>weight : " + response.data.product_price + " Ounces</li>";
-                    } else {
-                        $("#weight").hide();
-                    }
-
-                    if (response.data.product_sub_name != "" && response.data.product_sub_name != null) {
-                        var product_sub_name = '<p>' + response.data.product_sub_name + '</p>';
-                    } else {
-                        var product_sub_name = '';
-                    }
-                    if (response.data.product_description != "" && response.data.product_description != null) {
-                        var product_description = '<p>' + response.data.product_description + '</p>';
-                    } else {
-                        var product_description = '';
-                    }
-                    var out_of_stock = "<div class='product-stock-message'></div>";
-                    var out_of_stock_class = "";
-                    if (response.data.is_out_of_stock == 0 || first_variant_out_of_stock) {
-                        out_of_stock = "<div class='product-stock-message'>Product is out of stock</div>";
-                        out_of_stock_class = "out_of_stock";
-                    }
-
-                    product_detail = "<div class='product-details-name'><h2>" + response.data.product_name + "</h2>" + "</div>" + product_sub_name + price_weight + price_weight1 + product_description + out_of_stock + "<ul><li><div class='quantity " + out_of_stock_class + "'><button type='button' id='sub' class='sub'>-</button><input type='text' id='" + response.data.product_id + "' value='1' min='1' max='3' disabled /><button type='button' id='add' class='add'>+</button></div></li><li><button id= 'btn_" + response.data.product_id + "' class='add_cart " + out_of_stock_class + "' data-isperisible='" + response.data.is_perisible_products + "' data-productslug='" + response.data.product_slug + "' data-productimage= '" + var_product_image + "' data-productname='" + response.data.product_name + "' data-price=" + response.data.product_price + " data-productid = " + response.data.product_id + " data-productweight =" + response.data.product_weight_gms + " data-producttax=" + response.data.product_tax + ">Add</button></li></ul><p id='delivery_time'></p><div class='categories-tag'><ul>" + simple_price_weight + categories + tags + "<li id='brand'>Brand : <a href='<?php echo BASE_URL; ?>brand/" + response.data.brand_slug + "'>" + response.data.brand_name + "</a></li></ul></div>";
-                    $(".product-details-right").html(product_detail);
-					//<li></button><button id ='view_cart'><a href=" + front_url + "cart-detail>View Cart</a></button></li>
-
-                    get_related_product(api_url_prefix, response.data.category_slug, response.data.product_id);
-                    get_delivery_message();
-                }
-            },
-            "error": function (response) {
-                $(".product-details-right").html(response.errors);
-            }
-        });
-    }
-
-    function get_delivery_message() {
-        var delivery_type = Cookies.get("delivery_type");
-        var delivery_days = Cookies.get("delivery_days");
-
-        var current = new Date();
-        var hr = current.getHours();
-        var min = current.getMinutes();
-        var message = '';
-        if (delivery_type == 'Express Delivery') {
-            message = 'Order within 23 hours and get delivery tomorrow';
-            if (hr < 14) {
-                message = 'Order within ' + (14 - hr) + ' hours' + ' : ' + (60 - min) + ' minutes and get same day delivery';
-            }
-            message = message + '<br>* Order before 3:00 PM and you can expect your order within 4 hours with our Express Delivery.'
-        }
-        if (delivery_type == 'Same Day Delivery') {
-
-            if (hr > 14) {
-                message = 'Order within ' + (hr - 14) + ' hours' + ' : ' + (60 - min) + ' minutes and delivery By Tomorrow <?php $newDate1 = date('l', strtotime('+1 days'));
-                echo $newDate1 ?>, ' + ' <?php $newDate = date('d/M/Y', strtotime('+1 days'));
-                  echo $newDate; ?> ';
-            }
-            if (hr <= 14) {
-                message = 'Order within ' + (14 - hr) + ' hours' + ' : ' + (60 - min) + ' minutes and delivery By Today <?php echo date("l") ?>,' + ' <?php echo date("d/M/Y") ?> ';
-            }
-        }
-        if (delivery_type == 'Twise in a week') {
-            const dayArray = delivery_days.split(",");
-            var d_day = 0;
-            if (dayArray.indexOf("Monday") > -1) {
-                d_day = 1;
-            } else if (dayArray.indexOf("Tuesday") > -1) {
-                d_day = 2;
-            } else if (dayArray.indexOf("Wednesday") > -1) {
-                d_day = 3;
-            } else if (dayArray.indexOf("Thursday") > -1) {
-                d_day = 4;
-            } else if (dayArray.indexOf("Friday") > -1) {
-                d_day = 5;
-            } else if (dayArray.indexOf("Saturday") > -1) {
-                d_day = 6;
-            } else if (dayArray.indexOf("Sunday") > -1) {
-                d_day = 7;
-            }
-
-            if (d_day == 1) {
-                message = 'You can expect delivery by coming ' + '<?php $date = date_create();
-                $date->modify('next Monday');
-                echo date_format($date, "l d/M/Y") ?> ';
-            }
-            if (d_day == 2) {
-                message = 'You can expect delivery by coming ' + '<?php $date = date_create();
-                $date->modify('next Tuesday');
-                echo date_format($date, "l d/M/Y") ?> ';
-            }
-            if (d_day == 3) {
-                message = 'You can expect delivery by coming ' + '<?php $date = date_create();
-                $date->modify('next Wednesday');
-                echo date_format($date, "l d/M/Y") ?> ';
-            }
-            if (d_day == 4) {
-                message = 'You can expect delivery by coming ' + '<?php $date = date_create();
-                $date->modify('next Thursday');
-                echo date_format($date, "l d/M/Y") ?> ';
-            }
-            if (d_day == 5) {
-                message = 'You can expect delivery by coming ' + '<?php $date = date_create();
-                $date->modify('next Friday');
-                echo date_format($date, "l d/M/Y") ?> ';
-            }
-            if (d_day == 6) {
-                message = 'You can expect delivery by coming ' + '<?php $date = date_create();
-                $date->modify('next Saturday');
-                echo date_format($date, "l d/M/Y") ?> ';
-            }
-            if (d_day == 7) {
-                message = 'You can expect delivery by coming ' + '<?php $date = date_create();
-                $date->modify('next Sunday');
-                echo date_format($date, "l d/M/Y") ?> ';
-            }
-
-        }
-
-        $("#delivery_time").html(message);
-    }
-
-    function get_related_product(api_url_prefix, category_slug, product_id) {
-        var url = $("#product_slug").val();
-        var json_request = {
-            "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
-            "category_slug": category_slug,
-            "product_id": product_id
-        };
-        var product = "";
-        $.ajax({
-            "type": "POST",
-            "url": api_url_prefix + 'get-related-product-by-category-slug',
-            "data": JSON.stringify(json_request),
-            "dataType": "JSON",
-            "success": function (response) {
-                if (response.data != "" && response.data != null) {
-                    product += '<div class="product-grid">';
-                    var count = '';
-                    if (response.data.length < 10) {
-                        count = response.data.length;
-                    } else {
-                        count = 10;
-                    }
-                    for (let a = 0; a < count; a++) {
-                        var price_weight = "";
-                        if (response.data[a].product_size.length > 1) {
-
-                            var price_weight = '<form name="form" id="form"><select name="jumpMenu" id="jumpMenu" class="variants">';
-                            for (let j = 0; j < response.data[a].product_size.length; j++) {
-                                price_weight = price_weight.concat('<option value="' + response.data[a].product_size[j].size + '-' + response.data[a].product_size[j].price + '-' + response.data[a].product_size[j].variant_id + '">' + response.data[a].product_size[j].size + 'lb - $' + response.data[a].product_size[j].price + '</option>');
-                            }
-                            price_weight += '</select></form>';
-                        } else {
-                            // var price_weight = '<span>' + response.data[a].product_weight_gms + 'lb</span> - <strong>$' + response.data[a].product_price + '</strong>';
-                        }
-
-
-                        product = product.concat('<div class="product-box"><a href="<?php echo BASE_URL; ?>product/' + response.data[a].product_slug + '"><img src=' +
-                            response.data[a].product_image + ' onerror=this.src="<?php echo ADMIN_URL; ?>uploads/logo-2.png"><h4>' + response.data[a]
-                                .product_name + '</h4></a>' + price_weight + '<ul><li><div class="quantity"><button type="button" id="sub" class="sub">-</button><input type="text" id="' + response.data[a].product_id + '" value="1" min="1" max="3" disabled /><button type="button" id="add" class="add">+</button></div></li><li><button id= "btn_' + response.data[a].product_id + '" class="add_cart" data-isperisible="' + response.data[a].is_perisible_products + '" data-productslug="' + response.data[a].product_slug + '" data-productimage= "' + response.data[a].product_image + '" data-productname="' + response.data[a].product_name + '" data-price=' + response.data[a].product_price + ' data-productid = ' + response.data[a].product_id + ' data-productweight =' + response.data[a].product_weight_gms + ' data-producttax=' + response.data[a].product_tax + '>Add</button></li></ul></div>'
-                        );
-
-                    }
-                    product += '</div>';
-                    $("#related-products").html(product);
-                } else {
-                    product = "No Products";
-                }
-            },
-            "error": function (response) {
-                $("#related-products").html(response.errors);
-            }
-        });
-    }
-</script>
-
+<?php require_once('common/header.php'); ?>
+
+<style>
+
+    a {
+
+        text-decoration: none;
+
+    }
+
+
+
+    .price-filter li.out_of_stock_variant {
+
+        background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><path d='M1 0 L0 1 L99 100 L100 99' fill='black' /><path d='M0 99 L99 0 L100 1 L1 100' fill='black' /></svg>");
+
+        background-repeat: no-repeat;
+
+        background-position: center center;
+
+        background-size: 100% 100%, auto;
+
+        pointer-events: none;
+
+        cursor: default;
+
+    }
+
+
+
+    .product-stock-message {
+
+        color: red;
+
+    }
+
+
+
+    .out_of_stock {
+
+        display: none !important;
+
+    }
+
+</style>
+
+<section class="breadcrumb">
+
+    <div class="container" id="breadcrumb">
+
+        <input type="hidden" name="product_slug" id="product_slug" value="<?php echo $url; ?>">
+
+    </div>
+
+</section>
+
+<section class="product-details-banner">
+
+    <div class="container container-flex">
+
+        <div class="product-details-left">
+
+            <!--<img class="svg" src="images/Cilantro.jpg">-->
+
+        </div>
+
+        <style>
+
+            .main {
+
+                font-family: Arial;
+
+                width: 500px;
+
+                display: block;
+
+                margin: 0 auto;
+
+            }
+
+        </style>
+
+        <div class="product-details-right">
+
+        </div>
+
+        <div class="product-usp">
+
+            <ul>
+
+                <li> <img class="svg" src="<?php echo ASSET_URL; ?>images/same-day-delivery.png"> <span>Same Day
+
+                        Delivery</span></li>
+
+                <li><img class="svg" src="<?php echo ASSET_URL; ?>images/same-day-delivery.png"> <span>Free
+
+                        Delivery</span></li>
+
+                <li> <img class="svg" src="<?php echo ASSET_URL; ?>images/return-policy.png"> <span>Easy Return
+
+                        Policy</span></li>
+
+                <li> <img class="svg" src="<?php echo ASSET_URL; ?>images/fresh-products.png"> <span>Pure And Fresh
+
+                        Products</span></li>
+
+                <li> <img class="svg" src="<?php echo ASSET_URL; ?>images/the-market.png"> <span>Best Price In The
+
+                        Market</span></li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="related-products">
+
+    <div class="container">
+
+        <h2>Related Products</h2>
+
+        <div class="product-grid" id="related-products">
+
+
+
+        </div>
+
+    </div>
+
+</section>
+
+<?php require_once('common/common_js.php'); ?>
+
+<script>
+
+    $(document).ready(function () {
+
+
+
+        showProgress('div#spinner');
+
+        get_product_detail(api_url_prefix);
+
+        hideProgress('div#spinner');
+
+        $(document).on('click', '.add_cart', function () {
+
+            var product_id = $(this).data('productid');
+
+            console.log("product_id:" + product_id);
+
+            var product_name = $(this).data('productname');
+
+            var image = $(this).data('productimage');
+
+            var quantity = $('#' + product_id).val();
+
+            var product_slug = $(this).data('productslug');
+
+            var is_perisible = $(this).data('isperisible');
+
+            var product_tax = $(this).data('producttax');
+
+			
+
+            //jQuery("#" + tab_id).addClass('price-current');
+
+            var tab_id = $(".price-current").attr('data-tab');
+
+            console.log("tab_id:" + tab_id);
+
+            var parent = $(this).parent().parent().parent().find("ul.price-filter");
+
+            if (parent.length > 0) {
+
+                $("#price-filter li").removeClass("select");
+
+                var selected = $(this).closest('li').addClass('select');
+
+                var tab_id = $(".price-current").attr('data-tab');
+
+                var variant_price = jQuery(".price-current").attr('data-price');
+
+                var weight_current = jQuery("li.price-current").attr('value');
+
+                console.log("variant_price:" + variant_price);
+
+
+
+                if (tab_id == undefined || tab_id == null || tab_id == '' && variant_price == undefined || variant_price == null || variant_price == '') {
+
+                    var selectedLi = $("li[value='" + weight_current + "']");
+
+                    var tab_id = selectedLi.data("tab");
+
+                    var variant_price = selectedLi.data("price");
+
+                }
+
+
+
+                var weight = weight_current;
+
+                var price = variant_price;
+
+                var variant_id = tab_id;
+
+            } else {
+
+                var price = $(this).data('price');
+
+                var weight = $(this).data('productweight');
+
+            }
+
+
+
+            var json_request = {
+
+                "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+
+                "product_id": product_id,
+
+                "product_name": product_name,
+
+                "price": price,
+
+                "quantity": quantity,
+
+                "product_image": image,
+
+                "weight": weight,
+
+                "variant_id": variant_id,
+
+                "product_slug": product_slug,
+
+				"product_tax": product_tax,
+
+                "is_perisible": is_perisible
+
+
+
+            };
+
+            if (quantity != "" || quantity > 0) {
+
+                var total_qty = parseInt($("#cartCount").html()) + parseInt(quantity);
+
+                $("#cartCount").html(total_qty);
+
+
+
+                $.ajax({
+
+                    "type": "POST",
+
+                    "url": front_url + 'cart/add',
+
+                    "data": JSON.stringify(json_request),
+
+                    "dataType": "JSON",
+
+                    "success": function (response) {
+
+
+
+                        $("#btn_" + product_id).text('Added');
+
+                        $("button#view_cart").show();
+
+                        setTimeout(() => {
+
+                            $(".add").prev().val(1);
+
+                            $("#btn_" + product_id).text('Add');
+
+                        }, 3000);
+
+
+
+                        //	alert('Product Added Into Cart');
+
+                        //  $("#cart-details").html(data);
+
+                        // setTimeout(function(){
+
+                        // 	location.reload();
+
+                        // 		},1000);
+
+                    },
+
+                    "error": function (response) {
+
+                        console.log(response.errors);
+
+                    }
+
+                });
+
+
+
+            } else {
+
+                alert("Please Enter quantity");
+
+            }
+
+
+
+        });
+
+    });
+
+
+
+    function enableCartButton(variant_id) {
+
+        $(".out_of_stock").removeClass("out_of_stock");
+
+        $(".product-stock-message").hide();
+
+        $(".v_options").removeClass('price-current');
+
+        $(".variant" + variant_id).addClass('price-current');
+
+        console.log("variant_id:" + variant_id);
+
+    }
+
+
+
+    function get_product_detail(api_url_prefix) {
+
+        var url = $("#product_slug").val();
+
+        var json_request = {
+
+            "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+
+            "product_slug": url
+
+        };
+
+        var product = "";
+
+        $.ajax({
+
+            "type": "POST",
+
+            "url": api_url_prefix + 'get-product-by-slug',
+
+            "data": JSON.stringify(json_request),
+
+            "dataType": "JSON",
+
+            "success": function (response) {
+
+                // showProgress('div#spinner');
+
+                if (response.data != null) {
+
+
+
+                    if (response.data.variants.length > 1) {
+
+                        var price = [];
+
+                        var price_weight1 = '<div class="product-price"><div class="price-filter-content price-current"></div> <ul class="price-filter" id="price-filter">';
+
+                        var first_variant_out_of_stock = false;
+
+                        var is_first_variant = '';
+
+                        var is_first_variant_flag = true;
+
+
+
+                        for (let j = 0; j < response.data.variants.length; j++) {
+
+							//console.log("variant_price"+response.data.variants[j].variant_price);
+
+                            price.push(response.data.variants[j].variant_price);
+
+
+
+                            console.log(j + "is_first_variant:" + is_first_variant);
+
+                            if (response.data.variants[j].is_out_of_stock > 0 && is_first_variant_flag) {
+
+                                is_first_variant = 'price-current ';
+
+                                is_first_variant_flag = false;
+
+                            }
+
+                            else {
+
+                                is_first_variant = ' ';
+
+                            }
+
+                            console.log("is_first_variant:" + is_first_variant);
+
+                            var out_of_stock_variant = 'v_options variant' + response.data.variants[j].id;
+
+                            if (response.data.variants[j].is_out_of_stock == 0) {
+
+                                out_of_stock_variant = ' v_options out_of_stock_variant variant' + response.data.variants[j].id;
+
+                                if (j == 0) {
+
+                                    first_variant_out_of_stock = true;
+
+                                }
+
+                            }
+
+                            price_weight1 = price_weight1.concat('<li onClick="enableCartButton(' + response.data.variants[j].id + ');" class="' + is_first_variant + out_of_stock_variant + '" data-tab="' + response.data.variants[j].id + '" data-price="' + response.data.variants[j].variant_price + '"  value = "' + response.data.variants[j].product_variant_size + '" data-url="' + response.data.variants[j].variant_image + '">' + response.data.variants[j].product_variant_size + 'LB' + '</li>');
+
+
+
+                            var simple_price_weight = '';
+
+                            var max_price = Math.max.apply(Math, price); // 3
+
+                            var min_price = Math.min.apply(Math, price); // 1
+
+                            var price_weight = '<span id="variant-price">$' + min_price + '- $' + max_price + '</span>';
+
+                        }
+
+                        price_weight1 += '</ul></div>';
+
+                    } else {
+
+                        var simple_price_weight = +response.data.product_weight_gms;
+
+                        var price_weight = '<span>$' + response.data.product_price + '</span>';
+
+                        var price_weight1 = '';
+
+                    }
+
+                    var product_large_image = '';
+
+                    var product_large_image_thumb = '';
+
+                    if (response.data.images.length > 0) {
+
+                        for (let a = 0; a < response.data.images.length; a++) {
+
+                            //product_image = "<div><img src='" + response.data.images[a].image + "'></div>";  
+
+                            var_product_image = response.data.images[0].image;
+
+                            product_large_image = product_large_image + '<div class ="zoom ex1"><img src="' + response.data.images[a].image + '" onerror=this.src="<?php echo ADMIN_URL; ?>uploads/logo-2.png" style="width:350px"></div>';
+
+                            product_large_image_thumb = product_large_image_thumb + '<div><img src="' + response.data.images[a].image + '" onerror=this.src="<?php echo ADMIN_URL; ?>uploads/logo-2.png" style="width:150px;height:150px;"></div>';
+
+                        }
+
+
+
+
+
+                    } else {
+
+                        //product_image = "<div><img src='" + response.data.product_images + "'></div>";
+
+                        var_product_image = response.data.product_images;
+
+                        product_large_image = product_large_image + '<div class ="zoom ex1"><img src="' + response.data.product_images + '" onerror=this.src="<?php echo ADMIN_URL; ?>uploads/logo-2.png" style="width:150px;height:150px;"></div>';
+
+                        product_large_image_thumb = product_large_image_thumb + '<div><img src="' + response.data.product_images + '" style="width:150px;height:150px;"></div>';
+
+                    }
+
+                    var data = '<div class="main"><div class="slider slider-for">' + product_large_image + '</div><div class="slider slider-nav">' + product_large_image_thumb + '</div></div>';
+
+                    var data = '<div class=""><div class="slider slider-for">' + product_large_image + '</div><div class="slider slider-nav">' + product_large_image_thumb + '</div></div>';
+
+                    $(".product-details-left").html(data);
+
+                    /* PRODUCT IMAGE SLIDER START */
+
+                    $('.slider-for').slick({
+
+                        slidesToShow: 1,
+
+                        slidesToScroll: 1,
+
+                        arrows: false,
+
+                        fade: true,
+
+                        asNavFor: '.slider-nav'
+
+                    });
+
+                    $('.slider-nav').slick({
+
+                        slidesToShow: 5,
+
+                        slidesToScroll: 1,
+
+                        asNavFor: '.slider-for',
+
+                        dots: true,
+
+                        focusOnSelect: true
+
+                    });
+
+                    $('a[data-slide]').click(function (e) {
+
+                        e.preventDefault();
+
+                        var slideno = $(this).data('slide');
+
+                        $('.slider-nav').slick('slickGoTo', slideno - 1);
+
+                    }); /* PRODUCT IMAGE SLIDER END */
+
+                    var categories = "";
+
+                    if (response.data.categories != null && response.data.categories.length > 0) {
+
+                        categories = "<li>Categories :";
+
+                        for (let a = 0; a < response.data.categories.length; a++) {
+
+                            categories = categories.concat("<a href='<?php echo BASE_URL; ?>category/" + response.data.categories[a].category_slug + "'>" + response.data.categories[a].category_name + "</a>, ");
+
+
+
+                        }
+
+                        categories = categories.slice(0, -2);
+
+                        categories = categories + "</li>";
+
+
+
+                    }
+
+
+
+                    var tags = "";
+
+                    if (response.data.tags != null && response.data.tags.length > 0) {
+
+                        tags = "<li id='tags'>tags :";
+
+                        for (let a = 0; a < response.data.tags.length; a++) {
+
+                            tags = tags.concat("<a href='<?php echo BASE_URL; ?>tag/" + response.data.tags[a].tag_id + "'>" + response.data.tags[a].tag + "</a>, ");
+
+
+
+                        }
+
+                        tags = tags.slice(0, -2);
+
+                        tags = tags + "</li>";
+
+
+
+
+
+                    } else {
+
+                        $("#tags").hide();
+
+                    }
+
+
+
+                    if (simple_price_weight != "" && simple_price_weight != null) {
+
+                        simple_price_weight = "<li id='weight'>weight : " + simple_price_weight + " LB</li>";
+
+                    } else {
+
+                        $("#weight").hide();
+
+                    }
+
+
+
+                    if (simple_price_weight == 0) {
+
+                        $("#weight").hide();
+
+                    }
+
+
+
+
+
+                    if (response.data.product_slug == "oil-beans") {
+
+                        $("li#weight").hide();
+
+                        // alert('hide');
+
+                        simple_price_weight = "<li id='weight1'>weight : " + response.data.product_price + " Ounces</li>";
+
+                    } else {
+
+                        $("#weight").hide();
+
+                    }
+
+
+
+                    if (response.data.product_sub_name != "" && response.data.product_sub_name != null) {
+
+                        var product_sub_name = '<p>' + response.data.product_sub_name + '</p>';
+
+                    } else {
+
+                        var product_sub_name = '';
+
+                    }
+
+                    if (response.data.product_description != "" && response.data.product_description != null) {
+
+                        var product_description = '<p>' + response.data.product_description + '</p>';
+
+                    } else {
+
+                        var product_description = '';
+
+                    }
+
+                    var out_of_stock = "<div class='product-stock-message'></div>";
+
+                    var out_of_stock_class = "";
+
+                    if (response.data.is_out_of_stock == 0 || first_variant_out_of_stock) {
+
+                        out_of_stock = "<div class='product-stock-message'>Product is out of stock</div>";
+
+                        out_of_stock_class = "out_of_stock";
+
+                    }
+
+
+
+                    product_detail = "<div class='product-details-name'><h2>" + response.data.product_name + "</h2>" + "</div>" + product_sub_name + price_weight + price_weight1 + product_description + out_of_stock + "<ul><li><div class='quantity " + out_of_stock_class + "'><button type='button' id='sub' class='sub'>-</button><input type='text' id='" + response.data.product_id + "' value='1' min='1' max='3' disabled /><button type='button' id='add' class='add'>+</button></div></li><li><button id= 'btn_" + response.data.product_id + "' class='add_cart " + out_of_stock_class + "' data-isperisible='" + response.data.is_perisible_products + "' data-productslug='" + response.data.product_slug + "' data-productimage= '" + var_product_image + "' data-productname='" + response.data.product_name + "' data-price=" + response.data.product_price + " data-productid = " + response.data.product_id + " data-productweight =" + response.data.product_weight_gms + " data-producttax=" + response.data.product_tax + ">Add</button></li></ul><p id='delivery_time'></p><div class='categories-tag'><ul>" + simple_price_weight + categories + tags + "<li id='brand'>Brand : <a href='<?php echo BASE_URL; ?>brand/" + response.data.brand_slug + "'>" + response.data.brand_name + "</a></li></ul></div>";
+
+                    $(".product-details-right").html(product_detail);
+
+					//<li></button><button id ='view_cart'><a href=" + front_url + "cart-detail>View Cart</a></button></li>
+
+
+
+                    get_related_product(api_url_prefix, response.data.category_slug, response.data.product_id);
+
+                    get_delivery_message();
+
+                }
+
+            },
+
+            "error": function (response) {
+
+                $(".product-details-right").html(response.errors);
+
+            }
+
+        });
+
+    }
+
+
+
+    function get_delivery_message() {
+
+        var delivery_type = Cookies.get("delivery_type");
+
+        var delivery_days = Cookies.get("delivery_days");
+
+
+
+        var current = new Date();
+
+        var hr = current.getHours();
+
+        var min = current.getMinutes();
+
+        var message = '';
+
+        if (delivery_type == 'Express Delivery') {
+
+            message = 'Order within 23 hours and get delivery tomorrow';
+
+            if (hr < 14) {
+
+                message = 'Order within ' + (14 - hr) + ' hours' + ' : ' + (60 - min) + ' minutes and get same day delivery';
+
+            }
+
+            message = message + '<br>* Order before 2:00 PM and you can expect your order within 4 hours with our Express Delivery.'
+
+        }
+
+        if (delivery_type == 'Same Day Delivery') {
+
+
+
+            if (hr > 14) {
+
+                message = 'Order within ' + (hr - 14) + ' hours' + ' : ' + (60 - min) + ' minutes and delivery By Tomorrow <?php $newDate1 = date('l', strtotime('+1 days'));
+
+                echo $newDate1 ?>, ' + ' <?php $newDate = date('d/M/Y', strtotime('+1 days'));
+
+                  echo $newDate; ?> ';
+
+            }
+
+            if (hr <= 14) {
+
+                message = 'Order within ' + (14 - hr) + ' hours' + ' : ' + (60 - min) + ' minutes and delivery By Today <?php echo date("l") ?>,' + ' <?php echo date("d/M/Y") ?> ';
+
+            }
+
+        }
+
+        if (delivery_type == 'Twise in a week') {
+
+            const dayArray = delivery_days.split(",");
+
+            var d_day = 0;
+
+            if (dayArray.indexOf("Monday") > -1) {
+
+                d_day = 1;
+
+            } else if (dayArray.indexOf("Tuesday") > -1) {
+
+                d_day = 2;
+
+            } else if (dayArray.indexOf("Wednesday") > -1) {
+
+                d_day = 3;
+
+            } else if (dayArray.indexOf("Thursday") > -1) {
+
+                d_day = 4;
+
+            } else if (dayArray.indexOf("Friday") > -1) {
+
+                d_day = 5;
+
+            } else if (dayArray.indexOf("Saturday") > -1) {
+
+                d_day = 6;
+
+            } else if (dayArray.indexOf("Sunday") > -1) {
+
+                d_day = 7;
+
+            }
+
+
+
+            if (d_day == 1) {
+
+                message = 'You can expect delivery by coming ' + '<?php $date = date_create();
+
+                $date->modify('next Monday');
+
+                echo date_format($date, "l d/M/Y") ?> ';
+
+            }
+
+            if (d_day == 2) {
+
+                message = 'You can expect delivery by coming ' + '<?php $date = date_create();
+
+                $date->modify('next Tuesday');
+
+                echo date_format($date, "l d/M/Y") ?> ';
+
+            }
+
+            if (d_day == 3) {
+
+                message = 'You can expect delivery by coming ' + '<?php $date = date_create();
+
+                $date->modify('next Wednesday');
+
+                echo date_format($date, "l d/M/Y") ?> ';
+
+            }
+
+            if (d_day == 4) {
+
+                message = 'You can expect delivery by coming ' + '<?php $date = date_create();
+
+                $date->modify('next Thursday');
+
+                echo date_format($date, "l d/M/Y") ?> ';
+
+            }
+
+            if (d_day == 5) {
+
+                message = 'You can expect delivery by coming ' + '<?php $date = date_create();
+
+                $date->modify('next Friday');
+
+                echo date_format($date, "l d/M/Y") ?> ';
+
+            }
+
+            if (d_day == 6) {
+
+                message = 'You can expect delivery by coming ' + '<?php $date = date_create();
+
+                $date->modify('next Saturday');
+
+                echo date_format($date, "l d/M/Y") ?> ';
+
+            }
+
+            if (d_day == 7) {
+
+                message = 'You can expect delivery by coming ' + '<?php $date = date_create();
+
+                $date->modify('next Sunday');
+
+                echo date_format($date, "l d/M/Y") ?> ';
+
+            }
+
+
+
+        }
+
+
+
+        $("#delivery_time").html(message);
+
+    }
+
+
+
+    function get_related_product(api_url_prefix, category_slug, product_id) {
+
+        var url = $("#product_slug").val();
+
+        var json_request = {
+
+            "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+
+            "category_slug": category_slug,
+
+            "product_id": product_id
+
+        };
+
+        var product = "";
+
+        $.ajax({
+
+            "type": "POST",
+
+            "url": api_url_prefix + 'get-related-product-by-category-slug',
+
+            "data": JSON.stringify(json_request),
+
+            "dataType": "JSON",
+
+            "success": function (response) {
+
+                if (response.data != "" && response.data != null) {
+
+                    product += '<div class="product-grid">';
+
+                    var count = '';
+
+                    if (response.data.length < 10) {
+
+                        count = response.data.length;
+
+                    } else {
+
+                        count = 10;
+
+                    }
+
+                    for (let a = 0; a < count; a++) {
+
+                        var price_weight = "";
+
+                        if (response.data[a].product_size.length > 1) {
+
+
+
+                            var price_weight = '<form name="form" id="form"><select name="jumpMenu" id="jumpMenu" class="variants">';
+
+                            for (let j = 0; j < response.data[a].product_size.length; j++) {
+
+                                price_weight = price_weight.concat('<option value="' + response.data[a].product_size[j].size + '-' + response.data[a].product_size[j].price + '-' + response.data[a].product_size[j].variant_id + '">' + response.data[a].product_size[j].size + 'lb - $' + response.data[a].product_size[j].price + '</option>');
+
+                            }
+
+                            price_weight += '</select></form>';
+
+                        } else {
+
+                            // var price_weight = '<span>' + response.data[a].product_weight_gms + 'lb</span> - <strong>$' + response.data[a].product_price + '</strong>';
+
+                        }
+
+
+
+
+
+                        product = product.concat('<div class="product-box"><a href="<?php echo BASE_URL; ?>product/' + response.data[a].product_slug + '"><img src=' +
+
+                            response.data[a].product_image + ' onerror=this.src="<?php echo ADMIN_URL; ?>uploads/logo-2.png"><h4>' + response.data[a]
+
+                                .product_name + '</h4></a>' + price_weight + '<ul><li><div class="quantity"><button type="button" id="sub" class="sub">-</button><input type="text" id="' + response.data[a].product_id + '" value="1" min="1" max="3" disabled /><button type="button" id="add" class="add">+</button></div></li><li><button id= "btn_' + response.data[a].product_id + '" class="add_cart" data-isperisible="' + response.data[a].is_perisible_products + '" data-productslug="' + response.data[a].product_slug + '" data-productimage= "' + response.data[a].product_image + '" data-productname="' + response.data[a].product_name + '" data-price=' + response.data[a].product_price + ' data-productid = ' + response.data[a].product_id + ' data-productweight =' + response.data[a].product_weight_gms + ' data-producttax=' + response.data[a].product_tax + '>Add</button></li></ul></div>'
+
+                        );
+
+
+
+                    }
+
+                    product += '</div>';
+
+                    $("#related-products").html(product);
+
+                } else {
+
+                    product = "No Products";
+
+                }
+
+            },
+
+            "error": function (response) {
+
+                $("#related-products").html(response.errors);
+
+            }
+
+        });
+
+    }
+
+</script>
+
+
+
 <?php require_once('common/footer.php'); ?>

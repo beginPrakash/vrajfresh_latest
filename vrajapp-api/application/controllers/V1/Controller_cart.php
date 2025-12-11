@@ -82,7 +82,7 @@ class Controller_cart extends CI_Controller
 		if (check_oauth_key($oauth_key)) {
 			if(count($user_cart_data) > 0){
 				foreach($user_cart_data as $key => $val){
-					$is_product_addtocart = $this->cart_model->is_product_addtocart($val['product_id'],$json_obj['customer_id']);
+					$is_product_addtocart = $this->cart_model->is_product_addtocart($val['product_id'],$json_obj['customer_id'],$val['variant_id'] ?? '');
 					if(empty($is_product_addtocart)){
 						$ArrCartData = array(
 							'customer_id' => trim($json_obj['customer_id']),
@@ -100,6 +100,23 @@ class Controller_cart extends CI_Controller
 							'options_variant_id' => trim($val['variant_id'] ?? ''),
 						);
 						$this->cart_model->add($ArrCartData);
+					}else{
+						$ArrCartData = array(
+							'customer_id' => trim($json_obj['customer_id']),
+							'row_id' => trim($row_id),
+							'id' => trim($val['product_id']),
+							'name' => trim($val['product_name']),
+							'image' => trim($val['product_image']),
+							'price' => trim($val['price']),
+							'qty' => trim($val['quantity']),
+							'product_slug' => trim($val['product_slug']),
+							//'created_date' => date("Y-m-d"),
+							'is_perisible' => trim($val['is_perisible']),
+							'product_tax' => trim($val['product_tax']),
+							'options_weight' => trim($val['weight'] ?? ''),
+							'options_variant_id' => trim($val['variant_id'] ?? ''),
+						);
+						$this->cart_model->update_usercart_item($ArrCartData,$is_product_addtocart);
 					}
 				}
 			}
