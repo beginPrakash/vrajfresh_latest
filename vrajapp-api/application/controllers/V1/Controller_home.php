@@ -540,26 +540,34 @@ class Controller_home extends CI_Controller
 				'page_no' => $json_obj->page_no,
 			);
 			$result_val = $this->home_model->get_home_banner_model($data);
-			$home_banner=array();
-			$home_banner_mobile=array();
-			for ($i = 0; $i < count($result_val); $i++) {
-				if(!empty($result_val[$i]->banner_image)){
+			$home_banner = [];
+			$home_banner_mobile = [];
+			$upload_path = FILE_UPLOAD_PATH . 'home_banner/';
+			foreach ($result_val as $row) {
+
+				// Banner Desktop
+				if (!empty($row->banner_image)) {
 					$home_banner[] = [
-						'banner_image'=>FILE_UPLOAD_PATH . 'home_banner/' . $result_val[$i]->banner_image,
-						'banner_link'=>$result_val[$i]->banner_link,
-						'banner_type'=>$result_val[$i]->banner_type,
+						'banner_image' => $upload_path . $row->banner_image,
+						'banner_link'  => $row->banner_link,
+						'banner_type'  => $row->banner_type,
 					];
 				}
-				if(!empty($result_val[$i]->banner_mob_image)){
+
+				// Banner Mobile
+				if (!empty($row->banner_mob_image)) {
 					$home_banner_mobile[] = [
-						'banner_image'=>FILE_UPLOAD_PATH . 'home_banner/' . $result_val[$i]->banner_mob_image,
-						'banner_link'=>$result_val[$i]->banner_link,
-						'banner_type'=>$result_val[$i]->banner_type,
+						'banner_image' => $upload_path . $row->banner_mob_image,
+						'banner_link'  => $row->banner_link,
+						'banner_type'  => $row->banner_type,
 					];
 				}
 			}
-			$result['home_banner']=$home_banner;
-			$result['home_banner_mobile']=$home_banner_mobile;
+
+			$result = [
+				'home_banner'        => $home_banner,
+				'home_banner_mobile' => $home_banner_mobile,
+			];
 
 			if (count($result) > 0) {
 				$ArrData = $result;
@@ -747,7 +755,16 @@ class Controller_home extends CI_Controller
         $json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
 
-		
+		// Receive values from POST
+		$page  = $json_obj->page;
+		$limit = $json_obj->limit;
+
+		// Default values
+		$page  = (!empty($page)) ? (int)$page : 1;
+		$limit = (!empty($limit)) ? (int)$limit : 10;
+
+		$offset = ($page - 1) * $limit;
+
 		$special_category_slug=$json_obj->special_category_slug;
 
 		$errors = $success_message = '';
@@ -760,7 +777,9 @@ class Controller_home extends CI_Controller
 			$product_ids = $special_category_product['product_ids'];
 			
 			$product_data['product_id'] = implode(',',$product_ids);
-			$temp_result = $this->products_model->get_special_products($product_data);
+			$total_products_c = $this->products_model->get_special_products_det_count($product_data);
+			$total = count($total_products_c);
+			$temp_result = $this->products_model->get_special_products_det($product_data,$limit, $offset);
 
 			$ArrFinal = array();
 			$i = 0;
@@ -803,11 +822,16 @@ class Controller_home extends CI_Controller
 						$product_result[$key] = $value;
 					}
 				}
-				$result[] = $product_result;
+				$result['data'][] = $product_result;
+				$result['current_page'] = $page;
+			$result['per_page'] = $limit;
+			$result['total'] = $total;
+			$result['total_pages'] = ceil($total / $limit);
 			}
 
 			$ArrData["product_detail"] = $result;
 			$ArrData["slider_detail"] = $home_product_slider_data;
+			
 
 			if (count($ArrData) > 0) {
 				$success_message = '';

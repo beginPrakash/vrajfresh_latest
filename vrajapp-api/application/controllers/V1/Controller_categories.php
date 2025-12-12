@@ -310,6 +310,15 @@ class Controller_categories extends CI_Controller
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
 
+		// Receive values from POST
+		$page  = $json_obj->page;
+		$limit = $json_obj->limit;
+
+		// Default values
+		$page  = (!empty($page)) ? (int)$page : 1;
+		$limit = (!empty($limit)) ? (int)$limit : 10;
+
+		$offset = ($page - 1) * $limit;
 	
 		$zipcode = $json_obj->zipcode;
 		$errors = $success_message = '';
@@ -337,41 +346,47 @@ class Controller_categories extends CI_Controller
 				$category_is_liker_category = $category_result[0]->is_liker_category;
 				$category_is_cook_food_category = $category_result[0]->is_cook_food_category;
 				
-				$temp_result = $this->categories_model->get_product_by_category_id($category_result[0]->category_id);
+				$total_products_c = $this->categories_model->get_product_by_category_idl_count($category_result[0]->category_id,$page, $limit);
+				
+				$total = count($total_products_c);
+
+				$temp_result = $this->categories_model->get_product_by_category_idl($category_result[0]->category_id,$page, $limit);
+
 				$result["category"] = $category_result[0];
 				$ArrFinal = array();
 				$i = 0;
 				$prev_product_id = 0;
 				$ArrFilter = array();
 				$ArrNum = 0;
-
-				for ($p = 0; $p < count($temp_result); $p++) {
-					
-					$ProductValid = 1;
-					if(isset($zipcodeData[0]->can_deliver_perishable_products) && $zipcodeData[0]->can_deliver_perishable_products == "No")
-					{
-						if($category_is_perisible_products == '2' && $temp_result[$p]->is_perisible_products != '1'){
-							$ProductValid = 0;
+				if(!empty($temp_result)){
+					for ($p = 0; $p < count($temp_result); $p++) {
+						
+						$ProductValid = 1;
+						if(isset($zipcodeData[0]->can_deliver_perishable_products) && $zipcodeData[0]->can_deliver_perishable_products == "No")
+						{
+							if($category_is_perisible_products == '2' && $temp_result[$p]->is_perisible_products != '1'){
+								$ProductValid = 0;
+							}
 						}
-					}
-					if($ProductValid == 1 && isset($zipcodeData[0]->can_deliver_liker_products) && $zipcodeData[0]->can_deliver_liker_products == "No")
-					{
-						if($category_is_liker_category == '2' && $temp_result[$p]->is_liker_products != '1'){
-							$ProductValid = 0;
+						if($ProductValid == 1 && isset($zipcodeData[0]->can_deliver_liker_products) && $zipcodeData[0]->can_deliver_liker_products == "No")
+						{
+							if($category_is_liker_category == '2' && $temp_result[$p]->is_liker_products != '1'){
+								$ProductValid = 0;
+							}
 						}
-					}
-					if($ProductValid == 1 && isset($zipcodeData[0]->can_deliver_cook_food_products) && $zipcodeData[0]->can_deliver_cook_food_products == "No")
-					{
-						if($category_is_cook_food_category == '2' && $temp_result[$p]->is_liker_products != '1'){
-							$ProductValid = 0;
+						if($ProductValid == 1 && isset($zipcodeData[0]->can_deliver_cook_food_products) && $zipcodeData[0]->can_deliver_cook_food_products == "No")
+						{
+							if($category_is_cook_food_category == '2' && $temp_result[$p]->is_liker_products != '1'){
+								$ProductValid = 0;
+							}
 						}
-					}
 
-					if($ProductValid == 1) {
-						$ArrFilter[$ArrNum] = $temp_result[$p];
-						$ArrNum++;
-					}
+						if($ProductValid == 1) {
+							$ArrFilter[$ArrNum] = $temp_result[$p];
+							$ArrNum++;
+						}
 
+					}
 				}
 				$temp_result = $ArrFilter;
 				if(!empty($temp_result)){
@@ -442,13 +457,17 @@ class Controller_categories extends CI_Controller
 							}
 						}
 						$result['products'][] = $products;
+						$result['current_page'] = $page;
+						$result['per_page'] = $limit;
+						$result['total'] = $total;
+						$result['total_pages'] = ceil($total / $limit);
 					}
 
 					//$filter_result=$this->categories_model->get_category_filter($product_result[0]->product_id);
 					foreach ($product_result as $products) {
 						$product_id[] = $products->product_id;
 					}
-					$result['product_id'] = $product_id;
+					//$result['product_id'] = $product_id;
 					//$ArrData = $result;
 					if (count($result) > 0) {
 						$ArrData = $result;
@@ -530,6 +549,7 @@ class Controller_categories extends CI_Controller
 				$ArrFinal = array();
 				$i = 0;
 				$prev_product_id = 0;
+				//print_r($temp_result);exit;
 				foreach ($temp_result as $arr) {
 
 					if ($prev_product_id != $arr->product_id) {
@@ -538,9 +558,9 @@ class Controller_categories extends CI_Controller
 
 						$tempArray = array();
 
-						foreach ($temp_result as $arr1) {
-							if ($arr->product_id == $arr1->product_id) {
-								$prod_var_arr = $this->products_model->get_variant_by_product_id($arr1->product_id);
+						//foreach ($temp_result as $arr1) {
+							//if ($arr->product_id == $arr1->product_id) {
+								$prod_var_arr = $this->products_model->get_variant_by_product_id($arr->product_id);
 								if(count($prod_var_arr) > 0){
 									foreach($prod_var_arr as $key => $val){
 										if(!empty($val->id)){
@@ -554,8 +574,8 @@ class Controller_categories extends CI_Controller
 									}
 								}
 								
-							}
-						}
+							//}
+						//}
 
 						$ArrFinal[$i] = $arr;
 

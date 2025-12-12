@@ -338,39 +338,46 @@ class Products_model extends CI_Model
 
     {
 
+        $productIds = explode(",", $data["product_id"]);
+
         $query = $this->db->select('p.product_id,p.product_slug,p.product_name,pi.image,p.product_image,p.product_price,p.sale_price,p.product_weight_gms,pv.product_variant_size,pv.variant_price,pv.id AS product_variant_id,p.is_perisible_products,p.product_tax,p.is_out_of_stock,c.is_perisible_products AS category_is_perisible_products,p.is_liker_products,p.is_cook_food_products,c.is_liker_category AS category_is_liker_category,c.is_cook_food_category AS category_is_cook_food_category')
 
             //->join('tbl_users u','u.user_id=pv.created_by','left')
-
+            ->where('p.is_deleted', '0')
+            ->where_in("p.product_id", $productIds)
             ->join('tbl_product_images pi', 'p.product_id=pi.product_id', 'left')
 
             ->join('tblproduct_variant pv', 'p.product_id=pv.product_id', "LEFT")
 
             ->join('tbl_categories_products_mapping cpm', 'cpm.product_id=p.product_id', "LEFT")
 
-            ->join('tbl_categories c', 'cpm.category_id=c.category_id', "LEFT")
+            ->join('tbl_categories c', 'cpm.category_id=c.category_id', "LEFT");
 
-            ->where('p.is_deleted', '0')->where('p.product_id IN (' . $data["product_id"] . ')');
+            
 
             if(isset($data['can_deliver_perishable_products']) && $data['can_deliver_perishable_products'] == "No"){
-            
-                $query=$this->db->where_in('c.is_perisible_products', [0,2]);
 
-                $this->db->where("IF(c.is_perisible_products = '2' , p.is_perisible_products = '1', 1)");
+                $this->db->where_in("c.is_perisible_products", [0, 2]);
+
+                // replace IF() with OR → OPTIMIZED 
+                $this->db->where("(c.is_perisible_products <> 2 OR p.is_perisible_products = 1)");
+
             }
 
             if(isset($data['can_deliver_liker_products']) && $data['can_deliver_liker_products'] == "No"){
             
-                $query=$this->db->where_in('c.is_liker_category', [0,2]);
+                $this->db->where_in("c.is_liker_category", [0, 2]);
 
-                $this->db->where("IF(c.is_liker_category = '2' , p.is_liker_products = '1', 1)");
+                $this->db->where("(c.is_liker_category <> 2 OR p.is_liker_products = 1)");
+
             }
 
             if(isset($data['can_deliver_cook_food_products']) && $data['can_deliver_cook_food_products'] == "No"){
-            
-                $query=$this->db->where_in('c.is_cook_food_category', [0,2]);
 
-                $this->db->where("IF(c.is_cook_food_category = '2' , p.is_cook_food_products = '1', 1)");
+                $this->db->where_in("c.is_cook_food_category", [0, 2]);
+
+                $this->db->where("(c.is_cook_food_category <> 2 OR p.is_cook_food_products = 1)");
+
             }
 
         $query = $this->db->get('tbl_products p');
@@ -379,6 +386,148 @@ class Products_model extends CI_Model
         return $query->result();
 
     }
+
+    public function get_special_products_det($data,$limit,$offset)
+
+    {
+
+       $productIds = explode(",", $data["product_id"]);
+
+        $this->db->start_cache();  // ⭐ ensures CI does not reset query before LIMIT
+
+        $this->db->select('
+            p.product_id,
+            p.product_slug,
+            p.product_name,
+            pi.image,
+            p.product_image,
+            p.product_price,
+            p.sale_price,
+            p.product_weight_gms,
+            pv.product_variant_size,
+            pv.variant_price,
+            pv.id AS product_variant_id,
+            p.is_perisible_products,
+            p.product_tax,
+            p.is_out_of_stock,
+            c.is_perisible_products AS category_is_perisible_products,
+            p.is_liker_products,
+            p.is_cook_food_products,
+            c.is_liker_category AS category_is_liker_category,
+            c.is_cook_food_category AS category_is_cook_food_category
+        ');
+
+        $this->db->from('tbl_products p');
+        $this->db->join('tbl_product_images pi', 'p.product_id=pi.product_id', 'left');
+        $this->db->join('tblproduct_variant pv', 'p.product_id=pv.product_id', 'left');
+        $this->db->join('tbl_categories_products_mapping cpm', 'cpm.product_id=p.product_id', 'left');
+        $this->db->join('tbl_categories c', 'cpm.category_id=c.category_id', 'left');
+
+        $this->db->where('p.is_deleted', '0');
+        $this->db->where_in("p.product_id", $productIds);
+
+        /* ---- FILTERS ---- */
+        if (!empty($data['can_deliver_perishable_products']) && $data['can_deliver_perishable_products'] == "No") {
+            $this->db->where_in("c.is_perisible_products", [0, 2]);
+            $this->db->where("(c.is_perisible_products <> 2 OR p.is_perisible_products = 1)");
+        }
+
+        if (!empty($data['can_deliver_liker_products']) && $data['can_deliver_liker_products'] == "No") {
+            $this->db->where_in("c.is_liker_category", [0, 2]);
+            $this->db->where("(c.is_liker_category <> 2 OR p.is_liker_products = 1)");
+        }
+
+        if (!empty($data['can_deliver_cook_food_products']) && $data['can_deliver_cook_food_products'] == "No") {
+            $this->db->where_in("c.is_cook_food_category", [0, 2]);
+            $this->db->where("(c.is_cook_food_category <> 2 OR p.is_cook_food_products = 1)");
+        }
+
+        $this->db->stop_cache(); // END cache
+
+        /* ---- PAGINATION ---- */
+        $this->db->group_by("p.product_id");
+        $this->db->limit($limit, $offset);
+
+        /* ---- FINAL QUERY ---- */
+        $query = $this->db->get();
+        //echo $this->db->last_query();exit;
+        $this->db->flush_cache(); // clear for next query
+
+        return $query->result();
+
+
+    }
+
+    public function get_special_products_det_count($data)
+
+    {
+
+       $productIds = explode(",", $data["product_id"]);
+
+        $this->db->start_cache();  // ⭐ ensures CI does not reset query before LIMIT
+
+        $this->db->select('
+            p.product_id,
+            p.product_slug,
+            p.product_name,
+            pi.image,
+            p.product_image,
+            p.product_price,
+            p.sale_price,
+            p.product_weight_gms,
+            pv.product_variant_size,
+            pv.variant_price,
+            pv.id AS product_variant_id,
+            p.is_perisible_products,
+            p.product_tax,
+            p.is_out_of_stock,
+            c.is_perisible_products AS category_is_perisible_products,
+            p.is_liker_products,
+            p.is_cook_food_products,
+            c.is_liker_category AS category_is_liker_category,
+            c.is_cook_food_category AS category_is_cook_food_category
+        ');
+
+        $this->db->from('tbl_products p');
+        $this->db->join('tbl_product_images pi', 'p.product_id=pi.product_id', 'left');
+        $this->db->join('tblproduct_variant pv', 'p.product_id=pv.product_id', 'left');
+        $this->db->join('tbl_categories_products_mapping cpm', 'cpm.product_id=p.product_id', 'left');
+        $this->db->join('tbl_categories c', 'cpm.category_id=c.category_id', 'left');
+
+        $this->db->where('p.is_deleted', '0');
+        $this->db->where_in("p.product_id", $productIds);
+
+        /* ---- FILTERS ---- */
+        if (!empty($data['can_deliver_perishable_products']) && $data['can_deliver_perishable_products'] == "No") {
+            $this->db->where_in("c.is_perisible_products", [0, 2]);
+            $this->db->where("(c.is_perisible_products <> 2 OR p.is_perisible_products = 1)");
+        }
+
+        if (!empty($data['can_deliver_liker_products']) && $data['can_deliver_liker_products'] == "No") {
+            $this->db->where_in("c.is_liker_category", [0, 2]);
+            $this->db->where("(c.is_liker_category <> 2 OR p.is_liker_products = 1)");
+        }
+
+        if (!empty($data['can_deliver_cook_food_products']) && $data['can_deliver_cook_food_products'] == "No") {
+            $this->db->where_in("c.is_cook_food_category", [0, 2]);
+            $this->db->where("(c.is_cook_food_category <> 2 OR p.is_cook_food_products = 1)");
+        }
+
+        $this->db->stop_cache(); // END cache
+
+        /* ---- PAGINATION ---- */
+        $this->db->group_by("p.product_id");
+
+        /* ---- FINAL QUERY ---- */
+        $query = $this->db->get();
+        //echo $this->db->last_query();exit;
+        $this->db->flush_cache(); // clear for next query
+
+        return $query->result();
+
+
+    }
+
 
     public function get_home_category_product($data = "")
 
