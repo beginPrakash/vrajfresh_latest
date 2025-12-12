@@ -118,9 +118,11 @@ class Home_model extends CI_Model
     public function get_advertise_top_model()
     {
         $query = $this->db->select('*')
-            ->where('is_deleted', '0')
-            ->where('is_active', '1')
-            ->where('adv_type', 'top')
+            ->where([
+                'is_deleted' => 0,
+                'is_active'  => 1,
+                'adv_type'   => 'top'
+            ])
             ->get('tbl_advertise_top');
         return $query->result();
     }
@@ -128,9 +130,11 @@ class Home_model extends CI_Model
     public function get_advertise_bottom_model()
     {
         $query = $this->db->select('*')
-            ->where('is_deleted', '0')
-            ->where('is_active', '1')
-            ->where('adv_type', 'bottom')
+            ->where([
+                'is_deleted' => 0,
+                'is_active'  => 1,
+                'adv_type'   => 'bottom'
+            ])
             ->order_by('adv_srno', 'ASC')
             ->get('tbl_advertise_top');
         return $query->result();

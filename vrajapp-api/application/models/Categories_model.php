@@ -118,6 +118,44 @@ class Categories_model extends CI_Model
         }
 
     }
+
+    public function get_product_by_category_idl($data,$page,$limit)
+    {
+        $category_store_proc = "CALL sp_product_search_app(?,?,?,?,?,?,?,?,?,?)";
+        $data = array('category_slug' => '', 'category_id' => $data, 'brand_id' => '', 'min_price' => '', 'max_price' => '', 'tag_id' => '', 'search_term' => '', 'page_no' => $page, 'page_size' => $limit, 'sort_order' => 'desc');
+        $result = $this->db->query($category_store_proc, $data);
+        //echo $this->db->last_query();exit;
+        $res = $result->result();
+
+        $result->next_result();
+        $result->free_result();
+
+        if ($res != null) {
+            return $res;
+        } else {
+            return 0;
+        }
+
+    }
+
+    public function get_product_by_category_idl_count($data)
+    {
+        $category_store_proc = "CALL sp_product_search_app(?,?,?,?,?,?,?,?,?,?)";
+        $data = array('category_slug' => '', 'category_id' => $data, 'brand_id' => '', 'min_price' => '', 'max_price' => '', 'tag_id' => '', 'search_term' => '', 'page_no' => 1, 'page_size' => 1000000, 'sort_order' => 'desc');
+        $result = $this->db->query($category_store_proc, $data);
+        //echo $this->db->last_query();exit;
+        $res = $result->result();
+
+        $result->next_result();
+        $result->free_result();
+
+        if ($res != null) {
+            return $res;
+        } else {
+            return 0;
+        }
+
+    }
     public function get_image_by_product_id($data)
     {
         $query = $this->db->select('pi.variant_id,pi.image as product_image')
@@ -172,13 +210,16 @@ class Categories_model extends CI_Model
 
 
         if ($data['category_id'] != "") {
-            $query = $this->db->where("c.category_id IN(" . $data['category_id'] . ")");
+            //$query = $this->db->where("c.category_id IN(" . $data['category_id'] . ")");
+            $query = $this->db->where_in("c.category_id", explode(",", $data['category_id']));
         }
         if ($data['brand_id'] != "") {
-            $query = $this->db->where("b.brand_id IN(" . $data['brand_id'] . ")");
+            //$query = $this->db->where("b.brand_id IN(" . $data['brand_id'] . ")");
+            $query = $this->db->where_in("b.brand_id", explode(",", $data['brand_id']));
         }
         if ($data['tag_id'] != "") {
-            $query = $this->db->where("t.tag_id IN(" . $data['tag_id'] . ")");
+            //$query = $this->db->where("t.tag_id IN(" . $data['tag_id'] . ")");
+            $query = $this->db->where_in("t.tag_id", explode(",", $data['tag_id']));
         }
         if ($data['min_price'] != "") {
             $query = $this->db->where("p.product_price > '" . $data['min_price'] . "'");
@@ -191,6 +232,7 @@ class Categories_model extends CI_Model
             $query=$this->db->where_in('c.is_perisible_products', [0,2]);
 
             $this->db->where("IF(c.is_perisible_products = '2' , p.is_perisible_products = '1', 1)");
+            
         }
 
         if(isset($data['can_deliver_liker_products']) && $data['can_deliver_liker_products'] == "No"){
@@ -209,9 +251,12 @@ class Categories_model extends CI_Model
 
         if ($data['search_keyword'] != "") {
             // $query = $this->db->where("(p.product_name LIKE '%" . $data['search_keyword'] . "%' OR FIND_IN_SET('". $data['search_keyword'] . "',search_tags) > 0)");
-            $query = $this->db->where("(p.product_name LIKE '%" . $data['search_keyword'] . "%' OR search_tags LIKE '%".$data['search_keyword']."%')");
+            //$query = $this->db->where("(p.product_name LIKE '%" . $data['search_keyword'] . "%' OR search_tags LIKE '%".$data['search_keyword']."%')");
+            $keyword = $data['search_keyword'];
+            $this->db->where("MATCH(p.product_name, search_tags) AGAINST('$keyword')");
         }
-        $query = $this->db->group_by("p.product_id,p.product_name,p.product_slug,p.product_price,p.product_weight_gms,p.product_image");
+       
+        $query = $this->db->group_by("p.product_id");
         $query = $this->db->order_by("p.product_name", "ASC");
 
         $query = $this->db->limit($limit, $offset)->get();
