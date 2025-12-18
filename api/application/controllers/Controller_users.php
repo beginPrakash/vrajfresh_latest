@@ -291,8 +291,9 @@ class Controller_users extends CI_Controller
 						}
 					}
 					$ArrData = $result;
-					if($json_obj->prev_url == 'cart-detail' || $json_obj->prev_url == 'checkout'){
-						$prev_url = $json_obj->prev_url;
+					
+					if($json_obj->prev_url == 'cart-detail' || $json_obj->prev_f_url == 'checkout' || $json_obj->prev_f_url == 'my-address' || $json_obj->prev_f_url == 'my-orders' || $json_obj->prev_f_url == 'my-account' || $json_obj->prev_f_url == 'change-password'){
+						$prev_url = $json_obj->prev_f_url;
 					}else{
 						$prev_url = '';
 					}
@@ -536,6 +537,7 @@ class Controller_users extends CI_Controller
 	}
 	public function contact_mail()
 	{
+
 		$json_str = json_encode($_POST);
 		$json_obj = json_decode($json_str);
 

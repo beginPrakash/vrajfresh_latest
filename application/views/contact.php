@@ -3,7 +3,7 @@
 <section class="contact vraj-title">
 
     <div class="container">
-<div id="message"></div>
+
         <h2>Contact us</h2>
 
         <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
@@ -155,7 +155,7 @@ function contactus() {
 
             submitHandler: function (form) {
 
-                form.submit();
+                //form.submit();
 
                 var form = $("#contact");
 
@@ -171,13 +171,17 @@ function contactus() {
 
                     "success": function (response) {
 
-                        $("#message").html("<div class='text-success'>Form Submitted Successfully</div>");
+                        alert('Form Submitted Successfully');
+                        location.reload();
+                        //$("#message").html("<div class='text-success'>Form Submitted Successfully</div>");
 
                     },
 
                     "error": function (e) {
 
-                        $("#message").html("<div class='text-error'>Form Not Submitted Successfully</div>");
+                        //$("#message").html("<div class='text-error'>Form Not Submitted Successfully</div>");
+                        alert('Something Went Wrong!');
+                        location.reload();
 
                     }
 
