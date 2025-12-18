@@ -68,6 +68,18 @@ class Categories_model extends CI_Model
             ->get('tbl_categories c');
         return $query->result();
     }
+    public function get_category_by_ids($data)
+    {
+        if(!empty($data)){
+            $query = $this->db->select('category_id,category_name')
+                ->where_in('category_id', $data)
+                ->where('is_deleted', '0')
+                ->get('tbl_categories');
+            return $query->result();
+        }else{
+            return [];
+        }
+    }
     public function update_category($data, $category_id)
     {
         $this->db->where('is_deleted', '0')->where('category_id', $category_id);
@@ -343,5 +355,125 @@ class Categories_model extends CI_Model
         } else {
             return 0;
         }
+    }
+
+    public function get_filter_products_pl($data,$limit, $offset)
+    
+    {
+        // print_r($data);exit;
+
+        $query = $this->db->from('tbl_products p')
+            ->select('p.product_id,p.product_name,p.product_slug,p.product_price,p.sale_price,p.product_weight_gms,p.product_image,p.is_perisible_products,p.product_tax,pv.is_out_of_stock as variant_is_out_of_stock, p.is_out_of_stock, pv.id,pv.product_variant_size,pv.variant_price,pv.variant_image')
+            ->join('tbl_categories_products_mapping cpm', 'p.product_id = cpm.product_id')
+            ->join('tbl_categories c', 'c.category_id=cpm.category_id')
+            ->join('tblproduct_variant pv', 'p.product_id=pv.product_id', "LEFT")
+            ->join('tbl_brands b', 'p.brand_id = b.brand_id')
+            ->join(' tbl_product_tags_mapping t', ' p.product_id = t.product_id')
+            ->where("p.is_active=1");
+
+
+        if ($data['category_id'] != "") {
+            //$query = $this->db->where("c.category_id IN(" . $data['category_id'] . ")");
+            $query = $this->db->where_in("c.category_id", explode(",", $data['category_id']));
+        }
+        
+        if(isset($data['can_deliver_perishable_products']) && $data['can_deliver_perishable_products'] == "No"){
+            
+            $query=$this->db->where_in('c.is_perisible_products', [0,2]);
+
+            $this->db->where("IF(c.is_perisible_products = '2' , p.is_perisible_products = '1', 1)");
+            
+        }
+
+        if(isset($data['can_deliver_liker_products']) && $data['can_deliver_liker_products'] == "No"){
+        
+            $query=$this->db->where_in('c.is_liker_category', [0,2]);
+
+            $this->db->where("IF(c.is_liker_category = '2' , p.is_liker_products = '1', 1)");
+        }
+
+        if(isset($data['can_deliver_cook_food_products']) && $data['can_deliver_cook_food_products'] == "No"){
+        
+            $query=$this->db->where_in('c.is_cook_food_category', [0,2]);
+
+            $this->db->where("IF(c.is_cook_food_category = '2' , p.is_cook_food_products = '1', 1)");
+        }
+
+        if ($data['search_keyword'] != "") {
+            // $query = $this->db->where("(p.product_name LIKE '%" . $data['search_keyword'] . "%' OR FIND_IN_SET('". $data['search_keyword'] . "',search_tags) > 0)");
+            //$query = $this->db->where("(p.product_name LIKE '%" . $data['search_keyword'] . "%' OR search_tags LIKE '%".$data['search_keyword']."%')");
+            $keyword = $data['search_keyword'];
+            $this->db->where("MATCH(p.product_name, search_tags) AGAINST('$keyword')");
+        }
+       
+        $query = $this->db->group_by("p.product_id");
+        $query = $this->db->order_by("p.product_name", "ASC");
+
+        $query = $this->db->limit($limit, $offset)->get();
+        // echo $this->db->last_query();exit;
+        return $query->result();
+    }
+
+     public function get_filter_products_pl_count($data)
+    {
+        // print_r($data);exit;
+
+        $query = $this->db->from('tbl_products p')
+            ->select('p.product_id,p.product_name,p.product_slug,p.product_price,p.product_weight_gms,p.product_image,p.is_perisible_products,p.product_tax,pv.is_out_of_stock as variant_is_out_of_stock, p.is_out_of_stock, pv.id AS variant_id')
+            ->join('tbl_categories_products_mapping cpm', 'p.product_id = cpm.product_id')
+            ->join('tbl_categories c', 'c.category_id=cpm.category_id')
+            ->join('tblproduct_variant pv', 'p.product_id=pv.product_id', "LEFT")
+            ->join('tbl_brands b', 'p.brand_id = b.brand_id')
+            ->join(' tbl_product_tags_mapping t', ' p.product_id = t.product_id')
+            ->where("p.is_active=1");
+
+
+        if ($data['category_id'] != "") {
+            $query = $this->db->where("c.category_id IN(" . $data['category_id'] . ")");
+        }
+        if ($data['brand_id'] != "") {
+            $query = $this->db->where("b.brand_id IN(" . $data['brand_id'] . ")");
+        }
+        if ($data['tag_id'] != "") {
+            $query = $this->db->where("t.tag_id IN(" . $data['tag_id'] . ")");
+        }
+        if ($data['min_price'] != "") {
+            $query = $this->db->where("p.product_price > '" . $data['min_price'] . "'");
+        }
+        if ($data['max_price'] != "") {
+            $query = $this->db->where("p.product_price < '" . $data['max_price'] . "'");
+        }
+        if(isset($data['can_deliver_perishable_products']) && $data['can_deliver_perishable_products'] == "No"){
+            
+            $query=$this->db->where_in('c.is_perisible_products', [0,2]);
+
+            $this->db->where("IF(c.is_perisible_products = '2' , p.is_perisible_products = '1', 1)");
+        }
+
+        if(isset($data['can_deliver_liker_products']) && $data['can_deliver_liker_products'] == "No"){
+        
+            $query=$this->db->where_in('c.is_liker_category', [0,2]);
+
+            $this->db->where("IF(c.is_liker_category = '2' , p.is_liker_products = '1', 1)");
+        }
+
+        if(isset($data['can_deliver_cook_food_products']) && $data['can_deliver_cook_food_products'] == "No"){
+        
+            $query=$this->db->where_in('c.is_cook_food_category', [0,2]);
+
+            $this->db->where("IF(c.is_cook_food_category = '2' , p.is_cook_food_products = '1', 1)");
+        }
+
+        if ($data['search_keyword'] != "") {
+            // $query = $this->db->where("(p.product_name LIKE '%" . $data['search_keyword'] . "%' OR FIND_IN_SET('". $data['search_keyword'] . "',search_tags) > 0)");
+            $query = $this->db->where("(p.product_name LIKE '%" . $data['search_keyword'] . "%' OR search_tags LIKE '%".$data['search_keyword']."%')");
+        }
+        $query = $this->db->group_by("p.product_id,p.product_name,p.product_slug,p.product_price,p.product_weight_gms,p.product_image");
+        $query = $this->db->order_by("p.product_name", "ASC");
+
+        $query = $this->db->get();
+
+        // echo $this->db->last_query();exit;
+        return $query->result();
     }
 }

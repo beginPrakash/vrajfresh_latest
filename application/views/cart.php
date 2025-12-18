@@ -185,12 +185,15 @@
           <?php
         } ?>
         <?php 
+        unset($_SESSION['redirect_after_login']);
         if (isset($_COOKIE['zipcode'])) {
           
           if ($_COOKIE['valid_zipcode'] == 'TRUE') {
             
             if ($_COOKIE['minimum_order_value'] < $this->cart->total()) {
               if (!IsUserLogin()) { 
+                // Save requested page
+                $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
                 ?><div class="stcky">
                 <p>Total - <span><?php echo '$' . $this->cart->total(); ?></span></p>
                 <?php if(isset($_COOKIE['user_id'])){ ?>

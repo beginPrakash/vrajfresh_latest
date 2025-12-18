@@ -782,8 +782,8 @@ function get_product_detail(api_url_prefix) {
                         var simple_price_weight = '';
                         var max_price = Math.max.apply(Math, price); // 3
                         var min_price = Math.min.apply(Math, price); // 1
-                        //var price_weight = '<span id="variant-price">$' + min_price + '- $' + max_price + '</span>';
-                        var price_weight = '<span id="variant-price">$' + min_price + '</span>';
+                        var price_weight = '<span id="variant-price">$' + min_price + '- $' + max_price + '</span>';
+                        //var price_weight = '<span id="variant-price">$' + min_price + '</span>';
                     }
                     price_weight1 += '</ul></div>';
                 } else {

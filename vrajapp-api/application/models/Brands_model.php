@@ -51,6 +51,18 @@ class Brands_model extends CI_Model
             ->get('tbl_brands');
         return $query->result();
     }
+    public function get_brand_by_ids($data)
+    {
+        if(!empty($data)){
+            $query = $this->db->select('brand_id,brand_name')
+                ->where_in('brand_id', $data)
+                ->where('is_deleted', '0')
+                ->get('tbl_brands');
+            return $query->result();
+        }else{
+            return [];
+        }
+    }
     public function update_brand($data, $brand_id)
     {
         $this->db->where('is_deleted', '0')->where('brand_id', $brand_id);

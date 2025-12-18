@@ -24,6 +24,12 @@
                         $prev_var = substr($url, strrpos($url, '/' )+1);
                         ?>
                         <input type="hidden" name="prev_url" value="<?php echo $prev_var; ?>">
+                        <?php 
+                        $prevf_var ='';
+                        if (!empty($_SESSION['redirect_after_login'])) {
+                            $prevf_var = substr($_SESSION['redirect_after_login'], strrpos($_SESSION['redirect_after_login'], '/' )+1);
+                        } ?>
+                        <input type="hidden" name="prev_f_url" value="<?php echo $prevf_var; ?>">
 
                         <div class="form-data">
                             <div class="mail">

@@ -1,5 +1,12 @@
 <?php require_once('common/header.php'); ?>
-
+<?php 
+unset($_SESSION['redirect_after_login']);
+if (!IsUserLogin()) {
+    // Save requested page
+    $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+    
+    header("Location: ".BASE_URL . "login");
+} ?>
 
 
 <script src="<?php echo ASSET_URL . "js/popup-order.js"; ?>"></script>

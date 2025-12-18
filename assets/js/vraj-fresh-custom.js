@@ -247,6 +247,7 @@ setTimeout(() => {
     jQuery('#price-filter li').on("click", function () {
         var tab_id = jQuery(this).attr('data-tab');
         var variant_price = jQuery(this).attr('data-price');
+
         jQuery('.price-filter li').removeClass('price-current');
         jQuery('.price-filter-content').removeClass('price-current');
         jQuery(this).addClass('price-current');

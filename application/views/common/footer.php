@@ -63,10 +63,10 @@
 			<div class="footer-grid">
 				<h3>Account <i class="arrow"></i></h3>
 				<?php if (!IsUserLogin()) {
-					$order_link = "#";
-					$address_link = "#";
-					$account_link = "#";
-					$change_password_link = "#";
+					$order_link = BASE_URL . "my-orders";
+					$address_link = BASE_URL . "my-address";
+					$account_link = BASE_URL . "my-account";
+					$change_password_link = BASE_URL . "change-password";
 					$report_order = "#";
 					$special_request = "#";
 				} else {

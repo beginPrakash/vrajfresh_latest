@@ -15,6 +15,8 @@ class Controller_categories extends CI_Controller
 		$this->load->model('categories_model');
 		$this->load->model('zipcodes_model');
 		$this->load->model('products_model');
+		$this->load->model('brands_model');
+		$this->load->model('tags_model');
 
 		error_reporting(0);
 	}
@@ -324,166 +326,110 @@ class Controller_categories extends CI_Controller
 		$errors = $success_message = '';
 		$ArrData = array();
 		$category_result = "";
-		$zipcodeData = array();
+		$result = array();
+
+		$category_result = $this->categories_model->get_category_by_slug(['category_slug'=>$json_obj->category_slug]);
+		$category_id = $category_result[0]->category_id;
+		$result["category"] = $category_result[0];
+		// echo 'category_id_url: '.$category_id_url;
+		// $category_id_arr = $json_obj->category_id;
+		// if(!empty($category_id_url)){
+		// 	if(!in_array($category_id_url, $category_id_arr)){
+		// 		$category_id_arr[] = $category_id_url;
+		// 	}
+			
+		// }
+		// $category_id = implode(",", $category_id_arr);
+
 		
 			$data = array(
-				'category_slug' => $json_obj->category_slug
+				'category_id' => $category_id,
 			);
 
-			if($zipcode != ""){
-				$zipcodeData = $this->zipcodes_model->get_zipcode_by_data($zipcode);
+			if($json_obj->zipcode != ""){
+				$zipcodeData = $this->zipcodes_model->get_zipcode_by_data($json_obj->zipcode);
 				if (count($zipcodeData) > 0) {
-					$data['is_perisible_zipcode'] = $zipcodeData[0]->can_deliver_perishable_products;
-					$data['is_liker_zipcode'] = $zipcodeData[0]->can_deliver_liker_products;
-					$data['is_cook_food_zipcode'] = $zipcodeData[0]->can_deliver_cook_food_products;
+					$data['can_deliver_perishable_products'] = $zipcodeData[0]->can_deliver_perishable_products;
+					$data['can_deliver_liker_products'] = $zipcodeData[0]->can_deliver_liker_products;
+					$data['can_deliver_cook_food_products'] = $zipcodeData[0]->can_deliver_cook_food_products;
 				}
 			}
-			$category_result = $this->categories_model->get_category_by_slug($data);
-			if(!empty($category_result)){
-				
-				$category_id = $category_result[0]->category_id;
-				$category_is_perisible_products = $category_result[0]->is_perisible_products;
-				$category_is_liker_category = $category_result[0]->is_liker_category;
-				$category_is_cook_food_category = $category_result[0]->is_cook_food_category;
-				
-				$total_products_c = $this->categories_model->get_product_by_category_idl_count($category_result[0]->category_id,$page, $limit);
-				
-				$total = count($total_products_c);
 
-				$temp_result = $this->categories_model->get_product_by_category_idl($category_result[0]->category_id,$page, $limit);
-
-				$result["category"] = $category_result[0];
+			$total_products_c = $this->categories_model->get_filter_products_pl_count($data);
+			$total = count($total_products_c);
+			$temp_result = $this->categories_model->get_filter_products_pl($data,$limit, $offset);
+			if (count($temp_result) > 0) {
 				$ArrFinal = array();
 				$i = 0;
 				$prev_product_id = 0;
-				$ArrFilter = array();
-				$ArrNum = 0;
-				if(!empty($temp_result)){
-					for ($p = 0; $p < count($temp_result); $p++) {
-						
-						$ProductValid = 1;
-						if(isset($zipcodeData[0]->can_deliver_perishable_products) && $zipcodeData[0]->can_deliver_perishable_products == "No")
-						{
-							if($category_is_perisible_products == '2' && $temp_result[$p]->is_perisible_products != '1'){
-								$ProductValid = 0;
-							}
-						}
-						if($ProductValid == 1 && isset($zipcodeData[0]->can_deliver_liker_products) && $zipcodeData[0]->can_deliver_liker_products == "No")
-						{
-							if($category_is_liker_category == '2' && $temp_result[$p]->is_liker_products != '1'){
-								$ProductValid = 0;
-							}
-						}
-						if($ProductValid == 1 && isset($zipcodeData[0]->can_deliver_cook_food_products) && $zipcodeData[0]->can_deliver_cook_food_products == "No")
-						{
-							if($category_is_cook_food_category == '2' && $temp_result[$p]->is_liker_products != '1'){
-								$ProductValid = 0;
-							}
-						}
+				//print_r($temp_result);exit;
+				foreach ($temp_result as $arr) {
 
-						if($ProductValid == 1) {
-							$ArrFilter[$ArrNum] = $temp_result[$p];
-							$ArrNum++;
-						}
+					if ($prev_product_id != $arr->product_id) {
 
-					}
-				}
-				$temp_result = $ArrFilter;
-				if(!empty($temp_result)){
-					foreach ($temp_result as $arr) {
+						$ArrFinal[$i] = $arr;
 
-						if ($prev_product_id != $arr->product_id) {
+						$tempArray = array();
 
-							$ArrFinal[$i] = $arr;
-
-							$tempArray = array();
-							$previous_variant_id = "";
-							foreach ($temp_result as $arr1) {
-
-								if ($arr->product_id == $arr1->product_id && $previous_variant_id != $arr1->id) {
-									$t = array();
-									if ($arr1->id > 0) {
-										$t['size'] = $arr1->product_variant_size;
-										$t['price'] = $arr1->variant_price;
-										$t['variant_id'] = $arr1->id;
-										$t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
+						//foreach ($temp_result as $arr1) {
+							//if ($arr->product_id == $arr1->product_id) {
+								$prod_var_arr = $this->products_model->get_variant_by_product_id($arr->product_id);
+								if(count($prod_var_arr) > 0){
+									foreach($prod_var_arr as $key => $val){
+										if(!empty($val->id)){
+											$t = array();
+												$t['size'] = $val->product_variant_size;
+												$t['price'] = $val->variant_price;
+												$t['variant_id'] = $val->id;
+												$t['is_out_of_stock'] = $val->is_out_of_stock;
+											$tempArray[] = $t;
+										}
 									}
-									$tempArray[] = $t;
-									$previous_variant_id = $arr1->id;
 								}
-							}
-                            // usort($tempArray, function($a, $b) {
-                            // 	return $a['size'] <=> $b['size'];
-                            // });
+								
+							//}
+						//}
 
-							$unique = array_map("unserialize", array_unique(array_map("serialize", $tempArray)));
-							usort($unique, function($a, $b) {
-								return $a['price'] - $b['price']; // Ascending sort by 'price'
-							});
-							
+						$ArrFinal[$i] = $arr;
 
-							$ArrFinal[$i] = $arr;
+						$unique = array_map("unserialize", array_unique(array_map("serialize", $tempArray)));
+						usort($unique, function($a, $b) {
+							return $a['price'] - $b['price']; // Ascending sort by 'price'
+						});
 
-							$ArrFinal[$i]->product_size = $unique;
+						$ArrFinal[$i]->product_size = $unique;
 
-							$i++;
-						}
-
-						$prev_product_id = $arr->product_id;
-					}
-					$variants = array();
-					foreach ($temp_result as $arr) {
-						$temp_variant_result = $this->products_model->get_variant_by_product_id($arr->product_id);
-
-						// print_r($temp_variant_result);
-
-
-						for ($i = 0; $i < count($temp_variant_result); $i++) {
-							$variants[] = $temp_variant_result[$i];
-						}
-
-						$result['variants'] = $variants;
+						$i++;
 					}
 
-					$product_result = $ArrFinal;
-
-					for ($i = 0; $i < count($product_result); $i++) {
-						//$result=array();
-						foreach ($product_result[$i] as $key => $value) {
-							if ($key == "product_image") {
-								$products[$key] = FILE_UPLOAD_PATH . 'products/' . $value;
-							} else {
-								$products[$key] = $value;
-							}
-						}
-						$result['products'][] = $products;
-						$result['current_page'] = $page;
-						$result['per_page'] = $limit;
-						$result['total'] = $total;
-						$result['total_pages'] = ceil($total / $limit);
-					}
-
-					//$filter_result=$this->categories_model->get_category_filter($product_result[0]->product_id);
-					foreach ($product_result as $products) {
-						$product_id[] = $products->product_id;
-					}
-					//$result['product_id'] = $product_id;
-					//$ArrData = $result;
-					if (count($result) > 0) {
-						$ArrData = $result;
-						$success_message = '';
-					} else {
-						$errors = 'No data available';
-					}
-					// echo "<pre> "; print_r($result);exit;
-				} else {
-					$ArrData = array();
-					$success_message = '';
-					$errors = 'No data available';
+					$prev_product_id = $arr->product_id;
 				}
-			} else {
-				$ArrData = array();
+				$product_result = $ArrFinal;
+
+				//$result["category"]=$category_result[0];
+				for ($i = 0; $i < count($product_result); $i++) {
+					//$result=array();
+					foreach ($product_result[$i] as $key => $value) {
+						if ($key == "product_image") {
+							$products[$key] = FILE_UPLOAD_PATH . 'products/' . $value;
+						} else {
+							$products[$key] = $value;
+						}
+					}
+					$result['products'][] = $products;
+					$result['current_page'] = $page;
+			$result['per_page'] = $limit;
+			$result['total'] = $total;
+			$result['total_pages'] = ceil($total / $limit);
+				}
+			}
+
+			
+			//$ArrData = $result;
+			if (is_array($result) && count($result) > 0 && $result != null) {
+				$ArrData = $result;
 				$success_message = '';
+			} else {
 				$errors = 'No data available';
 			}
 			send_response_to_api($ArrData, $errors, $success_message);
@@ -493,7 +439,7 @@ class Controller_categories extends CI_Controller
 	{
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
-		// print_r($json_obj);
+		 //print_r($json_obj);exit;
 
 		// Receive values from POST
 		$page  = $json_obj->page;
@@ -541,6 +487,8 @@ class Controller_categories extends CI_Controller
 					$data['can_deliver_cook_food_products'] = $zipcodeData[0]->can_deliver_cook_food_products;
 				}
 			}
+
+			
 
 			$total_products_c = $this->categories_model->get_filter_products_count($data);
 			$total = count($total_products_c);
@@ -611,7 +559,17 @@ class Controller_categories extends CI_Controller
 				}
 			}
 
+			//get brand array
+			$brand_arr = $this->brands_model->get_brand_by_ids($json_obj->brand_id);
+			$result['filter_brands'] = $brand_arr;
 			
+			$tag_arr = $this->tags_model->get_tag_by_ids($json_obj->tag_id);
+			$result['filter_tags'] = $tag_arr;
+
+			$cats_arr = $this->categories_model->get_category_by_ids($json_obj->category_id);
+			$result['filter_categories'] = $cats_arr;
+			$result['filter_min_price'] = $json_obj->min_price;
+			$result['filter_max_price'] = $json_obj->max_price;
 			//$ArrData = $result;
 			if (is_array($result) && count($result) > 0 && $result != null) {
 				$ArrData = $result;

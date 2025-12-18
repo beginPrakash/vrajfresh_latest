@@ -606,24 +606,33 @@ class Controller_users extends CI_Controller
 	}
 	public function edit_user()
 	{
-		$json_str = json_encode($_POST);
+		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
 
-		$oauth_key = $json_obj->oauth_key;
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
 		$errors = $success_message = '';
 		$ArrData = array();
 		if (check_oauth_key($oauth_key)) {
 			$data = array(
 				'display_name' => $json_obj->display_name,
 				'first_name' => $json_obj->first_name,
-				'last_name' => $json_obj->last_name
+				'last_name' => $json_obj->last_name,
+				'phone' => $json_obj->mobile_no
 			);
 			if($json_obj->email!='')
 			{
 				$data['email'] = $json_obj->email;
 			}
 			$user_id = $json_obj->user_id;
+
 			$result = $this->users_model->update_user($data, $user_id, 'tbl_users');
+
 			if ($result) {
 				$success_message = 'Your profile has been updated successfully';
 			} else {
