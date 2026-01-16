@@ -53,7 +53,7 @@ class Controller_order extends CI_Controller
 
 				$d1 = date("Y-m-d", strtotime($aRow['created_datetime']));
 				$d2 = date("Y-m-d", strtotime($aRow['delivery_datetime']));
-
+				$cdate = date("Y-m-d");
 				$rows_cls='';
 				if (($d1 != $d2) && ($aRow['order_status']!= 'Completed') && ($d2 > $cdate)) {
 					$rows_cls = "deldate_diffrow";
@@ -491,10 +491,14 @@ class Controller_order extends CI_Controller
 		
 		$ArrPageData['ArrOrderStatus'] = getOrderStatus();
 
+		$delivery_person_list = $this->order_model->getDeliverypersonlist();
+		
+		$ArrPageData['delivery_person_list'] = $delivery_person_list;
+
 		$earned_trans_credit = $this->credittransaction_model->getCredittransdetails($id,'earned');
 		$used_trans_credit = $this->credittransaction_model->getCredittransdetails($id,'used');
 		$order_credit_per = $this->credittransaction_model->getCreditperbycreditid($id);
-
+		
 		$ArrPageData['ArrFieldData']['earned_trans_credit'] = $earned_trans_credit ?? 0;
 		$ArrPageData['ArrFieldData']['used_trans_credit'] = $used_trans_credit ?? 0;
 		$ArrPageData['ArrFieldData']['order_credit_per'] = $order_credit_per ?? 0;
@@ -802,6 +806,8 @@ class Controller_order extends CI_Controller
 			$total_ear_cr_amount = 0;
 			$order_credit_per = $this->input->post('order_credit_per');
 			$used_credit_v = $this->input->post('used_credit');
+			$delivery_user_id = $this->input->post('delivery_user_id');
+			$delivery_user_comment = $this->input->post('delivery_user_comment');
 
 			if(!empty($order_credit_per)):
 				$ord_total_amount = $final_order_amount + $shipping_charge + $preparation_cost + $packaging_cost + $order_tip + $used_credit_v - $discount_amount;
@@ -838,12 +844,18 @@ class Controller_order extends CI_Controller
 					'discount_amount' => trim($discount_amount),
 					'order_total_amount' => trim($order_total_amount),
 					'delivery_datetime' => $delivery_datetime,
+					'delivery_user_id' => $delivery_user_id,
+					'delivery_user_comment	' => $delivery_user_comment,
 				);
 			//}
 			
 			if ($order_status != '') {
 				$order_data['order_status'] = trim($order_status);
+				if($order_status == 'Processed' && !empty($delivery_user_id)){
+					$order_data['order_status'] = trim('Out For Delivery');
+				}
 			}
+			
 			$this->order_model->update($order_id, $order_data);
 			//-------------------Update Order master end-------------------
 

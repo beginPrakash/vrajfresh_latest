@@ -236,5 +236,26 @@ class order_model extends CI_Model
 			return $query->result_array();
 		}
 	}
+
+	public function getDeliverypersonlist()
+    {
+        $ArrDeliveryusersList = array();
+        $ci =& get_instance();
+        $ci->db->select("*");
+        $ci->db->from('tbl_delivery_users');
+		$ci->db->where('is_active',1);
+        $query = $ci->db->get();
+        if ($query->num_rows() > 0) {
+            $ArrStatus = $query->result_array();
+            $ArrDeliveryusersList[''] = "--Delivery Users--";
+            if (count($ArrStatus) > 0) {
+                foreach ($ArrStatus as $row) {
+                    $ArrDeliveryusersList[$row['user_id']] = $row['first_name'].' '.$row['last_name'];
+                }
+            }
+        }
+
+        return $ArrDeliveryusersList;
+    }
 }
 ?>

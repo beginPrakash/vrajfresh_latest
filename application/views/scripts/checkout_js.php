@@ -354,7 +354,7 @@ function UpdateAddress(AddressType) {
                         CloseCheckoutModels();
                         $("#FrmEdit_" + AddressType + "_Address")[0].reset();
                         $("#" + prefix + "zipcode").val(Cookies.get("zipcode"));
-                        location.reload();
+                        //location.reload();
 
                     } else {
                         CloseCheckoutModels();
@@ -1230,6 +1230,7 @@ function taxCalc() {
     $(".cart-tax").show();
 
     var selectedOption = $("#state").val().split('|');
+    console.log(selectedOption+'dfdfd');
 
     var selectedValue = selectedOption[0];
 

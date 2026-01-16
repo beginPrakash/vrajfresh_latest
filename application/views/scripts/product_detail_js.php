@@ -595,7 +595,7 @@ function enableCartButton(variant_id) {
             var variant_detail = parentStr.split('-');
             var weight = variant_detail[0];
         }else{
-            var weight = parent;
+            var weight = parentStr;
         }
     }   
     $(".qty_change_sub_id"+product_id).attr('data-price', price);
@@ -1007,15 +1007,31 @@ function get_delivery_message() {
     var delivery_days = Cookies.get("delivery_days");
 
     var current = new Date();
-    var hr = current.getHours();
-    var min = current.getMinutes();
+   // var hr = current.getHours();
+    //var min = current.getMinutes();
+
+    const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/New_York',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    }).formatToParts(new Date());
+
+    let hr, min;
+
+    parts.forEach(part => {
+        if (part.type === 'hour') hr = part.value;
+        if (part.type === 'minute') min = part.value;
+    });
+
+   
     var message = '';
     if (delivery_type == 'Express Delivery') {
         message = 'Order within 23 hours and get delivery tomorrow';
         if (hr < 14) {
             message = 'Order within ' + (14 - hr) + ' hours' + ' : ' + (60 - min) + ' minutes and get same day delivery';
         }
-        message = message + '<br>* Order before 3:00 PM and you can expect your order within 4 hours with our Express Delivery.'
+        message = message + '<br>* Order before 2:00 PM and you can expect your order within 4 hours with our Express Delivery.'
     }
     if (delivery_type == 'Same Day Delivery') {
 

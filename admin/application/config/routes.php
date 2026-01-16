@@ -24,6 +24,13 @@ $route['user-update/(:num)'] = 'adminpanel/Controller_user/add/$1';
 $route['user-delete/(:num)'] = 'adminpanel/Controller_user/delete_ajax/$1';
 $route['user-view/(:num)'] = 'adminpanel/Controller_user/view/$1';
 
+/* Delivery USER */
+$route['deliveryuser'] = 'adminpanel/Controller_delivery_user';
+$route['deliveryuser-add'] = 'adminpanel/Controller_delivery_user/add';
+$route['deliveryuser-update/(:num)'] = 'adminpanel/Controller_delivery_user/add/$1';
+$route['deliveryuser-delete/(:num)'] = 'adminpanel/Controller_delivery_user/delete_ajax/$1';
+$route['deliveryuser-view/(:num)'] = 'adminpanel/Controller_delivery_user/view_deliveryuser_ajax/$1';
+
 /* CONFIGURATION */
 $route['zipcode-configuration'] = 'adminpanel/Controller_zipcode/zipcode';
 $route['save-zipcode'] = 'adminpanel/Controller_zipcode/save_zipcode';

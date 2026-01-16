@@ -25,23 +25,39 @@ class Credittransaction_model extends CI_Model
         ->select_sum('cr.amount')
         ->join('tbl_orders o', 'cr.order_id=o.order_id', 'left')
         ->where('cr.user_id',$user_id)
-        ->where('o.order_status','Completed')
+        ->where_in('o.order_status',['Completed','Processing'])
         ->from('tbl_credit_transaction cr')
         ->get();
         return $query->row_array();
     }
 
-    public function get_crtran_by_user_id($data)
+    public function get_crtran_by_user_id_count($data)
 
     {
 
         $query = $this->db->select('cr.order_id,cr.amount,o.order_datetime,cr.user_id,o.order_status')
+        ->from('tbl_credit_transaction cr')
+            ->join('tbl_orders o', 'cr.order_id=o.order_id', 'left')
+            ->where('cr.user_id', $data)
+            ->order_by('cr.crt_id', 'asc')
+            ->get();
+
+        return $query->result();
+
+    }
+
+    public function get_crtran_by_user_id($data,$limit, $offset)
+
+    {
+
+        $query = $this->db->select('cr.order_id,cr.amount,o.order_datetime,cr.user_id,o.order_status')
+            ->from('tbl_credit_transaction cr')
             ->join('tbl_orders o', 'cr.order_id=o.order_id', 'left')
             ->where('cr.user_id', $data)
 
-            ->order_by('cr.crt_id', 'asc')
-
-            ->get('tbl_credit_transaction cr');
+            ->order_by('cr.order_id', 'desc')
+            ->limit($limit, $offset)
+            ->get();
 
         return $query->result();
 

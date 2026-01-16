@@ -55,6 +55,7 @@ class Users_model extends CI_Model
     {
         $this->db->where('user_id', $user_id);
         $update = $this->db->update($table, $data);
+        
         if ($update) {
             return true;
         } else {
@@ -112,9 +113,8 @@ class Users_model extends CI_Model
     }
     public function get_user_by_email($data)
     {
-        $query = $this->db->select('user_name,email,user_id')
-            ->where('email', $data['email'])
-            ->where('user_role_id', $data['user_role_id'])
+        $query = $this->db->select('first_name,last_name,email,user_id')
+            ->where('email', $data)
             ->get('tbl_users');
         return $query->result();
     }

@@ -394,6 +394,20 @@ $is_payment_received = true;
             required readonly>
       </div>
 
+      <div class="col-sm-4">
+         <label>Delivery User : </label>
+            <?php
+         $order_status = $ArrFieldData['delivery_user_id'] ?? '';
+         echo form_dropdown('delivery_user_id', $delivery_person_list, $order_status, 'id="delivery_user_id" class="form-control"');
+         
+            ?>
+      </div>
+
+      <div class="col-sm-4">
+         <label>Delivery User Comment: </label>
+         <textarea placeholder="Delivery User Comment" class="form-control" id="delivery_user_comment" name="delivery_user_comment"><?php echo $ArrFieldData['delivery_user_comment']; ?></textarea>
+      </div>
+
    </div>
 
    <div class="row">

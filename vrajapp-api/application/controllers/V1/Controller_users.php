@@ -80,7 +80,12 @@ class Controller_users extends CI_Controller
 			);
 			$user_exist = $this->users_model->user_exist($user_data);
 			if ($user_exist > 0) {
-				$errors = 'Mobile number Already Exist.Please try another Mobile number';
+			    $user_rdata = $this->users_model->get_user_by_email($json_obj->email);
+				if (count($user_rdata) > 0) {
+				    $errors = 'Email ID Already Exist.Please try another Email ID';
+				}else{
+				    $errors = 'Mobile number Already Exist.Please try another Mobile number';
+				}
 			} else {
 				
 				$user_id = $this->users_model->add_user($user_data, 'tbl_users');
@@ -118,7 +123,13 @@ class Controller_users extends CI_Controller
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
 
-		$oauth_key = $json_obj->oauth_key;
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
 		$errors = $success_message = '';
 		$ArrData = array();
 		if (check_oauth_key($oauth_key)) {
@@ -395,11 +406,35 @@ class Controller_users extends CI_Controller
 				
 					$otp_code = $this->otpverification_model->add_otpcode($otp_data);
 
+					// Remove spaces
+					$valid_emil = trim($json_obj->email);
+					// Check email
+					if (filter_var($valid_emil, FILTER_VALIDATE_EMAIL)) {
+						//send email
+						$user_rdata = $this->users_model->get_user_by_email($valid_emil);
+						if (count($user_rdata) > 0) {
+							$user_name = $user_rdata[0]->first_name.' '.$user_rdata[0]->last_name;
+							$subject = "Your New Vrajfresh Login OTP";
+							$email_content = file_get_contents('templates/user_new_otp.html');
+							$email_content = str_replace('##user_name##', $user_name, $email_content);
+							$email_content = str_replace('##otp##', $gen_otp, $email_content);
+							$email_content = str_replace('##link##', FRONT_URL, $email_content);
+						
+							if ($valid_emil != '') {
+								send_mail($_POST["email"], $subject, $email_content);
+								$success_message = 'You got your new OTP.Please check your email';
+							} else {
+								$errors = "Sorry,Something going wrong";
+							}
+						}
+					}else{
+						$success_message = 'Login Successfully';
+					}
+
 					
 
 					$ArrData['userdata'] = $result;
 					$ArrData['gen_otp'] = $gen_otp;
-					$success_message = 'Login Successfully';
 				} else {
 					$errors = 'Please enter valid login details.';
 				}
@@ -548,13 +583,21 @@ class Controller_users extends CI_Controller
 
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
 
 
 		$result = $errors = $success_message = '';
 		$ArrData = array();
+		if (check_oauth_key($oauth_key)) {
 			$data = array(
 				"user_id" => $json_obj->user_id,
-				"user_role_id" => $json_obj->user_role_id
+				//"user_role_id" => $json_obj->user_role_id
 			);
 
 
@@ -567,15 +610,26 @@ class Controller_users extends CI_Controller
 				$errors = 'No Address Found';
 			}
 			send_response_to_api($ArrData, $errors, $success_message);
+		}
 	}
 
 	public function edit_user_address()
 	{
-		$json_str = json_encode($_POST);
-		$json_obj = json_decode($json_str);
+		$json_str = file_get_contents('php://input');
+		$json_obj = json_decode($json_str,true);
 
-		$oauth_key = $json_obj->oauth_key;
 		$errors = $success_message = '';
+
+		$json_str = $this->input->raw_input_stream;		
+		$json_obj = json_decode($json_str);
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+
 		$ArrData = array();
 		if (check_oauth_key($oauth_key)) {
 			$data = array(
@@ -595,6 +649,7 @@ class Controller_users extends CI_Controller
 
 			);
 			$user_id = $json_obj->user_id;
+
 			$result = $this->users_model->update_user($data, $user_id, 'tbl_users');
 			if ($result) {
 				$success_message = 'Your address detail has been updated successfully';

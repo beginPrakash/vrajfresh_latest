@@ -170,4 +170,15 @@ class Home_model extends CI_Model
         ];
         return $response;
     }
+
+    public function get_wishlist_product_by_user($user_id){
+        $this->db->select("GROUP_CONCAT(product_id) AS product_ids");
+        $this->db->from("tbl_user_wishlist");
+        $this->db->where("user_id", $user_id);
+
+        $result = $this->db->get()->row();
+
+        $product_ids = $result->product_ids;
+        return $product_ids;
+    }
 }

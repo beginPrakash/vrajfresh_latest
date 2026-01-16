@@ -87,7 +87,7 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 defined('BASE_URL')         OR define('BASE_URL','http://localhost/vrajfresh_latest/api/');
 defined('ASSET_URL')         OR define('ASSET_URL',BASE_URL.'assets/');
 defined('FRONT_URL')         OR define('FRONT_URL','http://localhost/vrajfresh_latest/');
-
+defined('API_URL')      OR define('API_URL', 'http://localhost/vrajfresh_latest/vrajapp-api/');
 defined('ADMIN_URL')         OR define('ADMIN_URL','http://localhost/vrajfresh_latest/admin/');
 
 defined('FEDEX_CLIENT_ID')  OR define('FEDEX_CLIENT_ID', 'l7da850e647e304b0faba020cadce84dd4'); //Fedex Client id

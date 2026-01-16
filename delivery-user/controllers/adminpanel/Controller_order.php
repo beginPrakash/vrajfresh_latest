@@ -1,0 +1,411 @@
+<?php
+
+class Controller_order extends CI_Controller{
+	
+	public function __construct()
+    {
+        parent::__construct();
+        $this->load->model('order_model');		
+        $this->load->model('order_product_model');		
+		$this->load->model('common_model');
+        $this->load->model('product_model');	
+        $this->load->model('transactions_model');	
+				
+		if(!IsUserLogin()){
+			$authorized_error = "You are not authorized to view this page....!";
+			$this->session->set_flashdata('authorized_error', $authorized_error);
+			redirect('login');
+		}
+		
+		}
+		
+	public function index()
+	{
+		$ArrData = $this->order_model->getOrderListData($_POST);
+		
+		if(@$_REQUEST['columns'] != "")
+		{						
+			$output = array('sEcho' => $_REQUEST['draw'],'iTotalRecords' => $ArrData['iTotalRecords'],'iTotalDisplayRecords' => $ArrData['iTotalDisplayRecords'],'aaData' => array());
+				
+				$i = $_REQUEST['start']+1;
+				foreach($ArrData['result'] as $aRow)
+				{
+					$row = $category_name = array();
+					$base_url = base_url();	
+					$order_id = $aRow['order_id'];
+					$actions = '';
+					$actions .= '<input type="checkbox" name="delete[]" class="chkDelete" value="'.$order_id.'" /><div class="btn-group">';
+					//$actions .='<a rel="'.$base_url.'adminpanel/controller_order/view_order_ajax/" id="'.$order_id.'" title="Order Detail" class="view_action btn btn-default btn-sm" ><i class="fa fa-eye"></i></a>';
+					
+					$actions .='<a rel="'.$base_url.'adminpanel/controller_order/update_order/" id="'.$order_id.'" title="Order Edit" class="edit_popup btn btn-default btn-sm" ><i class="fa fa-pencil"></i></a>';
+
+					$actions .= '<a rel="'.$base_url.'order-delete/'.$order_id.'" class="deleteRecord btn btn-default btn-sm"><i class="fa fa-trash-o"></i></a></div>';
+
+					
+					$row[] = $actions;
+					$row[] = $aRow['order_id'];
+					$row[] = $aRow['order_datetime'];
+					$row[] = $aRow['display_name'];
+					$row[] = $aRow['mobile_no'];
+					$row[] = $aRow['order_amount'];
+					$row[] = $aRow['order_status'];
+
+
+					//$row[] = getIsactiveButtonForList($aRow['is_active'],$order_id,'tbl_order','order_id');
+					//$is_active = ($aRow['is_active']=='0')?'<small class="label label-warning">No</small>':'<small class="label label-info">Yes</small>';
+					//$row[] = $is_active;
+       
+					$i++;
+					$output['aaData'][] = $row;
+
+				}
+				echo json_encode($output);
+				exit;
+		}
+		/* DATA TABLE END */
+		$ArrPageData = array();
+		$ArrPageData['cms_title'] = 'Order List';
+		$ArrPageData['button_url'] = '';
+		$ArrPageData['button_label'] = '';
+		$ArrPageData['view_name'] = 'view_order_list.php';
+		$this->load->view('admin_panel/admin_panel',$ArrPageData);
+	}
+
+
+	public function view_order_ajax(){
+		$id = $this->input->post('id');
+		$data['ArrFieldData']  = $this->order_model->getOrderById( $id );
+		$data['ArrOrderProduct']  = $this->order_product_model->getOrderProductByOrderId( $id );
+		//echo "<pre>";print_r($data['ArrOrderProduct']);exit;
+		$this->load->view('admin_panel/quickview/view_order_details_popup',$data);
+	}
+
+	public function delete_ajax($id){
+		$result = $this->order_model->delete($id);
+		if($result == true){
+			echo 'Yes';
+		}else{
+			echo 'No';
+		}
+		
+	}
+
+	public function delete_multiple_order_record()
+	{
+		$id = $_POST['primary_id'];
+		$primary_idArr = explode(',',$id);
+		$result = 0;
+		foreach ($primary_idArr as $primary_id) {
+			$result+= $this->order_model->delete($primary_id);
+		}		
+		if($result > 0){
+			echo 1;
+		}else{
+			echo 0;
+		}
+
+	}
+
+	
+
+	/* CAPTURE PAYMENT */
+	public function order_payment_capture()
+	{
+	    //echo "Admin -> order_payemnt_capture";
+	    //print_r($_POST);
+		$order_id = $_POST['order_id'];
+		$stripeToken = $_POST['stripeToken'];
+		$payment_intent_id = $_POST['payment_intent_id'];
+		$amount_to_capture = $_POST['amount_to_capture']*100;
+		
+		$url = API_URL.'stripe/payment_capture';
+		echo $url;
+		$ArrPayment = array('stripeToken'=>$stripeToken,'payment_intent_id'=>$payment_intent_id,'amount_to_capture'=>$amount_to_capture);
+		echo "<pre>";
+		print_r($ArrPayment);
+		echo "</pre>";
+		$data = array("oauth_key" => "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT", "ArrPayment" => $ArrPayment);
+		echo "<pre>";
+		print_r($data);
+		echo "</pre>";
+		$curl = curl_init();
+
+		curl_setopt($curl, CURLOPT_URL, $url);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($curl, CURLOPT_POST, true);
+		curl_setopt($curl, CURLOPT_POSTFIELDS,  json_encode($data));
+		curl_setopt($curl, CURLOPT_HTTPHEADER, [
+			'X-RapidAPI-Host: kvstore.p.rapidapi.com',
+			'X-RapidAPI-Key: test',
+			'Content-Type: application/json'
+		]);
+
+		$response = curl_exec($curl);
+		if ($response === false) {
+			$error = curl_error($curl);
+			echo 'cURL error: ' . $error;
+		} else {
+			echo 'Response: ' . $response;
+		}
+		
+		$response = json_decode($response);
+		
+
+		curl_close($curl);
+		
+		$ArrData = $response->data;
+		echo $ArrData->status;
+		$flag = false;
+		
+		if (isset($ArrData) && $ArrData->status == 'succeeded')
+		{
+			$capture_payment_stripe_raw_response = json_encode($ArrData);
+			$amount_received = $ArrData->amount_received;
+			$int_amount_received = (int)$amount_received;
+			print_r($int_amount_received);
+			$order_data=array(
+				'amount_received'  => trim($int_amount_received)/100,
+				'amount_received_status'  => 'succeeded',
+				'order_status'  => 'Ready To Ship',
+				'capture_payment_stripe_raw_response'  => $capture_payment_stripe_raw_response,
+				'capture_payment_datetime' => date('Y-m-d H:i:s'),
+			);
+
+			$this->order_model->update($order_id,$order_data);
+			echo $order_id;
+			
+			//add log
+			$ArrTransactionLog=array(
+				"stripe_raw_response"=>$capture_payment_stripe_raw_response,
+				"payment_intent_id"=>$ArrData->id,
+				"payment_intent_status"=>$ArrData->status,
+				"order_id"=>$order_id,
+				"transaction_amount"=>$amount_received/100,
+				"transaction_datetime"=>date("Y-m-d H:i:s"),
+				"created_datetime"=>date("Y-m-d H:i:s")
+			);
+			$this->transactions_model->add($ArrTransactionLog);
+			
+			$flag = true;
+		}
+		else
+		{
+			$amount_received = $ArrData->amount_received;
+			$int_amount_received = (int)$amount_received;
+			print_r($int_amount_received);
+			$order_data=array(
+				'amount_received'  => trim($int_amount_received)/100,
+				'amount_received_status'  => 'failed',
+			);
+
+			$this->order_model->update($order_id,$order_data);
+		}
+		if($flag)
+		{
+			$this->session->set_flashdata('success_message', 'Order payment captured successfully.');
+		}else{
+			$this->session->set_flashdata('error_message', 'Oops...! something went wrong, please try again');
+		}
+		redirect('orders');
+		
+	}
+
+	/* UPDATE ORDER PROCESS START */
+	public function update_order()
+	{
+		$id = $this->input->post('id');
+		$data['ArrFieldData']  = $this->order_model->getOrderById( $id );
+		$data['ArrOrderProduct']  = $this->order_product_model->getOrderProductByOrderId( $id );
+
+		$data['ArrOrderStatus']  = getOrderStatus();
+		//echo "<pre>";print_r($data['ArrFieldData'] );exit;
+
+		$this->load->view('admin_panel/quickview/view_order_update_popup',$data);
+	}
+	
+	
+	public function update_order_process()
+	{
+		//echo "<pre>";print_r($_POST);exit;
+		$flag = false;
+		$total_order_amount = 0;
+		$order_id = $this->input->post('order_id');
+		if($order_id>0)
+		{
+			//-------------------Existing Products Process Start-------------------
+			$ArrOrderProductIds = $this->input->post('ArrOrderProductIds');
+			$ArrQty = $this->input->post('qty');
+			$ArrUnit_price = $this->input->post('unit_price');
+			$ArrTotal_amount = $this->input->post('total_amount');
+
+			if(is_array($ArrOrderProductIds) && count($ArrOrderProductIds)>0)
+			{
+				foreach($ArrOrderProductIds as $order_product_id)
+				{
+					$ArrOrderProductData = array(
+						'qty'=>$ArrQty[$order_product_id],
+						'unit_price'=>$ArrUnit_price[$order_product_id],
+						'total_amount'=>$ArrTotal_amount[$order_product_id],
+						'modified_datetime' => date('Y-m-d H:i:s'),
+						'modified_by' => get_current_admin_id(),
+					);
+					$this->order_product_model->update($order_product_id,$ArrOrderProductData);
+					$total_order_amount += $ArrTotal_amount[$order_product_id];
+				}
+				$flag = true;
+			}
+			//-------------------Existing Products Process End-------------------
+
+			//-------------------Newly Added Products Process Start-------------------
+			$ArrNewProducts = $this->input->post('ArrNewProducts');
+			$ArrNewQty = $this->input->post('ArrNewQty');
+			$ArrNewUnit_price = $this->input->post('ArrNewUnit_price');
+			$ArrNewTotal_amount = $this->input->post('ArrNewTotal_amount');
+			
+			if(is_array($ArrNewProducts) && count($ArrNewProducts)>0)
+			{
+				for($key=0;$key<count($ArrNewProducts);$key++)
+				{
+					$product_details = $ArrNewProducts[$key];
+					
+					$product_variant_id = $prodcut_id = $product_variant_id = '';
+					$ArrProductDetails = explode("|",$product_details);
+					if(is_array($ArrProductDetails) && count($ArrProductDetails)>0)
+					{
+						//Format: product_id-variant_id-variant_price-product_name
+						$prodcut_id = $ArrProductDetails[0];
+						$product_variant_id = $ArrProductDetails[1];
+						$unit_price = $ArrProductDetails[2];
+						$product_name = $ArrProductDetails[3];
+					}
+					
+					
+					if($prodcut_id>0)
+					{
+						$ArrOrderProductData = array(
+							'order_id'=>$order_id,
+							'product_id'=>$prodcut_id,
+							'qty'=>$ArrNewQty[$key],
+							'product_name'=>$product_name,
+							'product_variant_id'=>$product_variant_id,
+							'unit_price'=>$ArrNewUnit_price[$key],
+							'total_amount'=>$ArrNewTotal_amount[$key],
+							'created_datetime' => date('Y-m-d H:i:s'),
+							'created_by' => get_current_admin_id(),
+						);
+						$this->order_product_model->add($ArrOrderProductData);
+						$total_order_amount += $ArrNewTotal_amount[$key];
+					}
+				}
+				$flag = true;
+			}
+			//-------------------Newly Added Products Process End-------------------
+
+			//-------------------Update Order master start-------------------
+			$shipping_charge = $this->input->post('shipping_charge');
+			$order_tip = $this->input->post('order_tip');
+			$order_total_tax = $this->input->post('order_total_tax');
+			$discount_amount = $this->input->post('discount_amount');
+			$order_status = $this->input->post('order_status');
+			$order_total_amount=$total_order_amount+$shipping_charge+$order_tip+$order_total_tax-$discount_amount;
+			$order_data=array(
+				'order_amount'  => trim($total_order_amount),
+				'fedex_shipping_charge'=>trim($shipping_charge),
+				'order_tip' => trim($order_tip),
+				'order_total_tax' =>trim($order_total_tax),
+				'discount_amount' =>trim($discount_amount),
+				'order_status' =>trim($order_status),
+				'order_total_amount' =>trim($order_total_amount),
+			);
+			$this->order_model->update($order_id,$order_data);
+			//-------------------Update Order master end-------------------
+			
+			
+			if($order_status=='Refunded')
+			{
+				//call function in strip controller (API)
+				$url = API_URL.'stripe/payment_cancel';
+				$ArrPayment = array('stripeToken'=>$stripeToken,'payment_intent_id'=>$payment_intent_id);
+				$data = array("oauth_key" => "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT", "ArrPayment" => $ArrPayment);
+				$curl = curl_init();
+
+				curl_setopt($curl, CURLOPT_URL, $url);
+				curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($curl, CURLOPT_POST, true);
+				curl_setopt($curl, CURLOPT_POSTFIELDS,  json_encode($data));
+				curl_setopt($curl, CURLOPT_HTTPHEADER, [
+				'X-RapidAPI-Host: kvstore.p.rapidapi.com',
+				'X-RapidAPI-Key: test',
+				'Content-Type: application/json'
+				]);
+
+				$response = curl_exec($curl);
+
+				$response = json_decode($response);
+			}
+		}
+		if($flag)
+		{
+			$this->session->set_flashdata('success_message', 'Order details has been updated successfully.');
+		}else{
+			$this->session->set_flashdata('error_message', 'Oops...! something went wrong, please try again');
+		}
+		redirect('orders');
+	}
+
+	
+	public function remove_order_product($order_product_id)
+	{
+		$this->order_product_model->delete($order_product_id);
+	}
+	
+	public function getCartProductRow($product_counter)
+	{
+		$ArrProducts = $this->product_model->product_list_data_with_variant();
+	?>
+	 <tr>
+               <td>
+			   <?php
+				$name = 'ArrNewProducts[]';
+				$ArrOptions = array('' => "Select");
+				foreach ($ArrProducts as $key => $value)
+				{
+					//Format: product_id-variant_id-variant_price-product_name
+					if(isset($value['id']) && $value['id']>0)
+					{
+						$val = $value['product_id']."|".$value['id']."|".$value['variant_price']."|".$value['product_name'];
+						$data = $value['product_name']." - ".$value['product_variant_size']." gms";
+					}
+					else
+					{
+						$val = $value['product_id']."||".$value['product_price']."|".$value['product_name'];
+						$data = $value['product_name'];
+					}
+					
+					$ArrOptions[$val] = $data;
+				}
+				$html_element = 'class="form-control select_product_ajax" required onChange="SetPrice(this.value,'.$product_counter.');"';
+				echo form_dropdown($name, $ArrOptions, '',$html_element );
+				?>
+               </td>
+               <td>
+                  <input type="text" placeholder="QTY" class="form-control qty" id="qty<?php echo $product_counter; ?>" name="ArrNewQty[]" value="" required onChange="updateProductTotalAmount(this.value,<?php echo $product_counter; ?>);">
+               </td>
+               
+               <td>
+                  <input type="text" placeholder="Unit Price" class="form-control" id="unit_price<?php echo $product_counter; ?>" name="ArrNewUnit_price[]" value="" required readonly>
+               </td>
+               
+               <td>
+                  <input type="text" placeholder="Total Amount" class="form-control total_amount" id="total_amount<?php echo $product_counter; ?>" name="ArrNewTotal_amount[]" value="" required readonly>
+               </td>
+               <td>
+               <a href="javascript:void(0);" class="remove-button" title="Click here to remove product">
+					<img src="<?php echo admin_media(); ?>dist/img/close-2.png">
+				</a>
+            	</td>
+            </tr>
+			
+	<?php
+	}
+}
