@@ -139,6 +139,32 @@ span.noti_count_or {
 
 	<?php } ?>
 
+	<?php
+
+	if ($user_role_id != 'Kaivan' && $user_role_id != 'Tirth' && $user_role_id != 'kaivan' && $user_role_id != 'tirth') { ?>
+
+		<li class="treeview <?php if ($active_menu == 'deliveryuser')
+
+			echo 'active'; ?>">
+
+			<a href="javascript:void(0);">
+
+				<i class="fa fa-user"></i> <span>User</span> <i class="fa fa-angle-left pull-right"></i>
+
+			</a>
+
+			<ul class="treeview-menu">
+
+				<li><a href="<?php echo base_url(); ?>deliveryuser-add">Create Delivery User</a></li>
+
+				<li><a href="<?php echo base_url(); ?>deliveryuser">View Delivery Users</a></li>
+
+			</ul>
+
+		</li>
+
+	<?php } ?>
+
 
 
 	<?php

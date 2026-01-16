@@ -1,0 +1,135 @@
+.top_menu_inbox_page { background:#fff; display:inline-block; width:100%; border-bottom:solid 1px #e4e4e4; padding:14px 0 14px 0px; top:-15px; position:relative; font-family: 'Roboto', sans-serif; }
+.top_menu_inbox_page .all_page_cunt { font-weight:700; font-size:13px; margin:0 7px 0 0px; }
+.top_menu_inbox_page .all_page_cunt b { font-weight:normal; }
+.top_menu_inbox_page ul { margin:0 0 0 12px; padding:0px; display:inline-block; }
+.top_menu_inbox_page ul li { display:inline-block; list-style:none; }
+.top_menu_inbox_page ul li a { font-size:15px; color:#434343; font-weight:500; margin:0 20px 0 20px; }
+.top_menu_inbox_page ul li a:hover { color:#3c8dbc; }
+.body_right_show_mail { background:#fff; border-radius:4px; border:solid 1px #e5e5e5; display:inline-block; width:100%; min-height:200px; padding:21px 15px 21px 15px; font-family: 'Roboto', sans-serif; margin-top: -20px; }
+.body_right_show_mail .subject_ttl_mail { color:#3e3e3e; margin:0px; padding:0px; font-weight:500; font-size:21px; font-family: 'Roboto', sans-serif; }
+.body_right_show_mail .inner_details_main_bg { display:inline-block; width:100%; border:solid 1px #e4e4e4; margin:16px 0 0 0px; }
+.body_right_show_mail .top_infrmation { display:inline-block; width:100%; border-bottom:solid 1px #e4e4e4; }
+.body_right_show_mail .top_infrmation ul { margin:4px 0 0 0px; padding:0px; display:inline-block; }
+.body_right_show_mail .top_infrmation ul li { margin:0 5px 0 10px; padding:0px; display:inline-block; list-style:none; font-size:14px; font-weight:500; }
+.body_right_show_mail .top_infrmation ul li span { color:#00681a; }
+.body_right_show_mail .top_infrmation ul li .fa { font-size:16px; color:#999; }
+.body_right_show_mail .top_infrmation ul li a { color:#454546; text-decoration:underline; }
+.body_right_show_mail .top_infrmation ul li a:hover { color:#000; text-decoration:none; }
+.body_right_show_mail .mail_type_text { padding:18px; width:90%; }
+.body_right_show_mail .mail_type_text p { margin:0px; line-height:30px; color:#484848; }
+.body_right_show_mail .mail_type_text p span { font-weight:500; color:#4e4e4e; }
+.body_right_show_mail .top_infrmation ul li:first-child { margin-right:0px; }
+.body_right_show_mail .bottom_footer_mail { background:#f8f8f8; border-top:solid 1px #e4e4e4; padding:10px 0 10px 0px; display:inline-block; width:100%; }
+.body_right_show_mail .bottom_footer_mail ul { margin:0px; padding:0px; display:inline-block; }
+.body_right_show_mail .bottom_footer_mail ul li { margin:0px; padding:0px; display:inline-block; list-style:none; }
+.body_right_show_mail .bottom_footer_mail ul li a { text-decoration:underline; color:#333333; font-size:13px; margin:0 2px 0 15px; font-weight:500; }
+.body_right_show_mail .bottom_footer_mail ul li a:hover { text-decoration:none; color:#2a7cde; }
+.body_right_show_mail .bottom_footer_mail ul li a i { font-size: 15px; margin: 0 3px 0 0; }
+.left_inbox_bg_all_mails { font-family: 'Roboto', sans-serif; border-radius:4px; border:solid 1px #e4e4e4; background:#fff; display:inline-block; width:100%; margin-top: -20px; }
+.left_inbox_bg_all_mails .top_detail_searchs { background:#fbfafa; border-bottom:solid 1px #e4e4e4; padding:13px 10px 13px 10px; display:inline-block; width:100%; border-radius: 4px 4px 0px 0px; }
+.left_inbox_bg_all_mails .top_detail_searchs .has-feedback { display:inline-block; }
+.left_inbox_bg_all_mails .top_detail_searchs .btn-default { margin-left: 6px; }
+.left_inbox_bg_all_mails .table-responsive .table tr td { vertical-align:middle; font-size:14px; font-family: 'Roboto', sans-serif; padding:10px 8px 10px 12px; }
+.left_inbox_bg_all_mails .table-responsive .table tr td .unner_cantents { color:#898989; font-size:13px; }
+.left_inbox_bg_all_mails .table-responsive .table tr td .date_mail { color:#5e5e5e; }
+.left_inbox_bg_all_mails .table-responsive .table tr td .subjects { color:#3e3e3e; }
+.left_inbox_bg_all_mails .table-responsive .table tr td .nemes { color:#3e3e3e; }
+.left_inbox_bg_all_mails .icheckbox_flat-blue { width:17px; height:15px; border:solid 1px #8b8b8b; background:#fff; border-radius:4px; }
+.left_inbox_bg_all_mails .icheckbox_flat-blue.checked { background: #fff url(../img/right_checked.png) left 2px top 2px no-repeat; }
+.left_inbox_bg_all_mails .table-responsive .table .read_box { background:#fbfbe2; }
+.left_inbox_bg_all_mails .table-responsive .table .read_box td .nemes { font-weight:500; }
+.left_inbox_bg_all_mails .table-responsive .table .read_box td .subjects { font-weight:500; }
+.left_inbox_bg_all_mails .table-responsive .table .read_box td .date_mail { font-weight:500; }
+.left_inbox_bg_all_mails .table-responsive .table .read_box td .unner_cantents { color:#757575; }
+.left_inbox_bg_all_mails .table-responsive .table .unreads_text td .nemes { font-weight:500; }
+.left_inbox_bg_all_mails .table-responsive .table .unreads_text td .subjects { font-weight:500; }
+.left_inbox_bg_all_mails .table-responsive .table .unreads_text td .date_mail { font-weight:500; }
+.left_inbox_bg_all_mails .table-responsive .table .unreads_text td .unner_cantents { color:#757575; }
+.left_inbox_bg_all_mails .top_detail_searchs .checkbox-toggle { color: #5c5b5b; font-size: 18px; margin: 4px 0 0 0; display: inline-block; }
+.left_inbox_bg_all_mails .table-responsive .table tr td .all_cantent_display { display:inline-block; width:100%; }
+
+
+
+/* 30_07_2019 View Inbox Page CSS Start */
+.view_index_page{position:relative;}
+.left_inbox_bg_all_mails .top_detail_searchs .all_selects { -webkit-appearance: none; -moz-appearance: none; appearance: none; border: solid 1px #c1c1c1; font-size:15px; color: #434343; background: #fff url(../img/drop_sab_select.png) left top no-repeat; background-position: 92% 50%; height:28px; font-weight:500; padding:0 8px 0 8px; min-width:90px; display:inline-block; }
+.left_inbox_bg_all_mails .top_detail_searchs .all_selects:focus { outline:none; }
+.left_inbox_bg_all_mails .top_detail_searchs .all_selects option { padding:5px 0 5px 0px; font-size:14px; line-height:30px; }
+.left_inbox_bg_all_mails .top_detail_searchs .filter { display:inline-block; margin:6px 0 0 0; }
+.left_inbox_bg_all_mails .top_detail_searchs .filter a { border-radius: 4px; border: solid 1px #2197ee; font-size: 13px; text-decoration: none; padding: 7px 15px 6px 14px; color: #2197ee; background: #fff; }
+.left_inbox_bg_all_mails .top_detail_searchs .filter a i { border: solid 1px; border-radius: 100%; width: 20px; display: inline-block; height: 18px; font-size: 10px; text-align: center; margin: -4px 3px 0 0px; vertical-align: middle; line-height: 16px; }
+.left_inbox_bg_all_mails .top_detail_searchs .filter a:hover { background: #3c3c3c; color: #fff; border-color: #3c3c3c; }
+.view_index_page .inner_bg_main { display: none; }
+.view_index_page .inner_bg_main { border: 1px solid rgba(0,0,0,.15); box-shadow: 10px 26px 38px #00000069; padding: 17px 0 5px 0; background: #fff; margin: 19px 0 0 0px; position: absolute; z-index: 9; width: 38%; top: 21px; left: 11px;}
+.view_index_page .inner_bg_main .remove_btn { border-radius: 50%; height: 20px; width: 20px; padding: 0px; background-color: #d9534f; color: #fff; display: inline-block; text-align: center; line-height: 20px; position: absolute; top: -10px; right: -10px; }
+.view_index_page .inner_bg_main #triangle_down { width: 0; height: 0; border-left: 10px solid transparent; border-right: 8px solid transparent; border-bottom: 16px solid #cccccc80; position: absolute; left: 10%; top: -17px; }
+.view_index_page .inner_bg_main input[type=checkbox] { margin: 4px 6px 0 0; }
+.view_index_page .inner_bg_main .inner_value { margin:5px 0 0 20px; }
+.view_index_page .inner_bg_main .search-container { position:relative; }
+.view_index_page .inner_bg_main .search-container input[type=text] { padding: 6px 12px; margin-top: 8px; font-size: 15px; border: 1px solid #ccc; border-radius:4px; width:100%; position:relative; }
+.view_index_page .inner_bg_main .search-container input:focus{outline:none;}
+.view_index_page .inner_bg_main .date_feild .form-control:focus{outline:none; border-color:#ccc;}
+.view_index_page .inner_bg_main .date_feild{position:relative;}
+.view_index_page .inner_bg_main .date_feild:before { content: "\f073"; position:absolute; top:26px; right:1px; font: normal normal normal 14px/1 FontAwesome; background: #ddd; font-size: 16px; padding: 8px 10px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; }
+.view_index_page .inner_bg_main .search-container button { padding: 6px 11px 6px 10px; margin-top: 8px; background: #ddd; font-size: 15px; border: none; cursor: pointer; position:absolute; right:1px; top:1px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; }
+.view_index_page .inner_bg_main .search-container button:hover { background: #ccc; }
+.view_index_page .inner_bg_main .add-on .form-control:focus { box-shadow:none; -webkit-box-shadow:none; border-color:#cccccc; }
+.view_index_page .inner_bg_main .btn_filter .btn { border:none; padding:7px 28px; font-weight:500; font-size:17px; letter-spacing:1px; margin-top:5px;}
+.view_index_page .inner_bg_main .form_check_chks label { position: relative; cursor: pointer; color: #333; font-size: 14px; box-shadow:none; font-weight:400;}
+.view_index_page .inner_bg_main .form_check_chks label .label-text-bold{ font-weight:700;}
+.view_index_page .inner_bg_main .form_check_chks input[type="checkbox"], input[type="radio"] { position: absolute; right: 9000px; }
+.view_index_page .inner_bg_main .form_check_chks input[type="checkbox"] + .label-text:before { content: "\f096"; font-family: "FontAwesome"; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing:antialiased; width: 16px; display: inline-block; margin-right: 5px; font-size: 18px; vertical-align:middle; color: #9b9b9d;}
+.view_index_page .inner_bg_main .form_check_chks input[type="checkbox"]:checked + .label-text:before { content: "\f14a"; color: #2980b9; animation: effect 250ms ease-in; }
+.view_index_page .inner_bg_main .form_check_chks input[type="checkbox"]:disabled + .label-text { color: #aaa; }
+.view_index_page .inner_bg_main .form_check_chks input[type="checkbox"]:disabled + .label-text:before { content: "\f0c8"; color: #ccc; }
+/* 30_07_2019 View Inbox Page CSS End */ 
+
+
+@media only screen and (min-width:1200px) and (max-width:1500px) {
+/* 30_07_2019 View Inbox Page CSS Start */	
+.view_index_page .inner_bg_main{ width:45%;}
+/* 30_07_2019 View Inbox Page CSS End */
+}
+
+@media only screen and (min-width:992px) and (max-width:1199px) {
+.top_menu_inbox_page ul li a { margin:0 10px 0 10px; }
+
+/* 30_07_2019 View Inbox Page CSS Start */
+.view_index_page .col-sm-4.wrap_width{ width:50%;}
+.view_index_page .col-sm-3.wrap_width{ width:50%;}
+.view_index_page .col-sm-5.wrap_width{ width:100%;}
+.top_detail_searchs .box-tools{ margin-top:20px;}
+/* 30_07_2019 View Inbox Page CSS End */
+}
+ @media only screen and (min-width:768px) and (max-width:991px) {
+.top_menu_inbox_page ul li a { margin:0 9px 0 9px; }
+
+/* 30_07_2019 View Inbox Page CSS Start */
+.view_index_page .inner_bg_main{ width:85%;}
+/* 30_07_2019 View Inbox Page CSS End */
+}
+ @media only screen and (max-width:767px) {
+.top_menu_inbox_page { top:0px; }
+.left_inbox_bg_all_mails { margin-top:0px; }
+.body_right_show_mail { margin-top:0px; }
+.top_menu_inbox_page .all_selects { width:100%; background-position:97% 50%; }
+.top_menu_inbox_page ul { margin:0px; }
+.top_menu_inbox_page ul li a { display:inline-block; margin:10px 20px 0px 0px; }
+
+/* 30_07_2019 View Inbox Page CSS Start */
+.view_index_page .inner_bg_main{ width:85%; margin: 39px 0 0 0px;}
+.view_index_page .col-sm-4.wrap_width{ width:50%; display:inline-block; float:right;}
+.view_index_page .col-sm-3.wrap_width{ width:50%; display:inline-block; float:left;}
+.view_index_page .col-sm-5.wrap_width{ width:100%; clear: both;}
+/* 30_07_2019 View Inbox Page CSS End */
+}
+ @media only screen and (max-width:375px){
+/* 30_07_2019 View Inbox Page CSS Start */	 
+.top_detail_searchs .box-tools{ margin-top:20px;}
+.top_menu_inbox_page ul li a { margin:0 9px 0 9px; }
+.view_index_page .inner_bg_main{ width:85%;}
+.view_index_page .col-sm-4.wrap_width{ width:100%; display:block; float:none;}
+.view_index_page .col-sm-3.wrap_width{ width:100%; display:block; float:none;}
+.view_index_page .col-sm-5.wrap_width{ width:100%; clear: both;}
+/* 30_07_2019 View Inbox Page CSS End */	
+}

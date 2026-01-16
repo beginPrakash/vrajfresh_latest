@@ -188,7 +188,22 @@ class Controller_home extends CI_Controller
 		$errors = $success_message = '';
 		$ArrData = array();
 		$result = array();
-			
+
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+		$w_productlist = '';
+		if ((!empty($oauth_key)) && (check_oauth_key($oauth_key))) {
+    		$token_result = $this->db->get_where('tbl_users_token', ['access_token' => $oauth_key])->row();
+            $suser_id = $token_result->user_id;
+			$w_productlist = $this->home_model->get_wishlist_product_by_user($suser_id);
+
+		}	
+		
 			$get_home_product_slider_data = $this->home_model->get_home_product_slider();
 			if(!empty($get_home_product_slider_data)){
 				foreach($get_home_product_slider_data as $get_home_product_slider_row){
@@ -246,15 +261,22 @@ class Controller_home extends CI_Controller
 					$result_val = $ArrFinal;
 
 					$product_result_data=[];
+					
 					for ($i = 0; $i < count($result_val); $i++) {
 
 						foreach ($result_val[$i] as $key => $value) {
+							if ($key == "product_id") {
+								$is_like = in_array($value, explode(',', $w_productlist)) ? 1 : 0;
+							}
+							$product_result['is_like'] = $is_like ?? 0;
 							if ($key == "image" || $key == "product_image") {
 								$product_result[$key] = FILE_UPLOAD_PATH . 'products/' . $value;
 							} else {
 								$product_result[$key] = $value;
 							}
+
 						}
+						
 						// $result[] = $product_result;
 						$product_result_data[]=$product_result;
 					}
@@ -755,6 +777,21 @@ class Controller_home extends CI_Controller
         $json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
 
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+		$w_productlist = '';
+		if ((!empty($oauth_key)) && (check_oauth_key($oauth_key))) {
+    		$token_result = $this->db->get_where('tbl_users_token', ['access_token' => $oauth_key])->row();
+            $suser_id = $token_result->user_id;
+			$w_productlist = $this->home_model->get_wishlist_product_by_user($suser_id);
+
+		}
+
 		// Receive values from POST
 		$page  = $json_obj->page;
 		$limit = $json_obj->limit;
@@ -816,6 +853,11 @@ class Controller_home extends CI_Controller
 			for ($i = 0; $i < count($result_val); $i++) {
 
 				foreach ($result_val[$i] as $key => $value) {
+					if ($key == "product_id") {
+						$is_like = in_array($value, explode(',', $w_productlist)) ? 1 : 0;
+					}
+					$product_result['is_like'] = $is_like ?? 0;
+
 					if ($key == "image" || $key == "product_image") {
 						$product_result[$key] = FILE_UPLOAD_PATH . 'products/' . $value;
 					} else {

@@ -58,6 +58,8 @@ class Controller_products extends CI_Controller
 
 		$this->load->model('zipcodes_model');
 
+		$this->load->model('home_model');
+
 
 
 	}
@@ -320,6 +322,20 @@ class Controller_products extends CI_Controller
 
 
 
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+		$w_productlist = '';
+		if (!empty($oauth_key) && (check_oauth_key($oauth_key))) {
+    		$token_result = $this->db->get_where('tbl_users_token', ['access_token' => $oauth_key])->row();
+            $suser_id = $token_result->user_id;
+			$w_productlist = $this->home_model->get_wishlist_product_by_user($suser_id);
+
+		}	
 
 
 
@@ -755,6 +771,12 @@ class Controller_products extends CI_Controller
 								}
 
 							} else {
+
+							if ($key == "product_id") {
+								$is_like = in_array($value, explode(',', $w_productlist)) ? 1 : 0;
+							}
+							$product_result['is_like'] = $is_like ?? 0;
+
 
 								if ($key == "product_image") {
 
@@ -2690,7 +2712,20 @@ class Controller_products extends CI_Controller
 
 		$json_obj = json_decode($json_str);
 
+	// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+		$w_productlist = '';
+		if (!empty($oauth_key) && (check_oauth_key($oauth_key))) {
+    		$token_result = $this->db->get_where('tbl_users_token', ['access_token' => $oauth_key])->row();
+            $suser_id = $token_result->user_id;
+			$w_productlist = $this->home_model->get_wishlist_product_by_user($suser_id);
 
+		}
 
 		$errors = $success_message = '';
 
@@ -2728,7 +2763,10 @@ class Controller_products extends CI_Controller
 
 					foreach ($result_val[$i] as $key => $value) {
 
-
+						if ($key == "product_id") {
+							$is_like = in_array($value, explode(',', $w_productlist)) ? 1 : 0;
+						}
+						$product_result['is_like'] = $is_like ?? 0;
 
 						if ($key == "product_image") {
 

@@ -142,14 +142,20 @@ $route['V1/update-checkout-address'] = 'V1/Controller_orders/update_checkout_add
 $route['V1/get-checkout-address-details'] = 'V1/Controller_orders/get_checkout_address_details';
 $route['V1/delete-checkout-address-details'] = 'V1/Controller_orders/delete_checkout_address_details';
 $route['V1/get-checkout-details'] = 'V1/Controller_orders/get_checkout_details';
+$route['V1/get-user-billing-address-list'] = 'V1/Controller_orders/get_user_billing_address_list';
+$route['V1/get-user-shipping-address-list'] = 'V1/Controller_orders/get_user_shipping_address_list';
 $route['V1/get-order-by-id'] = 'V1/Controller_orders/get_order_by_id';
 $route['V1/deliveryboy-order-by-id'] = 'V1/Controller_orders/deliveryboy_order_by_id';
 $route['V1/update-order'] = 'V1/Controller_orders/update_order';
 $route['V1/get-order-by-user-id'] = 'V1/Controller_orders/get_order_by_user_id';
 $route['V1/get-credit-transaction-by-user-id'] = 'V1/Controller_credittransaction/get_credit_transaction_by_user_id';
+$route['V1/get-order-dropdownlist-by-user'] = 'V1/Controller_orders/get_order_dropdown_user_id';
 $route['V1/deliveryboy-get-order-by-user-id'] = 'V1/Controller_orders/deliveryboy_get_order_by_user_id';
 $route['V1/report-order'] = 'V1/Controller_orders/report_order';
 $route['V1/requested-product'] = 'V1/Controller_orders/requested_product';
+$route['V1/get-state-list'] = 'V1/Controller_orders/get_state_list';
+$route['V1/get-substitution-preferences'] = 'V1/Controller_orders/get_substitution_preferences';
+
 
 
 
@@ -204,4 +210,10 @@ $route['V1/get-advertise_top'] = 'V1/Controller_home/get_advertise_top';
 $route['V1/get-advertise_bottom'] = 'V1/Controller_home/get_advertise_bottom';
 
 $route['V1/get_special_category_product'] = 'V1/Controller_home/get_special_category_product';
+
+$route['V1/create-intent'] = 'V1/Controller_orders/createIntent';
+$route['V1/update-intent'] = 'V1/Controller_orders/updateIntent';
+
+$route['V1/create-wishlist'] = 'V1/Controller_userwishlist/create_wishlist';
+$route['V1/user-wishlist'] = 'V1/Controller_userwishlist/get_wishlist_by_user_id';
 

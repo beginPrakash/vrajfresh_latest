@@ -634,7 +634,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                	}
                }
                echo $deliveryDate;
-              echo $expdeliveryDate;
+              $expdeliveryDate;
                
                ?>
             </p>
@@ -845,6 +845,23 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
       var maxDate = new Date(today);
       maxDate.setDate(today.getDate() + 7);
 
+      const parts = new Intl.DateTimeFormat('en-US', {
+         timeZone: 'America/New_York',
+         hour: '2-digit',
+         minute: '2-digit',
+         hour12: false
+      }).formatToParts(new Date());
+
+      let hr, min;
+
+      parts.forEach(part => {
+         if (part.type === 'hour') hr = part.value;
+         if (part.type === 'minute') min = part.value;
+      });
+
+      if(hr > 14){
+         today = tomorrow;
+      }
       $("#delivery_one_day_date").datepicker({
             dateFormat: 'dd/mm/yy',
             minDate: 0,
@@ -1157,4 +1174,3 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
 	}
 	
 </style>
-

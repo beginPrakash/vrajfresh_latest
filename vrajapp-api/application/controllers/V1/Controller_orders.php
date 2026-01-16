@@ -17,6 +17,7 @@ class Controller_orders extends CI_Controller
 		$this->load->model('users_model');
 		$this->load->model('cashcredit_model');
 		$this->load->model('credittransaction_model');
+		$this->load->model('configurations_model');
 		$this->load->model('Master_model', 'master');
 		//error_reporting(0);
 	}
@@ -67,10 +68,39 @@ class Controller_orders extends CI_Controller
 		$json_str = $this->input->raw_input_stream;		
 		$json_obj = json_decode($json_str, 1);
 		$ArrData = [];
-		$oauth_key = $json_obj['oauth_key'];
-		$ArrAddress = $json_obj['ArrAddress'];
-		$AddressType = $json_obj['AddressType'];
-		$Address_id = $json_obj['Address_id'];
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+
+		$AddressType = strtolower($json_obj['AddressType']);
+		$Address_id = strtolower($json_obj['edit_' . $AddressType.'_id']);
+
+		$newArr = [
+			'modify_at' => date('Y-m-d H:i:s'),
+		];
+		$prefix = "edit_" . $AddressType;
+		$newArr['first_name'] = $json_obj[$prefix.'_first_name'];
+		$newArr['last_name'] = $json_obj[$prefix.'_last_name'];
+		$newArr[$AddressType . '_street_address'] = $json_obj[$prefix.'_street_address'];
+		$newArr[$AddressType . '_apartment'] = $json_obj[$prefix.'_apartment'];
+		$newArr[$AddressType . '_city'] = $json_obj[$prefix.'_city'];
+		//$newArr[$AddressType . '_state_id'] = $json_obj[$prefix.'_state_id'];
+		$newArr[$AddressType . '_zipcode'] = $json_obj[$prefix.'_zipcode'];
+		$newArr[$AddressType . '_phone'] = $json_obj[$prefix.'_phone'];
+
+		if($json_obj[$prefix.'_state_id'] != ""){
+			$StateData = explode('|', $json_obj[$prefix.'_state_id']);
+			$newArr[$AddressType . '_state_id'] = $StateData[1];
+		}
+
+	
+		$ArrAddress = $newArr;
+		$AddressType = $AddressType;
+		$Address_id = $Address_id;
 		
 		if (check_oauth_key($oauth_key)) {
 			if(!empty($ArrAddress) && $Address_id > 0){
@@ -91,16 +121,47 @@ class Controller_orders extends CI_Controller
 		$json_str = $this->input->raw_input_stream;		
 		$json_obj = json_decode($json_str, 1);
 		$ArrData = [];
-		$oauth_key = $json_obj['oauth_key'];
-		$ArrAddress = $json_obj['ArrAddress'];
-		$AddressType = $json_obj['AddressType'];
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+
+		$AddressType = strtolower($json_obj['AddressType']);
+		$user_id = $json_obj['user_id'];
+		$newArr = [
+			'user_id' => $user_id,
+			'modify_at' => date('Y-m-d H:i:s'),
+			'is_active' => 1,
+		];
+
+		$newArr['first_name'] = $json_obj[$AddressType.'_first_name'];
+		$newArr['last_name'] = $json_obj[$AddressType.'_last_name'];
+		$newArr[$AddressType . '_country_id'] = 235;
+		$newArr[$AddressType . '_street_address'] = $json_obj[$AddressType.'_street_address'];
+		$newArr[$AddressType . '_apartment'] = $json_obj[$AddressType.'_apartment'];
+		$newArr[$AddressType . '_city'] = $json_obj[$AddressType.'_city'];
+		//$newArr[$AddressType . '_state_id'] = $json_obj[$AddressType.'_state_id'];
+		$newArr[$AddressType . '_zipcode'] = $json_obj[$AddressType.'_zipcode'];
+		$newArr[$AddressType . '_phone'] = $json_obj[$AddressType.'_phone'];
+
+		if($json_obj[$AddressType.'_state_id'] != ""){
+			$StateData = explode('|', $json_obj[$AddressType.'_state_id']);
+			$newArr[$AddressType . '_state_id'] = $StateData[1];
+		}
+
+	
+		$ArrAddress = $newArr;
+		$AddressType = $AddressType;
 		
 		if (check_oauth_key($oauth_key)) {
 			if(!empty($ArrAddress)){
-				
-				$ArrData['inserted_id'] = $this->master->insertData('tbl_'.strtolower($AddressType).'_address', $ArrAddress);exit;
+				$ArrData['inserted_id'] = $this->master->insertData('tbl_'.strtolower($AddressType).'_address', $ArrAddress);
 				$success_message = $AddressType.' address added successfully.';
 			}
+
 			send_response_to_api($ArrData, $errors, $success_message);
 		}
 	}
@@ -108,49 +169,158 @@ class Controller_orders extends CI_Controller
 	public function get_checkout_details()
 	{
 		
+		$json_str = file_get_contents('php://input');
+		$json_obj = json_decode($json_str,true);
+
 		$errors = $success_message = '';
 
 		$json_str = $this->input->raw_input_stream;		
 		$json_obj = json_decode($json_str);
 		
 
-		$oauth_key = $json_obj->oauth_key;
 		$user_id = $json_obj->user_id;
+
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+		
+		$ArrData = array();
+		
+		if (check_oauth_key($oauth_key)) {
+	//get total credit sum
+			$credit_total_date = $this->credittransaction_model->get_credit_sum($user_id);
+			$credit_total = ($credit_total_date['amount'] > 0) ? $credit_total_date['amount'] : 0.00;
+			$NewArrData['earned_credit'] =round($credit_total,2);
+
+			//get last credit per
+			$find_last_credit =  $this->cashcredit_model->get_last_creditdetail();
+			$last_credit_per = $find_last_credit['credit_per'] ?? 0;
+			$NewArrData['credit_per'] = $last_credit_per;
+			$NewArrData['packaging_cost'] = 0.99;
+			$NewArrData['preparation_cost'] = 0.99;
+
+			$ArrData = $NewArrData;
+			$success_message = 'Data listed successfully';
+		} else {
+			$errors = "Data not found";
+		}
+
+		send_response_to_api($ArrData, $errors, $success_message);
+	}
+
+	public function get_user_billing_address_list()
+	{
+		
+		$json_str = file_get_contents('php://input');
+		$json_obj = json_decode($json_str,true);
+
+		$errors = $success_message = '';
+
+		$json_str = $this->input->raw_input_stream;		
+		$json_obj = json_decode($json_str);
+		
+
+		$user_id = $json_obj->user_id;
+
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
 		
 		$ArrData = array();
 		
 		if (check_oauth_key($oauth_key)) {
 			
 			$NewArrData['billing_address'] = array();
-			$NewArrData['shipping_address'] = array();
-			$NewArrData['cards'] = array();
-			$NewArrData['shipping_id'] = 0;
 			$NewArrData['billing_id'] = 0;
-			$NewArrData['card_id'] = 0;
-			$NewArrData['usercart_arr'] = $json_obj->cart_data;
+			$UserDetails = $this->master->get_row_detail('tbl_users', array('user_id' => $user_id));
+
+			$billing_address = $this->master->get_list_of_data('tbl_billing_address', array('user_id' => $user_id, 'is_active' => 1));
+			if(empty($billing_address)){
+				if($UserDetails['address'] != "" && $UserDetails['address'] != null && $UserDetails['state'] != "" && $UserDetails['state'] != null){
+					
+					$newInsertArr = array(
+						'user_id' => $user_id,
+						'first_name' => $UserDetails['first_name'],
+						'last_name' => $UserDetails['last_name'],
+						'billing_street_address' => $UserDetails['address'],
+						'billing_apartment' => $UserDetails['address2'],
+						'billing_city' => $UserDetails['city'],
+						'billing_state_id' => $UserDetails['state'],
+						'billing_country_id' => $UserDetails['country_id'],
+						'billing_zipcode' => $UserDetails['zip'],
+						'billing_phone' => $UserDetails['phone'],
+						'modify_at' => date('Y-m-d H:i:s'),
+						'is_active' => 1,
+					);
+					//$this->master->insertData('tbl_billing_address', $newInsertArr);
+					$billing_address = $this->master->get_list_of_data('tbl_billing_address', array('user_id' => $user_id, 'is_active' => 1));
+				}
+			}
+			if(!empty($billing_address)){
+				for($i = 0; $i < count($billing_address); $i++){
+					$billing_address[$i]->state_name = "";
+					$state_details = $this->master->get_row_detail('state', array('state_id' => $billing_address[$i]->billing_state_id));
+					if(!empty($state_details)){
+						$billing_address[$i]->state_name = $state_details['state'];
+					}
+					$last_index =  count($billing_address) - 1;
+					if($last_index == $i){
+						$NewArrData['billing_id'] = $billing_address[$i]->billing_id;
+					}
+				}
+			}
+			$NewArrData['billing_address'] = $billing_address;
 			
-			//get total credit sum
-			$credit_total_date = $this->credittransaction_model->get_credit_sum($user_id);
-			$credit_total = ($credit_total_date['amount'] > 0) ? $credit_total_date['amount'] : 0.00;
-			$NewArrData['earned_credit'] = $credit_total;
+			
+			$ArrData = $NewArrData;
+			$success_message = 'Checkout data';
+		} else {
+			$errors = "Data not found";
+		}
 
-			//get last credit per
-			$find_last_credit =  $this->cashcredit_model->get_last_creditdetail();
-			$last_credit_per = $find_last_credit['credit_per'] ?? 0;
-			$NewArrData['last_credit_per'] = $last_credit_per;
+		send_response_to_api($ArrData, $errors, $success_message);
+	}
 
+	public function get_user_shipping_address_list()
+	{
+		
+		$json_str = file_get_contents('php://input');
+		$json_obj = json_decode($json_str,true);
+
+		$errors = $success_message = '';
+
+		$json_str = $this->input->raw_input_stream;		
+		$json_obj = json_decode($json_str);
+		
+
+		$user_id = $json_obj->user_id;
+
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+		
+		$ArrData = array();
+		
+		if (check_oauth_key($oauth_key)) {
+			
+			$NewArrData['shipping_address'] = array();
+			$NewArrData['shipping_id'] = 0;
+			
 
 			$UserDetails = $this->master->get_row_detail('tbl_users', array('user_id' => $user_id));
-			if(!empty($user_id)){
-				$newInsertArr = array(
-					'user_id' => $user_id,
-					'cart_arr' => $json_obj->cart_data,
-					'created_datetime' => date('Y-m-d H:i:s'),
-					'user_email'=>$UserDetails['email'] ?? '',
-				);
-				$this->master->insertData('tbl_cart_to_checkout_log', $newInsertArr);
-				
-			}
+			
 			
 			$shiiping_address = $this->master->get_list_of_data('tbl_shipping_address', array('user_id' => $user_id, 'is_active' => 1));
 			if(empty($shiiping_address)){
@@ -194,53 +364,6 @@ class Controller_orders extends CI_Controller
 			}
 			$NewArrData['shipping_address'] = $shiiping_address;
 
-			$billing_address = $this->master->get_list_of_data('tbl_billing_address', array('user_id' => $user_id, 'is_active' => 1));
-			if(empty($billing_address)){
-				if($UserDetails['address'] != "" && $UserDetails['address'] != null && $UserDetails['state'] != "" && $UserDetails['state'] != null){
-					
-					$newInsertArr = array(
-						'user_id' => $user_id,
-						'first_name' => $UserDetails['first_name'],
-						'last_name' => $UserDetails['last_name'],
-						'billing_street_address' => $UserDetails['address'],
-						'billing_apartment' => $UserDetails['address2'],
-						'billing_city' => $UserDetails['city'],
-						'billing_state_id' => $UserDetails['state'],
-						'billing_country_id' => $UserDetails['country_id'],
-						'billing_zipcode' => $UserDetails['zip'],
-						'billing_phone' => $UserDetails['phone'],
-						'modify_at' => date('Y-m-d H:i:s'),
-						'is_active' => 1,
-					);
-					//$this->master->insertData('tbl_billing_address', $newInsertArr);
-					$billing_address = $this->master->get_list_of_data('tbl_billing_address', array('user_id' => $user_id, 'is_active' => 1));
-				}
-			}
-			if(!empty($billing_address)){
-				for($i = 0; $i < count($billing_address); $i++){
-					$billing_address[$i]->state_name = "";
-					$state_details = $this->master->get_row_detail('state', array('state_id' => $billing_address[$i]->billing_state_id));
-					if(!empty($state_details)){
-						$billing_address[$i]->state_name = $state_details['state'];
-					}
-					$last_index =  count($billing_address) - 1;
-					if($last_index == $i){
-						$NewArrData['billing_id'] = $billing_address[$i]->billing_id;
-					}
-				}
-			}
-			$NewArrData['billing_address'] = $billing_address;
-			$cards = $this->master->get_list_of_data('tbl_cards', array('user_id' => $user_id, 'is_active' => 1));
-			if(!empty($cards)){
-				for($i = 0; $i < count($cards); $i++){
-					$last_index =  count($cards) - 1;
-					if($last_index == $i){
-						$NewArrData['card_id'] = $cards[$i]->card_id;
-					}
-				}
-			}
-			$NewArrData['cards'] = $cards;
-			
 			$ArrData = $NewArrData;
 			$success_message = 'Checkout data';
 		} else {
@@ -259,8 +382,16 @@ class Controller_orders extends CI_Controller
 		$json_obj = json_decode($json_str);
 		
 
-		$oauth_key = $json_obj->oauth_key;
 		$user_id = $json_obj->user_id;
+
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+
 		$id = $json_obj->id;
 		$type = $json_obj->type;
 
@@ -283,98 +414,418 @@ class Controller_orders extends CI_Controller
 		send_response_to_api($ArrData, $errors, $success_message);
 	}
 
+	public function get_configuration_by_key($configuration_key)
+
+	{
+
+			$data = array(
+
+				'configuration_key' => $configuration_key
+
+			);
+
+			$result = $this->configurations_model->get_configuration_by_key($data);
+
+			$ArrData = $result;
+
+			return $ArrData;
+
+
+	}
+
+	public function payment_process($ArrPayment=[],$shipping_details=[],$billing_details=[],$user_id='',$same_address='')
+	{
+		$user_details = $this->master->get_row_detail('tbl_users', array('user_id' => $user_id));
+
+		$billing_id = $ArrPayment->billing_id;
+		$shipping_id = $ArrPayment->shipping_id;
+		$card_id = $ArrPayment->card_id ?? '';
+		$save_card = $ArrPayment->save_card ?? '';
+		$CardToken = $ArrPayment->CardToken;
+		$StripeCardID = $ArrPayment->StripeCardID ?? '';
+		$CardPaymentMethodId = $ArrPayment->CardPaymentMethod;
+		$stripeCustId = "";
+		if(!empty($user_details)){
+			$stripeCustId = $user_details['stripe_cus_id'];
+			$ArrPayment->email = $user_details['email'];
+		}
+
+		
+		$ArrData = array();
+
+		$token = $ArrPayment->CardToken;
+
+		if($same_address == 1){
+			$billing_name = $shipping_details['first_name'] . ' ' .$shipping_details['last_name'];
+			$billing_zipcode = $shipping_details['shipping_zipcode'];
+		} else {
+			$billing_name = $billing_details['first_name'] . ' ' .$billing_details['last_name'];
+			$billing_zipcode = $billing_details['billing_zipcode'];
+		}
+
+		$user_details = array(
+			'user_id' => $user_id,
+			'name' => $billing_name,
+			'email' => $user_details['email'],
+			'zip_code' => $billing_zipcode
+		);
+
+
+		$Arrorderdetail = $this->orders_model->get_order_details($ArrPayment->order_id);
+
+		
+
+		$Arrorderproductdetail = $this->orders_model->get_orderproduct_details_without_image($ArrPayment->order_id);
+
+		
+
+		#selcet user_id
+
+		$ArrUser = $this->orders_model->get_user_id($ArrPayment->order_id);
+
+
+
+		# Stored card details in customer table 
+
+		//$card_details_stored = $this->orders_model->get_stored_card_details($ArrUser[0]['user_id'], $card_details);
+
+
+
+		$items = array(
+
+
+
+			'itemPrice' => $ArrPayment->order_amount,
+
+			'currency' => "usd"
+
+		);
+
+		/* Call method in Helper */
+
+		//$payment_details = stripe_payment_process($token, $user_details, $card_details, $items,$ArrPayment['order_id']);
+		$payment_response = stripe_payment_process_new($stripeCustId, $card_id, $save_card, $CardToken, $StripeCardID, $CardPaymentMethodId, $user_details, $items, $ArrPayment->order_id,$ArrPayment->payment_methodtype,$ArrPayment->gpay_token_serialize);
+
+		//send_response_to_api($payment_response, "", "Äsd");
+
+		/*if($payment_details !="false")*/
+	
+		if($payment_response['status'] == true){
+
+			$payment_details = $payment_response['data'];
+			
+			if ($payment_details['status'] == 'succeeded') {
+
+				$errors = "";
+
+				$success_message = 'The order payment made successfuly';
+				
+				$stripe_raw_response = json_encode($payment_details);
+
+				$payment_detail_data = array(
+
+					"stripe_raw_response" => $stripe_raw_response,
+
+					"payment_intent_id" => $payment_details['id'],
+
+					"payment_process_type" => 'Automatic',
+					
+					"transaction_status" => $payment_details['status'],
+
+					"payment_intent_status" => $payment_details['status'],
+
+					"order_id" => $ArrPayment->order_id,
+
+					"transaction_amount" => $ArrPayment->order_amount / 100,
+					
+					"CardPaymentMethodId" => $payment_response['CardPaymentMethodId'],
+
+					"payment_type" => 'capture',
+
+					"transaction_datetime" => date("Y-m-d H:i:s"),
+
+					"created_datetime" => date("Y-m-d H:i:s")
+
+				);
+
+				/* ADD RECORD IN TRANSACTION TABLE */
+
+				$this->orders_model->add_order($payment_detail_data, 'tbl_transactions');
+
+				//if ($payment_details['status'] == 'requires_capture') {
+				if ($payment_details['status'] == 'succeeded') {
+
+					$this->master->deleteRow('tbl_cart_items', array('customer_id' => $user_id));
+
+					$order_data = array(
+
+						'order_status' => 'Processing',
+
+						'amount_received' => $ArrPayment->order_amount / 100,
+
+						'amount_received_status' => $payment_details['status'],
+
+						'payment_intent_id' => $payment_details['id'],
+
+						"CardPaymentMethodId" => $payment_response['CardPaymentMethodId'],
+
+					);
+
+					$this->orders_model->update_order($order_data, $ArrPayment->order_id, 'tbl_orders');
+
+					$order_details = $this->orders_model->get_order_details($ArrPayment->order_id);
+
+					$subject = "VrajFresh Order Place Successful";
+
+					$order_content = file_get_contents('templates/order_mail_template.html');
+
+					$order_content = str_replace('##user_name##', $Arrorderdetail[0]['shipping_first_name']." ".$Arrorderdetail[0]['shipping_last_name'], $order_content);
+
+					$order_content = str_replace('##firstname##', $Arrorderdetail[0]['shipping_first_name']." ".$Arrorderdetail[0]['shipping_last_name'], $order_content);
+
+					$order_content = str_replace('##amount##', $Arrorderdetail[0]['order_total_amount'], $order_content);
+
+					$order_content = str_replace('##order_id##', $ArrPayment->order_id, $order_content);
+
+					// Add a CSS style attribute to your table tag
+
+					$table_style = 'style="border: 1px solid #ccc; border-collapse: collapse;"';
+
+					$order_content = str_replace('##table_style##', $table_style, $order_content);
+
+
+
+					// Create table for displaying order details
+
+					$table_content = '<table style="border-collapse: collapse; width: 100%;">';
+
+					$table_content .= '<tr><th>Product Name</th><th>Quantity</th><th>Price</th><th>Tax</th><th>Total Price</th></tr>';
+
+					$total_state_tax = 0 ;
+
+					foreach ($Arrorderproductdetail as $product) {
+
+						$table_content .= '<tr>';
+
+						if(!empty($product['product_variant_size'])){
+							$table_content .= '<td style="border: 1px solid grey; padding: 5px;">' . $product['product_name'] . '(' . $product['product_variant_size'] . ')</td>';
+						}else{
+							$table_content .= '<td style="border: 1px solid grey; padding: 5px;">' . $product['product_name']. '</td>';
+						}
+
+						$table_content .= '<td style="border: 1px solid grey; padding: 5px;">' . $product['qty'] . '</td>';
+
+						$table_content .= '<td style="border: 1px solid grey; padding: 5px;">$' . $product['unit_price'] . '</td>';
+
+						$table_content .= '<td style="border: 1px solid grey; padding: 5px;">$' . $product['product_tax_amount'] . '</td>';
+
+						$table_content .= '<td style="border: 1px solid grey; padding: 5px;">$' . $product['total_amount'] . '</td>';
+
+						$table_content .= '</tr>';
+
+						$total_state_tax = $total_state_tax + $product['product_tax_amount'];
+
+					}
+
+					$table_content .= '<tr><td colspan="4" style="border: 1px solid grey; padding: 5px;">Delivery:</td><td style="border: 1px solid grey; padding: 5px;">Free Delivery</td></tr>';
+
+					$table_content .= '<tr><td colspan="4" style="border: 1px solid grey; padding: 5px;">State Tax:</td><td style="border: 1px solid grey; padding: 5px;">$' . $total_state_tax . '</td></tr>';
+
+					$table_content .= '<tr><td colspan="4" style="border: 1px solid grey; padding: 5px;">Order Discount:</td><td style="border: 1px solid grey; padding: 5px;">$' . $Arrorderdetail[0]['discount_amount'] . '</td></tr>';
+
+					$table_content .= '<tr><td colspan="4" style="border: 1px solid grey; padding: 5px;">Order Tip:</td><td style="border: 1px solid grey; padding: 5px;">$' . $Arrorderdetail[0]['order_tip'] . '</td></tr>';
+
+					$table_content .= '<tr><td colspan="4" style="border: 1px solid grey; padding: 5px;">Total:</td><td style="border: 1px solid grey; padding: 5px;">$' . $Arrorderdetail[0]['order_total_amount'] . '</td></tr>';
+
+					$table_content .= '<tr><td colspan="4" style="border: 1px solid grey; padding: 5px;">Notes:</td><td style="border: 1px solid grey; padding: 5px;">' . $Arrorderdetail[0]['order_notes'] . '</td></tr>';
+
+					$table_content .= '</table>';
+
+
+
+					$order_content = str_replace('##product_table##', $table_content, $order_content);
+
+
+
+					$order_content = str_replace('##address1##', $Arrorderdetail[0]['billing_street_name'], $order_content);
+
+					$order_content = str_replace('##address2##', $Arrorderdetail[0]['billing_apartment_name'], $order_content);
+
+					$order_content = str_replace('##city##', $Arrorderdetail[0]['billing_city'], $order_content);
+
+					$order_content = str_replace('##state##', $Arrorderdetail[0]['billing_state'], $order_content);
+
+					$order_content = str_replace('##zip##', $Arrorderdetail[0]['billing_zipcode'], $order_content);
+
+					$order_content = str_replace('##phone##', $Arrorderdetail[0]['billing_phone'], $order_content);
+
+					$order_content = str_replace('##email##', $Arrorderdetail[0]['shipping_email'], $order_content);
+
+
+
+					$order_content = str_replace('##address_ship##', $Arrorderdetail[0]['shipping_street_name'], $order_content);
+
+					$order_content = str_replace('##address2_ship##', $Arrorderdetail[0]['shipping_apartment_name'], $order_content);
+
+					$order_content = str_replace('##city_ship##', $Arrorderdetail[0]['shipping_city'], $order_content);
+
+					$order_content = str_replace('##state_ship##', $Arrorderdetail[0]['state'], $order_content);
+
+					$order_content = str_replace('##zip_ship##', $Arrorderdetail[0]['shipping_zipcode'], $order_content);
+
+					$order_content = str_replace('##phone_ship##', $Arrorderdetail[0]['shipping_phone'], $order_content);
+
+					$order_content = str_replace('##link##', FRONT_URL, $order_content);
+
+
+
+					send_mail($ArrPayment->email, $subject, $order_content);
+
+
+
+				}
+
+
+
+			} else {
+				$ArrPayment = array();
+				$errors = 'The payment failed';
+				$success_message = '';
+
+			}
+		} else {
+			$ArrPayment = array();
+			$errors = 'The payment failed';
+			$success_message = '';
+		}
+
+		send_response_to_api($ArrPayment, $errors, $success_message);
+
+	}
+
 	public function add_order()
 	{
 
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
 
-		$oauth_key = $json_obj->oauth_key;
+		
 		$errors = $success_message = '';
 		$ArrData = array();
 
+		$user_id = $json_obj->user_id;
+
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+		
+		$total_items = 0;
+		$cart_total = 0.00;
+		
+
+		$ArrCustomer = array();
+
+		$billing_id = $json_obj->billing_id;
+		$shipping_id = $json_obj->shipping_id;
+		$same_address = 0;
+
+		if (is_string($billing_id)) {
+			
+			if($billing_id == "same_address"){
+				$same_address = 1;
+				$billing_id = 0;
+			}
+		}
+
+		$json_obj->billing_id = $billing_id;
+		$json_obj->same_address = $same_address;
+
+		$billing_state_id = $json_obj->shiping_state;
+		$ArrStateData = explode('|', $json_obj->state);
+		$shipping_state_id = $ArrStateData[1];
+
+		$ArrCustomer['substitution_product_ids'] = "";
+		if(isset($json_obj->substitution_product_ids) && !empty($json_obj->substitution_product_ids)){
+			$ArrCustomer['substitution_product_ids'] = implode(',', $json_obj->substitution_product_ids);
+		}
+		$ArrCustomer['same_address'] = $same_address;
+		$ArrCustomer['billing_id'] = $billing_id;
+		$ArrCustomer['shipping_id'] = $shipping_id;
+		
+			$ArrCustomer['card_id'] = "";
+			$ArrCustomer['save_card'] = 0;
+			$ArrCustomer['CardToken'] = ($json_obj->CardToken) ? $json_obj->CardToken : '';
+			$ArrCustomer['CardPaymentMethod'] = $json_obj->CardPaymentMethod;
+			$ArrCustomer['StripeCardID'] = "";
+		
+		
+		$ArrCustomer['order_tip'] = $json_obj->hdn_tip_amount; 
+		$ArrCustomer['user_id'] = $user_id;
+
+		$ArrCustomer['order_notes'] = $json_obj->order_comments;
+		$ArrCustomer['delivery_comments'] = $json_obj->delivery_comments;
+		$ArrCustomer['is_replace_item'] = $json_obj->substitue_preferences;
+		$ArrCustomer['delivery_type'] = $json_obj->delivery_type;
+		
+		$ArrCustomer['order_final_amount'] = $json_obj->cart_total;
+		$ArrCustomer['cart_total'] = $json_obj->cart_total;
+		$ArrCustomer['delivery_datetime'] = date("Y-m-d H:i:s", strtotime("+1 hours"));
+		$ArrCustomer['preparation_cost'] = $json_obj->preparation_cost;
+		$ArrCustomer['packaging_cost'] = $json_obj->packaging_cost;
+		$ArrCustomer['state_tax'] = $json_obj->state_tax;
+		$ArrCustomer['discount_amount'] = $json_obj->discount_amount;
+		$ArrCustomer['coupon_id'] = $json_obj->discount_id;
+		$ArrCustomer['earned_credit_val'] = $json_obj->earned_credit_val;
+		$ArrCustomer['earned_credit_checkbox'] = $json_obj->earned_credit_checkbox;
+		$delivery_date_time = date("Y-m-d", strtotime($json_obj->expec_delivery_date));
+		$ArrCustomer['delivery_datetime'] = $delivery_date_time;
+	
+		$ArrProduct = array();
+		$user_cart_data = $json_obj->cart_data;
+		if(count($user_cart_data) > 0){
+			foreach ($user_cart_data as $items) {
+				$Arr = array();
+				$Arr['product_id'] = $items->product_id;
+				$Arr['product_variant_id'] = $items->variant_id; /*$items["product_variant_id"];*/
+				$Arr['product_weight_gms'] = $items->weight; /*$items["product_variant_id"];*/
+				$Arr['qty'] = $items->quantity;
+				$Arr['total_amount'] = $items->quantity * $items->price;
+				$Arr['unit_price'] = $items->price;
+				$Arr['product_name'] = $items->product_name;		
+				$Arr['product_tax_amount'] = 0;
+				if($items->product_tax==1)
+				{
+					$Arr['product_tax_amount'] = number_format( (($ArrCustomer["state_tax"] * $Arr['total_amount']) / 100),2);
+				}
+				$Arr['created_by'] = 1;
+				$Arr['is_active'] = 1;
+				$ArrProduct[] = $Arr;
+			}
+		}
+		
+
+
 		if (check_oauth_key($oauth_key)) {
 
-			if ($json_obj->ArrCustomer->user_id == 0) {
-				/* $this->load->model('users_model');
-				$user_data = array(
-					'email' => trim($json_obj->ArrCustomer->shipping_email),
-					'user_role_id' => '4'
-				);
-				$user_exist = $this->users_model->user_exist($user_data);
-				if ($user_exist > 0) {
-					$user_detail = $this->users_model->get_user_by_email($user_data);
-					$user_id = $user_detail[0]->user_id;
-
-					$ArrUserData = array(
-						'address' => trim($json_obj->ArrCustomer->billing_street_name),
-						'address2' => trim($json_obj->ArrCustomer->billing_apartment_name),
-						'city' => trim($json_obj->ArrCustomer->billing_city),
-						'state' => trim($json_obj->ArrCustomer->billing_state_id),
-						'country_id' => 235,
-						'zip' => trim($json_obj->ArrCustomer->billing_zipcode),
-						'phone' => trim($json_obj->ArrCustomer->billing_phone),
-						'shipping_street_address' => trim($json_obj->ArrCustomer->shipping_street_name),
-						'shipping_apartment' => trim($json_obj->ArrCustomer->shipping_apartment_name),
-						'shipping_city' => trim($json_obj->ArrCustomer->shipping_city),
-						'shipping_state' => trim($json_obj->ArrCustomer->shipping_state_id),
-						'shipping_zip_code' => trim($json_obj->ArrCustomer->shipping_zipcode),
-						'shipping_phone' => trim($json_obj->ArrCustomer->shipping_phone),
-					);
-					$this->users_model->update_user($ArrUserData, $user_id, 'tbl_users');
-
-
-				} else {
-					$new_password = rand(100000, 999999);
-					$ArrUserData = array(
-						'user_role_id' => '4',
-						'user_name' => trim($json_obj->ArrCustomer->shipping_email),
-						'first_name' => trim($json_obj->ArrCustomer->shipping_first_name),
-						'last_name' => trim($json_obj->ArrCustomer->shipping_last_name),
-						'display_name' => trim($json_obj->ArrCustomer->shipping_first_name . ' ' . $json_obj->ArrCustomer->shipping_last_name),
-						'password' => md5($new_password),
-						'email' => trim($json_obj->ArrCustomer->shipping_email),
-						'address' => trim($json_obj->ArrCustomer->billing_street_name),
-						'address2' => trim($json_obj->ArrCustomer->billing_apartment_name),
-						'city' => trim($json_obj->ArrCustomer->billing_city),
-						'state' => trim($json_obj->ArrCustomer->billing_state_id),
-						'country_id' => 235,
-						'zip' => trim($json_obj->ArrCustomer->billing_zipcode),
-						'mobile_no' => trim($json_obj->ArrCustomer->billing_phone),
-						'phone' => trim($json_obj->ArrCustomer->billing_phone),
-						'shipping_street_address' => trim($json_obj->ArrCustomer->shipping_street_name),
-						'shipping_apartment' => trim($json_obj->ArrCustomer->shipping_apartment_name),
-						'shipping_city' => trim($json_obj->ArrCustomer->shipping_city),
-						'shipping_state' => trim($json_obj->ArrCustomer->shipping_state_id),
-						'shipping_zip_code' => trim($json_obj->ArrCustomer->shipping_zipcode),
-						'shipping_phone' => trim($json_obj->ArrCustomer->shipping_phone),
-						'created_datetime' => date('Y-m-d H:i:s'),
-						'is_active' => 1
-					);
-					$user_id = $this->users_model->add_user($ArrUserData, 'tbl_users');
-				} */
-
-				$errors = 'Order Not Added Successfully';
-				
-			} else {
-				$user_id = trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $json_obj->ArrCustomer->user_id)));
-				//send_response_to_api($ArrData, $errors, 'ttt'.$user_id);exit;
-			}
-			if(isset($json_obj->ArrCustomer->is_active) && $json_obj->ArrCustomer->is_active != ""){
-				$is_active = trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $json_obj->ArrCustomer->is_active)));
+			if(isset($ArrCustomer['is_active']) && $ArrCustomer['is_active'] != ""){
+				$is_active = trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $ArrCustomer['is_active'])));
 			} else {
 				$is_active = 1;
 			}
 
-			$same_address = $json_obj->ArrCustomer->same_address;
-			$billing_id = $json_obj->ArrCustomer->billing_id;
-			$shipping_id = $json_obj->ArrCustomer->shipping_id;
-			$card_id = $json_obj->ArrCustomer->card_id;
-			$save_card = $json_obj->ArrCustomer->save_card;
-			$CardToken = $json_obj->ArrCustomer->CardToken;
-			$CardPaymentMethodId = $json_obj->ArrCustomer->CardPaymentMethod;
-			$StripeCardID = $json_obj->ArrCustomer->StripeCardID;
-			$substitution_product_ids = $json_obj->ArrCustomer->substitution_product_ids;
+			$same_address = $ArrCustomer['same_address'];
+			$billing_id = $ArrCustomer['billing_id'];
+			$shipping_id = $ArrCustomer['shipping_id'];
+			//$card_id = $ArrCustomer['card_id'];
+			//$save_card = $ArrCustomer['save_card'];
+			$CardToken = $ArrCustomer['CardToken'];
+			$CardPaymentMethodId = $ArrCustomer['CardPaymentMethod'];
+			//$StripeCardID = $ArrCustomer->StripeCardID;
+			$substitution_product_ids = $ArrCustomer['substitution_product_ids'];
 
 			//echo '<pre>';print_r($shipping_id);exit;
 			$billing_details = $this->master->get_row_detail('tbl_billing_address', array('billing_id' => $billing_id));
@@ -437,12 +888,12 @@ class Controller_orders extends CI_Controller
 
 			$data = array(
 				'user_id' => $user_id,
-				'coupon_id' => $json_obj->ArrCustomer->coupon_id,
+				'coupon_id' => $ArrCustomer['coupon_id'],
 				'order_datetime' => date('Y-m-d'),
 				'order_status' => trim('Pending Payment'),
-				'order_notes' => $json_obj->ArrCustomer->order_notes,
-				'delivery_comments' => $json_obj->ArrCustomer->delivery_comments,
-				'discount_amount' => $json_obj->ArrCustomer->discount_amount,
+				'order_notes' => $ArrCustomer['order_notes'],
+				'delivery_comments' => $ArrCustomer['delivery_comments'],
+				'discount_amount' => $ArrCustomer['discount_amount'],
 				'billing_first_name' => $billing_first_name,
 				'billing_last_name' => $billing_last_name,
 				'billing_street_name' => $billing_street_name,
@@ -463,10 +914,10 @@ class Controller_orders extends CI_Controller
 				'shipping_country' => $shipping_country,
 				'shipping_phone' => $shipping_phone,
 				'shipping_email' => $shipping_email,
-				'delivery_type' => trim($json_obj->ArrCustomer->delivery_type),
-				'payment_methodtype' => trim($json_obj->ArrCustomer->payment_methodtype),
-				'delivery_datetime' => date('Y-m-d', strtotime($json_obj->ArrCustomer->delivery_datetime)),
-				'is_replace_item' => trim($json_obj->ArrCustomer->is_replace_item),
+				'delivery_type' => trim($ArrCustomer['delivery_type']),
+				'payment_methodtype' => trim($ArrCustomer['payment_methodtype'] ?? ''),
+				'delivery_datetime' => date('Y-m-d', strtotime($ArrCustomer['delivery_datetime'])),
+				'is_replace_item' => trim($ArrCustomer['is_replace_item']),
 				'substitution_product_ids' => $substitution_product_ids,
 				'created_by' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $user_id))),
 				'is_flag' => 1,
@@ -478,72 +929,45 @@ class Controller_orders extends CI_Controller
 			);
 			$result = $this->orders_model->add_order($data, 'tbl_orders');
 
-			if(!empty($user_details['user_id'])){
-				$newInsertArr = array(
-					'user_id' => $user_details['user_id'],
-					'cart_arr' => $json_obj->cart_arr,
-					'created_datetime' => date('Y-m-d H:i:s'),
-					'user_email'=>$user_details['email'] ?? '',
-				);
-				$this->master->insertData('tbl_checkout_log', $newInsertArr);
-				
-			}
-
 			$total_weight = 0;
 			$total_order_amount = 0;
-			foreach ($json_obj->ArrProduct as $product) {
-				$total_weight += trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', floatval($product->product_weight_gms) * floatval($product->qty))));
+	
+			foreach ($ArrProduct as $product) {
+				$total_weight += trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', floatval($product['product_weight_gms']) * floatval($product['qty']))));
 				$order_product_data = array(
 					"order_id" => $result,
-					"product_id" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->product_id))),
+					"product_id" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['product_id']))),
 					/*"product_name" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->product_name))),*/
-					"product_name" => $product->product_name,
-					"unit_price" => trim($product->unit_price),
-					"product_tax_amount" => trim($product->product_tax_amount),
+					"product_name" => $product['product_name'],
+					"unit_price" => trim($product['unit_price']),
+					"product_tax_amount" => trim($product['product_tax_amount']),
 					//"product_variant_id" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->product_variant_id))),
-					"product_variant_id" => ($product->product_variant_id) ? $product->product_variant_id : 0,
-					"qty" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->qty))),
-					'created_by' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->created_by))),
+					"product_variant_id" => ($product['product_variant_id']) ? $product['product_variant_id'] : 0,
+					"qty" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['qty']))),
+					'created_by' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['created_by']))),
 					'created_datetime' => date('Y-m-d H:i:s'),
-					'is_active' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->is_active))),
-					'total_amount' => trim($product->total_amount)
+					'is_active' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['is_active']))),
+					'total_amount' => trim($product['total_amount'])
 				);
 				$result_product_id = $this->orders_model->add_order($order_product_data, 'tbl_order_products');
-				$total_order_amount += $product->total_amount;
+				$total_order_amount += $product['total_amount'];
 			}
 
 			$shipping_charge = 0;
-			// $fedex_shipping_charge=get_rate_by_weight($json_obj->qty,$json_obj->dimension,$total_weight,$json_obj->shipping_city,$json_obj->stateOrProvinceCode,$json_obj->shipping_zipcode,'US');
-			// if($fedex_shipping_charge->output->rateReplyDetails[0]->ratedShipmentDetails[0]->totalNetFedExCharge != null)
-			// {
-			// 	$shipping_charge = $fedex_shipping_charge->output->rateReplyDetails[0]->ratedShipmentDetails[0]->totalNetFedExCharge;
-			// }
-			// else
-			// {
-			// 	return $fedex_shipping_charge->errors[0]->message;
-			// }
-			//$order_total_amount=$total_order_amount+$shipping_charge+$json_obj->ArrCustomer->order_tip+$json_obj->order_total_tax-$json_obj->discount_amount;
-			$order_total_amount = $json_obj->ArrCustomer->cart_total;
-			$discount_amount = $json_obj->ArrCustomer->discount_amount;
-			$preparation_cost = $json_obj->ArrCustomer->preparation_cost;
-			$packaging_cost = $json_obj->ArrCustomer->packaging_cost;
-			$state_tax = $json_obj->ArrCustomer->state_tax;
-			$coupon_id = $json_obj->ArrCustomer->coupon_id;
+			$order_total_amount = $ArrCustomer['cart_total'];
+			$discount_amount = $ArrCustomer['discount_amount'];
+			$preparation_cost = $ArrCustomer['preparation_cost'];
+			$packaging_cost = $ArrCustomer['packaging_cost'];
+			$state_tax = $ArrCustomer['state_tax'];
+			$coupon_id = $ArrCustomer['coupon_id'];
 			$fedex_tracking_id = 0;
-			$earned_credit_checkbox = $json_obj->ArrCustomer->earned_credit_checkbox;
-			/*$track_id = get_ship();
-					 if ($track_id->output->transactionShipments[0]->masterTrackingNumber != null) {
-						 $fedex_tracking_id = $track_id->output->transactionShipments[0]->masterTrackingNumber;
-					 } else {
-						 return $track_id->errors[0]->message;
-					 }*/
+			$earned_credit_checkbox = $ArrCustomer['earned_credit_checkbox'];
 			
-
 			$order_data = array(
 				'order_amount' => trim($total_order_amount),
 				'fedex_tracking_id' => trim($fedex_tracking_id),
 				'fedex_shipping_charge' => trim($shipping_charge),
-				'order_tip' => trim($json_obj->ArrCustomer->order_tip),
+				'order_tip' => trim($ArrCustomer['order_tip']),
 				//'order_total_tax' =>trim($json_obj->order_total_tax),
 				'coupon_id' => trim($coupon_id),
 				'discount_amount' => trim($discount_amount),
@@ -569,30 +993,18 @@ class Controller_orders extends CI_Controller
 				$earned_credit_val = ($find_credit_per['credit_per'] / 100) * $order_data['order_total_amount'];
 				$earned_credit_val = number_format($earned_credit_val,2);
 			}
-			//print_r($find_credit_per);exit;
-
-			if(!empty($user_details['user_id'])){
-				$newInsertArr = array(
-					'user_id' => $user_details['user_id'],
-					'cart_arr' => $json_obj->cart_arr,
-					'created_datetime' => date('Y-m-d H:i:s'),
-					'user_email'=>$user_details['email'] ?? '',
-					'blocked_amount'=>trim($order_total_amount),
-				);
-				$this->master->insertData('tbl_payment_blocked_log', $newInsertArr);
-				
-			}
+		
 			
 			$billing_details = $this->master->get_row_detail('tbl_billing_address', array('billing_id' => $billing_id));
 			$shipping_details = $this->master->get_row_detail('tbl_shipping_address', array('shipping_id' => $shipping_id));
 
-			$billing_id = $json_obj->ArrCustomer->billing_id;
-			$shipping_id = $json_obj->ArrCustomer->shipping_id;
-			$card_id = $json_obj->ArrCustomer->card_id;
-			$save_card = $json_obj->ArrCustomer->save_card;
-			$CardToken = $json_obj->ArrCustomer->CardToken;
-			$CardPaymentMethodId = $json_obj->ArrCustomer->CardPaymentMethod;
-			$StripeCardID = $json_obj->ArrCustomer->StripeCardID;
+			$billing_id = $ArrCustomer['billing_id'];
+			$shipping_id = $ArrCustomer['shipping_id'];
+			$card_id = '';
+			$save_card = '';
+			$CardToken = $ArrCustomer['CardToken'];
+			$CardPaymentMethodId = $ArrCustomer['CardPaymentMethod'];
+			$StripeCardID = '';
 
 			$ArrData = array(
 				'order_id' => $result,
@@ -625,7 +1037,7 @@ class Controller_orders extends CI_Controller
 
 			//save used and earned value
 			if(!empty($earned_credit_checkbox)){
-				$used_crval = $json_obj->ArrCustomer->earned_credit_val;
+				$used_crval = $ArrCustomer['earned_credit_val'];
 				$used_cr_data = array(
 					'user_id' => $user_id,
 					'order_id' => $result,
@@ -637,98 +1049,56 @@ class Controller_orders extends CI_Controller
 				$crt_id = $this->credittransaction_model->add_credittrans($used_cr_data);
 			}
 
-			if ($result) {
-				$success_message = 'Order added successfully';
-				$users = $this->orders_model->get_users_data($result);
-				$subject = "Order Place Successfully";
-				/*$order_content = file_get_contents('templates/order_mail_template.html');
-				$email = $users[0]->email;
-				$order_content = str_replace('##user_name##', $json_obj->ArrCustomer->shipping_first_name . ' ' .$json_obj->ArrCustomer->shipping_last_name, $order_content);
-				$order_content = str_replace('##firstname##', $json_obj->ArrCustomer->shipping_first_name . ' ' .$json_obj->ArrCustomer->shipping_last_name, $order_content);
-				$order_content = str_replace('##order_id##', $result, $order_content);
-				foreach ($json_obj->ArrProduct as $product) {
-					$order_content = str_replace('##product_name##', $product->product_name, $order_content);
-					$order_content = str_replace('##product_qty##', $product->qty, $order_content);
-					$order_content = str_replace('##product_price##', $product->unit_price, $order_content);
-					$order_content = str_replace('##product_total_price##', $product->total_amount, $order_content);
+			$order_id = $result;
+
+			/* check minimum order amount to block */
+
+			$config_response = $this->get_configuration_by_key("'block_minimum_amount','block_maximum_amount','block_percentage'");
+
+			//echo "<pre>";		print_r($config_response); 			echo "</pre>";exit;
+
+			if (!empty($config_response)) {
+
+				if ($config_response[0]->configuration_value > $ArrData['order_amount']) {
+
+					$order_amount = $config_response[0]->configuration_value;
+
+				} elseif ($config_response[1]->configuration_value < $ArrData['order_amount']) {
+
+					$order_amount = $config_response[1]->configuration_value;
+
+				} else {
+
+					$order_amount = $ArrData['order_amount'] + ($ArrData['order_amount'] * $config_response[2]->configuration_value / 100);
+
 				}
-				$order_content = str_replace('##address1##', $json_obj->ArrCustomer->billing_street_name, $order_content);
-				$order_content = str_replace('##address2##', $json_obj->ArrCustomer->billing_apartment_name, $order_content);
-				$order_content = str_replace('##city##', $json_obj->ArrCustomer->billing_city, $order_content);
-				$order_content = str_replace('##state##', $json_obj->ArrCustomer->shiping_state, $order_content);
-				$order_content = str_replace('##zip##', $json_obj->ArrCustomer->billing_zipcode, $order_content);
-				$order_content = str_replace('##phone##', $json_obj->ArrCustomer->billing_phone, $order_content);
-				$order_content = str_replace('##email##', $json_obj->ArrCustomer->shipping_email, $order_content);
-				$order_content = str_replace('##link##', FRONT_URL, $order_content);*/
 
-				// send_mail($email, $subject, $order_content);
-				// $stripe = new \Stripe\StripeClient(
-				// 	STRIPE_SECRET_KEY
-				//   );
-				//   $token=$stripe->tokens->create([
-				// 	'card' => [
-				// 	  'number' => '4242424242424242',
-				// 	  'exp_month' => 7,
-				// 	  'exp_year' => 2023,
-				// 	  'cvc' => '314',
-				// 	],
-				//   ]);
-
-				// $token=trim($token->id);
-				// $user_details=array(
-				// 	'name' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '',$json_obj->first_name))),
-				// 	'email' => trim($json_obj->email),
-				// );
-
-				// $card_details=array(
-				// 	'card_num' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '',$json_obj->card_num))),
-				// 	'card_cvc' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '',$json_obj->cvc))),
-				// 	'card_exp_month' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '',$json_obj->exp_month))),
-				// 	'card_exp_year' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '',$json_obj->exp_year))));
-				// $items=array(
-				// 	'itemPrice' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '',$order_total_amount))),
-				// 	'currency' => "usd"
-				// );	
-
-				// $payment_details=stripe_payment_process($token,$user_details,$card_details,$items);
-				// if($payment_details != false)
-				// {
-				// 	$payment_detail_data=array(
-				// 		"payment_gateway_transaction_id"=>$payment_details['id'],
-				// 		"transaction_status"=>$payment_details['status'],
-				// 		"order_id"=>$result,
-				// 		"transaction_amount"=>$payment_details['amount'],
-				// 		"transaction_datetime"=>date("Y-m-d H:i:s"),
-				// 		"created_datetime"=>date("Y-m-d H:i:s"),
-				// 		"created_by"=>$json_obj->created_by
-				// 	);
-
-				// 	$this->orders_model->add_order($payment_detail_data,'tbl_transactions');
-				// 	if($payment_details['status'] == 'successful')
-				// 	{
-				// 		$order_data=array(
-				// 			'order_status'  => 'completed'
-				// 		);
-				// 		$this->orders_model->update_order($order_data,$result,'tbl_orders');
-				// 		$order_content=file_get_contents('templates/order_payment_successful.html');
-				// 	$order_content = str_replace('##user_name##',$json_obj->name,$order_content);
-				// 	$order_content = str_replace('##amount##',$payment_details['amount'],$order_content);
-
-				// 	send_mail($json_obj->email,$subject,$order_content);
-				// 	}
-
-
-				// }
-				// else
-				// {
-				// 	$errors="There is problem in payment";
-				// }
-				//echo "<pre>";print_r($payment_details);
-				//return $payment_details;
-			} else {
-				$errors = 'Order Not Added Successfully';
 			}
-			send_response_to_api($ArrData, $errors, $success_message);
+
+			
+			$order_id = $ArrData['order_id'];
+			$shipping_details = $ArrData['shipping_details'];
+			$billing_details = $ArrData['billing_details'];
+
+			$order_amount = intval(round($order_amount * 100));
+			//echo $order_amount;exit;
+			//$order_amount = bcmul($order_amount, '100', 0);
+			//$this->new_payment_process($order_id, $order_amount, $shipping_details, $billing_details, $json_obj);
+
+		$zip_code = $shipping_details['shipping_zipcode'];
+		$sms_shipping_phone = $shipping_details['shipping_phone'];
+
+		$json_obj->order_amount = intval($order_amount);
+		$json_obj->order_id = $order_id;
+		$json_obj->payment_methodtype = '';
+		$json_obj->gpay_token_serialize = '';
+		$ArrPayment = $json_obj;
+
+		$same_address = $json_obj->same_address;
+
+		/*Payment Process Start*/
+		$this->payment_process($ArrPayment,$shipping_details,$billing_details,$user_id,$same_address);
+		
 		}
 	}
 
@@ -737,7 +1107,14 @@ class Controller_orders extends CI_Controller
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
 
-		$oauth_key = $json_obj->oauth_key;
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+
 		$errors = $success_message = '';
 		$ArrData = array();
 		if (check_oauth_key($oauth_key)) {
@@ -1045,15 +1422,45 @@ class Controller_orders extends CI_Controller
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
 
-		$oauth_key = $json_obj->oauth_key;
+		// Receive values from POST
+		$page  = $json_obj->page;
+		$limit = $json_obj->limit;
+
+		// Default values
+		$page  = (!empty($page)) ? (int)$page : 1;
+		$limit = (!empty($limit)) ? (int)$limit : 10;
+
+		$offset = ($page - 1) * $limit;
+
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+
 		$errors = $success_message = '';
 		$ArrData = array();
 		if (check_oauth_key($oauth_key)) {
 			$user_id = $json_obj->user_id;
-			$result = $this->orders_model->get_order_by_user_id($user_id);
-			$ArrData = $result;
-			if ($result) {
-				$ArrData = $result;
+			$total_oprod = $this->orders_model->get_order_by_user_id_count($user_id);
+			$total = count($total_oprod);
+			$temp_result = $this->orders_model->get_order_by_user_id($user_id,$limit, $offset);
+			$ArrFinal = [];
+			if(count($temp_result) > 0){
+				foreach($temp_result as $val){
+					$no_of_items = $this->orders_model->get_no_of_order_items($val->order_id);
+					$val->no_of_items = $no_of_items;
+					$ArrFinal[] = $val;
+
+				}
+			}
+			if ($ArrFinal) {
+				$ArrData['order_data'] = $ArrFinal;
+				$ArrData['per_page'] = $limit;
+				$ArrData['total'] = $total;
+				$ArrData['total_pages'] = ceil($total / $limit);
 				$success_message = '';
 			} else {
 				$errors = 'No Order Found';
@@ -1105,16 +1512,19 @@ class Controller_orders extends CI_Controller
 
 	public function report_order()
 	{
-		//$json_str = file_get_contents('php://input');
-		$json_str = json_encode($_POST);
-		$json_obj = json_decode($json_str);
-
-		$oauth_key = $json_obj->oauth_key;
+		
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
 		$errors = $success_message = '';
 		$ArrData = array();
 		if (check_oauth_key($oauth_key)) {
-			if ($_FILES['report_images']['name'] != "") {
-				$config['upload_path'] = $_SERVER['DOCUMENT_ROOT'] . "/vrajfresh/admin/uploads/reports/";
+			if (isset($_FILES['report_images']['name']) && ($_FILES['report_images']['name'] != "")) {
+				$config['upload_path'] = $_SERVER['DOCUMENT_ROOT'] . "/admin/uploads/reports/";
 				$config['allowed_types'] = 'gif|jpg|png';
 				$config['max_size'] = 1024;
 				$config['file_name'] = GUID();
@@ -1122,14 +1532,15 @@ class Controller_orders extends CI_Controller
 				$this->load->library('upload', $config);
 
 				if (!$this->upload->do_upload('report_images')) {
-					$errors = array('error' => $this->upload->display_errors());
+					$errors = array('error' => strip_tags($this->upload->display_errors()));
 				} else {
 					$file_data = array('upload_data' => $this->upload->data());
 					$image1 = $file_data['upload_data']['file_name'];
 				}
 			}
-			if ($_FILES['report_images1']['name'] != "") {
-				$config['upload_path'] = $_SERVER['DOCUMENT_ROOT'] . "/vrajfresh/admin/uploads/reports/";
+
+			if (isset($_FILES['report_images1']['name']) && ($_FILES['report_images1']['name'] != "")) {
+				$config['upload_path'] = $_SERVER['DOCUMENT_ROOT'] . "/admin/uploads/reports/";
 				$config['allowed_types'] = 'gif|jpg|png';
 				$config['max_size'] = 1024;
 				$config['file_name'] = GUID();
@@ -1137,7 +1548,7 @@ class Controller_orders extends CI_Controller
 				$this->load->library('upload', $config);
 
 				if (!$this->upload->do_upload('report_images1')) {
-					$errors = array('error1' => $this->upload->display_errors());
+					$errors = array('error1' => strip_tags($this->upload->display_errors()));
 				} else {
 					$file_data1 = array('upload_data' => $this->upload->data());
 					$image2 = $file_data1['upload_data']['file_name'];
@@ -1145,12 +1556,12 @@ class Controller_orders extends CI_Controller
 			}
 			if ($errors == "") {
 				$data = array(
-					'user_id' => $json_obj->user_id,
-					'order_id' => $json_obj->order_no,
-					'complain' => $json_obj->message,
-					'image1' => $image1,
-					'image2' => $image2,
-					'created_by' => $json_obj->user_id,
+					'user_id' => $_POST['user_id'],
+					'order_id' => $_POST['order_no'],
+					'complain' => $_POST['message'],
+					'image1' => $image1 ?? '',
+					'image2' => $image2 ?? '',
+					'created_by' => $_POST['user_id'],
 					'created_datetime' => date('Y-m-d h:i:s'),
 					'is_active' => '1',
 					'is_read' => 1
@@ -1166,18 +1577,24 @@ class Controller_orders extends CI_Controller
 					$errors = 'Order Complain has been failed.';
 				}
 			} else {
-				$errors = $errors['error'] . "<br/>" . $errors['error1'];
+
+				$errors = $errors['error'] ?? '' . "<br/>" . $errors['error1'] ?? '';
 			}
 			send_response_to_api($ArrData, $errors, $success_message);
 		}
 	}
 	public function requested_product()
 	{
-		//$json_str = file_get_contents('php://input');
-		$json_str = json_encode($_POST);
+		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
 
-		$oauth_key = $json_obj->oauth_key;
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
 		$errors = $success_message = '';
 		$ArrData = array();
 		if (check_oauth_key($oauth_key)) {
@@ -1222,10 +1639,20 @@ class Controller_orders extends CI_Controller
 		$json_obj = json_decode($json_str);
 		
 
-		$oauth_key = $json_obj->oauth_key;
-		$user_id = $json_obj->user_id;
+		
 		$id = $json_obj->id;
 		$type = $json_obj->type;
+
+		$user_id = $json_obj->user_id;
+
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+
 
 		$ArrData = array();
 
@@ -1250,4 +1677,216 @@ class Controller_orders extends CI_Controller
 		}
 		send_response_to_api($ArrData, $errors, $success_message);
 	}
+
+	public function get_state_list(){
+		$errors = $success_message = '';
+
+		$ArrData = array();
+
+		$query = $this->db->select('s.*')
+
+            ->get('state s');
+
+
+
+        $result = $query->result();
+		if (count($result) > 0) {
+
+			$ArrData = $result;
+
+			$success_message = '';
+
+		} else {
+
+			$errors = 'No Data Available';
+
+		}
+		send_response_to_api($ArrData, $errors, $success_message);
+	}
+
+	public function get_substitution_preferences(){
+		$errors = $success_message = '';
+
+		$ArrData = array();
+		$ArrData[0]['id'] = '3';
+		$ArrData[0]['text'] = 'Substitute on entire order'; 
+		$ArrData[1]['id'] = '2';
+		$ArrData[1]['text'] = 'Substitute on selected products only';
+		$ArrData[2]['id'] = '4';
+		$ArrData[2]['text'] = 'No, please refund';
+		send_response_to_api($ArrData, $errors, $success_message);
+	}
+
+	public function get_order_dropdown_user_id()
+	{
+		$json_str = file_get_contents('php://input');
+		$json_obj = json_decode($json_str);
+
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+
+		$errors = $success_message = '';
+		$ArrData = array();
+		if (check_oauth_key($oauth_key)) {
+			$user_id = $json_obj->user_id;
+			$result = $this->orders_model->get_order_dropdown_by_user_id($user_id);
+			$ArrData = $result;
+			if ($result) {
+				$ArrData = $result;
+				$success_message = '';
+			} else {
+				$errors = 'No Order Found';
+			}
+			send_response_to_api($ArrData, $errors, $success_message);
+		}
+	}
+	
+	public function createIntent() {
+		$stripe = array(
+			"secret_key" => STRIPE_SECRET_KEY,
+			"publishable_key" => STRIPE_PUBLISHABLE_KEY
+		);
+
+		// retrieve JSON from POST body
+		$jsonStr = file_get_contents('php://input');
+		$jsonObj = json_decode($jsonStr);
+		
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+		if (check_oauth_key($oauth_key)) {
+    		$result = $this->db->get_where('tbl_users_token', ['access_token' => $oauth_key])->row();
+            $suser_id = $result->user_id;
+
+    		\Stripe\Stripe::setApiKey($stripe['secret_key']);
+    		$stripe = new \Stripe\StripeClient($stripe['secret_key']);
+    		$amount = isset($jsonObj->total_amount) ? $jsonObj->total_amount : 0;
+    		$szipcode = isset($jsonObj->zipcode) ? $jsonObj->zipcode : 0;
+    		//find user details
+    		$user_details = $this->master->get_row_detail('tbl_users', array('user_id' => $suser_id));
+    
+    		if(!empty($user_details)){
+    			$stripeCustId = $user_details['stripe_cus_id'];
+    			$uemail = $user_details['email'];
+    		}
+    
+    		// Convert to cents (Stripe requires smallest currency unit)
+    		$amountInCents = intval($amount * 100);
+    		
+    		$cus_id='';
+    		if(!empty($stripeCustId)):
+    			$cus_id = $stripeCustId;
+    		else:
+    		
+    			try{			
+    				$customer = \Stripe\Customer::create(
+    					array(
+    						'email' => $uemail,
+    						'address' => array('postal_code' => $szipcode),
+    					)
+    				);
+    				$cus_id = $customer->id;
+    
+    				/* Add Cutomer Id In User Details */
+    				$updateData = array(
+    					'stripe_cus_id' => $cus_id
+    				);
+    				$this->master->update_detail('tbl_users', $updateData, array('user_id' => $suser_id));
+    
+    			}  catch (\Stripe\Exception\ApiErrorException $e) {
+    
+    				$msg = 'New Card & New Customer Error creating customer: ' . $e->getMessage();
+    				$returnArr['msg'] = $msg;
+    			}
+    		endif;
+            try {
+    
+                // Create a PaymentIntent with amount and currency
+                $paymentIntent = $stripe->paymentIntents->create([
+                    'amount' => $amountInCents,
+                    'currency' => 'usd',
+    				'customer' => $cus_id,          
+                    // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
+                    'automatic_payment_methods' => [
+                        'enabled' => true,
+                    ],
+    				'setup_future_usage' => 'off_session',   
+    				
+                ]);
+    
+                $output = [
+                    'clientSecret' => $paymentIntent->client_secret,
+    				'paymentId' => $paymentIntent->id
+                ];
+    		//print_r($paymentIntent);exit;
+                echo json_encode($output);
+            } catch (Error $e) {
+                http_response_code(500);
+                echo json_encode(['error' => $e->getMessage()]);
+            }
+		}
+
+    }
+
+	public function updateIntent() {
+
+		$stripe = array(
+			"secret_key" => STRIPE_SECRET_KEY,
+			"publishable_key" => STRIPE_PUBLISHABLE_KEY
+		);
+		// retrieve JSON from POST body
+		$jsonStr = file_get_contents('php://input');
+		$jsonObj = json_decode($jsonStr);
+		
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+		
+		if (check_oauth_key($oauth_key)) {
+
+    		$stripe = new \Stripe\StripeClient($stripe['secret_key']);
+    		$intentId = $jsonObj->intent_id;
+    		$amount = isset($jsonObj->amount) ? $jsonObj->amount : 0;
+    
+    		// Convert to cents (Stripe requires smallest currency unit)
+    		$amountInCents = intval($amount * 100);
+    		try {
+    
+    			// Create a PaymentIntent with amount and currency
+    			$paymentIntent = $stripe->paymentIntents->update($intentId,[
+    				'amount' => $amountInCents,
+    				//'currency' => 'usd',
+    				// In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
+    				// 'automatic_payment_methods' => [
+    				// 	'enabled' => true,
+    				// 		'allow_redirects' => 'never',
+    				// ],
+    				
+    			]);
+    
+    			$output = [
+    				'clientSecret' => $paymentIntent->client_secret,
+    				'paymentId' => $paymentIntent->id
+    			];
+    
+    			echo json_encode($output);
+    		} catch (Error $e) {
+    			http_response_code(500);
+    			echo json_encode(['error' => $e->getMessage()]);
+    		}
+		}
+    }
 }

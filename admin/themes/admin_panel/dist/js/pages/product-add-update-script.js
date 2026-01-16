@@ -1,9 +1,9 @@
 function valdiateform() {
-    if (parseFloat($('#member_price').val()) > parseFloat($('#regular_price').val())) {
+    if (parseFloat($('#sale_price').val()) > parseFloat($('#product_price').val())) {
         alert('Please enter valid sale price, sale price must be less than MRP.');
 
-        $("#regular_price").val('');
-        $("#member_price").val('');
+        $("#product_price").val('');
+        $("#sale_price").val('');
         return false;
     }
     return true;

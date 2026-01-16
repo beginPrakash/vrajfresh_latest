@@ -296,7 +296,34 @@ class Orders_model extends CI_Model
 
     }
 
-    public function get_order_by_user_id($data)
+    public function get_order_by_user_id($data,$limit, $offset)
+
+    {
+
+        $query = $this->db->from('tbl_orders')->select("order_id,order_total_amount,order_datetime,order_status,user_id,
+         CASE 
+        WHEN payment_methodtype = 'gpay_paymethod' THEN 'Google Pay'
+        WHEN payment_methodtype = 'apple_paymethod' THEN 'Apple Pay'
+        ELSE 'Stripe'
+        END as payment_method", false)
+
+            ->where('user_id', $data)
+
+            ->where('is_active', '1')
+
+            ->where('is_deleted', '0')
+
+            ->order_by('order_id', 'desc');
+
+        $query = $this->db->limit($limit, $offset)->get();
+
+            // echo $this->db->last_query();exit;
+
+        return $query->result();
+
+    }
+
+    public function get_order_by_user_id_count($data)
 
     {
 
@@ -305,7 +332,29 @@ class Orders_model extends CI_Model
         WHEN payment_methodtype = 'gpay_paymethod' THEN 'Google Pay'
         WHEN payment_methodtype = 'apple_paymethod' THEN 'Apple Pay'
         ELSE 'Stripe'
-    END as payment_method", false)
+        END as payment_method", false)
+
+            ->where('user_id', $data)
+
+            ->where('is_active', '1')
+
+            ->where('is_deleted', '0')
+
+            ->order_by('order_id', 'desc')
+
+            ->get('tbl_orders');
+
+            // echo $this->db->last_query();exit;
+
+        return $query->result();
+
+    }
+
+    public function get_order_dropdown_by_user_id($data)
+
+    {
+
+        $query = $this->db->select("order_id,order_status")
 
             ->where('user_id', $data)
 
@@ -378,6 +427,18 @@ class Orders_model extends CI_Model
         // echo $this->db->last_query();exit;
 
         return $query->result_array();
+
+    }
+
+    public function get_no_of_order_items($order_id){
+
+        $this->db->select('SUM(qty) AS total_qty');
+        $this->db->where('order_id', $order_id);
+        $this->db->group_by('order_id');
+        $query = $this->db->get('tbl_order_products');
+        $total = $query->row()->total_qty ?? 0;
+        return $total;
+        
 
     }
 

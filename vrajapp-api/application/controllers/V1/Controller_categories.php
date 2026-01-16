@@ -17,6 +17,7 @@ class Controller_categories extends CI_Controller
 		$this->load->model('products_model');
 		$this->load->model('brands_model');
 		$this->load->model('tags_model');
+		$this->load->model('home_model');
 
 		error_reporting(0);
 	}
@@ -312,6 +313,21 @@ class Controller_categories extends CI_Controller
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
 
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+		$w_productlist = '';
+		if ((!empty($oauth_key)) && (check_oauth_key($oauth_key))) {
+    		$token_result = $this->db->get_where('tbl_users_token', ['access_token' => $oauth_key])->row();
+            $suser_id = $token_result->user_id;
+			$w_productlist = $this->home_model->get_wishlist_product_by_user($suser_id);
+
+		}	
+
 		// Receive values from POST
 		$page  = $json_obj->page;
 		$limit = $json_obj->limit;
@@ -410,6 +426,11 @@ class Controller_categories extends CI_Controller
 				for ($i = 0; $i < count($product_result); $i++) {
 					//$result=array();
 					foreach ($product_result[$i] as $key => $value) {
+
+						if ($key == "product_id") {
+							$is_like = in_array($value, explode(',', $w_productlist)) ? 1 : 0;
+						}
+						$products['is_like'] = $is_like ?? 0;
 						if ($key == "product_image") {
 							$products[$key] = FILE_UPLOAD_PATH . 'products/' . $value;
 						} else {
@@ -418,9 +439,9 @@ class Controller_categories extends CI_Controller
 					}
 					$result['products'][] = $products;
 					$result['current_page'] = $page;
-			$result['per_page'] = $limit;
-			$result['total'] = $total;
-			$result['total_pages'] = ceil($total / $limit);
+					$result['per_page'] = $limit;
+					$result['total'] = $total;
+					$result['total_pages'] = ceil($total / $limit);
 				}
 			}
 
@@ -440,6 +461,20 @@ class Controller_categories extends CI_Controller
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
 		 //print_r($json_obj);exit;
+
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+		$w_productlist = '';
+		if ((!empty($oauth_key)) && (check_oauth_key($oauth_key))) {
+    		$token_result = $this->db->get_where('tbl_users_token', ['access_token' => $oauth_key])->row();
+            $suser_id = $token_result->user_id;
+			$w_productlist = $this->home_model->get_wishlist_product_by_user($suser_id);
+		}
 
 		// Receive values from POST
 		$page  = $json_obj->page;
@@ -545,6 +580,12 @@ class Controller_categories extends CI_Controller
 				for ($i = 0; $i < count($product_result); $i++) {
 					//$result=array();
 					foreach ($product_result[$i] as $key => $value) {
+						
+						if ($key == "product_id") {
+							$is_like = in_array($value, explode(',', $w_productlist)) ? 1 : 0;
+						}
+						$products['is_like'] = $is_like ?? 0;
+
 						if ($key == "product_image") {
 							$products[$key] = FILE_UPLOAD_PATH . 'products/' . $value;
 						} else {

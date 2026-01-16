@@ -1,0 +1,45 @@
+.container2 {height:360px; position: relative; overflow: auto; margin-bottom:10px; width:100%;}
+.ps-container { -ms-touch-action: none; touch-action: none; overflow: hidden !important; -ms-overflow-style: none; }
+  @supports (-ms-overflow-style: none) {
+.ps-container {overflow: auto !important; } }
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+.ps-container {overflow: auto !important; } 
+}
+.ps-container.ps-active-y > .ps-scrollbar-y-rail {display: block; background-color: transparent;}
+.ps-container.ps-in-scrolling {pointer-events: none; } 
+.ps-container.ps-in-scrolling.ps-y > .ps-scrollbar-y-rail {background-color: #eee; opacity: 0.9; }
+.ps-container.ps-in-scrolling.ps-y > .ps-scrollbar-y-rail > .ps-scrollbar-y{background-color: #999; }
+.ps-container > .ps-scrollbar-y-rail {display: none; position: absolute; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; opacity: 0; -webkit-transition: background-color .2s linear, opacity .2s linear; -moz-transition: background-color .2s linear, opacity .2s linear; -o-transition: background-color .2s linear, opacity .2s linear; transition: background-color .2s linear, opacity .2s linear; right: 3px; width: 6px;}
+.ps-container > .ps-scrollbar-y-rail > .ps-scrollbar-y{position: absolute; background-color: #aaa; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; -webkit-transition: background-color .2s linear; -moz-transition: background-color .2s linear;
+      -o-transition: background-color .2s linear; transition: background-color .2s linear; right: 0; width: 6px;}
+.ps-container:hover.ps-in-scrolling.ps-y > .ps-scrollbar-y-rail > .ps-scrollbar-y {background-color: #999; }
+.ps-container:hover > .ps-scrollbar-y-rail {opacity: 0.6; }
+.ps-container:hover > .ps-scrollbar-y-rail:hover {background-color: #eee; opacity: 0.9;}
+.ps-container:hover > .ps-scrollbar-y-rail:hover > .ps-scrollbar-y {background-color: #999; }
+.bg_header_top{border-top:none;}
+.bg_header_top .with-border{background:#2979ff; border:none; border-radius: 3px 3px 0px 0px;}
+.bg_header_top .with-border .box-title{color:#fff;}
+.bg_header_top .with-border i{color:#fff;}
+.bg_header_top .with-border .btn:focus{outline:none;}
+.bg_header_top_2{border-top:none;}
+.bg_header_top_2 .with-border{background:#454545; border:none; border-radius: 3px 3px 0px 0px;}
+.bg_header_top_2 .with-border .box-title{color:#fff;}
+.bg_header_top_2 .with-border i{color:#fff;}
+.bg_header_top_2 .with-border .btn:focus{outline:none;}
+
+
+@media only screen and (min-width:992px) and (max-width:1199px) {
+
+}
+
+@media only screen and (min-width:768px) and (max-width:991px) {
+
+}
+
+@media only screen and (max-width:767px) {
+}
+
+
+
+
+
