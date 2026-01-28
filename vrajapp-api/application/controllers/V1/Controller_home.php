@@ -15,6 +15,7 @@ class Controller_home extends CI_Controller
 		$this->load->model('home_model');
 		$this->load->model('products_model');
 		$this->load->model('zipcodes_model');
+		$this->load->model('appconfiguration_model');
 		$this->load->model('Master_model', 'master');
 	}
 
@@ -197,9 +198,9 @@ class Controller_home extends CI_Controller
 			$oauth_key = '';
 		}
 		$w_productlist = '';
-		if ((!empty($oauth_key)) && (check_oauth_key($oauth_key))) {
+		if (!empty($oauth_key)) {
     		$token_result = $this->db->get_where('tbl_users_token', ['access_token' => $oauth_key])->row();
-            $suser_id = $token_result->user_id;
+            $suser_id = $token_result->user_id ?? '';
 			$w_productlist = $this->home_model->get_wishlist_product_by_user($suser_id);
 
 		}	
@@ -265,7 +266,7 @@ class Controller_home extends CI_Controller
 					for ($i = 0; $i < count($result_val); $i++) {
 
 						foreach ($result_val[$i] as $key => $value) {
-							if ($key == "product_id") {
+							if ($key == "product_id" && !empty($w_productlist)) {
 								$is_like = in_array($value, explode(',', $w_productlist)) ? 1 : 0;
 							}
 							$product_result['is_like'] = $is_like ?? 0;
@@ -785,9 +786,9 @@ class Controller_home extends CI_Controller
 			$oauth_key = '';
 		}
 		$w_productlist = '';
-		if ((!empty($oauth_key)) && (check_oauth_key($oauth_key))) {
+		if (!empty($oauth_key)) {
     		$token_result = $this->db->get_where('tbl_users_token', ['access_token' => $oauth_key])->row();
-            $suser_id = $token_result->user_id;
+            $suser_id = $token_result->user_id ?? '';
 			$w_productlist = $this->home_model->get_wishlist_product_by_user($suser_id);
 
 		}
@@ -853,7 +854,7 @@ class Controller_home extends CI_Controller
 			for ($i = 0; $i < count($result_val); $i++) {
 
 				foreach ($result_val[$i] as $key => $value) {
-					if ($key == "product_id") {
+					if ($key == "product_id" && !empty($w_productlist)) {
 						$is_like = in_array($value, explode(',', $w_productlist)) ? 1 : 0;
 					}
 					$product_result['is_like'] = $is_like ?? 0;
@@ -883,5 +884,34 @@ class Controller_home extends CI_Controller
 			send_response_to_api($ArrData, $errors, $success_message);
 		
     }
+
+	public function get_app_version()
+	{
+		
+		$json_str = file_get_contents('php://input');
+		$json_obj = json_decode($json_str,true);
+
+		$errors = $success_message = '';
+
+		$json_str = $this->input->raw_input_stream;		
+		$json_obj = json_decode($json_str);
+		
+		$ArrData = array();
+		$NewArrData = array();
+		
+			$app_configuration_data = $this->appconfiguration_model->getConfiguration();
+			if(count($app_configuration_data ) > 0){
+				foreach($app_configuration_data as $key => $val){
+					$ckey = $val['configuration_key'];
+					$NewArrData[$ckey] = $val['configuration_value'];
+				}
+			}
+
+			$ArrData = $NewArrData;
+			$success_message = 'Data listed successfully';
+		
+
+		send_response_to_api($ArrData, $errors, $success_message);
+	}
 	
 }
