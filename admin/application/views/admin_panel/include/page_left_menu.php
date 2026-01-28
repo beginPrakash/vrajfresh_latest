@@ -337,6 +337,8 @@ span.noti_count_or {
 
 				<li><a href="<?php echo base_url(); ?>website-configuration">Website Configuration</a></li>
 
+				<li><a href="<?php echo base_url(); ?>app-configuration">Application Configuration</a></li>
+
 				<li><a href="<?php echo base_url(); ?>state-wise-tax">State Wise Tax</a></li>
 
 				<li><a href="<?php echo base_url(); ?>cash-credits">Cash Credits</a></li>
