@@ -629,6 +629,9 @@ class Controller_home extends CI_Controller
 		$errors = $success_message = '';
 		$ArrData = array();
 		$result = array();
+		$Z_perisible = '';
+		$Z_liker = '';
+		$Z_cook_food = '';
 		if (check_oauth_key($oauth_key)) {
 		
 			if($zipcode != ""){

@@ -3100,6 +3100,10 @@ button.header_button_cart {
 	width: 100%;
 }
 
+.advertise_bottom_mobile img {
+    width: 100%;
+}
+
 .deskhide {
 	display: none;
 }
