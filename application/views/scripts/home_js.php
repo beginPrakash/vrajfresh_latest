@@ -1900,7 +1900,7 @@ function get_home_product_slider(api_url_prefix) {
                                     var buttonSection = ' <ul><li><div id="qty_'+ product_slider_items[a].product_id+'" class="quantity ' + out_of_stock_class +' '+ qty_class + '"><button type="button" id="sub" class="sub qty_change_sub" "data-productslug="' + product_slider_items[a].product_slug + '" data-productimage= "' + product_slider_items[a].product_image + '" data-isperisible="' + product_slider_items[a].is_perisible_products + '" data-section="section4" data-isperisible="' + product_slider_items[a].is_perisible_products + '" data-productname="' + product_slider_items[a].product_name + '" data-price=' + product_slider_items[a].sale_price + ' data-productid = ' + product_slider_items[a].product_id + ' data-productweight =' + product_slider_items[a].product_weight_gms +  ' data-producttax=' + product_slider_items[a].product_tax + ' data-productrowid='+cart_row_id_val+'>-</button><input type="text" id="' + product_slider_items[a].product_id + '" value="'+cart_qty_val+'" min="1" max="3" disabled /><button type="button" id="add" class="add qty_change_add" "data-productslug="' + product_slider_items[a].product_slug + '" data-productimage= "' + product_slider_items[a].product_image + '" data-isperisible="' + product_slider_items[a].is_perisible_products + '" data-section="section4" data-isperisible="' + product_slider_items[a].is_perisible_products + '" data-productname="' + product_slider_items[a].product_name + '" data-price=' + product_slider_items[a].sale_price + ' data-productid = ' + product_slider_items[a].product_id + ' data-productweight =' + product_slider_items[a].product_weight_gms +  ' data-producttax=' + product_slider_items[a].product_tax + '>+</button></div></li><li><button id= "btn_section4_' + product_slider_items[a].product_id + '"data-productslug="' + product_slider_items[a].product_slug + '" data-productimage= "' + product_slider_items[a].product_image + '" data-isperisible="' + product_slider_items[a].is_perisible_products + '" class="add_cart ' + out_of_stock_class + ' '+ add_class+'" data-section="section4" data-isperisible="' + product_slider_items[a].is_perisible_products + '" data-productname="' + product_slider_items[a].product_name + '" data-price=' + product_slider_items[a].sale_price + ' data-productid = ' + product_slider_items[a].product_id + ' data-productweight =' + product_slider_items[a].product_weight_gms +  ' data-producttax=' + product_slider_items[a].product_tax + '>Add</button></li></ul>';
                                     
                                 }
-                               // console.log(product_slider_items[a].tag_discount);
+
                                 var tagdiscounttext = '';
                                 if (product_slider_items[a].tag_discount != '') {
                                     tagdiscounttext = '<span>'+product_slider_items[a].tag_discount+'</span>';
@@ -1910,6 +1910,7 @@ function get_home_product_slider(api_url_prefix) {
                                 if (objectLength > 1) {
                                     tagdiscounttext = '';
                                 }
+
                                 product = product.concat('<div class="product-box"><a href="product/' + product_slider_items[a].product_slug +
                                     '"> <div class="begin_img_container">'+tagdiscounttext+'<img src=' + product_slider_items[a].image + ' onerror=this.src="<?php echo BASE_URL; ?>assets/images/logo-2.png"></div><h4>' + product_slider_items[a].product_name +
                                     '</h4></a>' + price_weight +buttonSection+'</div>'
@@ -2206,15 +2207,15 @@ function get_advertise_bottom(api_url_prefix) {
                     $("#advertise_bottom").html(slider_banner);
                     
                 }
-                if (response.data.ad_banner_mobile != null) {
-                    var srnno=1;
-                    for (let a = 0; a < response.data.ad_banner_mobile.length; a++) {
-                        slider_banner_mobile = slider_banner_mobile.concat("<div class='ad_image srno-"+srnno+"'><a href='" + response.data.ad_banner_mobile[a]['ad_link'] +
-                            "'><img src=" + response.data.ad_banner_mobile[a]['ad_image'] + " onerror=this.src='<?php echo BASE_URL; ?>assets/images/logo-2.png'></a></div>");
-                            srnno++;
-                    }
-                    $("#advertise_bottom_mobile").html(slider_banner_mobile);
-                }
+                // if (response.data.ad_banner_mobile != null) {
+                //     var srnno=1;
+                //     for (let a = 0; a < response.data.ad_banner_mobile.length; a++) {
+                //         slider_banner_mobile = slider_banner_mobile.concat("<div class='ad_image srno-"+srnno+"'><a href='" + response.data.ad_banner_mobile[a]['ad_link'] +
+                //             "'><img src=" + response.data.ad_banner_mobile[a]['ad_image'] + " onerror=this.src='<?php echo BASE_URL; ?>assets/images/logo-2.png'></a></div>");
+                //             srnno++;
+                //     }
+                //     $("#advertise_bottom_mobile").html(slider_banner_mobile);
+                // }
             }
         },
         "error": function(response) {
