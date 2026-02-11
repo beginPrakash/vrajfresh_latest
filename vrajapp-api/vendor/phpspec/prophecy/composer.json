@@ -16,35 +16,25 @@
             "email":     "marcello.duarte@gmail.com"
         }
     ],
-
     "require": {
-        "php":                               "^7.2 || ~8.0, <8.2",
-        "phpdocumentor/reflection-docblock": "^5.2",
-        "sebastian/comparator":              "^3.0 || ^4.0",
-        "doctrine/instantiator":             "^1.2",
-        "sebastian/recursion-context":       "^3.0 || ^4.0"
+        "phpdocumentor/reflection-docblock": "~2.0",
+        "sebastian/comparator":              "~1.1",
+        "doctrine/instantiator":             "^1.0.2"
     },
 
     "require-dev": {
-        "phpspec/phpspec": "^6.0 || ^7.0",
-        "phpunit/phpunit": "^8.0 || ^9.0"
+        "phpspec/phpspec": "~2.0"
     },
 
     "autoload": {
-        "psr-4": {
-            "Prophecy\\": "src/Prophecy"
-        }
-    },
-
-    "autoload-dev": {
-        "psr-4": {
-            "Fixtures\\Prophecy\\": "fixtures"
+        "psr-0": {
+            "Prophecy\\": "src/"
         }
     },
 
     "extra": {
         "branch-alias": {
-            "dev-master": "1.x-dev"
+            "dev-master": "1.4.x-dev"
         }
     }
 }

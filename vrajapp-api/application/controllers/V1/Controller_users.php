@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+require_once APPPATH . 'third_party/twilio_loader.php';
 
 class Controller_users extends CI_Controller
 {
@@ -428,6 +429,38 @@ class Controller_users extends CI_Controller
 							}
 						}
 					}else{
+
+// 				$to = '+12012708378';
+// 						try {
+//             $client = new \Twilio\Rest\Client($this->sid, $this->token);
+// $message = 'THis is test message';
+//             $sms = $client->messages->create(
+//                 $to,
+//                 [
+//                     'from' => $this->from,
+//                     'body' => $message
+//                 ]
+//             );
+// print_r($sms);exit;
+//             return $sms->sid; // success
+//         } catch (Exception $e) {
+// 			print_r($e);exit;
+//             return $e->getMessage(); // error
+//         }exit;
+
+
+
+// $twilio->verify->v2->services("VAc58339b11abb0c4de5ddeb842c987a77")
+//                                    ->verifications
+//                                    ->create("+919537234387", "sms");
+// echo $gen_otp;
+// $check = $twilio->verify->v2->services("VAc58339b11abb0c4de5ddeb842c987a77")
+//           ->verificationChecks
+//           ->create([
+//               "to" => "+919537234387",
+//               "code" => $gen_otp
+//           ]);
+// print_r($check);exit;
 						$success_message = 'Login Successfully';
 					}
 

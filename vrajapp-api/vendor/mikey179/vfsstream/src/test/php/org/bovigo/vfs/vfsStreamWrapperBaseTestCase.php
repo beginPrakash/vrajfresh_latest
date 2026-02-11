@@ -11,7 +11,7 @@ namespace org\bovigo\vfs;
 /**
  * Test for org\bovigo\vfs\vfsStreamWrapper.
  */
-abstract class vfsStreamWrapperBaseTestCase extends \BC_PHPUnit_Framework_TestCase
+abstract class vfsStreamWrapperBaseTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
      * root directory
@@ -96,3 +96,4 @@ abstract class vfsStreamWrapperBaseTestCase extends \BC_PHPUnit_Framework_TestCa
         vfsStreamWrapper::setRoot($this->foo);
     }
 }
+?>
