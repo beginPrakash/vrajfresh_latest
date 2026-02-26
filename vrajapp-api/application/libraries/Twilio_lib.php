@@ -9,7 +9,9 @@ class Twilio_lib {
 
     public function __construct()
     {
-        
+        $this->sid   = 'AC7dda41efd0d768dddc379e95170769c7';
+        $this->token = 'c7710227800bfb555e3b1c0221e1bf2d';
+        $this->from  = '+1 (201) 270-8377'; // e.g. +1415xxxxxxx
     }
 
 

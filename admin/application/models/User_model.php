@@ -114,13 +114,31 @@ class user_model extends CI_Model
 	public function admin_user_validate($username, $password)
 	{
 
-		$this->db->select('tbl_user_roles.user_role_id,tbl_users.user_id,tbl_users.email,tbl_users.user_name,tbl_users.password,tbl_users.user_role_id,tbl_user_roles.user_role_name,tbl_users.created_datetime,tbl_users.first_name,tbl_users.last_name,tbl_users.display_name,tbl_users.last_login_date');
+		$this->db->select('tbl_user_roles.user_role_id,
+                   tbl_users.user_id,
+                   tbl_users.email,
+                   tbl_users.user_name,
+                   tbl_users.password,
+                   tbl_users.user_role_id,
+                   tbl_user_roles.user_role_name,
+                   tbl_users.created_datetime,
+                   tbl_users.first_name,
+                   tbl_users.last_name,
+                   tbl_users.display_name,
+                   tbl_users.last_login_date');
+
 		$this->db->from('tbl_users');
-		$this->db->join('tbl_user_roles', 'tbl_user_roles.user_role_id = tbl_users.user_role_id', 'JOIN');
-		$this->db->where('tbl_users.user_name', $username);
+
+		$this->db->join('tbl_user_roles', 
+						'tbl_user_roles.user_role_id = tbl_users.user_role_id', 
+						'JOIN');
+
+		// ✅ Case-sensitive username
+		$this->db->where("BINARY tbl_users.user_name = '".$this->db->escape_str($username)."'", NULL, FALSE);
+
 		$this->db->where('tbl_users.password', $password);
-		$this->db->where_not_in('tbl_user_roles.user_role_id', '4');
-		$this->db->where('tbl_users.is_active', '1');
+		$this->db->where_not_in('tbl_user_roles.user_role_id', [4]);
+		$this->db->where('tbl_users.is_active', 1);
 		$this->db->where('tbl_users.is_deleted', 0);
 		$this->db->limit(1);
 

@@ -77,6 +77,9 @@ $route['cart-session-data'] = 'Controller_cart/get_cart_session_data';
 $route['brand/(:any)'] = 'Controller_brands/products_list/$1';
 $route['brands'] = 'Controller_brands/brand_list';
 
+$route['blogs'] = 'Controller_blogs/index';
+$route['fetch_blogs'] = 'Controller_blogs/fetch_blogs';
+
 $route['tag/(:any)'] = 'Controller_tags/products_list/$1';
 
 #$route['signup'] = 'Controller_users/signup';
@@ -109,6 +112,7 @@ $route['sucess-login'] = 'Controller_users/login_sucess';
 $route['my-orders'] = 'Controller_users/orders';
 $route['credit-transactions'] = 'Controller_users/credit_transactions';
 $route['contact'] = 'Controller_login/contact';
+$route['delete-account'] = 'Controller_login/delete_account';
 $route['change_password_process'] = 'Controller_users/change_password_process';
 $route['edit-profile'] = 'Controller_users/edit_profile';
 $route['special-request'] = 'Controller_users/special_request';

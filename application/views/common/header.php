@@ -28,9 +28,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="description" content="">
     <meta name="author" content="">
-    <title>VrajFresh</title>
+    <title><?= (isset($meta_title) && !empty($meta_title)) ? $meta_title : 'VrajFresh'; ?></title>
+    <meta name="description" content="<?= (isset($meta_description) && !empty($meta_description)) ? $meta_description : 'VrajFresh'; ?>">
     <link rel="shortcut icon" type="image/png" href=<?php echo ASSET_URL . "images/favicon.png"; ?>>
     <link href='<?php echo ASSET_URL . "css/slick.css?v=1.1"; ?>' rel="stylesheet">
     <link href='<?php echo ASSET_URL . "css/vraj-fresh-custom.css?v=" . date("d.H.m.s"); ?>' rel="stylesheet">

@@ -172,6 +172,7 @@ $route['V1/get-user-address'] = 'V1/Controller_users/get_user_address';
 $route['V1/edit-user-address'] = 'V1/Controller_users/edit_user_address';
 
 $route['V1/contact-mail'] = 'V1/Controller_users/contact_mail';
+$route['V1/delete-user-account'] = 'V1/Controller_users/delete_user_account';
 $route['V1/update-user'] = 'V1/Controller_users/edit_user';
 $route['V1/user-activate'] = 'V1/Controller_users/user_activate';
 

@@ -151,4 +151,28 @@ class Users_model extends CI_Model
         // echo $this->db->last_query();exit;
         return $query->result();
     }
+
+
+   public function delete_user_by_emailphone($data)
+    {
+        $this->db->query("SET FOREIGN_KEY_CHECKS = 0");
+
+        $this->db->group_start();
+        $this->db->where('email', $data);
+        $this->db->or_where('mobile_no', $data);
+        $this->db->group_end();
+
+        $this->db->delete('tbl_users');
+
+        $deleted = $this->db->affected_rows();   // CHECK HERE
+
+        $this->db->query("SET FOREIGN_KEY_CHECKS = 1");
+
+        if ($deleted > 0) {
+            return true;   // data deleted
+        } else {
+            return false;  // no data deleted
+        }
+    }
+    
 }

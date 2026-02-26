@@ -732,6 +732,57 @@ $(document).ready(function() {
                            </div>
 
                         </div>
+                        <div class="form-group">
+                           <div class="col-sm-12">
+                              <div>
+                                 <label>Health Benefits : </label>
+                                 <textarea placeholder="Health Benefits" rows="3" class="form-control" id="health_benefits" name="health_benefits"><?php echo (!empty($edit_id)) ? $product['health_benefits'] : ''; ?></textarea>
+                                 <?php echo form_error('health_benefits'); ?>
+                              </div>
+                           </div>
+
+                        </div>
+                        <div class="form-group">
+                           <div class="col-sm-12">
+                              <div>
+                                 <label>Ingredients : </label>
+                                 <textarea placeholder="Ingredients" rows="3" class="form-control" id="ingredients" name="ingredients"><?php echo (!empty($edit_id)) ? $product['ingredients'] : ''; ?></textarea>
+                                 <?php echo form_error('ingredients'); ?>
+                              </div>
+                           </div>
+
+                        </div>
+                        <div class="form-group">
+                           <div class="col-sm-12">
+                              <div>
+                                 <label>Usage instructions : </label>
+                                 <textarea placeholder="Usage instructions" rows="3" class="form-control" id="usage_instructions" name="usage_instructions"><?php echo (!empty($edit_id)) ? $product['usage_instructions'] : ''; ?></textarea>
+                                 <?php echo form_error('usage_instructions'); ?>
+                              </div>
+                           </div>
+
+                        </div>
+                        <div class="form-group">
+                           <div class="col-sm-12">
+                              <div>
+                                 <label>Storage information : </label>
+                                 <textarea placeholder="Storage information" rows="3" class="form-control" id="storage_information" name="storage_information"><?php echo (!empty($edit_id)) ? $product['storage_information'] : ''; ?></textarea>
+                                 <?php echo form_error('storage_information'); ?>
+                              </div>
+                           </div>
+
+                        </div>
+                        <div class="form-group">
+                           <div class="col-sm-12">
+                              <div>
+                                 <label>FAQs : </label>
+                                 <textarea placeholder="FAQs" rows="3" class="form-control" id="faqs" name="faqs"><?php echo (!empty($edit_id)) ? $product['faqs'] : ''; ?></textarea>
+                                 <?php echo form_error('faqs'); ?>
+                              </div>
+                           </div>
+
+                        </div>
+                        
                         <div class="clearfix"></div>
                         <div class="col-md-2 col-md-offset-5">
                            <div>
@@ -750,6 +801,11 @@ $(document).ready(function() {
                         $(function() {
                            // Replace the <textarea id="editor1"> with a CKEditor
                            CKEDITOR.replace('editor1');
+                           CKEDITOR.replace('health_benefits');
+                           CKEDITOR.replace('ingredients');
+                           CKEDITOR.replace('usage_instructions');
+                           CKEDITOR.replace('storage_information');
+                           CKEDITOR.replace('faqs');
                            $(".textarea").wysihtml5();
                         });
                      </script>

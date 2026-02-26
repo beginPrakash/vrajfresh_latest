@@ -1017,57 +1017,82 @@ ctoalamt =  $("#cart_total").val();
     if(AllErrorFixed == 1){
 
         const updateRes = await fetch("/api/stripe/update-intent", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      intent_id: paymentIntentId,
-      amount: ctoalamt // new amount
-    })
-  });
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+            intent_id: paymentIntentId,
+            amount: ctoalamt // new amount
+            })
+        });
 
-  const data = await updateRes.json();
+        const data = await updateRes.json();
   
-    clientSecret = data.clientSecret;
-    intent_id = data.paymentId;
+        clientSecret = data.clientSecret;
+        intent_id = data.paymentId;
         // STEP 1: Validate payment element input
-    const { error: submitError } = await elements.submit();
-    if (submitError) {
-        alert(submitError.message);
-        $(this).prop('disabled', false).text('Proceed to Pay');
-        return;
-    }
+        const { error: submitError } = await elements.submit();
+        if (submitError) {
+            alert(submitError.message);
+            $(this).prop('disabled', false).text('Proceed to Pay');
+            return;
+        }
 
-    // STEP 2: Create payment method manually
-    const { error, paymentMethod } = await stripe.createPaymentMethod({ elements });
+        // ✅ ONLY confirmPayment (no createPaymentMethod)
+        const { error: confirmError, paymentIntent } =
+            await stripe.confirmPayment({
+            elements,
+            clientSecret: clientSecret,
+            redirect: "if_required"
+            });
 
-    if (error) {
-        alert(error.message);
-        $(this).prop('disabled', false).text('Proceed to Pay');
-    } else {
-        console.log("✅ PaymentMethod update  created:", paymentMethod.id);
-        //$('#payment_method_id').val(paymentMethod.id);
-        $("#CardPaymentMethod").val(paymentMethod.id);
-        $("#CardToken").val(intent_id);
 
-        // STEP 3: Submit form to backend for confirmation
-    // document.getElementById("checkoutForm").submit();
+        if (confirmError) {
+            alert(confirmError.message);
+            return;
+        }
 
-    const { error, paymentIntent } = await stripe.confirmPayment({
-    elements,
-    redirect: "if_required",  // ✅ prevents redirect
-  });
+        if (paymentIntent.status === "succeeded") {
 
-  if (error) {
-    console.error(error.message);
-  } else if (paymentIntent && paymentIntent.status === "succeeded") {
-    console.log("✅ Payment successful", paymentIntent.id);
-    console.log(paymentIntent);
-    $('#checkoutForm')[0].requestSubmit();
-    // call your backend to mark order as paid
-  }
+            console.log("✅ Payment successful", paymentIntent.id);
 
-   // $('#checkoutForm')[0].requestSubmit();
-    }
+            // set values AFTER success
+            $("#CardPaymentMethod").val(paymentIntent.payment_method);
+            $("#CardToken").val(paymentIntent.id);
+
+            document.getElementById("checkoutForm").submit();
+        }
+
+        // STEP 2: Create payment method manually
+//         const { error, paymentMethod } = await stripe.createPaymentMethod({ elements });
+
+//         if (error) {
+//             alert(error.message);
+//             $(this).prop('disabled', false).text('Proceed to Pay');
+//         } else {
+//             console.log("✅ PaymentMethod update  created:", paymentMethod.id);
+//             //$('#payment_method_id').val(paymentMethod.id);
+//             $("#CardPaymentMethod").val(paymentMethod.id);
+//             $("#CardToken").val(intent_id);
+
+//             // STEP 3: Submit form to backend for confirmation
+//         // document.getElementById("checkoutForm").submit();
+
+//         const { error, paymentIntent } = await stripe.confirmPayment({
+//         elements,
+//         redirect: "if_required",  // ✅ prevents redirect
+//     });
+
+//   if (error) {
+//     console.error(error.message);
+//   } else if (paymentIntent && paymentIntent.status === "succeeded") {
+//     console.log("✅ Payment successful", paymentIntent.id);
+//     console.log(paymentIntent);
+//     $('#checkoutForm')[0].requestSubmit();
+//     // call your backend to mark order as paid
+//   }
+
+//    // $('#checkoutForm')[0].requestSubmit();
+//     }
         
     } else {
         $("#checkout-submit").prop('disabled', false);

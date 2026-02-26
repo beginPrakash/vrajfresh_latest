@@ -225,7 +225,7 @@ span.noti_count_or {
 
 	<?php
 
-	if ($user_role_id != 'Kaivan' && $user_role_id != 'Tirth' && $user_role_id != 'kaivan' && $user_role_id != 'tirth') { ?>
+	if ($user_role_id != 'Kaivan' && $user_role_id != 'kaivan' && $user_role_id != 'tirth') { ?>
 
 		<li class="treeview <?php if ($active_menu == 'brand')
 
