@@ -1371,5 +1371,17 @@ function get_related_product(api_url_prefix, category_slug, product_id) {
     });
 }
 
+function openTab(evt, tabName) {
+
+    let tabcontent = document.querySelectorAll(".tab-content");
+    let tablinks = document.querySelectorAll(".tab-link");
+
+    tabcontent.forEach(content => content.classList.remove("active"));
+    tablinks.forEach(link => link.classList.remove("active"));
+
+    document.getElementById(tabName).classList.add("active");
+    evt.currentTarget.classList.add("active");
+}
+
 </script>
 

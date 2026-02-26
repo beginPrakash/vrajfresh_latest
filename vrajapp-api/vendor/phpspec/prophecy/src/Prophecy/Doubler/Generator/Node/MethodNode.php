@@ -11,7 +11,6 @@
 
 namespace Prophecy\Doubler\Generator\Node;
 
-use Prophecy\Doubler\Generator\TypeHintReference;
 use Prophecy\Exception\InvalidArgumentException;
 
 /**
@@ -26,9 +25,7 @@ class MethodNode
     private $visibility = 'public';
     private $static = false;
     private $returnsReference = false;
-
-    /** @var ReturnTypeNode */
-    private $returnTypeNode;
+    private $returnType;
 
     /**
      * @var ArgumentNode[]
@@ -39,11 +36,10 @@ class MethodNode
      * @param string $name
      * @param string $code
      */
-    public function __construct($name, $code = null, TypeHintReference $typeHintReference = null)
+    public function __construct($name, $code = null)
     {
         $this->name = $name;
         $this->code = $code;
-        $this->returnTypeNode = new ReturnTypeNode();
     }
 
     public function getVisibility()
@@ -105,69 +101,51 @@ class MethodNode
         return $this->arguments;
     }
 
-    /**
-     * @deprecated use getReturnTypeNode instead
-     * @return bool
-     */
     public function hasReturnType()
     {
-        return (bool) $this->returnTypeNode->getNonNullTypes();
-    }
-
-    public function setReturnTypeNode(ReturnTypeNode $returnTypeNode): void
-    {
-        $this->returnTypeNode = $returnTypeNode;
+        return null !== $this->returnType;
     }
 
     /**
-     * @deprecated use setReturnTypeNode instead
      * @param string $type
      */
     public function setReturnType($type = null)
     {
-        $this->returnTypeNode = ($type === '' || $type === null) ? new ReturnTypeNode() : new ReturnTypeNode($type);
+        switch ($type) {
+            case '':
+                $this->returnType = null;
+                break;
+
+            case 'string';
+            case 'float':
+            case 'int':
+            case 'bool':
+            case 'array':
+            case 'callable':
+                $this->returnType = $type;
+                break;
+
+            case 'double':
+            case 'real':
+                $this->returnType = 'float';
+                break;
+
+            case 'boolean':
+                $this->returnType = 'bool';
+                break;
+
+            case 'integer':
+                $this->returnType = 'int';
+                break;
+
+            default:
+                $this->returnType = '\\' . ltrim($type, '\\');
+        }
     }
 
-    /**
-     * @deprecated use setReturnTypeNode instead
-     * @param bool $bool
-     */
-    public function setNullableReturnType($bool = true)
-    {
-        if ($bool) {
-            $this->returnTypeNode = new ReturnTypeNode('null', ...$this->returnTypeNode->getTypes());
-        }
-        else {
-            $this->returnTypeNode = new ReturnTypeNode(...$this->returnTypeNode->getNonNullTypes());
-        }
-    }
-
-    /**
-     * @deprecated use getReturnTypeNode instead
-     * @return string|null
-     */
     public function getReturnType()
     {
-        if ($types = $this->returnTypeNode->getNonNullTypes())
-        {
-            return $types[0];
-        }
-
-        return null;
-    }
-
-    public function getReturnTypeNode() : ReturnTypeNode
-    {
-        return $this->returnTypeNode;
-    }
-
-    /**
-     * @deprecated use getReturnTypeNode instead
-     * @return bool
-     */
-    public function hasNullableReturnType()
-    {
-        return $this->returnTypeNode->canUseNullShorthand();
+        return $this->returnType;
     }
 
     /**
@@ -192,19 +170,8 @@ class MethodNode
     {
         $this->code = sprintf(
             'return parent::%s(%s);', $this->getName(), implode(', ',
-                array_map(array($this, 'generateArgument'), $this->arguments)
+                array_map(function (ArgumentNode $arg) { return '$'.$arg->getName(); }, $this->arguments)
             )
         );
-    }
-
-    private function generateArgument(ArgumentNode $arg)
-    {
-        $argument = '$'.$arg->getName();
-
-        if ($arg->isVariadic()) {
-            $argument = '...'.$argument;
-        }
-
-        return $argument;
     }
 }
