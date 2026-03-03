@@ -325,6 +325,32 @@ class Controller_adver_top extends CI_Controller
 						$mdata['mob_image_name']['file_name'] = $this->input->post('mob_cat_image');
 					}
 
+					if (isset($_FILES['adv_mobapp_image']) && is_uploaded_file($_FILES['adv_mobapp_image']['tmp_name'])) {
+
+						$config['upload_path'] = 'uploads/advertise/'; // set the filter image types
+						$config['allowed_types'] = 'gif|jpg|png'; //load the upload library
+
+						$this->load->library('upload', $config);
+						$this->upload->initialize($config);
+						$this->upload->set_allowed_types('*');
+
+						$mpdata['mobapp_upload_data'] = '';
+
+						if (!$this->upload->do_upload('adv_mobapp_image')) {
+							$mpdata = array('msg' => $this->upload->display_errors());
+						} else { //else, set the success message
+							$mpdata = array('msg' => "Upload success!");
+							$mpdata['mobapp_upload_data'] = $this->upload->data();
+						}
+
+						$mpdata['mobapp_image_name'] = $this->adver_top_model->delete_adv_image($adv_id, 'adv_mobapp_image');
+						$mpdata['mobapp_image_name'] = $this->upload->data();
+
+					} else // new file is not uploaded
+					{
+						$mpdata['mobapp_image_name']['file_name'] = $this->input->post('mobapp_cat_image');
+					}
+
 					if (isset($_FILES['alt_adv_image']) && is_uploaded_file($_FILES['alt_adv_image']['tmp_name'])) {
 
 						$config['upload_path'] = 'uploads/advertise/'; // set the filter image types
@@ -377,11 +403,38 @@ class Controller_adver_top extends CI_Controller
 						$pmdata['mob_image_name']['file_name'] = $this->input->post('cat_alt_m_image');
 					}
 
+					if (isset($_FILES['alt_adv_mobapp_image']) && is_uploaded_file($_FILES['alt_adv_mobapp_image']['tmp_name'])) {
+
+						$config['upload_path'] = 'uploads/advertise/'; // set the filter image types
+						$config['allowed_types'] = 'gif|jpg|png'; //load the upload library
+
+						$this->load->library('upload', $config);
+						$this->upload->initialize($config);
+						$this->upload->set_allowed_types('*');
+
+						$pmadata['mobapp_upload_data'] = '';
+
+						if (!$this->upload->do_upload('alt_adv_mobapp_image')) {
+							$pmadata = array('msg' => $this->upload->display_errors());
+						} else { //else, set the success message
+							$pmadata = array('msg' => "Upload success!");
+							$pmadata['mobapp_upload_data'] = $this->upload->data();
+						}
+
+						$pmadata['mobapp_image_name'] = $this->adver_top_model->delete_adv_image($adv_id, 'alt_adv_mobapp_image');
+						$pmadata['mobapp_image_name'] = $this->upload->data();
+
+					} else // new file is not uploaded
+					{
+						$pmadata['mobapp_image_name']['file_name'] = $this->input->post('cat_alt_mapp_image');
+					}
+
 					$banner_update_data = array(
 						'adv_link' => $this->input->post('adv_link'),
 						'category_id' => $this->input->post('category_id'),
 						'adv_image' => $data['image_name']['file_name'],					
 						'adv_mob_image' => $mdata['mob_image_name']['file_name'],
+						'adv_mobapp_image' => $mpdata['mobapp_image_name']['file_name'],
 						'adv_srno' => $this->input->post('adv_srno'),
 						'is_active' => $this->input->post('is_active'),
 						'adv_type' => $this->input->post('adv_type'),
@@ -392,12 +445,15 @@ class Controller_adver_top extends CI_Controller
 					if($this->input->post('adv_type') == "bottom"){
 						$banner_update_data['alt_adv_image'] = $pdata['image_name']['file_name'];
 						$banner_update_data['alt_adv_mob_image'] = $pmdata['mob_image_name']['file_name'];
+						$banner_update_data['alt_adv_mobapp_image'] = $pmadata['mobapp_image_name']['file_name'];
 						$banner_update_data['alt_adv_link'] = $this->input->post('alt_adv_link');
 					} else {
 						$this->adver_top_model->delete_adv_image($adv_id, 'alt_adv_image');
 						$this->adver_top_model->delete_adv_image($adv_id, 'alt_adv_mob_image');
+						$this->adver_top_model->delete_adv_image($adv_id, 'alt_adv_mobapp_image');
 						$banner_update_data['alt_adv_image'] = '';
 						$banner_update_data['alt_adv_mob_image'] = '';
+						$banner_update_data['alt_adv_mobapp_image'] = '';
 						$banner_update_data['alt_adv_link'] = '';
 					}
 
@@ -455,6 +511,31 @@ class Controller_adver_top extends CI_Controller
 						$mdata['mob_image_name']['file_name'] = $this->input->post('mob_cat_image');
 					}
 
+					if (isset($_FILES['adv_mobapp_image']) && is_uploaded_file($_FILES['adv_mobapp_image']['tmp_name'])) {
+						
+						$config['upload_path'] = 'uploads/advertise/'; // set the filter image types
+						$config['allowed_types'] = 'gif|jpg|png'; //load the upload library
+
+						$this->load->library('upload', $config);
+						$this->upload->initialize($config);
+						$this->upload->set_allowed_types('*');
+						$madata['mobapp_upload_data'] = '';
+
+						if (!$this->upload->do_upload('adv_mobapp_image')) {
+							$madata = array('msg' => $this->upload->display_errors());
+						} else { //else, set the success message
+							$madata = array('msg' => "Upload success!");
+							$madata['mobapp_upload_data'] = $this->upload->data();
+						}
+
+						//$madata['mobapp_image_name'] = $this->adver_top_model->delete_image($adv_id );
+						$madata['mobapp_image_name'] = $this->upload->data();
+
+					} else // new file is not uploaded
+					{
+						$madata['mobapp_image_name']['file_name'] = $this->input->post('mobapp_cat_image');
+					}
+
 					if (isset($_FILES['alt_adv_image']) && is_uploaded_file($_FILES['alt_adv_image']['tmp_name'])) {
 						
 						$config['upload_path'] = 'uploads/advertise/'; // set the filter image types
@@ -504,12 +585,38 @@ class Controller_adver_top extends CI_Controller
 						$pmdata['mob_image_name']['file_name'] = '';
 					}
 
+					if (isset($_FILES['alt_adv_mobapp_image']) && is_uploaded_file($_FILES['alt_adv_mobapp_image']['tmp_name'])) {
+						
+						$config['upload_path'] = 'uploads/advertise/'; // set the filter image types
+						$config['allowed_types'] = 'gif|jpg|png'; //load the upload library
+
+						$this->load->library('upload', $config);
+						$this->upload->initialize($config);
+						$this->upload->set_allowed_types('*');
+						$pmadata['mobapp_upload_data'] = '';
+
+						if (!$this->upload->do_upload('alt_adv_mobapp_image')) {
+							$pmadata = array('msg' => $this->upload->display_errors());
+						} else { //else, set the success message
+							$pmadata = array('msg' => "Upload success!");
+							$pmadata['mobapp_upload_data'] = $this->upload->data();
+						}
+
+						//$pmadata['mobapp_image_name'] = $this->adver_top_model->delete_image($adv_id );
+						$pmadata['mobapp_image_name'] = $this->upload->data();
+
+					} else // new file is not uploaded
+					{
+						$pmadata['mobapp_image_name']['file_name'] = '';
+					}
+
 					$banner_data = array(
 						'adv_link' => $this->input->post('adv_link'),
 						'category_id' => $this->input->post('category_id'),
 						'adv_srno' => $this->input->post('adv_srno'),
 						'adv_image' => $data['image_name']['file_name'],
 						'adv_mob_image' => $mdata['mob_image_name']['file_name'],
+						'adv_mobapp_image' => $madata['mobapp_image_name']['file_name'],
 						'is_active' => $this->input->post('is_active'),
 						'adv_type' => $this->input->post('adv_type'),
 						'created_by' => $_SESSION['admin_id'],
@@ -518,6 +625,7 @@ class Controller_adver_top extends CI_Controller
 					if($this->input->post('adv_type') == "bottom"){
 						$banner_data['alt_adv_image'] = $pdata['image_name']['file_name'];
 						$banner_data['alt_adv_mob_image'] = $pmdata['mob_image_name']['file_name'];
+						$banner_data['alt_adv_mobapp_image'] = $pmadata['mobapp_image_name']['file_name'];
 						$banner_data['alt_adv_link'] = $this->input->post('alt_adv_link');
 					}
 

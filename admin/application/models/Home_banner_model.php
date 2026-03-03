@@ -299,7 +299,7 @@ class home_banner_model extends CI_Model
 
 			$value = $Arrdata['banner_image'];
 
-			if (trim($value) != "") {
+			if (!empty($value) && trim($value) != "") {
 
 				$filename = 'uploads/' . $value;
 
