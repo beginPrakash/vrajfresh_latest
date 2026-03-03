@@ -351,7 +351,7 @@ class Controller_home_banner extends CI_Controller
 
 						}
 
-						$mdata['mob_image_name'] = $this->home_banner_model->delete_image($adv_id );
+						$mdata['mob_image_name'] = $this->home_banner_model->delete_image($banner_id );
 
 						$mdata['mob_image_name'] = $this->upload->data();
 
@@ -360,6 +360,46 @@ class Controller_home_banner extends CI_Controller
 					{
 
 						$mdata['mob_image_name']['file_name'] = $this->input->post('mob_cat_image');
+
+					}
+
+					if (isset($_FILES['banner_mobapp_image']) && is_uploaded_file($_FILES['banner_mobapp_image']['tmp_name'])) {
+
+						$config['upload_path'] = 'uploads/home_banner/'; // set the filter image types
+
+						$config['allowed_types'] = 'gif|jpg|png'; //load the upload library
+
+						$this->load->library('upload', $config);
+
+						$this->upload->initialize($config);
+
+						$this->upload->set_allowed_types('*');
+
+						$madata['mobapp_upload_data'] = '';
+
+
+
+						if (!$this->upload->do_upload('banner_mobapp_image')) {
+
+							$madata = array('msg' => $this->upload->display_errors());
+
+						} else { //else, set the success message
+
+							$madata = array('msg' => "Upload success!");
+
+							$madata['mobapp_upload_data'] = $this->upload->data();
+
+						}
+
+						$madata['mobapp_image_name'] = $this->home_banner_model->delete_image($banner_id );
+
+						$madata['mobapp_image_name'] = $this->upload->data();
+
+					} else // new file is not uploaded
+
+					{
+
+						$madata['mobapp_image_name']['file_name'] = $this->input->post('mobapp_cat_image');
 
 					}
 
@@ -372,6 +412,8 @@ class Controller_home_banner extends CI_Controller
 						'banner_image' => $data['image_name']['file_name'],
 
                         'banner_mob_image' => $mdata['mob_image_name']['file_name'],
+
+						'banner_mobapp_image' => $madata['mobapp_image_name']['file_name'],
 
 						'banner_srno' => $this->input->post('banner_srno'),
 
@@ -469,7 +511,7 @@ class Controller_home_banner extends CI_Controller
 
 						}
 
-						$mdata['mob_image_name'] = $this->home_banner_model->delete_image($adv_id );
+						$mdata['mob_image_name'] = $this->home_banner_model->delete_image($banner_id );
 
 						$mdata['mob_image_name'] = $this->upload->data();
 
@@ -478,6 +520,46 @@ class Controller_home_banner extends CI_Controller
 					{
 
 						$mdata['mob_image_name']['file_name'] = $this->input->post('mob_cat_image');
+
+					}
+
+					if (isset($_FILES['banner_mobapp_image']) && is_uploaded_file($_FILES['banner_mobapp_image']['tmp_name'])) {
+
+						$config['upload_path'] = 'uploads/home_banner/'; // set the filter image types
+
+						$config['allowed_types'] = 'gif|jpg|png'; //load the upload library
+
+						$this->load->library('upload', $config);
+
+						$this->upload->initialize($config);
+
+						$this->upload->set_allowed_types('*');
+
+						$madata['mobapp_upload_data'] = '';
+
+
+
+						if (!$this->upload->do_upload('banner_mobapp_image')) {
+
+							$madata = array('msg' => $this->upload->display_errors());
+
+						} else { //else, set the success message
+
+							$madata = array('msg' => "Upload success!");
+
+							$madata['mobapp_upload_data'] = $this->upload->data();
+
+						}
+
+						$madata['mobapp_image_name'] = $this->home_banner_model->delete_image($banner_id );
+
+						$madata['mobapp_image_name'] = $this->upload->data();
+
+					} else // new file is not uploaded
+
+					{
+
+						$madata['mobapp_image_name']['file_name'] = $this->input->post('mobapp_cat_image');
 
 					}
 
@@ -492,6 +574,8 @@ class Controller_home_banner extends CI_Controller
 						'banner_image' => $data['image_name']['file_name'],
 
                         'banner_mob_image' => $mdata['mob_image_name']['file_name'],
+
+						'banner_mobapp_image' => $madata['mobapp_image_name']['file_name'],
 
 						'is_active' => $this->input->post('is_active'),
 

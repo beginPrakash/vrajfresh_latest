@@ -210,6 +210,57 @@
 
                      </div>
 
+                     <div class="form-group">
+
+                        <div class="col-md-3">
+
+                        <label>Upload Mobile APP File : </label>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                        <?php if (isset($banner) && $banner['banner_mobapp_image'] != '') { ?>
+
+
+
+                            <div class="col-md-3">
+
+                                 <?php if($banner['banner_type'] == 'image') { ?>
+                                    <img height="25px" width="25px"
+
+                                    src='<?php echo base_url(); ?>uploads/home_banner/<?php echo $banner['banner_mobapp_image'] ?>'
+
+                                    border=0>
+                                 <?php }else{ ?>
+                                    <video width="100" height="100" controls autoplay>
+                                       <source src="<?php echo base_url(); ?>uploads/home_banner/<?php echo $banner['banner_mobapp_image'] ?>" type="video/mp4">
+                                    </video>
+                                 <?php } ?>
+                                
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <input type="file" class="form-control" name="banner_mobapp_image" id="banner_mobapp_image" accept=".jpg,.jpeg,.png">
+
+                            </div>
+
+                            <input type="hidden" value="<?php echo $banner['banner_mobapp_image'] ?>" name="mobapp_cat_image">
+
+                        <?php } else { ?>
+
+                            <input type="file" class="form-control" name="banner_mobapp_image" id="banner_mobapp_image" accept=".jpg,.jpeg,.png" required>
+
+                        <?php } ?>
+
+                        <?php echo form_error('banner_mobapp_image'); ?>
+
+                        </div>
+
+                     </div>
+
 
 
 
