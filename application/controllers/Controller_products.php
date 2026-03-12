@@ -26,6 +26,7 @@ class Controller_products extends CI_Controller
         $data['url'] = $slug;
         $data['meta_title'] = $product_meta[0]['meta_title'] ?? '';
         $data['meta_description'] = $product_meta[0]['meta_description'] ?? '';
+        $data['health_benefit_title'] = $product_meta[0]['health_benefit_title'] ?? '';
         $data['health_benefits'] = $product_meta[0]['health_benefits'] ?? '';
         $data['ingredients'] = $product_meta[0]['ingredients'] ?? '';
         $data['usage_instructions'] = $product_meta[0]['usage_instructions'] ?? '';

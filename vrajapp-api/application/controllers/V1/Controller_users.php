@@ -484,7 +484,7 @@ class Controller_users extends CI_Controller
 							$email_content = str_replace('##link##', FRONT_URL, $email_content);
 						
 							if ($valid_emil != '') {
-								send_mail($_POST["email"], $subject, $email_content);
+								send_mail($json_obj->email, $subject, $email_content);
 								$success_message = 'You got your new OTP.Please check your email';
 							} else {
 								$errors = "Sorry,Something going wrong";
@@ -613,8 +613,8 @@ class Controller_users extends CI_Controller
 					$email_content = str_replace('##user_name##', $result[0]->user_name, $email_content);
 					$email_content = str_replace('##new_password##', $new_password, $email_content);
 					$email_content = str_replace('##link##', FRONT_URL, $email_content);
-					if ($_POST["email"] != '') {
-						send_mail($_POST["email"], $subject, $email_content);
+					if ($json_obj->email != '') {
+						send_mail($json_obj->email, $subject, $email_content);
 						$success_message = 'You got your new password.Please check your email';
 					} else {
 						$errors = "Sorry,Something going wrong";
@@ -853,7 +853,7 @@ class Controller_users extends CI_Controller
 		if ($result) {
 			$success_message = 'User Delete successfully';
 		} else {
-			$error = 'User Not Delete successfully';
+			$success_message = 'User not Exist';
 		}
 		send_response_to_api($ArrData, $errors, $success_message);
 	}

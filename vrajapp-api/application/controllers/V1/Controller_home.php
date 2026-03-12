@@ -578,9 +578,9 @@ class Controller_home extends CI_Controller
 				}
 
 				// Banner Mobile
-				if (!empty($row->banner_mob_image)) {
+				if (!empty($row->banner_mobapp_image)) {
 					$home_banner_mobile[] = [
-						'banner_image' => $upload_path . $row->banner_mob_image,
+						'banner_image' => $upload_path . $row->banner_mobapp_image,
 						'banner_link'  => $row->banner_link,
 						'banner_type'  => $row->banner_type,
 					];
@@ -628,10 +628,10 @@ class Controller_home extends CI_Controller
 						
 					];
 				}
-				if(!empty($result_val[$i]->adv_mob_image)){
+				if(!empty($result_val[$i]->adv_mobapp_image)){
 					$ad_slug = substr($result_val[$i]->adv_link, strrpos($result_val[$i]->adv_link, '/') + 1);
 					$ad_banner_mobile[] = [
-						'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->adv_mob_image,
+						'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->adv_mobapp_image,
 						'ad_link'=>$result_val[$i]->adv_link,
 						'ad_slug'=>$ad_slug,
 					];
@@ -736,10 +736,10 @@ class Controller_home extends CI_Controller
 							'ad_slug'=>$ad_slug,
 						];
 					}
-					if(!empty($result_val[$i]->adv_mob_image)){
+					if(!empty($result_val[$i]->adv_mobapp_image)){
 						$ad_slug = substr($result_val[$i]->adv_link, strrpos($result_val[$i]->adv_link, '/') + 1);
 						$ad_banner_mobile[] = [
-							'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->adv_mob_image,
+							'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->adv_mobapp_image,
 							'ad_link'=>$result_val[$i]->adv_link,
 							'ad_slug'=>$ad_slug,
 						];
@@ -753,9 +753,9 @@ class Controller_home extends CI_Controller
 						];
 					}
 
-					if(!empty($result_val[$i]->alt_adv_mob_image)){
+					if(!empty($result_val[$i]->alt_adv_mobapp_image)){
 						$ad_banner_mobile[] = [
-							'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->alt_adv_mob_image,
+							'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->alt_adv_mobapp_image,
 							'ad_link'=>$result_val[$i]->alt_adv_link,
 						];
 					}

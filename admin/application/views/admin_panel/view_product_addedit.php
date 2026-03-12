@@ -735,6 +735,15 @@ $(document).ready(function() {
                         <div class="form-group">
                            <div class="col-sm-12">
                               <div>
+                                 <label>Health Benefits Title : </label>
+                                 <input type="text" placeholder="Health Benefits Title" class="form-control" value="<?php echo (!empty($edit_id)) ? $product['health_benefit_title'] : 'Health Benefits'; ?>" name="health_benefit_title">
+                                 <?php echo form_error('health_benefit_title'); ?>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                           <div class="col-sm-12">
+                              <div>
                                  <label>Health Benefits : </label>
                                  <textarea placeholder="Health Benefits" rows="3" class="form-control" id="health_benefits" name="health_benefits"><?php echo (!empty($edit_id)) ? $product['health_benefits'] : ''; ?></textarea>
                                  <?php echo form_error('health_benefits'); ?>

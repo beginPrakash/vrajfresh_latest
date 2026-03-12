@@ -905,6 +905,35 @@
 							</div>
 
 
+							<div class="form-group">
+
+								<div class="col-md-3">
+
+									<label>Coupon For:<span class="red">*</span></label>
+
+								</div>
+
+								<div class="col-md-9">
+
+									<select name="coupon_for" id="coupon_for"
+
+										class="form-control">
+
+										<option value="">Select</option>
+
+										<option value="website" <?php echo (@$ArrFieldData['coupon_for'] == "website") ? 'Selected' : ''; ?>>Website
+
+										</option>
+
+										<option value="mobile_aplication" <?php echo (@$ArrFieldData['coupon_for'] == "mobile_aplication") ? 'Selected' : ''; ?>>Mobile Application
+
+										</option>
+
+									</select>
+
+								</div>
+
+							</div>
 
 							<div class="form-group">
 

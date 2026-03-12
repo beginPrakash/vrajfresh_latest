@@ -202,7 +202,49 @@
 
                      </div>
 
+                     <div class="form-group">
 
+                        <div class="col-md-3">
+
+                        <label>Mobile App Image : </label>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                        <?php if (isset($banner) && $banner['adv_mobapp_image'] != '') { ?>
+
+
+
+                            <div class="col-md-3">
+
+                                <img height="25px" width="25px"
+
+                                    src='<?php echo base_url(); ?>uploads/advertise/<?php echo $banner['adv_mobapp_image'] ?>'
+
+                                    border=0>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <input type="file" class="form-control" name="adv_mobapp_image">
+
+                            </div>
+
+                            <input type="hidden" value="<?php echo $banner['adv_mobapp_image'] ?>" name="mobapp_cat_image">
+
+                        <?php } else { ?>
+
+                            <input type="file" class="form-control" name="adv_mobapp_image">
+
+                        <?php } ?>
+
+                        <?php echo form_error('adv_mobapp_image'); ?>
+
+                        </div>  
+
+                     </div>
 
 
 
@@ -302,6 +344,26 @@
                                  <input type="file" class="form-control" name="alt_adv_mob_image">
                               <?php } ?>
                               <?php echo form_error('alt_adv_mob_image'); ?>
+                           </div>  
+                        </div>
+
+                        <div class="form-group">
+                           <div class="col-md-3">
+                              <label>Alternate Mobile App Image : </label>
+                           </div>
+                           <div class="col-md-6">
+                              <?php if (isset($banner) && $banner['alt_adv_mobapp_image'] != '') { ?>
+                              <div class="col-md-3">
+                                 <img height="25px" width="25px" src='<?php echo base_url(); ?>uploads/advertise/<?php echo $banner['alt_adv_mobapp_image'] ?>' border=0>
+                              </div>
+                              <div class="col-md-6">
+                                 <input type="file" class="form-control" name="alt_adv_mobapp_image">
+                              </div>
+                              <input type="hidden" value="<?php echo $banner['alt_adv_mobapp_image'] ?>" name="cat_alt_mapp_image">
+                              <?php } else { ?>
+                                 <input type="file" class="form-control" name="alt_adv_mobapp_image">
+                              <?php } ?>
+                              <?php echo form_error('alt_adv_mobapp_image'); ?>
                            </div>  
                         </div>
                      </div>
