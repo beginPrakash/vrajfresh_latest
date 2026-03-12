@@ -173,50 +173,69 @@
     </div>
 
 </section>
-
-<section class="products-metadetails">
-
-   
-
+<?php if(!empty($product_description) || !empty($health_benefits) || !empty($ingredients) || !empty($usage_instructions) || !empty($storage_information) || !empty($faqs)){ ?>
+    <section class="products-metadetails">
         <div class="tabs container">
             <div class="tab-buttons">
-                <button class="tab-link active" onclick="openTab(event, 'tab1')">Description</button>
-                <button class="tab-link" onclick="openTab(event, 'tab2')">Health Benefits</button>
-                <button class="tab-link" onclick="openTab(event, 'tab3')">Ingredients</button>
-                <button class="tab-link" onclick="openTab(event, 'tab4')">Usage Instructions</button>
-                <button class="tab-link" onclick="openTab(event, 'tab5')">Storage Information</button>
-                <button class="tab-link" onclick="openTab(event, 'tab6')">Faqs</button>
+                <?php if(isset($product_description) && !empty($product_description)){ ?>
+                    <button class="tab-link active" onclick="openTab(event, 'tab1')">Description</button>
+                <?php } ?>
+                <?php if(isset($health_benefits) && !empty($health_benefits)){ ?>
+                    <button class="tab-link" onclick="openTab(event, 'tab2')"><?= $health_benefit_title; ?></button>
+                <?php } ?>
+                <?php if(isset($ingredients) && !empty($ingredients)){ ?>
+                    <button class="tab-link" onclick="openTab(event, 'tab3')">Ingredients</button>
+                <?php } ?>
+                <?php if(isset($usage_instructions) && !empty($usage_instructions)){ ?>
+                    <button class="tab-link" onclick="openTab(event, 'tab4')">Usage Instructions</button>
+                <?php } ?>
+                <?php if(isset($storage_information) && !empty($storage_information)){ ?>
+                    <button class="tab-link" onclick="openTab(event, 'tab5')">Storage Information</button>
+                <?php } ?>
+                <?php if(isset($faqs) && !empty($faqs)){ ?>
+                    <button class="tab-link" onclick="openTab(event, 'tab6')">Faqs</button>
+                <?php } ?>
             </div>
-
-            <div id="tab1" class="tab-content active">
-                <?= $product_description; ?>
-            </div>
-
-            <div id="tab2" class="tab-content">
-                <?= $health_benefits; ?>
-            </div>
-
-            <div id="tab3" class="tab-content">
+            <?php if(isset($product_description) && !empty($product_description)){ ?>
+                <div id="tab1" class="tab-content active">
+                    <?= $product_description; ?>
+                </div>
+            <?php } ?>
+            <?php if(isset($health_benefits) && !empty($health_benefits)){ ?>
+                <div id="tab2" class="tab-content">
+                    <?= $health_benefits; ?>
+                </div>
+            <?php } ?>
+            <?php if(isset($ingredients) && !empty($ingredients)){ ?>
+                <div id="tab3" class="tab-content">
                 <?= $ingredients; ?>
-            </div>
-
-            <div id="tab4" class="tab-content">
-                <?= $usage_instructions; ?>
-            </div>
-
-            <div id="tab5" class="tab-content">
-                <?= $storage_information; ?>
-            </div>
-
-            <div id="tab6" class="tab-content">
-                <?= $faqs; ?>
+                </div>
+            <?php } ?>
+            <?php if(isset($usage_instructions) && !empty($usage_instructions)){ ?>
+                <div id="tab4" class="tab-content">
+                    <?= $usage_instructions; ?>
+                </div>
+            <?php } ?>
+            <?php if(isset($storage_information) && !empty($storage_information)){ ?>
+                <div id="tab5" class="tab-content">
+                    <?= $storage_information; ?>
+                </div>
+            <?php } ?>
+            <?php if(isset($faqs) && !empty($faqs)){ ?>
+                <div id="tab6" class="tab-content">
+                    <?= $faqs; ?>
+                </div>
+            <?php } ?>
+            <!-- Disclaimer Section -->
+            <div class="product-disclaimer">
+                <span>
+                    Customers with food allergies or specific dietary requirements should carefully read the product labels, ingredients, and warnings before consuming any product.
+                    The information provided on this website is for reference purposes only and should not replace professional advice.
+                </span>
             </div>
         </div>
-
-
-
-</section>
-
+    </section>
+<?php } ?>
 <section class="related-products">
 
     <div class="container">

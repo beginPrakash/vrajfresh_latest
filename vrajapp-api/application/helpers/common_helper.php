@@ -775,14 +775,14 @@ function send_mail_old2($email, $subject, $message)
     }
 }
 
-function send_mail($email, $subject, $message) {
+function send_mail($email, $subject, $message,$attachment='') {
+	// return true;
 	$ci = &get_instance();
 	
 	// Include PHPMailer library
 	
 	// Google API credentials
-	$clientID = '17611857669-17auiif79mg37o0m7o5q5vkhcn9571h8.apps.googleusercontent.com';
-	$clientSecret = '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';
+	
 	// $refreshToken = 'YOUR_REFRESH_TOKEN';
 
 	// Sender's email address (Google Workspace)
@@ -809,7 +809,8 @@ function send_mail($email, $subject, $message) {
 		$mail->SMTPAuth = true;
 		$mail->Username = $senderEmail;
 		// $mail->Password = 'uwttjgpqsmbigcei'; // Your email password or app password if 2-Step Verification is enabled
-		$mail->Password = 'dsgvjyolexvianvm'; // Your email password or app password if 2-Step Verification is enabled
+		 $mail->Password = 'dsgvjyolexvianvm'; // Your email password or app password if 2-Step Verification is enabled
+		
 		$mail->SMTPSecure = 'tls';
 		$mail->Port = 587;
 		// $mail->SMTPDebug = 4;
@@ -838,22 +839,17 @@ function send_mail($email, $subject, $message) {
 		$mail->isHTML(true);
 		$mail->Subject = $subject;
 		$mail->Body = $body;
+        if(!empty($attachment)){
+            $mail->addAttachment($attachment);
+        }
 
 		// Send email
 		if ($mail->send()) {
-
-			$logMessage = date('Y-m-d H:i:s') . " | To: $recipientEmail | Subject: $subject | Status: Success \n";
-			file_put_contents('email_logs.txt', $logMessage, FILE_APPEND);
-
 			return true;
 			// echo 'Email sent successfully';
 		} else {
 			// Handle errors (You can log or return false as needed)
-			// echo $mail->ErrorInfo;
-
-			$logMessage = date('Y-m-d H:i:s') . " | To: $recipientEmail | Subject: $subject | Status: Failed | Error: " . $mail->ErrorInfo . "\n";
-			file_put_contents('email_logs.txt', $logMessage, FILE_APPEND);
-
+			 //echo $mail->ErrorInfo;
 			$myfile = fopen("logs2.txt", "w");
 			fwrite($myfile, $mail->ErrorInfo);
 			fclose($myfile);
@@ -861,10 +857,6 @@ function send_mail($email, $subject, $message) {
 		}
 		
 	} catch (Exception $e) {
-
-		$logMessage = date('Y-m-d H:i:s') . " | To: $recipientEmail | Subject: $subject | Status: Failed | Error: " . $mail->ErrorInfo . "\n";
-		file_put_contents('email_logs.txt', $logMessage, FILE_APPEND);
-
 		// echo 'Email could not be sent. Error: ', $mail->ErrorInfo;
 		$myfile = fopen("logs2.txt", "w");
 		fwrite($myfile, $mail->ErrorInfo);
@@ -872,7 +864,9 @@ function send_mail($email, $subject, $message) {
 		
 		return false;
 	}
+	
 }
+
 
 function send_contact_mail($to_email, $from_email, $subject, $message)
 {
