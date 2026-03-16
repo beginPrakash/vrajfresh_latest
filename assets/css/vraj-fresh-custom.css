@@ -62,6 +62,11 @@ p {
 	font-size: 3.375em;
 }
 
+.vraj-title h1 {
+	color: #1e53a5;
+	font-size: 3.375em;
+}
+
 .vraj-btn {
 	padding: 15px 30px;
 	background: #209FCF;
@@ -2681,6 +2686,24 @@ body {
     margin: 0;
 }
 
+.cms_page_titl{
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    unicode-bidi: isolate;
+}
+
+.cms_header h1{
+	font-size: 27px;
+}
+
+.head_title_login h1{
+	margin: 0;
+    font-size: 17px;
+    margin-top: 8px;
+    font-weight: 600;
+	color:#000;
+}
 
 @media (min-width: 768px) and (max-width: 1023px) {
 	.popup-container {

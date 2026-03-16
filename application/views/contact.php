@@ -4,7 +4,7 @@
 
     <div class="container">
 
-        <h2>Contact us</h2>
+        <h1>Contact Vraj Fresh</h1>
 
         <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
 
@@ -83,7 +83,7 @@
 
                 <input type="hidden" name="user_role_id" value="4">
 
-                <button onclick="contactus()" class="btn btn-primary">Save</button>
+                <br><button onclick="contactus()" class="btn btn-primary">Save</button>
 
             </form>
 
@@ -155,7 +155,6 @@ function contactus() {
 
             submitHandler: function (form) {
 
-                //form.submit();
 
                 var form = $("#contact");
 
@@ -182,7 +181,6 @@ function contactus() {
                         //$("#message").html("<div class='text-error'>Form Not Submitted Successfully</div>");
                         alert('Something Went Wrong!');
                         location.reload();
-
                     }
 
                 });

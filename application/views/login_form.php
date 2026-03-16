@@ -7,7 +7,7 @@
                         <a href="<?php echo BASE_URL.'signup'; ?>">Create an Account</a>
                     </button>
                 </div>
-                <div class="login">
+                <div class="login head_title_login">
                     <form id="Frmlogin" name="Frmlogin" method="post" action="<?php echo BASE_URL . 'login'; ?>">
                         <div class="sign-up">
                             <p> Don't You have an account?</p>
@@ -16,7 +16,7 @@
                             </button>
                         </div>
                         <h3> Welcome Back</h3>
-                        <h5> Login to your account </h5>
+                        <h1> Login to your account </h1>
 
                         <div id="message"></div>
 
