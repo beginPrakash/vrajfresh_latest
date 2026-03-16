@@ -54,9 +54,14 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['test-home'] = 'Welcome/test';
-$route['privacy-statement'] = 'Controller_cms/privacy_policy';
 $route['terms-conditions'] = 'Controller_cms/terms_condition';
 $route['refund-and-return-policy'] = 'Controller_cms/refund_policy';
+$route['new-products'] = 'Controller_cms/new_products';
+$route['shipping-policy'] = 'Controller_cms/shipping_policy';
+$route['about-us'] = 'Controller_cms/about_us';
+$route['privacy-statement'] = 'Controller_cms/privacy_statement';
+$route['terms-conditions'] = 'Controller_cms/terms_conditions';
+$route['promotions'] = 'Controller_cms/promotions';
 $route['get-cms-by-slug/(:any)'] = 'Controller_cms/get_cms_by_slug/$1';
 
 $route['category/(:any)'] = 'Controller_products/products_list/$1';

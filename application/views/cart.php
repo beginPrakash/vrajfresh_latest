@@ -1,7 +1,7 @@
 <?php  require_once('common/header.php');  ?>
 
-<section class="categories-banner">
-  <h2>Cart</h2>
+<section class="categories-banner cms_header">
+  <h1>Your Shopping Cart</h1>
 </section>
 <section class="billing-page cart-min">
     <?php if ($this->session->flashdata('success')){ ?>

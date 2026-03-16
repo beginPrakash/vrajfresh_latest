@@ -47,7 +47,7 @@ class Cms_model extends CI_Model
     }
     public function get_cms_by_slug($data)
     {
-        $query = $this->db->select('cms_id,cms_title,cms_url,cms_description,created_by,modified_by,created_datetime,modified_datetime,is_active')
+        $query = $this->db->select('cms_id,cms_title,cms_url,cms_description,created_by,modified_by,created_datetime,modified_datetime,is_active,meta_title,meta_descriptions')
             ->where('is_deleted', '0')
             ->where('cms_url', $data['cms_slug'])
             ->get('tbl_cms');

@@ -100,21 +100,21 @@
 			<div class="footer-grid">
 			<h3>Useful links <i class="arrow"></i></h3>
 				<ul>
-					<li><a href="<?php echo SITE_URL . 'get-cms-by-slug/about-us'; ?>">About Us</a></li>
+					<li><a href="<?php echo SITE_URL . 'about-us'; ?>">About Us</a></li>
 					<li><a href="<?php echo SITE_URL . 'contact'; ?>">Contact</a></li>
-					<li><a href="<?php echo SITE_URL . 'get-cms-by-slug/promotions'; ?>">Promotions</a></li>
-					<li><a href="<?php echo SITE_URL . 'get-cms-by-slug/new-products'; ?>">New products</a></li>
+					<li><a href="<?php echo SITE_URL . 'promotions'; ?>">Promotions</a></li>
+					<li><a href="<?php echo SITE_URL . 'new-products'; ?>">New products</a></li>
 				</ul>
 			</div>
 			<div class="footer-grid">
 			<h3>Help Center <i class="arrow"></i></h3>
 				<ul>
-					<li><a href="<?php echo SITE_URL . 'get-cms-by-slug/refund-and-return-policy'; ?>">Refund Policy</a>
+					<li><a href="<?php echo SITE_URL . 'refund-and-return-policy'; ?>">Refund Policy</a>
 					</li>
-					<li><a href="<?php echo SITE_URL . 'get-cms-by-slug/shipping'; ?>">Shipping</a></li>
-					<li><a href="<?php echo SITE_URL . 'get-cms-by-slug/terms-conditions'; ?>">Terms & Conditions</a>
+					<li><a href="<?php echo SITE_URL . 'shipping-policy'; ?>">Shipping</a></li>
+					<li><a href="<?php echo SITE_URL . 'terms-conditions'; ?>">Terms & Conditions</a>
 					</li>
-					<li><a href="<?php echo SITE_URL . 'get-cms-by-slug/privacy-statement'; ?>">Privacy Policy</a></li>
+					<li><a href="<?php echo SITE_URL . 'privacy-statement'; ?>">Privacy Policy</a></li>
 				</ul>
 			</div>
 		</div>
