@@ -81,7 +81,6 @@ class Controller_cart extends CI_Controller
 				'price' => trim($json_obj->ArrCartItem->price),
 				'qty' => trim($json_obj->ArrCartItem->qty),
 				'product_slug' => trim($json_obj->ArrCartItem->product_slug),
-				'created_date' => date("Y-m-d"),
 				'is_perisible' => trim($json_obj->ArrCartItem->is_perisible),
 				'product_tax' => trim($json_obj->ArrCartItem->product_tax),
 				'options_weight' => trim($json_obj->ArrCartItem->options_weight),

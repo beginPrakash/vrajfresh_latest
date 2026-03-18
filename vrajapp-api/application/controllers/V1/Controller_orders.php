@@ -16,9 +16,11 @@ class Controller_orders extends CI_Controller
 		$this->load->model('coupons_model');
 		$this->load->model('users_model');
 		$this->load->model('cashcredit_model');
+		$this->load->model('zipcodes_model');
 		$this->load->model('credittransaction_model');
 		$this->load->model('configurations_model');
 		$this->load->model('Master_model', 'master');
+		
 		//error_reporting(0);
 	}
 	
@@ -179,6 +181,7 @@ class Controller_orders extends CI_Controller
 		
 
 		$user_id = $json_obj->user_id;
+		$zipcode = $json_obj->zipcode;
 
 		// Get Bearer Token
 		$authHeader = $this->input->get_request_header('Authorization', TRUE);
@@ -199,9 +202,16 @@ class Controller_orders extends CI_Controller
 			//get last credit per
 			$find_last_credit =  $this->cashcredit_model->get_last_creditdetail();
 			$last_credit_per = $find_last_credit['credit_per'] ?? 0;
+
+			//get state tax by zipcode
+			$data = array(
+				'zipcode' => $json_obj->zipcode
+			);
+			$zipcodeData = $this->zipcodes_model->get_zipcode_by_data($data['zipcode']);
 			$NewArrData['credit_per'] = $last_credit_per;
 			$NewArrData['packaging_cost'] = 0.99;
 			$NewArrData['preparation_cost'] = 0.99;
+			$NewArrData['state_tax'] = $zipcodeData[0]->state_tax ?? 0.00;
 
 			$ArrData = $NewArrData;
 			$success_message = 'Data listed successfully';
@@ -526,7 +536,7 @@ class Controller_orders extends CI_Controller
 
 					"stripe_raw_response" => $stripe_raw_response,
 
-					"payment_intent_id" => $payment_details['id'],
+					"payment_intent_id" => $payment_response['payment_i_id'],
 
 					"payment_process_type" => 'Automatic',
 					

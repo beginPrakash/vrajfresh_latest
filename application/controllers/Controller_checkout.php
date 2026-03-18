@@ -861,7 +861,12 @@ class Controller_checkout extends CI_Controller
 		$ArrCustomer['coupon_id'] = $_POST['discount_id'];
 		$ArrCustomer['earned_credit_val'] = $_POST['earned_credit_val'];
 		$ArrCustomer['earned_credit_checkbox'] = $_POST['earned_credit_checkbox'];
-		$delivery_date_time = date("Y-m-d", strtotime($_POST['expec_delivery_date']));
+		$ex_date = trim($_POST['expec_delivery_date']);
+		//$delivery_date_time = date('Y-m-d', strtotime($ex_date));
+		$dateObj = DateTime::createFromFormat('m-d-Y', $ex_date);
+		if ($dateObj) {
+			$delivery_date_time =  $dateObj->format('Y-m-d');
+		}
 
 		// if ($_POST['delivery_type'] == 'two_hour') {
 		// 	$delivery_date_time = date("Y-m-d H:i:s", strtotime("+1 hours"));

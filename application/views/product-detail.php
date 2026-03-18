@@ -284,6 +284,22 @@
     "itemCondition": "https://schema.org/NewCondition"
   }
 }
+
+window.dataLayer = window.dataLayer || [];
+
+dataLayer.push({
+  event: "view_item",
+  ecommerce: {
+    currency: "USD",
+    value: <?= $product_price; ?>,
+    items: [{
+      item_id: <?= $product_sku; ?>,
+      item_name: <?= addslashes($product_name); ?>,
+      item_category: product.category,
+      price: <?= $product_price; ?>
+    }]
+  }
+});
 </script>
 
 

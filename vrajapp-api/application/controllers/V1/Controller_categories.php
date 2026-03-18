@@ -344,8 +344,20 @@ class Controller_categories extends CI_Controller
 		$category_result = "";
 		$result = array();
 
-		$category_result = $this->categories_model->get_category_by_slug(['category_slug'=>$json_obj->category_slug]);
-		$category_id = $category_result[0]->category_id;
+		if(!empty($json_obj->brand_slug)){
+			$category_result = $this->brands_model->get_brand_by_slug(['brand_slug'=>$json_obj->brand_slug]);
+			$category_id = $category_result[0]->brand_id;
+			$data = array(
+				'brand_id' => $category_id,
+			);
+		}else{
+			$category_result = $this->categories_model->get_category_by_slug(['category_slug'=>$json_obj->category_slug]);
+			$category_id = $category_result[0]->category_id;
+			$data = array(
+				'category_id' => $category_id,
+			);
+		}
+		
 		$result["category"] = $category_result[0];
 		// echo 'category_id_url: '.$category_id_url;
 		// $category_id_arr = $json_obj->category_id;
@@ -358,9 +370,7 @@ class Controller_categories extends CI_Controller
 		// $category_id = implode(",", $category_id_arr);
 
 		
-			$data = array(
-				'category_id' => $category_id,
-			);
+			
 
 			if($json_obj->zipcode != ""){
 				$zipcodeData = $this->zipcodes_model->get_zipcode_by_data($json_obj->zipcode);
@@ -638,11 +648,8 @@ class Controller_categories extends CI_Controller
 			$data = array(
 				//'product_ids' => $json_obj->product_ids,
 				'zipcode' => $json_obj->zipcode,
-				'category_slug' => $json_obj->category_slug
-			);
-
-			$data = array(
-				'category_slug' => $json_obj->category_slug
+				'category_slug' => $json_obj->category_slug,
+				'brand_slug' => $json_obj->brand_slug
 			);
 
 			if($zipcode != ""){
@@ -653,7 +660,12 @@ class Controller_categories extends CI_Controller
 					$data['is_cook_food_zipcode'] = $zipcodeData[0]->can_deliver_cook_food_products;
 				}
 			}
-			$category_result = $this->categories_model->get_category_by_slug($data);
+			if(!empty($json_obj->brand_slug)){
+				$category_result = $this->brands_model->get_brand_by_slug($data);
+			}else{
+				$category_result = $this->categories_model->get_category_by_slug($data);
+			}
+			
 			if(!empty($category_result)){
 				
 				$category_id = $category_result[0]->category_id;
@@ -661,7 +673,11 @@ class Controller_categories extends CI_Controller
 				$category_is_liker_category = $category_result[0]->is_liker_category;
 				$category_is_cook_food_category = $category_result[0]->is_cook_food_category;
 				
-				$temp_result = $this->categories_model->get_product_by_category_id($category_result[0]->category_id);
+				if(!empty($json_obj->brand_slug)){
+					$temp_result = $this->brands_model->get_product_by_brand_id($category_result[0]->brand_id);
+				}else{
+					$temp_result = $this->categories_model->get_product_by_category_id($category_result[0]->category_id);
+				}
 				//$result["category"] = $category_result[0];
 				$ArrFinal = array();
 				$i = 0;
