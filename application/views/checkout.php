@@ -610,15 +610,15 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
             <?php 
                $delivery_days = $_COOKIE['delivery_days'];
                $dayArray = explode(',', $delivery_days);
-               $deliveryDate = date('d-m-Y');
-               $expdeliveryDate = date('d-m-Y');
+               $deliveryDate = date('m-d-Y');
+               $expdeliveryDate = date('m-d-Y');
                
                $hours = date('H');
                $today = date('l');
                
                if(in_array($today, $dayArray) && $hours < 15){
-               	$deliveryDate = date('d-m-Y');
-                  $expdeliveryDate = date('d-m-Y');
+               	$deliveryDate = date('m-d-Y');
+                  $expdeliveryDate = date('m-d-Y');
                } else {
                	for ($i = 1; $i <= 7; $i++) {
                		// Get the date for the next iteration
@@ -628,7 +628,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                		// Check if the day of the next date is in the dayArray
                		if (in_array($nextDate->format('l'), $dayArray)) {
                			$deliveryDate = $nextDate->format('l (d F, Y)');
-                        $expdeliveryDate = $nextDate->format('d-m-Y');
+                        $expdeliveryDate = $nextDate->format('m-d-Y');
                			break; // Exit the loop once a suitable delivery date is found
                		}
                	}
@@ -641,7 +641,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
         
          <?php } ?>
          <?php if ($_COOKIE['delivery_type'] == 'Express Delivery' || $_COOKIE['delivery_type'] == 'Same Day Delivery') { ?>
-            <?php $deliveryDate = date('d-m-Y');$expdeliveryDate = date('d-m-Y'); ?>
+            <?php $deliveryDate = date('m-d-Y');$expdeliveryDate = date('m-d-Y'); ?>
             <p><label class="expected_d_date_label"><b>Expected Delivery Date : </b><?php echo $deliveryDate; ?></label></p>
             <?php } ?>
             <input type="hidden" name="expec_delivery_date" id="expec_delivery_date" value="<?php echo $expdeliveryDate; ?>">
@@ -863,13 +863,13 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
          today = tomorrow;
       }
       $("#delivery_one_day_date").datepicker({
-            dateFormat: 'dd/mm/yy',
+            dateFormat: 'mm/dd/yy',
             minDate: 0,
             maxDate: 7,
             defaultDate: today
       }).datepicker("setDate", today);
 
-      $('#delivery_one_day_date').datepicker({dateFormat: 'dd-mm-yy'}).on('change', function (ev) {
+      $('#delivery_one_day_date').datepicker({dateFormat: 'mm-dd-yy'}).on('change', function (ev) {
          var firstDate = $(this).val();
          var text = firstDate.replace('/', '-');
          text = text.replace('/', '-');

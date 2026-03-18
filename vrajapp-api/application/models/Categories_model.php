@@ -376,6 +376,11 @@ class Categories_model extends CI_Model
             //$query = $this->db->where("c.category_id IN(" . $data['category_id'] . ")");
             $query = $this->db->where_in("c.category_id", explode(",", $data['category_id']));
         }
+
+        if ($data['brand_id'] != "") {
+            //$query = $this->db->where("c.brand_id IN(" . $data['brand_id'] . ")");
+            $query = $this->db->where_in("b.brand_id", explode(",", $data['brand_id']));
+        }
         
         if(isset($data['can_deliver_perishable_products']) && $data['can_deliver_perishable_products'] == "No"){
             

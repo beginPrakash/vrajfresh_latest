@@ -300,17 +300,25 @@ class Controller_cart extends CI_Controller
 					$data = array("oauth_key" => "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT", "row_id" => $rowid, "qty" => $quantity);
 				}
 				$curl = curl_init();
-				curl_setopt($curl, CURLOPT_URL, $url);
-				curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-				curl_setopt($curl, CURLOPT_POST, true);
-				curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
-				curl_setopt($curl, CURLOPT_HTTPHEADER, [
-					'X-RapidAPI-Host: kvstore.p.rapidapi.com',
-					'X-RapidAPI-Key: test',
-					'Content-Type: application/json'
-				]);
+
+				curl_setopt_array($curl, array(
+					CURLOPT_URL => $url,
+					CURLOPT_RETURNTRANSFER => true,
+					CURLOPT_POST => true,
+					CURLOPT_POSTFIELDS => json_encode($data),
+					CURLOPT_HTTPHEADER => array(
+						'Content-Type: application/json'
+					),
+				));
+
 				$response = curl_exec($curl);
+
+				if(curl_errno($curl)){
+					//echo 'Curl error: ' . curl_error($curl);
+				}
+
 				curl_close($curl);
+
 				$response = json_decode($response);
 			}
 			//ADD CART IN DB TABLE END
