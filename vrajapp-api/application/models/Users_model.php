@@ -125,7 +125,7 @@ class Users_model extends CI_Model
             ->join('state bs', 'u.state=bs.state_id', 'left')
             ->join('state ss', 'u.shipping_state=ss.state_id', 'left')
             ->where('u.user_id', $data['user_id'])
-            ->where('u.user_role_id', $data['user_role_id'])
+            //->where('u.user_role_id', $data['user_role_id'])
             ->get('tbl_users u');
         return $query->result();
     }

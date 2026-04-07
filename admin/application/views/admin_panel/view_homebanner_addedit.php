@@ -53,6 +53,35 @@
 
                      </div>
 
+                     <div class="form-group">
+
+                        <div class="col-md-3">
+
+                           <label>Banner Category: </label>
+
+                        </div>
+
+                        <div class="col-md-9">
+
+
+                           <select name="banner_category" class="form-control select_nocler">
+
+										<option value="">Select Banner Category</option>
+
+										<option value="category" <?php echo (@$banner['banner_category'] == "category") ? 'Selected' : '' ?>>Category</option>
+
+										<option value="special-category" <?php echo (@$banner['banner_category'] == "special-category") ? 'Selected' : '' ?>>Special Category</option>
+
+										<option value="brand" <?php echo (@$banner['banner_category'] == "brand") ? 'Selected' : '' ?>>Brand</option>
+
+									</select>
+
+                              <?php echo form_error('banner_category'); ?>
+
+                        </div>
+
+                     </div>
+
 
                      <div class="form-group">
 

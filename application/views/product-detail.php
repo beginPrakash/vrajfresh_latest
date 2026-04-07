@@ -94,6 +94,22 @@
         from {opacity: 0;}
         to {opacity: 1;}
     }
+
+    @media (max-width: 768px) {
+    .tab-buttons {
+        flex-direction: column;
+    }
+
+    .products-metadetails .tabs .tab-buttons .tab-link {
+        width: 100% !important;
+        text-align: left;
+    }
+
+    .tabs.container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
    @media only screen and (max-width: 767px) {
     .quantity button {
         padding: 0 6px !important;
@@ -259,44 +275,43 @@
 {
   "@context": "https://schema.org",
   "@type": "Product",
-  "@id": "<?= base_url('product/'.$url); ?>",
-  "name": "<?= addslashes($product_name); ?>",
+  "@id": <?= json_encode(base_url('product/'.$url)); ?>,
+  "name": <?= json_encode($product_name); ?>,
   "image": [
-    "<?= base_url('admin/uploads/products/'.$product_image); ?>"
+    <?= json_encode(base_url('admin/uploads/products/'.$product_image)); ?>
   ],
-  "description": "<?= addslashes(strip_tags($product_description)); ?>",
-  "sku": "<?= $product_sku; ?>",
+  "description": <?= json_encode(strip_tags($product_description)); ?>,
+  "sku": <?= json_encode($product_sku); ?>,
   "brand": {
     "@type": "Brand",
-    "name": "<?= $brand_name; ?>"
+    "name": <?= json_encode($brand_name); ?>
   },
   "aggregateRating": {
     "@type": "AggregateRating",
-    "ratingValue": <?= $rating_value; ?>,
-    "reviewCount": <?= $review_count; ?>
+    "ratingValue": <?= json_encode((float)$rating_value); ?>,
+    "reviewCount": <?= json_encode((int)$review_count); ?>
   },
   "offers": {
     "@type": "Offer",
-    "url": "<?= base_url('product/'.$url); ?>",
+    "url": <?= json_encode(base_url('product/'.$url)); ?>,
     "priceCurrency": "USD",
-    "price": <?= $product_price; ?>,
-    "availability": "https://schema.org/<?= $is_stock; ?>",
+    "price": <?= json_encode((float)$product_price); ?>,
+    "availability": <?= json_encode("https://schema.org/".$is_stock); ?>,
     "itemCondition": "https://schema.org/NewCondition"
   }
 }
-
-window.dataLayer = window.dataLayer || [];
-
+</script>
+<script>
 dataLayer.push({
   event: "view_item",
   ecommerce: {
     currency: "USD",
-    value: <?= $product_price; ?>,
+    value: <?= json_encode((float)$product_price); ?>,
     items: [{
-      item_id: <?= $product_sku; ?>,
-      item_name: <?= addslashes($product_name); ?>,
-      item_category: product.category,
-      price: <?= $product_price; ?>
+      item_id: <?= json_encode($product_sku); ?>,
+      item_name: <?= json_encode($product_name); ?>,
+      item_category: <?= json_encode($category_name); ?>,
+      price: <?= json_encode((float)$product_price); ?>
     }]
   }
 });

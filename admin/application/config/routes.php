@@ -91,6 +91,7 @@ $route['product-add'] = 'adminpanel/controller_product/add';
 $route['product-update/(:num)'] = 'adminpanel/controller_product/add/$1';
 $route['product-image-delete/(:num)/(:num)'] = 'adminpanel/controller_product/image_remove/$1/$2';
 $route['import-product'] = 'adminpanel/excel_import/index';
+$route['import-productmeta'] = 'adminpanel/excel_import/meta_index';
 
 /* PROMOTIONAL CODE */
 $route['promotional-code'] = 'adminpanel/Controller_promotional_code';

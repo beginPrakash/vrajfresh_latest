@@ -15,11 +15,17 @@ class Controller_login extends CI_Controller
     
     public function login()
     {
+        $headerdata = array('meta_title' => "Login to Your Account | VrajFresh Fresh Grocery Delivery NJ & NY",'meta_description' => "Log in to your VrajFresh account to track orders, manage your addresses & reorder your favourite fresh Indian groceries. Same-day delivery across NJ & New York.");
+        
+        $this->load->view('common/header', $headerdata);
         $this->load->view('login_form');
     }
     
     public function signup()
     {
+        $headerdata = array('meta_title' => "Create an Account | VrajFresh Fresh Grocery Delivery NJ & NY",'meta_description' => "Sign up for VrajFresh and enjoy same-day delivery of fresh Indian groceries, vegetables, fruits & dairy across New Jersey and New York. Free delivery for new customers!");
+        
+        $this->load->view('common/header', $headerdata);
         $this->load->view('signup_form');
     }
 

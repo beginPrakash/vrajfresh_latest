@@ -181,6 +181,7 @@ $route['get-coupon-amount'] = 'controller_coupons/get_coupon_amount';
 
 
 $route['add-cart-item'] = 'Controller_cart/add_cart';
+$route['add-ucart-item'] = 'Controller_cart/add_luser_cart';
 $route['update-cart-item'] = 'Controller_cart/update_cart';
 $route['update-new-cart-item'] = 'Controller_cart/update_new_cart';
 $route['clear-cart-data'] = 'Controller_cart/clear_cart_data';

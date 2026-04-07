@@ -77,6 +77,21 @@ class product_model extends CI_Model
 	}
 
 
+	
+	public function update_by_slug($product_slug, $ArrProductData)
+
+	{
+
+		$this->db->where('product_slug', $product_slug);
+
+		$update = $this->db->update('tbl_products', $ArrProductData);
+
+		return $this->db->affected_rows();
+
+	}
+
+
+
 
 
 

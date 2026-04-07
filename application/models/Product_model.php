@@ -35,4 +35,19 @@ class Product_model extends CI_Model {
 		return $brand_data[0]['brand_name'] ?? '';
 
 	}
+
+	public function getCategoryname($product_id)
+
+	{
+
+		$this->db->select('c.category_id, c.category_name');
+		$this->db->from('tbl_categories_products_mapping cp');
+		$this->db->join('tbl_categories c', 'c.category_id = cp.category_id');
+		$this->db->where('cp.product_id', $product_id);
+
+		$query = $this->db->get();
+		$category_data = $query->result_array();
+		return $category_data[0]['category_name'] ?? '';
+
+	}
 }

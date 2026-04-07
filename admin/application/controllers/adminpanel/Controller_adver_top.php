@@ -431,6 +431,7 @@ class Controller_adver_top extends CI_Controller
 
 					$banner_update_data = array(
 						'adv_link' => $this->input->post('adv_link'),
+						'advt_url_category' => $this->input->post('advt_url_category'),
 						'category_id' => $this->input->post('category_id'),
 						'adv_image' => $data['image_name']['file_name'],					
 						'adv_mob_image' => $mdata['mob_image_name']['file_name'],
@@ -612,6 +613,7 @@ class Controller_adver_top extends CI_Controller
 
 					$banner_data = array(
 						'adv_link' => $this->input->post('adv_link'),
+						'advt_url_category' => $this->input->post('advt_url_category'),
 						'category_id' => $this->input->post('category_id'),
 						'adv_srno' => $this->input->post('adv_srno'),
 						'adv_image' => $data['image_name']['file_name'],
@@ -806,6 +808,8 @@ class Controller_adver_top extends CI_Controller
 
 						'adv_link' => $this->input->post('adv_link'),
 
+						'advt_url_category' => $this->input->post('advt_url_category'),
+
 						'adv_image' => $data['image_name']['file_name'],
 						
 						'adv_mob_image' => $mdata['mob_image_name']['file_name'],
@@ -923,6 +927,8 @@ class Controller_adver_top extends CI_Controller
 					$banner_data = array(
 
 						'adv_link' => $this->input->post('adv_link'),
+
+						'advt_url_category' => $this->input->post('advt_url_category'),
 
 						'adv_srno' => $this->input->post('adv_srno'),
 

@@ -265,7 +265,24 @@ class Categories_model extends CI_Model
             // $query = $this->db->where("(p.product_name LIKE '%" . $data['search_keyword'] . "%' OR FIND_IN_SET('". $data['search_keyword'] . "',search_tags) > 0)");
             //$query = $this->db->where("(p.product_name LIKE '%" . $data['search_keyword'] . "%' OR search_tags LIKE '%".$data['search_keyword']."%')");
             $keyword = $data['search_keyword'];
-            $this->db->where("MATCH(p.product_name, search_tags) AGAINST('$keyword')");
+            //$this->db->where("MATCH(p.product_name, search_tags) AGAINST('$keyword')");
+           // $keyword = $this->db->escape_str($keyword);
+           // $this->db->where("MATCH(p.product_name, search_tags) AGAINST('*".$keyword."*' IN BOOLEAN MODE)");
+
+           $keyword = $this->db->escape_str($keyword);
+            $words = explode(' ', $keyword);
+
+            $this->db->group_start();
+            foreach ($words as $word) {
+                $this->db->like('p.product_name', $word);
+            }
+            $this->db->group_end();
+
+            $this->db->where("
+                MATCH(p.product_name, search_tags)
+                AGAINST('+".implode('* +', $words)."*' IN BOOLEAN MODE)
+            ");
+
         }
        
         $query = $this->db->group_by("p.product_id");

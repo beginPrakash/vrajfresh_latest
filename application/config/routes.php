@@ -62,7 +62,7 @@ $route['about-us'] = 'Controller_cms/about_us';
 $route['privacy-statement'] = 'Controller_cms/privacy_statement';
 $route['terms-conditions'] = 'Controller_cms/terms_conditions';
 $route['promotions'] = 'Controller_cms/promotions';
-$route['get-cms-by-slug/(:any)'] = 'Controller_cms/get_cms_by_slug/$1';
+//$route['get-cms-by-slug/(:any)'] = 'Controller_cms/get_cms_by_slug/$1';
 
 $route['category/(:any)'] = 'Controller_products/products_list/$1';
 $route['product/(:any)'] = 'Controller_products/product_details/$1';
@@ -116,7 +116,7 @@ $route['my-account'] = 'Controller_users/edit_account';
 $route['sucess-login'] = 'Controller_users/login_sucess';
 $route['my-orders'] = 'Controller_users/orders';
 $route['credit-transactions'] = 'Controller_users/credit_transactions';
-$route['contact'] = 'Controller_login/contact';
+$route['contact'] = 'Controller_cms/contact';
 $route['delete-account'] = 'Controller_login/delete_account';
 $route['change_password_process'] = 'Controller_users/change_password_process';
 $route['edit-profile'] = 'Controller_users/edit_profile';
@@ -130,6 +130,7 @@ $route['signup'] = 'Controller_login/signup';
 
 $route['cart/add'] = 'Controller_cart/add';
 $route['cart/logincartdata'] = 'Controller_cart/login_cart_data';
+$route['cart/save_user_cart_data'] = 'Controller_cart/save_user_cart_data';
 $route['cart/total-items'] = 'Controller_cart/total_items';
 
 $route['/(:any)'] = 'Controller_products/products_list/$1';

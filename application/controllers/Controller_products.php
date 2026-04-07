@@ -42,6 +42,7 @@ class Controller_products extends CI_Controller
         $data['is_stock'] = ($is_out_of_stock == 1) ? 'InStock' : 'OutStock';
         
         $data['brand_name'] = $this->Product_model->getBrandname($product_meta[0]['brand_id']) ?? '';
+        $data['category_name'] = $this->Product_model->getCategoryname($product_meta[0]['product_id']) ?? '';
         
         $headerdata = array('meta_title' => $product_meta[0]['meta_title'] ?? '','meta_description' => $product_meta[0]['meta_description'] ?? '');
         

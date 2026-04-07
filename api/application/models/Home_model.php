@@ -44,6 +44,7 @@ class Home_model extends CI_Model
         $query = $this->db->select('*')
             ->where('is_deleted', '0')
             ->where('is_active', '1')
+            ->where('home_product_slider_id <=', 8)
             ->get('tbl_home_product_slider');
         return $query->result();
     }

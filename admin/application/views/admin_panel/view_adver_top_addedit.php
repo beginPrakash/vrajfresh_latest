@@ -53,6 +53,7 @@
 
                      </div>
 
+
                      <div class="form-group">
                         <div class="col-md-3">
                            <label>Categoty : </label>
@@ -74,6 +75,35 @@
                            </select>
                            <?php echo form_error('category_id'); ?>
                         </div>
+                     </div>
+
+                     <div class="form-group">
+
+                        <div class="col-md-3">
+
+                           <label>Advertise Url Category: </label>
+
+                        </div>
+
+                        <div class="col-md-9">
+
+
+                           <select name="advt_url_category" class="form-control select_nocler">
+
+										<option value="">Select Advertise Url Category</option>
+
+										<option value="category" <?php echo (@$banner['advt_url_category'] == "category") ? 'Selected' : '' ?>>Category</option>
+
+										<option value="special-category" <?php echo (@$banner['advt_url_category'] == "special-category") ? 'Selected' : '' ?>>Special Category</option>
+
+										<option value="brand" <?php echo (@$banner['advt_url_category'] == "brand") ? 'Selected' : '' ?>>Brand</option>
+
+									</select>
+
+                              <?php echo form_error('advt_url_category'); ?>
+
+                        </div>
+
                      </div>
 
                      <div class="form-group">

@@ -70,6 +70,23 @@ $(document).ready(function() {
             var price = $(this).data('price');
             var weight = $(this).data('productweight');
         }
+
+         
+        dataLayer.push({
+            event: "add_to_cart",
+            ecommerce: {
+                currency: "USD",
+                value: price,
+                items: [{
+                    item_id: product_id,
+                    item_name: product_name,
+                    //item_category: category,
+                    price: price,
+                    quantity: quantity
+                }]
+            }
+        });
+
         //$('#qty_'+product_id).find('.add').prev().val(1);
         var json_request = {
             "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
@@ -217,10 +234,10 @@ $(document).ready(function() {
         
 
 
-        if (quantity != "" || quantity > 0) {
+        if (quantity != "" || quantity >= 1) {
             var total_qty = parseInt($("#cartCount").html()) - 1;
                 $("#cartCount").html(total_qty);
-            if(quantity > 0){
+            if(quantity > 1){
                 $.ajax({
                     "type": "POST",
                     "url": front_url + 'cart/add',
@@ -266,7 +283,7 @@ $(document).ready(function() {
                     "data": {row_id:product_rowid},
                     "dataType": "JSON",
                     "success": function(response) {
-                        location.reload();
+                        //location.reload();
                     },
                     "error": function(response) {
                         console.log(response.errors);

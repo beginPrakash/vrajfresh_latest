@@ -76,7 +76,9 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
 					            <p><b><?php echo $shipping_address[$i]['first_name'] . ' '. $shipping_address[$i]['last_name']; ?></b></p>
                            <?php $address = '';
                            $address = ($address != "") ? $address .= ", ".$shipping_address[$i]['shipping_street_address'] : $address = $shipping_address[$i]['shipping_street_address'];
-                           $address = ($address != "") ? $address .= ", ".$shipping_address[$i]['shipping_apartment'] : $address = $shipping_address[$i]['shipping_apartment'];
+                           if(!empty($shipping_address[$i]['shipping_apartment'])){
+                              $address = ($address != "") ? $address .= ", ".$shipping_address[$i]['shipping_apartment'] : $address = $shipping_address[$i]['shipping_apartment'];
+                           }
                            $address = ($address != "") ? $address .= ", ".$shipping_address[$i]['shipping_city'] : $address = $shipping_address[$i]['shipping_city'];
                            $address = ($address != "") ? $address .= ", ".$shipping_address[$i]['state_name'] : $address = $shipping_address[$i]['state_name']; ?>
                            <p><?php echo $address; ?></p>
@@ -125,7 +127,9 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                         <p><b><?php echo $billing_address[$i]['first_name'] . ' '. $billing_address[$i]['last_name']; ?></b></p>
                         <?php $address = '';
                         $address = ($address != "") ? $address .= ", ".$billing_address[$i]['billing_street_address'] : $address = $billing_address[$i]['billing_street_address'];
-                        $address = ($address != "") ? $address .= ", ".$billing_address[$i]['billing_apartment'] : $address = $billing_address[$i]['billing_apartment'];
+                        if(!empty($billing_address[$i]['billing_apartment'])){
+                           $address = ($address != "") ? $address .= ", ".$billing_address[$i]['billing_apartment'] : $address = $billing_address[$i]['billing_apartment'];
+                        }
                         $address = ($address != "") ? $address .= ", ".$billing_address[$i]['billing_city'] : $address = $billing_address[$i]['billing_city'];
                         $address = ($address != "") ? $address .= ", ".$billing_address[$i]['state_name'] : $address = $billing_address[$i]['state_name']; ?>
                         <p><?php echo  $address; ?></p>
@@ -425,7 +429,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                <td>
                   <img src="<?php echo $items["image"]; ?>" alt="<?php echo $items["name"]; ?>">
                   <span class="product_name">
-                  <?php echo $items["name"]; ?>
+                  <?php echo $items["name"]. " (" . $items["options"]['weight'] . "lb)"; ?>
                   </span>
                </td>
                <td>
@@ -838,7 +842,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
 </div>
 <script>
    $(function() {
-      var today = new Date();
+      var today = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
       var tomorrow = new Date(today);
       tomorrow.setDate(today.getDate() + 1);
 
@@ -859,17 +863,19 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
          if (part.type === 'minute') min = part.value;
       });
 
-      if(hr > 14){
+      if(hr >= 14 && min > 0){
          today = tomorrow;
       }
+      
       $("#delivery_one_day_date").datepicker({
             dateFormat: 'mm/dd/yy',
             minDate: 0,
             maxDate: 7,
             defaultDate: today
-      }).datepicker("setDate", today);
+            
+      });
 
-      $('#delivery_one_day_date').datepicker({dateFormat: 'mm-dd-yy'}).on('change', function (ev) {
+      $('#delivery_one_day_date').on('change', function (ev) {
          var firstDate = $(this).val();
          var text = firstDate.replace('/', '-');
          text = text.replace('/', '-');
@@ -878,6 +884,11 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
          $('.expected_d_date_label').html('<b>Expected Delivery Date : </b></label>'+text);
         
       });
+
+     // THEN set date
+      $("#delivery_one_day_date").datepicker("setDate", today).trigger("change");
+      // disable previous dates based on selected date
+      $("#delivery_one_day_date").datepicker("option", "minDate", today);
    });
    </script>
 <?php require_once('common/common_js.php'); ?>
@@ -1174,3 +1185,4 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
 	}
 	
 </style>
+

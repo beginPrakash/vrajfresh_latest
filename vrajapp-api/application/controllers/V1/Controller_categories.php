@@ -649,7 +649,9 @@ class Controller_categories extends CI_Controller
 				//'product_ids' => $json_obj->product_ids,
 				'zipcode' => $json_obj->zipcode,
 				'category_slug' => $json_obj->category_slug,
-				'brand_slug' => $json_obj->brand_slug
+				'brand_slug' => $json_obj->brand_slug,
+				'product_slug' => $json_obj->search_keyword,
+				'search_term' => $json_obj->search_keyword
 			);
 
 			if($zipcode != ""){
@@ -662,8 +664,10 @@ class Controller_categories extends CI_Controller
 			}
 			if(!empty($json_obj->brand_slug)){
 				$category_result = $this->brands_model->get_brand_by_slug($data);
-			}else{
+			}elseif(!empty($json_obj->category_slug)){
 				$category_result = $this->categories_model->get_category_by_slug($data);
+			}else{
+				$category_result = $this->products_model->get_product_with_multi_category_filter($data);
 			}
 			
 			if(!empty($category_result)){
@@ -675,8 +679,10 @@ class Controller_categories extends CI_Controller
 				
 				if(!empty($json_obj->brand_slug)){
 					$temp_result = $this->brands_model->get_product_by_brand_id($category_result[0]->brand_id);
-				}else{
+				}elseif(!empty($json_obj->category_slug)){
 					$temp_result = $this->categories_model->get_product_by_category_id($category_result[0]->category_id);
+				}else{
+					$temp_result = $this->categories_model->get_product_by_category_search($data);
 				}
 				//$result["category"] = $category_result[0];
 				$ArrFinal = array();
@@ -1089,8 +1095,14 @@ class Controller_categories extends CI_Controller
 							}
 						}
 
+						$unique = array_map("unserialize", array_unique(array_map("serialize", $tempArray)));
+						usort($unique, function($a, $b) {
+							return $a['price'] - $b['price']; // Ascending sort by 'price'
+						});
+							
+
 						$ArrFinal[$i] = $arr;
-						$ArrFinal[$i]->product_size = $tempArray;
+						$ArrFinal[$i]->product_size = $unique;
 						$i++;
 					}
 

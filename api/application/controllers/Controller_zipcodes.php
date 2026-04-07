@@ -452,64 +452,64 @@ class Controller_zipcodes extends CI_Controller
 							$p_slug = $item['product_slug'];
 							$P_Data = $this->Products_model->get_product_with_multi_category(array('product_slug' => $p_slug));
 							
-							if(!empty($P_Data) && $date15DayAgo <= $item['created_date']){
+							// if(!empty($P_Data) && $date15DayAgo <= $item['created_date']){
 								
-								for($i = 0; $i < count($P_Data); $i++)
-								{
-									$C_perisible = $P_Data[$i]->is_perisible_category;
-									$C_liker = $P_Data[$i]->is_liker_category;
-									$C_cook_food = $P_Data[$i]->is_cook_food_category;
+							// 	for($i = 0; $i < count($P_Data); $i++)
+							// 	{
+							// 		$C_perisible = $P_Data[$i]->is_perisible_category;
+							// 		$C_liker = $P_Data[$i]->is_liker_category;
+							// 		$C_cook_food = $P_Data[$i]->is_cook_food_category;
 
-									$P_perisible = $P_Data[$i]->is_perisible_products;
-									$P_liker = $P_Data[$i]->is_liker_products;
-									$P_cook_food = $P_Data[$i]->is_cook_food_products;
+							// 		$P_perisible = $P_Data[$i]->is_perisible_products;
+							// 		$P_liker = $P_Data[$i]->is_liker_products;
+							// 		$P_cook_food = $P_Data[$i]->is_cook_food_products;
 									
-									if($P_Data[$i]->is_out_of_stock == 0){
-										$ItsValid = 0;
-										break;
-									}
+							// 		if($P_Data[$i]->is_out_of_stock == 0){
+							// 			$ItsValid = 0;
+							// 			break;
+							// 		}
 
-									if($Z_perisible == 'No' && $C_perisible != 0){
-										if($C_perisible == 1){
-											$ItsValid = 0;
-											break;
-										} else {
-											if($P_perisible == 0){
-												$ItsValid = 0;
-												break;
-											}
-										}
-									}
-									if($ItsValid == 1){
-										if($Z_liker == 'No' && $C_liker != 0){
-											if($C_liker == 1){
-												$ItsValid = 0;
-												break;
-											} else {
-												if($P_liker == 0){
-													$ItsValid = 0;
-													break;
-												}
-											}
-										}
-									}
-									if($ItsValid == 1){
-										if($Z_cook_food == 'No' && $C_cook_food != 0){
-											if($C_cook_food == 1){
-												$ItsValid = 0;
-												break;
-											} else {
-												if($P_cook_food == 0){
-													$ItsValid = 0;
-													break;
-												}
-											}
-										}
-									}
-								}
-							} else {
-								$ItsValid = 0;
-							}
+							// 		if($Z_perisible == 'No' && $C_perisible != 0){
+							// 			if($C_perisible == 1){
+							// 				$ItsValid = 0;
+							// 				break;
+							// 			} else {
+							// 				if($P_perisible == 0){
+							// 					$ItsValid = 0;
+							// 					break;
+							// 				}
+							// 			}
+							// 		}
+							// 		if($ItsValid == 1){
+							// 			if($Z_liker == 'No' && $C_liker != 0){
+							// 				if($C_liker == 1){
+							// 					$ItsValid = 0;
+							// 					break;
+							// 				} else {
+							// 					if($P_liker == 0){
+							// 						$ItsValid = 0;
+							// 						break;
+							// 					}
+							// 				}
+							// 			}
+							// 		}
+							// 		if($ItsValid == 1){
+							// 			if($Z_cook_food == 'No' && $C_cook_food != 0){
+							// 				if($C_cook_food == 1){
+							// 					$ItsValid = 0;
+							// 					break;
+							// 				} else {
+							// 					if($P_cook_food == 0){
+							// 						$ItsValid = 0;
+							// 						break;
+							// 					}
+							// 				}
+							// 			}
+							// 		}
+							// 	}
+							// } else {
+							// 	$ItsValid = 0;
+							// }
 
 							if($ItsValid == 0)
 							{
