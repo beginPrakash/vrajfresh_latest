@@ -1,5 +1,10 @@
 <?php
-
+// Fix double slash URL
+if (strpos($_SERVER['REQUEST_URI'], '//') !== false) {
+    $url = preg_replace('#/+#','/', $_SERVER['REQUEST_URI']);
+    header("Location: " . $url, true, 301);
+    exit;
+}
 /**
 
  * CodeIgniter

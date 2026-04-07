@@ -498,7 +498,8 @@ $config['compress_output'] = FALSE;
 |
 */
 $config['time_reference'] = 'local';
-
+//date_default_timezone_set('Asia/Kolkata');
+date_default_timezone_set('America/New_York');
 /*
 |--------------------------------------------------------------------------
 | Rewrite PHP Short Tags

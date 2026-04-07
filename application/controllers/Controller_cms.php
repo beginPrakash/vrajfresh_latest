@@ -84,4 +84,12 @@ class Controller_cms extends CI_Controller
 
     }
 
+    public function contact()
+    {
+        $headerdata = array('meta_title' => "Contact VrajFresh | Indian Grocery Store Saddle Brook, NJ | 201-688-7887",'meta_description' => "Get in touch with VrajFresh. Visit us at 449 Market Street, Saddle Brook, NJ or call 201-688-7887. We're open Mon–Sun, 10AM–9PM. Online orders & delivery across NJ & NY.");
+        
+        $this->load->view('common/header', $headerdata);
+        $this->load->view('contact');
+    }
+
 }

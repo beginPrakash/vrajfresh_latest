@@ -74,6 +74,32 @@ class Products_model extends CI_Model
 
     }
 
+
+    public function get_product_with_multi_category_filter($data)
+
+    {
+        $query = $this->db->select('c.category_id,c.category_name, c.is_perisible_products AS is_perisible_category,c.is_liker_category,c.is_cook_food_category,p.is_out_of_stock,p.product_id,p.product_sub_name,p.brand_id,p.product_name,p.is_perisible_products,p.is_liker_products,p.is_cook_food_products')
+
+            ->join('tbl_brands b', 'p.brand_id=b.brand_id')
+
+            ->join('tbl_categories_products_mapping cpm', 'cpm.product_id=p.product_id', "LEFT")
+
+            ->join('tbl_categories c', 'cpm.category_id=c.category_id', "LEFT")
+
+            //->where('p.product_slug', $data['product_slug'])
+
+            ->like('p.product_name', $data['product_slug'])
+
+            ->where('p.is_active', 1)
+
+            ->where('p.is_deleted', '0')
+
+            ->get('tbl_products p');
+
+        return $query->result();
+
+    }
+
     public function get_product_with_multi_category($data)
 
     {

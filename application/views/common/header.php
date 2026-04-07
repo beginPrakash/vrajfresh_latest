@@ -38,6 +38,10 @@
     <link href='<?php echo ASSET_URL . "css/vraj-fresh-responsive.css?v=" . date("d.H.m.s"); ?>' rel="stylesheet">
     <link href='<?php echo ASSET_URL . "css/vrjcst.css?v=" . date("d.H.m.s"); ?>' rel="stylesheet">
     <link rel="stylesheet" href=<?php echo ASSET_URL . "css/font-awesome.min.css?v=1.1"; ?>>
+    <?php
+        $canonical = base_url(uri_string());
+    ?>
+    <link rel="canonical" href="<?= $canonical; ?>" />
     <script src='<?php echo ASSET_URL . "js/jquery.js"; ?>'>
     </script>
 
@@ -595,6 +599,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         processData: false,
                         dataType: "JSON",
                         success: function(response) {
+
                             if (response.data != null) {
                                 $("#message").html('<div class="alert-success">' + response.success_message + "</div>");
                                 Cookies.set("user_id", response.data[0].user_id);
@@ -639,6 +644,23 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 } else {
                                     Cookies.set("city", response.data[0].city);
                                 }
+
+                                 $.ajax({
+                                    type: "POST",
+                                    url: front_url + "cart/save_user_cart_data",
+                                    // data: form.serialize(),
+                                    data: {
+                                        'oauth_key': 'F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT',
+                                        'user_id': response.data[0].user_id
+                                    },
+                                    // contentType: false,
+                                    // processData: false,
+                                    dataType: "JSON",
+                                    success: function(response_cart) {
+                                        console.log('save_user_cart_data');
+                                        console.log(response_cart);
+                                    }
+                                });
 
                                 $.ajax({
                                     type: "POST",

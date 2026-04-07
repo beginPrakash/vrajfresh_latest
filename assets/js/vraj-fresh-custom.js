@@ -181,8 +181,8 @@ jQuery(document).ready(function () {
         }
     });
     $(document).on('click', '.sub', function () {
-        if ($(this).next().val() > 1) {
-            if ($(this).next().val() > 1) $(this).next().val(+$(this).next().val() - 1);
+        if ($(this).next().val() > 0) {
+            if ($(this).next().val() > 0) $(this).next().val(+$(this).next().val() - 1);
         }
     });
     // jQuery(".vraj-login").on('click', function() {

@@ -407,6 +407,8 @@ class Controller_home_banner extends CI_Controller
 
 						'banner_link' => $this->input->post('banner_link'),
 
+						'banner_category' => $this->input->post('banner_category'),
+
 						'banner_type' => $this->input->post('banner_type'),
 
 						'banner_image' => $data['image_name']['file_name'],
@@ -566,6 +568,8 @@ class Controller_home_banner extends CI_Controller
 					$banner_data = array(
 
 						'banner_link' => $this->input->post('banner_link'),
+
+						'banner_category' => $this->input->post('banner_category'),
 
 						'banner_type' => $this->input->post('banner_type'),
 

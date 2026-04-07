@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+                          http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+      
+
+    <url>
+        <loc>https://www.vrajfresh.com/product/sev-puri</loc>
+        <lastmod>2025-06-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://www.vrajfresh.com/product/pani-puri-8-pcs</loc>
+        <lastmod>2025-06-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://www.vrajfresh.com/product/dahi-puri</loc>
+        <lastmod>2025-06-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://www.vrajfresh.com/product/chana-dal-chaat</loc>
+        <lastmod>2025-06-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://www.vrajfresh.com/product/bhel-puri-bhel</loc>
+        <lastmod>2025-06-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://www.vrajfresh.com/product/chana-jor-garam</loc>
+        <lastmod>2025-06-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://www.vrajfresh.com/product/samosa-chaat</loc>
+        <lastmod>2025-06-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+</urlset>

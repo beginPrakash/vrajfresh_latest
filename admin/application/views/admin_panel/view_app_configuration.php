@@ -81,8 +81,8 @@
                                             <?php } elseif ($Arr['field_type'] == 'select') { ?>
 
 												<select name="ArrData[<?php echo $Arr['configuration_id']; ?>]" class="form-control">
-                                                    <option value="1">Yes</option>
-                                                    <option value="0">No</option>
+                                                    <option value="1" <?php echo ($Arr['configuration_value'] == 1) ? "selected" : ''; ?>>Yes</option>
+                                                    <option value="0" <?php echo ($Arr['configuration_value'] == 0) ? "selected" : ''; ?>>No</option>
                                                 </select>
 
 											<?php } elseif ($Arr['field_type'] == 'textarea') { ?>

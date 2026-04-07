@@ -69,7 +69,7 @@ class Controller_cart extends CI_Controller
 		$json_obj = json_decode($json_str,true);
 		$errors = $success_message = '';
 		$ArrData = array();
-		$row_id = bin2hex(random_bytes(16));
+		
 		// Get Bearer Token
 		$authHeader = $this->input->get_request_header('Authorization', TRUE);
 		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
@@ -82,6 +82,7 @@ class Controller_cart extends CI_Controller
 		if (check_oauth_key($oauth_key)) {
 			if(count($user_cart_data) > 0){
 				foreach($user_cart_data as $key => $val){
+					$row_id = bin2hex(random_bytes(16));
 					$is_product_addtocart = $this->cart_model->is_product_addtocart($val['product_id'],$json_obj['customer_id'],$val['variant_id'] ?? '');
 					if(empty($is_product_addtocart)){
 						$ArrCartData = array(

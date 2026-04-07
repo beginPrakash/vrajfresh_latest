@@ -21,7 +21,7 @@
   <div class="container container-flex" id="cart-data">
     <div class="cart-page borderRemove">
       <h3>REVIEW YOUR ORDERS</h3>
-      
+      <?php //print_r($this->cart->contents());exit; ?>
         <div>
           <table class="review-table" width="100%" cellpadding="0" cellspacing="5" align="center">
             <?php if (count($this->cart->contents()) > 0) { ?>
@@ -36,6 +36,7 @@
 
               <?php $ArrProductIDs = array();
               if ($_COOKIE['can_deliver_perishable_products'] == 'Yes') {
+               
                 foreach ($this->cart->contents() as $items) {
                   $ArrProductIDs[$items['id']] = $items["price"] * $items["qty"];
                   ?>
@@ -125,6 +126,7 @@
         <?php } ?>
     </div>
     <?php if (count($this->cart->contents()) > 0) { ?>
+    
       <div class="cart_totals borderRemove">
         <h3>Cart Total</h3>
         <ul>

@@ -65,9 +65,9 @@ class Controller_cart extends CI_Controller
 		if(!empty($contain)){
 			unset($Maincontain['cart_total'], $Maincontain['total_items']);
 			foreach ($Maincontain as $key => $item){
-				if($item['created_date'] < $date15DayAgo){
-					unset($contain[$key]);
-				}
+				// if($item['created_date'] < $date15DayAgo){
+				// 	unset($contain[$key]);
+				// }
 			}
 			$CARTDATA = addslashes(json_encode($contain));
 		}
@@ -77,106 +77,109 @@ class Controller_cart extends CI_Controller
 		}
 		$SetCookieData = array();
 		
-		if($zipcode != ""){
-			$url = API_URL . 'remove-zipcode-products';
+		// if($zipcode != ""){
+		// 	$url = API_URL . 'remove-zipcode-products';
 
-			$data = array(
-				"oauth_key" => "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
-				"user_id" => $customer_id,
-				"zipcode" => $zipcode,
-				"cart" => $CARTDATA
-			);
+		// 	$data = array(
+		// 		"oauth_key" => "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+		// 		"user_id" => $customer_id,
+		// 		"zipcode" => $zipcode,
+		// 		"cart" => $CARTDATA
+		// 	);
 
-			$curl = curl_init();
-			curl_setopt($curl, CURLOPT_URL, $url);
-			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($curl, CURLOPT_POST, true);
-			curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
-			curl_setopt($curl, CURLOPT_HTTPHEADER, [
-				'X-RapidAPI-Host: kvstore.p.rapidapi.com',
-				'X-RapidAPI-Key: test',
-				'Content-Type: application/json'
-			]);
-			$response = curl_exec($curl);
-			//echo "<pre>zipcode response:- <pre>";print_r($response);exit;
-			curl_close($curl);
-			$response = json_decode($response, true);
+		// 	$curl = curl_init();
+		// 	curl_setopt($curl, CURLOPT_URL, $url);
+		// 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		// 	curl_setopt($curl, CURLOPT_POST, true);
+		// 	curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+		// 	curl_setopt($curl, CURLOPT_HTTPHEADER, [
+		// 		'X-RapidAPI-Host: kvstore.p.rapidapi.com',
+		// 		'X-RapidAPI-Key: test',
+		// 		'Content-Type: application/json'
+		// 	]);
+		// 	$response = curl_exec($curl);
+		// 	//echo "<pre>zipcode response:- <pre>";print_r($response);exit;
+		// 	curl_close($curl);
+		// 	$response = json_decode($response, true);
 			
-			if($response['is_successful'] == 1){
-				$this->cart->destroy();
-				$products = $response['data'];
-				$ZipcodeDetails = (isset($response['data2']['zipcodeData']) && !empty($response['data2']['zipcodeData'])) ? $response['data2']['zipcodeData'] : array();
+		// 	if($response['is_successful'] == 1){
+		// 		//$this->cart->destroy();
+		// 		$products = $response['data'];
+		// 		$ZipcodeDetails = (isset($response['data2']['zipcodeData']) && !empty($response['data2']['zipcodeData'])) ? $response['data2']['zipcodeData'] : array();
 				
-				$SetCookieData = array(
-					'minimum_order_value' => $ZipcodeDetails['minimum_order_value'],
-					'is_deliver_perishable_products' => $ZipcodeDetails['can_deliver_perishable_products'],
-					'delivery_type' => $ZipcodeDetails['delivery_types'],
-					'delivery_days' => $ZipcodeDetails['delivery_days'],
-					'delivery_area_name' => $ZipcodeDetails['area_name'],
-					'delivery_state_id' => $ZipcodeDetails['state_id'],
-					'zipcode_success_message' => 'Yes, We deliver in your area!',
-					'zipcode_error_message' => '',
-					'valid_zipcode' => 'TRUE',
-				);
+		// 		$SetCookieData = array(
+		// 			'minimum_order_value' => $ZipcodeDetails['minimum_order_value'],
+		// 			'is_deliver_perishable_products' => $ZipcodeDetails['can_deliver_perishable_products'],
+		// 			'delivery_type' => $ZipcodeDetails['delivery_types'],
+		// 			'delivery_days' => $ZipcodeDetails['delivery_days'],
+		// 			'delivery_area_name' => $ZipcodeDetails['area_name'],
+		// 			'delivery_state_id' => $ZipcodeDetails['state_id'],
+		// 			'zipcode_success_message' => 'Yes, We deliver in your area!',
+		// 			'zipcode_error_message' => '',
+		// 			'valid_zipcode' => 'TRUE',
+		// 		);
 
 				
 				
-				if(!empty($products)){
+		// 		if(!empty($products)){
 					
-					unset($products['cart_total'], $products['total_items']);
+		// 			unset($products['cart_total'], $products['total_items']);
 					
-					if(!empty($products)){
-						foreach ($products as $key => $value){
+		// 			if(!empty($products)){
+		// 				foreach ($products as $key => $value){
 							
-							$newCartItem = array(
-								"id" => $value['id'],
-								"name" => $value['name'],
-								"image" => $value['image'],
-								"price" => $value['price'],
-								"qty" => $value['qty'],
-								"product_slug" => $value['product_slug'],
-								"is_perisible" => $value['is_perisible'],
-								"product_tax" => $value['product_tax'],
-								"created_date" => $value['created_date'],
-								"options" => array(
-									"weight" => $value['options']['weight'],
-									"variant_id" => $value['options']['variant_id']
-								),
-								"rowid" => $key,
-								"subtotal" => $value['subtotal'],
-							);
-							$this->cart->insert($newCartItem);
-						}
-					}
-				}
-			} else {
+		// 					$newCartItem = array(
+		// 						"id" => $value['id'],
+		// 						"name" => $value['name'],
+		// 						"image" => $value['image'],
+		// 						"price" => $value['price'],
+		// 						"qty" => $value['qty'],
+		// 						"product_slug" => $value['product_slug'],
+		// 						"is_perisible" => $value['is_perisible'],
+		// 						"product_tax" => $value['product_tax'],
+		// 						"created_date" => $value['created_date'],
+		// 						"options" => array(
+		// 							"weight" => $value['options']['weight'],
+		// 							"variant_id" => $value['options']['variant_id']
+		// 						),
+		// 						"rowid" => $key,
+		// 						"subtotal" => $value['subtotal'],
+		// 					);
+		// 					$this->cart->insert($newCartItem);
+		// 				}
+		// 			}
+		// 		}
+		// 	} else {
 				
-				$SetCookieData = array(
-					'minimum_order_value' => '',
-					'is_deliver_perishable_products' => '',
-					'delivery_type' => '',
-					'delivery_days' => '',
-					'delivery_area_name' => '',
-					'delivery_state_id' => '',
-					'zipcode_success_message' => '',
-					'zipcode_error_message' => 'Sorry We do not deliver in your area.',
-					'valid_zipcode' => 'FALSE',
-				);
-			}
+		// 		$SetCookieData = array(
+		// 			'minimum_order_value' => '',
+		// 			'is_deliver_perishable_products' => '',
+		// 			'delivery_type' => '',
+		// 			'delivery_days' => '',
+		// 			'delivery_area_name' => '',
+		// 			'delivery_state_id' => '',
+		// 			'zipcode_success_message' => '',
+		// 			'zipcode_error_message' => 'Sorry We do not deliver in your area.',
+		// 			'valid_zipcode' => 'FALSE',
+		// 		);
+		// 	}
 
-			if(!empty($SetCookieData))
-			{
-				foreach($SetCookieData as $key => $value){
-					setcookie($key, $value);
-				}
-			}
+		// 	if(!empty($SetCookieData))
+		// 	{
+		// 		foreach($SetCookieData as $key => $value){
+		// 			setcookie($key, $value);
+		// 		}
+		// 	}
 
-			$contain = $this->cart->contents();
-		}
+		// 	$contain = $this->cart->contents();
+		// }
 		//echo '<pre>';print_r($_COOKIE);exit;
 		
 		//echo '<pre>';print_r($contain);exit;
 		$this->data['SetCookieData'] = $SetCookieData;
+		$headerdata = array('meta_title' => "Your Cart | VrajFresh — Fresh Grocery Delivery NJ & NY",'meta_description' => "Review your cart and place your order for fresh Indian groceries, vegetables, fruits & dairy. Same-day delivery available across New Jersey and New York at VrajFresh.");
+        
+        $this->load->view('common/header', $headerdata);
 		$this->load->view('cart', $this->data);
     }
 
@@ -264,7 +267,7 @@ class Controller_cart extends CI_Controller
 					'created_date' => date("Y-m-d")
 				);
 				$result = $this->cart->update($data);
-				$quantity = $quantity + $qty;
+				$quantity = $quantity;
 			}
 			//$result = $this->cart->insert($data);
 			
@@ -273,6 +276,7 @@ class Controller_cart extends CI_Controller
 			if (isset($this->session->userdata['logged_in']['user_id'])) {
 				$customer_id = $this->session->userdata['logged_in']['user_id'];
 			}
+
 			if($customer_id>0)
 			{
 				if(!$product_id_found)
@@ -318,7 +322,6 @@ class Controller_cart extends CI_Controller
 				}
 
 				curl_close($curl);
-
 				$response = json_decode($response);
 			}
 			//ADD CART IN DB TABLE END
@@ -444,6 +447,43 @@ class Controller_cart extends CI_Controller
 
     }
 
+	public function save_user_cart_data(){
+		$customer_id = 0;
+		if (isset($this->session->userdata['logged_in']['user_id'])) {
+			$customer_id = $this->session->userdata['logged_in']['user_id'];
+		}
+		$oauth_key = $_POST['oauth_key'];
+
+		$newArr = $_SESSION['cart_contents'];
+		$user_cart_data = $this->cart->contents();
+		//save user data in cart
+		$url = API_URL . 'add-ucart-item';
+
+		$payload = json_encode([
+			"oauth_key" => "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+			"customer_id"=>$customer_id,
+			"cart_data" => $user_cart_data // IMPORTANT: not empty
+		]);
+
+		$curl = curl_init();
+
+		curl_setopt_array($curl, [
+			CURLOPT_URL => $url,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_POST => true,
+			CURLOPT_POSTFIELDS => $payload,
+			CURLOPT_HTTPHEADER => [
+				'Content-Type: application/json'
+			],
+		]);
+
+		$response = curl_exec($curl);
+		curl_close($curl);
+		$success_message = "Product Setup";
+		$errors = "";
+		send_response_to_api($response, $errors, $success_message);
+	}
+
 	public function login_cart_data()
     {
 		
@@ -454,10 +494,13 @@ class Controller_cart extends CI_Controller
 		$oauth_key = $_POST['oauth_key'];
 
 		$newArr = $_SESSION['cart_contents'];
-		$CARTDATA = $this->cart->contents();
+		$user_cart_data = $this->cart->contents();
+		
+		$CARTDATA = array();
 		$cart_total_items = 0;
 		$new_cart_total = 0.00;
 		$CutomerCart = 0;
+		$this->session->unset_userdata('cart_contents');
 		if (check_oauth_key($oauth_key) && $customer_id > 0) {
 			
 			$query = $this->db->where('customer_id', $customer_id )->get('tbl_cart_items');
@@ -486,8 +529,8 @@ class Controller_cart extends CI_Controller
 						"rowid" => $rowid,
 						"name" => $product_name,
 						"image" => $image,
-						"price" => $price,
-						"qty" => $quantity,
+						"price" => (float)$price,
+						"qty" => (float)$quantity,
 						"product_slug" => $product_slug,
 						"is_perisible" => $is_perisible,
 						"product_tax" => $product_tax,
@@ -499,6 +542,7 @@ class Controller_cart extends CI_Controller
 					);
 					
 					$CARTDATA[$rowid]['id'] = $product_id;
+					$CARTDATA[$rowid]['rowid'] = $rowid;
 					$CARTDATA[$rowid]['name'] = $product_name;
 					$CARTDATA[$rowid]['image'] = $image;
 					$CARTDATA[$rowid]['price'] = $price;
@@ -506,12 +550,13 @@ class Controller_cart extends CI_Controller
 					$CARTDATA[$rowid]['product_slug'] = $product_slug;
 					$CARTDATA[$rowid]['is_perisible'] = $is_perisible;
 					$CARTDATA[$rowid]['product_tax'] = $product_tax;
+					$CARTDATA[$rowid]['subtotal'] = $price * $quantity;
 					$CARTDATA[$rowid]['created_date'] = $cart_row['created_date'];
 					$CARTDATA[$rowid]['options']['weight'] = $weight;
 					$CARTDATA[$rowid]['options']['variant_id'] = $variant_id;
 					
 					$cart_total_items += $quantity;
-					$new_cart_total += $price;
+					$new_cart_total += $price * $quantity;
 
 					$product_id_found = false;
 					$quantity_update = false;
@@ -543,7 +588,7 @@ class Controller_cart extends CI_Controller
 							'qty'   => $quantity,
 						);
 						if($quantity_update == true){
-							$data['created_date'] = date("Y-m-d");
+							//$data['created_date'] = date("Y-m-d");
 						}
 						$this->cart->update($data);
 					}
@@ -552,6 +597,7 @@ class Controller_cart extends CI_Controller
 				}
 			}
 		}
+	
 		if($CutomerCart > 0){
 			
 			$CARTDATA['total_items'] = $cart_total_items;
@@ -573,91 +619,91 @@ class Controller_cart extends CI_Controller
 		$zipcode = $_COOKIE['zipcode'];
 		$CARTDATA = ""; 
 		if(!empty($contain)){
-			unset($Maincontain['cart_total'], $Maincontain['total_items']);
-			foreach ($Maincontain as $key => $item){
-				if($item['created_date'] < $date15DayAgo){
-					unset($contain[$key]);
-				}
-			}
+			//unset($Maincontain['cart_total'], $Maincontain['total_items']);
+			// foreach ($Maincontain as $key => $item){
+			// 	if($item['created_date'] < $date15DayAgo){
+			// 		unset($contain[$key]);
+			// 	}
+			// }
 			$CARTDATA = addslashes(json_encode($contain));
 		}
 		
 		$total_items = 0;
 		$cart_total = 0.00;
 		
-		if($zipcode != ""){
-			$url = API_URL . 'remove-zipcode-products';
+		// if($zipcode != ""){
+		// 	$url = API_URL . 'remove-zipcode-products';
 
-			$data = array(
-				"oauth_key" => "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
-				"user_id" => $customer_id,
-				"zipcode" => $zipcode,
-				"cart" => $CARTDATA
-			);
-			$curl = curl_init();
-			curl_setopt($curl, CURLOPT_URL, $url);
-			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($curl, CURLOPT_POST, true);
-			curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
-			curl_setopt($curl, CURLOPT_HTTPHEADER, [
-				'X-RapidAPI-Host: kvstore.p.rapidapi.com',
-				'X-RapidAPI-Key: test',
-				'Content-Type: application/json'
-			]);
-			$response = curl_exec($curl);
-			//echo "<pre>zipcode response:- <pre>";print_r($response);
+		// 	$data = array(
+		// 		"oauth_key" => "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+		// 		"user_id" => $customer_id,
+		// 		"zipcode" => $zipcode,
+		// 		"cart" => $CARTDATA
+		// 	);
+		// 	$curl = curl_init();
+		// 	curl_setopt($curl, CURLOPT_URL, $url);
+		// 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		// 	curl_setopt($curl, CURLOPT_POST, true);
+		// 	curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+		// 	curl_setopt($curl, CURLOPT_HTTPHEADER, [
+		// 		'X-RapidAPI-Host: kvstore.p.rapidapi.com',
+		// 		'X-RapidAPI-Key: test',
+		// 		'Content-Type: application/json'
+		// 	]);
+		// 	$response = curl_exec($curl);
+		// 	//echo "<pre>zipcode response:- <pre>";print_r($response);
 			
-			curl_close($curl);
-			$response = json_decode($response, true);
-			//echo "<pre>zipcode response2:- <pre>"; print_r($response);
+		// 	curl_close($curl);
+		// 	$response = json_decode($response, true);
+		// 	//echo "<pre>zipcode response2:- <pre>"; print_r($response);
 			
-			//echo $response['is_successful'];exit;
-			if($response['is_successful'] == 1){
+		// 	//echo $response['is_successful'];exit;
+		// 	if($response['is_successful'] == 1){
 				
-				$this->cart->destroy();
+		// 		$this->cart->destroy();
 				
-				$products = $response['data'];
+		// 		$products = $response['data'];
 				
-				if(!empty($products)){
+		// 		if(!empty($products)){
 					
-					unset($products['cart_total'], $products['total_items']);
+		// 			unset($products['cart_total'], $products['total_items']);
 					
-					if(!empty($products)){
+		// 			if(!empty($products)){
 
-						foreach ($products as $key => $value){
+		// 				foreach ($products as $key => $value){
 							
-							$newCartItem = array(
-								"id" => $value['id'],
-								"name" => $value['name'],
-								"image" => $value['image'],
-								"price" => $value['price'],
-								"qty" => $value['qty'],
-								"product_slug" => $value['product_slug'],
-								"is_perisible" => $value['is_perisible'],
-								"product_tax" => $value['product_tax'],
-								"created_date" => $value['created_date'],
-								"options" => array(
-									"weight" => $value['options']['weight'],
-									"variant_id" => $value['options']['variant_id']
-								),
-								"rowid" => $key,
-								"subtotal" => $value['subtotal'],
-							);
-							$total_items += $value['qty'];
-							$cart_total += $value['subtotal'];
-							$this->cart->insert($newCartItem);
-						}
-					}
-				}
-			}
-        } else {
+		// 					$newCartItem = array(
+		// 						"id" => $value['id'],
+		// 						"name" => $value['name'],
+		// 						"image" => $value['image'],
+		// 						"price" => $value['price'],
+		// 						"qty" => $value['qty'],
+		// 						"product_slug" => $value['product_slug'],
+		// 						"is_perisible" => $value['is_perisible'],
+		// 						"product_tax" => $value['product_tax'],
+		// 						"created_date" => $value['created_date'],
+		// 						"options" => array(
+		// 							"weight" => $value['options']['weight'],
+		// 							"variant_id" => $value['options']['variant_id']
+		// 						),
+		// 						"rowid" => $key,
+		// 						"subtotal" => $value['subtotal'],
+		// 					);
+		// 					$total_items += $value['qty'];
+		// 					$cart_total += $value['subtotal'];
+		// 					$this->cart->insert($newCartItem);
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+        // } else {
 			$contain = $this->cart->contents();
 			foreach ($contain as $key => $item){
 				
 				$total_items += $item['qty'];
 				$cart_total += $item['subtotal'];
 			}
-		}
+		//}
 		
 		$contain = $this->cart->contents();
 		if(!empty($contain)){
@@ -784,17 +830,27 @@ class Controller_cart extends CI_Controller
 				"row_id" => $row_id
 			);
 			$curl = curl_init();
-			curl_setopt($curl, CURLOPT_URL, $url);
-			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($curl, CURLOPT_POST, true);
-			curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
-			curl_setopt($curl, CURLOPT_HTTPHEADER, [
-				'X-RapidAPI-Host: kvstore.p.rapidapi.com',
-				'X-RapidAPI-Key: test',
-				'Content-Type: application/json'
-			]);
-			$response = curl_exec($curl);
-			curl_close($curl);
+
+curl_setopt_array($curl, array(
+    CURLOPT_URL => $url,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_POST => true,
+    CURLOPT_POSTFIELDS => json_encode($data),
+    CURLOPT_HTTPHEADER => array(
+        'Content-Type: application/json'
+    ),
+));
+
+$response = curl_exec($curl);
+
+// if ($response === false) {
+//     echo 'Curl error: ' . curl_error($curl);
+// } else {
+//     echo $response;
+// }
+
+curl_close($curl);
+
 			$response = json_decode($response);
 		}
 		//DELETE ITEM FROM CART IN DB TABLE END
@@ -906,17 +962,24 @@ class Controller_cart extends CI_Controller
 				"qty" => $qty
 			);
 			$curl = curl_init();
-			curl_setopt($curl, CURLOPT_URL, $url);
-			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($curl, CURLOPT_POST, true);
-			curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
-			curl_setopt($curl, CURLOPT_HTTPHEADER, [
-				'X-RapidAPI-Host: kvstore.p.rapidapi.com',
-				'X-RapidAPI-Key: test',
-				'Content-Type: application/json'
-			]);
-			$response = curl_exec($curl);
-			curl_close($curl);
+
+				curl_setopt_array($curl, array(
+					CURLOPT_URL => $url,
+					CURLOPT_RETURNTRANSFER => true,
+					CURLOPT_POST => true,
+					CURLOPT_POSTFIELDS => json_encode($data),
+					CURLOPT_HTTPHEADER => array(
+						'Content-Type: application/json'
+					),
+				));
+
+				$response = curl_exec($curl);
+
+				if(curl_errno($curl)){
+					//echo 'Curl error: ' . curl_error($curl);
+				}
+
+				curl_close($curl);
 			$response = json_decode($response);
 		}
 		//DELETE ITEM FROM CART IN DB TABLE END        

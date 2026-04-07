@@ -94,6 +94,65 @@ class Controller_cart extends CI_Controller
 			send_response_to_api($ArrData, $errors, $success_message);
 		}
 	}
+
+	public function add_luser_cart()
+	{
+
+		$json_str = file_get_contents('php://input');
+		$json_obj = json_decode($json_str,true);
+		$errors = $success_message = '';
+		$ArrData = array();
+		
+		$oauth_key = $json_obj['oauth_key'];
+		$user_cart_data = $json_obj['cart_data'];
+
+		if (check_oauth_key($oauth_key)) {
+			if(count($user_cart_data) > 0){
+				foreach($user_cart_data as $key => $val){
+					$row_id = bin2hex(random_bytes(16));
+					$is_product_addtocart = $this->cart_model->is_product_addtocart($val['id'],$json_obj['customer_id'],$val['variant_id'] ?? '');
+					if(empty($is_product_addtocart)){
+						$ArrCartData = array(
+							'customer_id' => trim($json_obj['customer_id']),
+							'row_id' => trim($row_id),
+							'id' => trim($val['id']),
+							'name' => trim($val['name']),
+							'image' => trim($val['image']),
+							'price' => trim($val['price']),
+							'qty' => trim($val['qty']),
+							'product_slug' => trim($val['product_slug']),
+							//'created_date' => date("Y-m-d"),
+							'is_perisible' => trim($val['is_perisible']),
+							'product_tax' => trim($val['product_tax']),
+							'options_weight' => trim($val['weight'] ?? ''),
+							'options_variant_id' => trim($val['variant_id'] ?? ''),
+						);
+						$this->cart_model->add($ArrCartData);
+					}else{
+						$ArrCartData = array(
+							'customer_id' => trim($json_obj['customer_id']),
+							'row_id' => trim($row_id),
+							'id' => trim($val['id']),
+							'name' => trim($val['name']),
+							'image' => trim($val['image']),
+							'price' => trim($val['price']),
+							'qty' => trim($val['qty']),
+							'product_slug' => trim($val['product_slug']),
+							//'created_date' => date("Y-m-d"),
+							'is_perisible' => trim($val['is_perisible']),
+							'product_tax' => trim($val['product_tax']),
+							'options_weight' => trim($val['weight'] ?? ''),
+							'options_variant_id' => trim($val['variant_id'] ?? ''),
+						);
+						$this->cart_model->update_usercart_item($ArrCartData,$is_product_addtocart);
+					}
+				}
+			}
+			$ArrData['cart_data'] = $user_cart_data;
+			$success_message = 'Cart item added successfully.';
+			send_response_to_api($ArrData, $errors, $success_message);
+		}
+	}
 	public function delete_cart()
 	{
 		$json_str = file_get_contents('php://input');
@@ -155,7 +214,7 @@ class Controller_cart extends CI_Controller
 			try {
 			$ArrCartData = array(
 				'qty' => trim($qty),
-				'created_date' => date("Y-m-d")
+				//'created_date' => date("Y-m-d")
 			);
 			$this->cart_model->update($ArrCartData,$row_id);
 			} catch (Exception $e) {
@@ -187,7 +246,7 @@ class Controller_cart extends CI_Controller
 					
 					$ArrCartData = array(
 						'qty' => trim($qty[$i]),
-						'created_date' => date("Y-m-d")
+						//'created_date' => date("Y-m-d")
 					);
 					//$datay = $this->cart_model->update($ArrCartData,$row_id);
 					

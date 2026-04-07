@@ -547,6 +547,27 @@ class Controller_home extends CI_Controller
 	}
 	*/
 
+	public function getLastValueFromUrl($url)
+	{
+		$query = parse_url($url, PHP_URL_QUERY);
+
+		// If query string exists
+		if (!empty($query)) {
+			parse_str($query, $params);
+			return !empty($params) ? end($params) : '';
+		}
+
+		// If path exists
+		$path = parse_url($url, PHP_URL_PATH);
+
+		if (!empty($path) && $path != '/') {
+			$segments = explode('/', trim($path, '/'));
+			return end($segments);
+		}
+
+		return '';
+	}
+
 	public function get_home_banner()
 	{
 		$json_str = file_get_contents('php://input');
@@ -574,6 +595,8 @@ class Controller_home extends CI_Controller
 						'banner_image' => $upload_path . $row->banner_image,
 						'banner_link'  => $row->banner_link,
 						'banner_type'  => $row->banner_type,
+						'banner_category'  => $row->banner_category,
+						'banner_slug' => $this->getLastValueFromUrl($row->banner_link),
 					];
 				}
 
@@ -625,6 +648,8 @@ class Controller_home extends CI_Controller
 						'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->adv_image,
 						'ad_link'=>$result_val[$i]->adv_link,
 						'ad_slug'=>$ad_slug,
+						'ad_url_category'  => $result_val[$i]->advt_url_category,
+						'ad_slug' => $this->getLastValueFromUrl($result_val[$i]->adv_link),
 						
 					];
 				}
@@ -634,6 +659,8 @@ class Controller_home extends CI_Controller
 						'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->adv_mobapp_image,
 						'ad_link'=>$result_val[$i]->adv_link,
 						'ad_slug'=>$ad_slug,
+						'ad_url_category'  => $result_val[$i]->advt_url_category,
+						'ad_slug' => $this->getLastValueFromUrl($result_val[$i]->adv_link),
 					];
 				}
 			}
@@ -733,7 +760,8 @@ class Controller_home extends CI_Controller
 						$ad_banner[] = [
 							'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->adv_image,
 							'ad_link'=>$result_val[$i]->adv_link,
-							'ad_slug'=>$ad_slug,
+							'ad_url_category'  => $result_val[$i]->advt_url_category,
+							'ad_slug' => $this->getLastValueFromUrl($result_val[$i]->adv_link),
 						];
 					}
 					if(!empty($result_val[$i]->adv_mobapp_image)){
@@ -741,7 +769,8 @@ class Controller_home extends CI_Controller
 						$ad_banner_mobile[] = [
 							'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->adv_mobapp_image,
 							'ad_link'=>$result_val[$i]->adv_link,
-							'ad_slug'=>$ad_slug,
+							'ad_url_category'  => $result_val[$i]->advt_url_category,
+							'ad_slug' => $this->getLastValueFromUrl($result_val[$i]->adv_link),
 						];
 					}
 				} else {
@@ -750,6 +779,8 @@ class Controller_home extends CI_Controller
 						$ad_banner[] = [
 							'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->alt_adv_image,
 							'ad_link'=>$result_val[$i]->alt_adv_link,
+							'ad_url_category'  => $result_val[$i]->advt_url_category,
+							'ad_slug' => $this->getLastValueFromUrl($result_val[$i]->alt_adv_link),
 						];
 					}
 
@@ -757,6 +788,8 @@ class Controller_home extends CI_Controller
 						$ad_banner_mobile[] = [
 							'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->alt_adv_mobapp_image,
 							'ad_link'=>$result_val[$i]->alt_adv_link,
+							'ad_url_category'  => $result_val[$i]->advt_url_category,
+							'ad_slug' => $this->getLastValueFromUrl($result_val[$i]->alt_adv_link),
 						];
 					}
 				}

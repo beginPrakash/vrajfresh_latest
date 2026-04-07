@@ -41,278 +41,182 @@
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
-  
- <!-- Category Pages -->
-  <url>
-    <loc>https://www.vrajfresh.com/category/atta</loc>
-    <lastmod>2026-02-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/dal-beans</loc>
-    <lastmod>2026-02-02</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.vrajfresh.com/category/spices</loc>
-    <lastmod>2026-02-06</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
-    <loc>https://www.vrajfresh.com/category/biscuits--cookies</loc>
-    <lastmod>2026-02-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://www.vrajfresh.com/category/dry-fruits</loc>
-    <lastmod>2026-02-04</lastmod>
-    <changefreq>daily</changefreq>
+    <loc>https://vrajfresh.com/promotions</loc>
+    <lastmod>2026-02-18</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/box-bottle-spices</loc>
-    <lastmod>2026-02-04</lastmod>
-    <changefreq>daily</changefreq>
+    <loc>https://vrajfresh.com/refund-and-return-policy</loc>
+    <lastmod>2026-03-18</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/drink-mix</loc>
-    <lastmod>2026-02-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://www.vrajfresh.com/category/tea--coffee</loc>
-    <lastmod>2026-02-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://www.vrajfresh.com/category/rice</loc>
-    <lastmod>2026-02-02</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.vrajfresh.com/category/salt-sugar-jaggery</loc>
-    <lastmod>2026-02-06</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
-    <loc>https://www.vrajfresh.com/category/instant-mix</loc>
-    <lastmod>2026-02-03</lastmod>
+    <loc>https://vrajfresh.com/shipping-policy</loc>
+    <lastmod>2026-03-30</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://www.vrajfresh.com/category/all-flour</loc>
-    <lastmod>2026-02-04</lastmod>
-    <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/canned-food</loc>
-    <lastmod>2026-02-04</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.4</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_atta.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/ready-to-eat</loc>
-    <lastmod>2026-02-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.3</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_dal_beans.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/noodles-and-pasta</loc>
-    <lastmod>2026-02-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_spices.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/snacks</loc>
-    <lastmod>2026-02-02</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_biscuits_cookies.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/oil-ghee</loc>
-    <lastmod>2026-02-06</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_dry_fruits.xml</loc>
+  </url>
+
+<url>
+    <loc>https://www.vrajfresh.com/sitemap/category_box_bottle_spices.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/pickle-sauce--chutney</loc>
-    <lastmod>2026-02-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_drink_mix.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/jelly-jam--juices</loc>
-    <lastmod>2026-02-04</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.5</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_tea_coffee.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/papad-poha--mamra</loc>
-    <lastmod>2026-02-04</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.4</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_rice.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/mukhwas</loc>
-    <lastmod>2026-02-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.3</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_salt_sugar_jaggery.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/vegetables</loc>
-    <lastmod>2026-02-11</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_instant_mix.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/fruits</loc>
-    <lastmod>2026-02-12</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.2</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_all_flour.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/appetizer</loc>
-    <lastmod>2026-02-13</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_canned_food.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/cut-vegetable</loc>
-    <lastmod>2026-02-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_ready_to_eat.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/frozen-curries</loc>
-    <lastmod>2026-02-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_noodles_and_pasta.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/roti-paratha--naan</loc>
-    <lastmod>2026-02-14</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_snacks.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/ice-cream</loc>
-    <lastmod>2026-02-15</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_oil_ghee.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/chicken-fish</loc>
-    <lastmod>2026-02-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-
-  <url>
-    <loc>https://www.vrajfresh.com/category/milk--yogurt</loc>
-    <lastmod>2026-02-13</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_pickle_sauce_chutney.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/butter-cheese--paneer</loc>
-    <lastmod>2026-02-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_jelly_jam_juices.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/eggs--breads</loc>
-    <lastmod>2026-02-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_papad_poha_mamra.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/batter</loc>
-    <lastmod>2026-02-14</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_mukhwas.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/sweets</loc>
-    <lastmod>2026-02-15</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_vegetables.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/beverages--drinks</loc>
-    <lastmod>2026-02-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_fruits.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/organic</loc>
-    <lastmod>2026-02-18</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.4</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_appetizer.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/bakery-fresh</loc>
-    <lastmod>2026-02-18</lastmod>
-    <changefreq>daily</changefreq>d
-    <priority>0.4</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_cut_vegetable.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/tava-fresh</loc>
-    <lastmod>2026-02-18</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.4</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_frozen_curries.xml</loc>
   </url>
 
   <url>
-    <loc>https://www.vrajfresh.com/category/chaat-corner</loc>
-    <lastmod>2026-02-18</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.4</priority>
+    <loc>https://www.vrajfresh.com/sitemap/category_roti_paratha_naan.xml</loc>
   </url>
+
+  <url>
+    <loc>https://www.vrajfresh.com/sitemap/category_ice_cream.xml</loc>
+  </url>
+
+  <url>
+    <loc>https://www.vrajfresh.com/sitemap/category_chicken_fish.xml</loc>
+  </url>
+
+  <url>
+    <loc>https://www.vrajfresh.com/sitemap/category_milk_yogurt.xml</loc>
+  </url>
+
+  <url>
+    <loc>https://www.vrajfresh.com/sitemap/category_butter_cheese_paneer.xml</loc>
+  </url>
+
+  <url>
+    <loc>https://www.vrajfresh.com/sitemap/category_eggs_breads.xml</loc>
+  </url>
+
+  <url>
+    <loc>https://www.vrajfresh.com/sitemap/category_batter.xml</loc>
+  </url>
+
+  <url>
+    <loc>https://www.vrajfresh.com/sitemap/category_sweets.xml</loc>
+  </url>
+
+  <url>
+    <loc>https://www.vrajfresh.com/sitemap/category_beverages_drinks.xml</loc>
+  </url>
+
+  <url>
+    <loc>https://www.vrajfresh.com/sitemap/category_organic.xml</loc>
+  </url>
+
+  <url>
+    <loc>https://www.vrajfresh.com/sitemap/category_bakery_fresh.xml</loc>
+  </url>
+
+  <url>
+    <loc>https://www.vrajfresh.com/sitemap/category_tava_fresh.xml</loc>
+  </url>
+
+  <url>
+    <loc>https://www.vrajfresh.com/sitemap/category_chaat_corner.xml</loc>
+  </url>
+ 
 </urlset>
