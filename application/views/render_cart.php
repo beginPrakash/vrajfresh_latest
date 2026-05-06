@@ -19,8 +19,8 @@
                   ?>
                   <tr class="cart-products">
                     <td>
-                      <img src="<?php echo $items["image"]; ?>" alt="bakery">
-                      <div class="cart_product"><a href="<?php echo 'product/' . $items["product_slug"]; ?>"
+                      <img src="<?php echo $items["options"]["image"]; ?>" alt="bakery">
+                      <div class="cart_product"><a href="<?php echo 'product/' . $items["options"]["product_slug"]; ?>"
                           target="_blank"><?php echo $items["name"] . " (" . $items["options"]['weight'] . "lb)"; ?></a></div>
                     </td>
                     <td>$
@@ -56,8 +56,8 @@
                   ?>
                   <tr class="cart-products">
                     <td>
-                      <img src="<?php echo $items["image"]; ?>" alt="bakery">
-                      <div class="cart_product"><a href="<?php echo 'product/' . $items["product_slug"]; ?>" target="_blank">
+                      <img src="<?php echo $items["options"]["image"]; ?>" alt="bakery">
+                      <div class="cart_product"><a href="<?php echo 'product/' . $items["options"]["product_slug"]; ?>" target="_blank">
                           <?php echo $items["name"] . " (" . $items["options"]['weight'] . "lb)"; ?></a>
                         <div class="mobile-view-show">
                           <div class="mobile-price">$ <?php echo $items["price"] * $items["qty"]; ?></div>

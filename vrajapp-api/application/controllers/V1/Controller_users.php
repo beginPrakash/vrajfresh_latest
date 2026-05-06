@@ -340,7 +340,8 @@ class Controller_users extends CI_Controller
 			if (count($check_email) > 0) {
 				$data = array(
 					'user_name' => $json_obj->email,
-					'user_role_id' => $json_obj->user_role_id
+					'user_role_id' => $json_obj->user_role_id,
+					'user_token' => $json_obj->user_token
 				);
 				$result = $this->users_model->check_user($data);
 				if (count($result) > 0) {
@@ -468,6 +469,37 @@ class Controller_users extends CI_Controller
 					);
 				
 					$otp_code = $this->otpverification_model->add_otpcode($otp_data);
+
+					//save fcm token
+					$user_id = $result[0]->user_id; // dynamic
+					$new_token = $json_obj->user_token;
+
+					$row = $this->db->get_where('user_fcm_tokens', ['user_id' => $user_id,'token_type'=>'app'])->row();
+
+					if ($row) {
+
+						$tokens = explode(',', $row->fcm_tokens);
+
+						if (!in_array($new_token, $tokens)) {
+							$tokens[] = $new_token;
+						}
+
+						$this->db->where('user_id', $user_id);
+						$this->db->update('user_fcm_tokens', [
+							'fcm_tokens' => implode(',', $tokens),
+							'updated_at' => date('Y-m-d H:i:s')
+						]);
+
+					} else {
+
+						$this->db->insert('user_fcm_tokens', [
+							'user_id' => $user_id,
+							'fcm_tokens' => $new_token,
+							'token_type' => 'app',
+							'updated_at' => date('Y-m-d H:i:s')
+						]);
+					}
+				
 
 					// Remove spaces
 					$valid_emil = trim($json_obj->email);
@@ -856,6 +888,60 @@ class Controller_users extends CI_Controller
 			$success_message = 'User not Exist';
 		}
 		send_response_to_api($ArrData, $errors, $success_message);
+	}
+	
+
+	public function logout()
+	{
+		$json_str = file_get_contents('php://input');
+		$json_obj = json_decode($json_str);
+
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+		$errors = $success_message = '';
+		$ArrData = array();
+		if (check_oauth_key($oauth_key)) {
+			$user_id = $json_obj->user_id; // dynamic user id
+			$remove_token = $json_obj->user_token;
+
+			$row = $this->db->get_where('user_fcm_tokens', ['user_id' => $user_id,'token_type'=>'app'])->row();
+
+			if ($row && !empty($row->fcm_tokens)) {
+
+				// Convert string to array
+				$tokens = explode(',', $row->fcm_tokens);
+
+				// Remove token
+				$tokens = array_filter($tokens, function($t) use ($remove_token) {
+					return trim($t) !== trim($remove_token);
+				});
+
+				// Re-index array
+				$tokens = array_values($tokens);
+
+				// Convert back to string
+				$updated_tokens = implode(',', $tokens);
+
+				// Update DB
+				$this->db->where('user_id', $user_id);
+				$this->db->update('user_fcm_tokens', [
+					'fcm_tokens' => $updated_tokens,
+					'updated_at' => date('Y-m-d H:i:s')
+				]);
+
+				$success_message = "Token removed";
+
+			} else {
+				$errors = "No tokens found";
+			}
+
+			send_response_to_api($ArrData, $errors, $success_message);
+		}
 	}
 	
 }

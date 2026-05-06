@@ -354,7 +354,7 @@ function UpdateAddress(AddressType) {
                         CloseCheckoutModels();
                         $("#FrmEdit_" + AddressType + "_Address")[0].reset();
                         $("#" + prefix + "zipcode").val(Cookies.get("zipcode"));
-                        //location.reload();
+                        location.reload();
 
                     } else {
                         CloseCheckoutModels();
@@ -467,6 +467,8 @@ function addTipAmount(tip_amount) {
 
 		$("#tip_remove_button").show();
 
+        $("#update_tip_button").show();
+
 		$(".cart-tip").show();
 
 		$("#cart-total").html(total);
@@ -490,7 +492,7 @@ function addTipAmount(tip_amount) {
 
 		$(".tip_remove_button").hide();
 
-
+        $("#update_tip_button").hide();
 
 		$("#cart-total").html(sub_total);
 
@@ -650,6 +652,8 @@ function removeTipAmount() {
     $("#tip_amount").hide();
 
     $("#add_tip_button").hide();
+
+    $("#update_tip_button").hide();
 
     $("#tip_remove_button").hide();
 
@@ -883,6 +887,7 @@ function checkstripeCard ()
     }
 }
 
+
 const stripe = Stripe('<?php echo STRIPE_PUBLISHABLE_KEY; ?>');
 
 
@@ -1015,7 +1020,6 @@ ctoalamt =  $("#cart_total").val();
     }
    
     if(AllErrorFixed == 1){
-
         const updateRes = await fetch("/api/stripe/update-intent", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -1048,6 +1052,7 @@ ctoalamt =  $("#cart_total").val();
 
         if (confirmError) {
             alert(confirmError.message);
+            $(this).prop('disabled', false).text('Proceed to Pay');
             return;
         }
 
@@ -1061,38 +1066,6 @@ ctoalamt =  $("#cart_total").val();
 
             document.getElementById("checkoutForm").submit();
         }
-
-        // STEP 2: Create payment method manually
-//         const { error, paymentMethod } = await stripe.createPaymentMethod({ elements });
-
-//         if (error) {
-//             alert(error.message);
-//             $(this).prop('disabled', false).text('Proceed to Pay');
-//         } else {
-//             console.log("✅ PaymentMethod update  created:", paymentMethod.id);
-//             //$('#payment_method_id').val(paymentMethod.id);
-//             $("#CardPaymentMethod").val(paymentMethod.id);
-//             $("#CardToken").val(intent_id);
-
-//             // STEP 3: Submit form to backend for confirmation
-//         // document.getElementById("checkoutForm").submit();
-
-//         const { error, paymentIntent } = await stripe.confirmPayment({
-//         elements,
-//         redirect: "if_required",  // ✅ prevents redirect
-//     });
-
-//   if (error) {
-//     console.error(error.message);
-//   } else if (paymentIntent && paymentIntent.status === "succeeded") {
-//     console.log("✅ Payment successful", paymentIntent.id);
-//     console.log(paymentIntent);
-//     $('#checkoutForm')[0].requestSubmit();
-//     // call your backend to mark order as paid
-//   }
-
-//    // $('#checkoutForm')[0].requestSubmit();
-//     }
         
     } else {
         $("#checkout-submit").prop('disabled', false);
@@ -1208,23 +1181,9 @@ function validateFormsd() {
     if(SubstituteError == 0 && ShippingAddressError == 0 && BillingAddressError == 0 && DeliveryTypeError == 0 && DeliveryTypeDateError == 0){
         AllErrorFixed = 1;
     }
-    var selectedpaytype = $('input[name="payment_methodtype"]:checked').val();
-    var gpay_token_serialize_val = $('#gpay_token_serialize').val();
+
     if(AllErrorFixed == 1){
-        if(selectedpaytype == 'gpay_paymethod'){
-            if(gpay_token_serialize_val != ''){
-                $("#submit").click();
-            }else{
-                $("#checkout-submit").prop('disabled', false);
-                $("#checkout-submit").text('Proceed to Pay');
-                alert("Please make payment.");
-                return false;
-            }
-            
-        }else if(selectedpaytype == 'stripe_paymethod'){
-            checkstripeCard();
-        }
-        
+        checkstripeCard();
     } else {
         $("#checkout-submit").prop('disabled', false);
         $("#checkout-submit").text('Proceed to Pay');
@@ -1255,7 +1214,6 @@ function taxCalc() {
     $(".cart-tax").show();
 
     var selectedOption = $("#state").val().split('|');
-    console.log(selectedOption+'dfdfd');
 
     var selectedValue = selectedOption[0];
 
@@ -1271,7 +1229,7 @@ function taxCalc() {
 
     var tax_product = (selectedValue / 100) * <?php echo $taxable_products_amount ?>;
    
-
+console.log('tax_add'+tax_product);
     $("#state").removeAttr("data-tax");
 
     $("#state").attr("data-tax", selectedValue);
@@ -1280,15 +1238,18 @@ function taxCalc() {
 
     // $("#hdn_order_amount").val();
 
-    var price = (selectedValue / 100) * taxable_products_amount;
+   // var price = (selectedValue / 100) * taxable_products_amount;
+ var price = GettototalCartTax(selectedValue);
+   // console.log("price" + price);
 
-    console.log("price" + price);
-
-    console.log("sub_total" + sub_total);
-
+   // console.log("sub_total" + sub_total);
+    
     var total_tax_sub = (parseFloat(sub_total) + parseFloat(price)).toFixed(2);
+//var total_tax_sub = (parseFloat(sub_total) + (Math.ceil(price * 100) / 100)).toFixed(2);
+   
 
     $("#cart-tax").text(parseFloat(price).toFixed(2));
+    //$("#cart-tax").text((Math.ceil(price * 100) / 100).toFixed(2));
 
     $("#cart-total").html(parseFloat(total_tax_sub));
 
@@ -1570,11 +1531,13 @@ function UpdateCartTax(taxPercentage) {
     var cartObject = $.parseJSON(cart_contents);
     
     var counter = 1;
+    var grandTotal = 0;
     $.each(cartObject, function(i) {
 
         var subtotal = cartObject[i].subtotal;
         if (cartObject[i].product_tax == 1) {
             $("#product-tax-" + counter).text("$" + (taxPercentage * subtotal / 100).toFixed(2));
+            grandTotal = (parseFloat(grandTotal) + (parseFloat(taxPercentage) * parseFloat(subtotal) / 100)).toFixed(2);
             subtotal = (parseFloat(subtotal) + (parseFloat(taxPercentage) * parseFloat(subtotal) / 100)).toFixed(2);
         } else {
             $("#product-tax-" + counter).text("$0.00");
@@ -1583,6 +1546,47 @@ function UpdateCartTax(taxPercentage) {
         $("#product-price-" + counter++).text("$" + parseFloat(subtotal).toFixed(2));
 
     });
+
+}
+
+
+function GettototalCartTax(taxPercentage) {
+
+    console.log('test1');
+    if (taxPercentage == "") {
+
+        taxPercentage = 0;
+
+    }
+
+
+
+    <?php
+    
+    $cartContentsArr = isset($_SESSION["cart_contents"]) ? $_SESSION["cart_contents"] : '';
+    $cartContentsNew = '';
+    if(is_array($cartContentsArr)){
+        
+        unset($cartContentsArr['cart_total'], $cartContentsArr['total_items']);
+        $cartContentsArr = json_encode($cartContentsArr);
+        $cartContentsNew = addslashes($cartContentsArr);
+    }    
+    ?>
+
+    var cart_contents = '<?php echo $cartContentsNew; ?>';
+    var cartObject = $.parseJSON(cart_contents);
+    
+    var grandTotal = 0;
+    $.each(cartObject, function(i) {
+
+        var subtotal = cartObject[i].subtotal;
+        if (cartObject[i].product_tax == 1) {
+           grandTotal = (parseFloat(grandTotal) + (parseFloat(taxPercentage) * parseFloat(subtotal) / 100)).toFixed(2);
+          
+        } 
+
+    });
+    return grandTotal;
 
 }
 

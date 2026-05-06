@@ -1,69 +1,48 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Blog List</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+<?php require_once('common/header.php'); ?>
+<div class="container mt-4">
 
-<div class="container my-5">
-    <h2 class="mb-4 text-center">Latest Blogs</h2>
-    <div class="row" id="blog_data"></div>
+    <div class="row">
+        <?php if (!empty($blogs)) { ?>
+            <?php foreach ($blogs as $blog) { ?>
+<div class="col-12 mb-3">
+    <div class="card">
+        <div class="row g-0 align-items-center">
 
-    <div class="text-center mt-4">
-        <button class="btn btn-primary" id="load_more">Load More</button>
+            <!-- Image -->
+            <div class="col-4">
+                <img src="<?php echo base_url('admin/uploads/blog/'.$blog['blog_image']); ?>" 
+
+                class="img-fluid w-100"
+                     style="height:200px; object-fit:cover;">
+            </div>
+
+            <!-- Content -->
+            <div class="col-8">
+                <div class="card-body">
+                    <h5 class="card-title"><?php echo $blog['blog_title']; ?></h5>
+
+                    <p class="card-text mb-2">
+                        <?php echo substr(strip_tags($blog['blog_description']), 0, 150); ?>...
+                    </p>
+
+                    <a href="<?php echo base_url('blog/details/'.$blog['blog_slug']); ?>" 
+                       class="btn btn-primary btn-sm">
+                       Read More
+                    </a>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+            <?php } ?>
+        <?php } else { ?>
+            <div class="col-12">
+                <p class="text-center">No blogs found</p>
+            </div>
+        <?php } ?>
+    </div>
 
-<script>
-let page = 1;
-
-function loadBlogs() {
-    var json_request = {
-				"oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
-				"page": page
-			};
-
-    $.ajax({
-       url: api_url_prefix + 'get-blogs',
-        type: "POST",
-        data: JSON.stringify(json_request),
-        dataType: "json",
-        success: function(response) {
-            if(response.blogs.length > 0){
-                let html = '';
-                $.each(response.blogs, function(i, blog){
-                    html += `
-                    <div class="col-md-6 col-lg-4 mb-4">
-                        <div class="card h-100 shadow-sm">
-                            <img src="<?= base_url('uploads/') ?>${blog.image}" 
-                                 class="card-img-top" style="height:200px; object-fit:cover;">
-                            <div class="card-body">
-                                <h5>${blog.title}</h5>
-                                <p>${blog.description.substring(0,100)}...</p>
-                            </div>
-                        </div>
-                    </div>`;
-                });
-                $('#blog_data').append(html);
-            } else {
-                $('#load_more').hide();
-            }
-        }
-    });
-}
-
-$(document).ready(function(){
-    loadBlogs();
-
-    $('#load_more').click(function(){
-        page++;
-        loadBlogs();
-    });
-});
-</script>
-
-</body>
-</html>
+</div>
+<?php require_once('common/footer.php'); ?>

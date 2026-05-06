@@ -370,7 +370,8 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
             <input placeholder="Enter Tip Amount" name="tip_amount" id="tip_amount" type="text"
                style="display:none;" onkeypress="return isNumber(event)">
             <span id="tip_error_message" style="display:none;color:red;" >Please enter valid amount</span>
-            <a href="javascript:void();" onClick="addCustomTipAmount()" id="add_tip_button" style="display:none;color: #fff;border: none;padding: 8px 9px;cursor: pointer;background: #1e53a5;border-radius: 2px;">Add Tip</a>
+            <a href="javascript:void(0);" onClick="addCustomTipAmount()" id="add_tip_button" style="display:none;color: #fff;border: none;padding: 8px 9px;cursor: pointer;background: #1e53a5;border-radius: 2px;">Add Tip</a>
+            <a href="javascript:void(0);" onClick="addCustomTipAmount()" id="update_tip_button" style="display:none;color: #fff;border: none;padding: 8px 9px;cursor: pointer;background: #1e53a5;border-radius: 2px;">Update Tip</a>
             <span id="tip_remove_button" style="display:none; " ><a href="javascript:void(0);" onClick="removeTipAmount()" style="color: #fff;border: none;padding: 8px 9px;cursor: pointer;background: #1e53a5;border-radius: 2px;">Remove Tip</a></span>
          </div>
       </div>
@@ -386,7 +387,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
       
    </div>
    <div class="col-md-8">
-      <?php //print_r($this->cart->contents()); 
+      <?php //print_r($cart_items); 
          ?>
       <div class="billing-right" id="SubstitutiondeData">
          <h3 id="required_policy">SUBSTITUTION PREFERENCES<small title="required">*</small></h3>
@@ -414,14 +415,27 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                <th scope="col">TAX($) </th>
                <th scope="col">TOTAL</th>
             </tr>
-            <?php if (count($this->cart->contents()) > 0) {
+            <?php if (count($cart_items) > 0) {
                $counter = 1;
                
-               //echo "<pre>";print_r($this->cart->contents());exit;
+             //  echo "<pre>";print_r($cart_items);
                
-               foreach ($this->cart->contents() as $items) {
+               foreach ($cart_items as $items) {
                
                	?>
+                  <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][cart_item_id]" value="<?php echo $items['cart_item_id']; ?>">
+                  <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][row_id]" value="<?php echo $items['row_id']; ?>">
+                  <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][customer_id]" value="<?php echo $items['customer_id']; ?>">
+                  <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][product_id]" value="<?php echo $items['id']; ?>">
+                  <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][name]" value="<?php echo $items['name']; ?>">
+                  <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][image]" value="<?php echo $items['image']; ?>">
+                  <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][price]" value="<?php echo $items['price']; ?>">
+                  <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][qty]" value="<?php echo $items['qty']; ?>">
+                  <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][product_slug]" value="<?php echo $items['product_slug']; ?>">
+                  <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][is_perisible]" value="<?php echo $items['is_perisible']; ?>">
+                  <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][product_tax]" value="<?php echo $items['product_tax']; ?>">
+                  <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][options_weight]" value="<?php echo $items['options_weight']; ?>">
+                  <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][options_variant_id]" value="<?php echo $items['options_variant_id']; ?>">
             <tr>
                <td class="substitution_products_div" style="display:none;">
                   <input type="checkbox" name="substitution_product_ids[]" class="substitution_products checkbox" value="<?php echo $items['id']; ?>" />
@@ -429,7 +443,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                <td>
                   <img src="<?php echo $items["image"]; ?>" alt="<?php echo $items["name"]; ?>">
                   <span class="product_name">
-                  <?php echo $items["name"]. " (" . $items["options"]['weight'] . "lb)"; ?>
+                  <?php echo $items["name"]. " (" . $items['options_weight'] . "lb)"; ?>
                   </span>
                </td>
                <td>
@@ -490,21 +504,22 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                      
                      $tax_add = 0;
                      
-                     if (count($this->cart->contents()) > 0) {
+                     if (count($cart_items) > 0) {
                      
                      	$total_price = 0;
                      
-                     	foreach ($this->cart->contents() as $items) {
+                     	foreach ($cart_items as $items) {
                      
                      		$total_price += ($items["price"] * $items["qty"]);
                      
                      		if($items["product_tax"]==1)
-                     
+                    
                      		{
                      
                      			$tax_add = 1;
                      
                      			$taxable_products_amount += ($items["price"] * $items["qty"]);
+                              
                      
                      		}
                      
@@ -885,7 +900,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
         
       });
 
-     // THEN set date
+      // THEN set date
       $("#delivery_one_day_date").datepicker("setDate", today).trigger("change");
       // disable previous dates based on selected date
       $("#delivery_one_day_date").datepicker("option", "minDate", today);

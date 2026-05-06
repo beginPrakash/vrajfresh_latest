@@ -474,7 +474,8 @@ class Controller_orders extends CI_Controller
 				'shipping_id' => $shipping_id,
 				'same_address' => $same_address,
 				'created_datetime' => date('Y-m-d H:i:s'),
-				'is_active' => $is_active
+				'is_active' => $is_active,
+				'order_platform' => 'web'
 			);
 			$result = $this->orders_model->add_order($data, 'tbl_orders');
 
@@ -498,6 +499,7 @@ class Controller_orders extends CI_Controller
 					"product_id" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->product_id))),
 					/*"product_name" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->product_name))),*/
 					"product_name" => $product->product_name,
+					"product_tax" => $product->product_tax,
 					"unit_price" => trim($product->unit_price),
 					"product_tax_amount" => trim($product->product_tax_amount),
 					//"product_variant_id" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->product_variant_id))),

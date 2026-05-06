@@ -870,7 +870,7 @@ class Controller_categories extends CI_Controller
 				$result["category"] = $category_result[0];
 			}
 			if (is_array($temp_result) && count($temp_result) > 0) {
-				array_multisort(array_column($temp_result, 'product_id'), SORT_ASC, $temp_result);
+				//array_multisort(array_column($temp_result, 'product_id'), SORT_ASC, $temp_result);
 				$ArrFinal = array();
 				$i = 0;
 				$prev_product_id = 0;

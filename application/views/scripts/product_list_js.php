@@ -56,7 +56,7 @@
 					"data": JSON.stringify(json_request),
 					"dataType": "JSON",
 					"success": function(response) {
-
+						$('#qty_'+product_id).find('.qty_change_sub').attr('data-productrowid',response.data);
 						$("#btn_" + product_id).text('Added');
 						setTimeout(() => {
 							//$(".add").prev().val(1);
@@ -183,7 +183,7 @@
 			
 
 
-			if (quantity != "" || quantity > 1) {
+			if (quantity != "" || quantity > 0) {
 				var total_qty = parseInt($("#cartCount").html()) - 1;
 					$("#cartCount").html(total_qty);
 				if(quantity > 0){ 
@@ -193,7 +193,7 @@
 						"data": JSON.stringify(json_request),
 						"dataType": "JSON",
 						"success": function(response) {
-							console.log(response);
+							//console.log(response);
 							// $("#btn_" + section_id + "_" + product_id).text('Added');
 							// setTimeout(() => {
 						
@@ -206,25 +206,28 @@
 					});
 				}else{
 					
-					var cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
-					cart_arr = JSON.parse(cart_arr);
+					if (login_user_id == 0) {
+						cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
+						cart_arr = JSON.parse(cart_arr);
+					}
 					var findDay =product_id; //find price for day 1
 					//find product row id
 					var cart_row_id = $.map(cart_arr, function(value, key) {
 						if (value.id == findDay)
 						{
-							return value.rowid;
+							return (value.options && value.options.db_rowid) ? value.options.db_rowid : value.rowid;
 						}
 					});
 
 					if(cart_row_id.length > 0){
 						cart_row_id_val = cart_row_id[0];
+						$(this).attr('data-productrowid',cart_row_id_val);
 					}else{
 						cart_row_id_val = '';
 					}
 
 					
-					$(this).attr('data-productrowid',cart_row_id_val);
+					
 					var product_rowid = $(this).data('productrowid');
 					$.ajax({
 						"type": "POST",
@@ -232,17 +235,18 @@
 						"data": {row_id:product_rowid},
 						"dataType": "JSON",
 						"success": function(response) {
-							location.reload();
+							//location.reload();
 						},
 						"error": function(response) {
 							console.log(response.errors);
 						}
 					});
 					//location.reload();
-					console.log('fff'+product_id);
+					
 					$('#qty_'+product_id).addClass('d-none');
 					$('#btn_'+product_id).removeClass('d-none');
-					
+					// 🔥 IMPORTANT: reset input to 1
+                    $('#' + product_id).val(1);
 				}
 			
 				
@@ -296,7 +300,7 @@
 				var cart_row_id = $.map(cart_arr, function(value, key) {
 					if (value.id == product_id && variant_id == value.options.variant_id)
 					{
-						return value.rowid;
+						return (value.options && value.options.db_rowid) ? value.options.db_rowid : value.rowid;
 					}
 				});
 				var varient_id = $.map(cart_arr, function(value, key) {
@@ -439,8 +443,10 @@
 				"zipcode": Cookies.get("zipcode")
 			};
 			var product = "";
-			var cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
-			cart_arr = JSON.parse(cart_arr);
+			if (login_user_id == 0) {
+				cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
+				cart_arr = JSON.parse(cart_arr);
+			}
 			
 			var cart_qty_val = 1;
 			$.ajax({
@@ -464,7 +470,7 @@
                                 var cart_row_id = $.map(cart_arr, function(value, key) {
                                     if (value.id == findDay)
                                     {
-                                        return value.rowid;
+                                        return (value.options && value.options.db_rowid) ? value.options.db_rowid : value.rowid;
                                     }
                                 });
 
@@ -577,8 +583,10 @@
 				"zipcode": Cookies.get("zipcode")
 			};
 			var product = "";
-			var cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
-			cart_arr = JSON.parse(cart_arr);
+			if (login_user_id == 0) {
+				cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
+				cart_arr = JSON.parse(cart_arr);
+			}
 			
 			var cart_qty_val = 1;
 			$.ajax({
@@ -602,7 +610,7 @@
 							var cart_row_id = $.map(cart_arr, function(value, key) {
 								if (value.id == findDay)
 								{
-									return value.rowid;
+									return (value.options && value.options.db_rowid) ? value.options.db_rowid : value.rowid;
 								}
 							});
 							var varient_id = $.map(cart_arr, function(value, key) {
@@ -713,7 +721,7 @@
 								tagdiscounttext = '';
 							}
 
-							product = product.concat('<a href="<?php echo BASE_URL; ?>product/' + response.data.products[a].product_slug + '"><div class="product-box"><div class="cattag_container">'+tagdiscounttext+'<img src=' + response.data.products[a].product_image + ' onerror=this.src="<?php echo ADMIN_URL; ?>uploads/logo-2.png" ></div><div><h4>' + response.data.products[a].product_name.substring(0, 32) + '...</h4></a>' + price_weight + out_of_stock + '<ul><li><div id="qty_'+ response.data.products[a].product_id+'" class="quantity ' + out_of_stock_class + ' '+ qty_class + '"><button type="button" id="sub" class="sub qty_change_sub" data-isperisible="' + response.data.products[a].is_perisible_products + '" data-productslug="' + response.data.products[a].product_slug + '" data-productimage= "' + response.data.products[a].product_image + '" data-productname="' + response.data.products[a].product_name + '" data-price=' + response.data.products[a].sale_price + ' data-productid = ' + response.data.products[a].product_id + ' data-productweight =' + response.data.products[a].product_weight_gms + ' data-producttax=' + response.data.products[a].product_tax + ' data-productrowid='+cart_row_id_val+'>-</button><input type="text" class= "prod_add1" id="' + response.data.products[a].product_id + '" value="'+cart_qty_val+'" min="1" max="3" disabled /><button type="button" id="add" class="add qty_change_add" data-isperisible="' + response.data.products[a].is_perisible_products + '" data-productslug="' + response.data.products[a].product_slug + '" data-productimage= "' + response.data.products[a].product_image + '" data-productname="' + response.data.products[a].product_name + '" data-price=' + response.data.products[a].sale_price + ' data-productid = ' + response.data.products[a].product_id + ' data-productweight =' + response.data.products[a].product_weight_gms + ' data-producttax=' + response.data.products[a].product_tax + ' data-productrowid='+cart_row_id_val+'>+</button></div></li><li><button id= "btn_' + response.data.products[a].product_id + '" class="add_cart ' + out_of_stock_class + ' '+ add_class+'" data-isperisible="' + response.data.products[a].is_perisible_products + '" data-productslug="' + response.data.products[a].product_slug + '" data-productimage= "' + response.data.products[a].product_image + '" data-productname="' + response.data.products[a].product_name + '" data-price=' + response.data.products[a].sale_price + ' data-productid = ' + response.data.products[a].product_id + ' data-productweight =' + response.data.products[a].product_weight_gms + ' data-producttax=' + response.data.products[a].product_tax + ' data-productrowid='+cart_row_id_val+'>Add</button></li></ul></div></div>');
+							product = product.concat('<a href="<?php echo BASE_URL; ?>product/' + response.data.products[a].product_slug + '"><div class="product-box"><div class="begin_img_container">'+tagdiscounttext+'<img src=' + response.data.products[a].product_image + ' onerror=this.src="<?php echo ADMIN_URL; ?>uploads/logo-2.png" ></div><div><h4>' + response.data.products[a].product_name.substring(0, 32) + '...</h4></a>' + price_weight + out_of_stock + '<ul><li><div id="qty_'+ response.data.products[a].product_id+'" class="quantity ' + out_of_stock_class + ' '+ qty_class + '"><button type="button" id="sub" class="sub qty_change_sub" data-isperisible="' + response.data.products[a].is_perisible_products + '" data-productslug="' + response.data.products[a].product_slug + '" data-productimage= "' + response.data.products[a].product_image + '" data-productname="' + response.data.products[a].product_name + '" data-price=' + response.data.products[a].sale_price + ' data-productid = ' + response.data.products[a].product_id + ' data-productweight =' + response.data.products[a].product_weight_gms + ' data-producttax=' + response.data.products[a].product_tax + ' data-productrowid='+cart_row_id_val+'>-</button><input type="text" class= "prod_add1" id="' + response.data.products[a].product_id + '" value="'+cart_qty_val+'" min="1" max="3" disabled /><button type="button" id="add" class="add qty_change_add" data-isperisible="' + response.data.products[a].is_perisible_products + '" data-productslug="' + response.data.products[a].product_slug + '" data-productimage= "' + response.data.products[a].product_image + '" data-productname="' + response.data.products[a].product_name + '" data-price=' + response.data.products[a].sale_price + ' data-productid = ' + response.data.products[a].product_id + ' data-productweight =' + response.data.products[a].product_weight_gms + ' data-producttax=' + response.data.products[a].product_tax + ' data-productrowid='+cart_row_id_val+'>+</button></div></li><li><button id= "btn_' + response.data.products[a].product_id + '" class="add_cart ' + out_of_stock_class + ' '+ add_class+'" data-isperisible="' + response.data.products[a].is_perisible_products + '" data-productslug="' + response.data.products[a].product_slug + '" data-productimage= "' + response.data.products[a].product_image + '" data-productname="' + response.data.products[a].product_name + '" data-price=' + response.data.products[a].sale_price + ' data-productid = ' + response.data.products[a].product_id + ' data-productweight =' + response.data.products[a].product_weight_gms + ' data-producttax=' + response.data.products[a].product_tax + ' data-productrowid='+cart_row_id_val+'>Add</button></li></ul></div></div>');
 
 							var out_of_stock_class_varaiant = '';
 
@@ -765,8 +773,10 @@
 			"category_slug": category_url,
 			"zipcode": Cookies.get("zipcode")
 		};
-		var cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
-		cart_arr = JSON.parse(cart_arr);
+		if (login_user_id == 0) {
+			cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
+			cart_arr = JSON.parse(cart_arr);
+		}
 		
 		var cart_qty_val = 1;
 		$.ajax({
@@ -791,7 +801,7 @@
                                 var cart_row_id = $.map(cart_arr, function(value, key) {
                                     if (value.id == findDay)
                                     {
-                                        return value.rowid;
+                                        return (value.options && value.options.db_rowid) ? value.options.db_rowid : value.rowid;
                                     }
                                 });
         

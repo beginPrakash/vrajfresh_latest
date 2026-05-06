@@ -794,7 +794,7 @@ class Controller_checkout extends CI_Controller
 	public function checkout_process()
 	{
 		//echo "<pre>";print_r($this->cart->contents());exit;
-		//echo "<pre>";print_r($_POST);exit;
+		echo "<pre>";print_r($_POST);exit;
 		$remove_product_from_cart = 0;
 		$cookiezipcode = $_COOKIE['zipcode'];
 		$contain = $this->cart->contents();
@@ -897,45 +897,23 @@ class Controller_checkout extends CI_Controller
 		$ArrCustomer['delivery_datetime'] = $delivery_date_time;
 		//echo "<pre>";print_r($ArrCustomer);exit;
 		$ArrProduct = array();
-		// foreach ($this->cart->contents() as $items) {
-		// 	$Arr = array();
-		// 	$Arr['product_id'] = $items["id"];
-		// 	$Arr['product_variant_id'] = $items["options"]["variant_id"]; /*$items["product_variant_id"];*/
-		// 	$Arr['product_weight_gms'] = $items["options"]["weight"]; /*$items["product_variant_id"];*/
-		// 	$Arr['qty'] = $items["qty"];
-		// 	$Arr['total_amount'] = $items["qty"] * $items["price"];
-		// 	$Arr['unit_price'] = $items["price"];
-		// 	$Arr['product_name'] = $items["name"];		
-		// 	$Arr['product_tax_amount'] = 0;
-		// 	if($items["product_tax"]==1)
-		// 	{
-		// 		$Arr['product_tax_amount'] = number_format( (($ArrCustomer["state_tax"] * $Arr['total_amount']) / 100),2);
-		// 	}
-		// 	$Arr['created_by'] = 1;
-		// 	$Arr['is_active'] = 1;
-		// 	$ArrProduct[] = $Arr;
-		// }
-		$cartitemarr = $_POST['cartitemarr'];
-		//echo'<pre>';print_r($cartitemarr);exit;
-		if(count($cartitemarr) > 0){
-			foreach($cartitemarr as $key => $val){
-					$Arr = array();
-					$Arr['product_id'] = $val['product_id'];
-					$Arr['product_variant_id'] = $val['options_variant_id'];
-					$Arr['product_weight_gms'] = $val['options_weight'];
-					$Arr['qty'] = (int)$val['qty'];
-					$Arr['total_amount'] = (int)$val['qty'] * (float)$val['price'];
-					$Arr['unit_price'] = (float)$val['price'];
-					$Arr['product_name'] = $val['name'];		
-					$Arr['product_tax_amount'] = 0;
-					if($val["product_tax"]==1)
-					{
-						$Arr['product_tax_amount'] = number_format( (($ArrCustomer["state_tax"] * $Arr['total_amount']) / 100),2);
-					}
-					$Arr['created_by'] = 1;
-					$Arr['is_active'] = 1;
-					$ArrProduct[] = $Arr;
+		foreach ($this->cart->contents() as $items) {
+			$Arr = array();
+			$Arr['product_id'] = $items["id"];
+			$Arr['product_variant_id'] = $items["options"]["variant_id"]; /*$items["product_variant_id"];*/
+			$Arr['product_weight_gms'] = $items["options"]["weight"]; /*$items["product_variant_id"];*/
+			$Arr['qty'] = $items["qty"];
+			$Arr['total_amount'] = $items["qty"] * $items["price"];
+			$Arr['unit_price'] = $items["price"];
+			$Arr['product_name'] = $items["name"];		
+			$Arr['product_tax_amount'] = 0;
+			if($items["product_tax"]==1)
+			{
+				$Arr['product_tax_amount'] = number_format( (($ArrCustomer["state_tax"] * $Arr['total_amount']) / 100),2);
 			}
+			$Arr['created_by'] = 1;
+			$Arr['is_active'] = 1;
+			$ArrProduct[] = $Arr;
 		}
 		//echo "<pre>";print_r($ArrProduct);exit;
 		$url = API_URL . 'add-order';

@@ -5,7 +5,7 @@
 $(document).ready(function () {
 
 
-
+ $('.related-products').load(location.href + ' .related-products > *');
     showProgress('div#spinner');
     get_product_detail(api_url_prefix);
     hideProgress('div#spinner');
@@ -76,7 +76,7 @@ $(document).ready(function () {
                 "data": JSON.stringify(json_request),
                 "dataType": "JSON",
                 "success": function (response) {
-
+                    $('#qty_'+product_id).find('.qty_change_sub').attr('data-productrowid',response.data);
                     $("#btn_" + product_id).text('Added');
                     $("button#view_cart").show();
                     setTimeout(() => {
@@ -153,7 +153,7 @@ $(document).ready(function () {
 					"data": JSON.stringify(json_request),
 					"dataType": "JSON",
 					"success": function(response) {
-
+                        $('#qty_'+product_id).find('.qty_change_sub').attr('data-productrowid',response.data);
 						$("#btn_" + product_id).text('Added');
 						setTimeout(() => {
 							//$(".add").prev().val(1);
@@ -329,10 +329,10 @@ $(document).ready(function () {
             "is_perisible": is_perisible
 
         };
-        if (quantity != "" || quantity > 1) {
+        if (quantity != "" || quantity > 0) {
             var total_qty = parseInt($("#cartCount").html()) - 1;
             $("#cartCount").html(total_qty);
-                if(quantity > 1){ 
+                if(quantity > 0){ 
                     $.ajax({
                         "type": "POST",
                         "url": front_url + 'cart/add',
@@ -358,25 +358,28 @@ $(document).ready(function () {
                         }
                     });
                 }else{
-                    var cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
-                    cart_arr = JSON.parse(cart_arr);
+                    if (login_user_id == 0) {
+                        cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
+                        cart_arr = JSON.parse(cart_arr);
+                    }
                     var findDay =product_id; //find price for day 1
                     //find product row id
                     var cart_row_id = $.map(cart_arr, function(value, key) {
                         if (value.id == findDay && variant_id == value.options.variant_id)
                         {
-                            return value.rowid;
+                            return (value.options && value.options.db_rowid) ? value.options.db_rowid : value.rowid;
                         }
                     });
 
                     if(cart_row_id.length > 0){
                         var cart_row_id_val = cart_row_id[0];
+                        $(this).attr('data-productrowid',cart_row_id_val);
                     }else{
                         var cart_row_id_val = '';
                     }
 
                     
-                    $(this).attr('data-productrowid',cart_row_id_val);
+                    
                     var product_rowid = $(this).data('productrowid');
                     $.ajax({
                         "type": "POST",
@@ -384,16 +387,18 @@ $(document).ready(function () {
                         "data": {row_id:product_rowid},
                         "dataType": "JSON",
                         "success": function(response) {
-                            location.reload();
+                           // location.reload();
                         },
                         "error": function(response) {
                             console.log(response.errors);
                         }
                     });
                     //location.reload();
-                    console.log('fff'+product_id);
+                   
                     $('#qty_'+product_id).addClass('d-none');
                     $('#btn_'+product_id).removeClass('d-none');
+                    // 🔥 IMPORTANT: reset input to 1
+                    $('#' + product_id).val(1);
                 }
             } else {
             alert("Please Enter quantity");
@@ -525,25 +530,28 @@ $(document).ready(function () {
                 });
             }else{
                 
-                var cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
-                cart_arr = JSON.parse(cart_arr);
+                if (login_user_id == 0) {
+                    cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
+                    cart_arr = JSON.parse(cart_arr);
+                }
                 var findDay =product_id; //find price for day 1
                 //find product row id
                 var cart_row_id = $.map(cart_arr, function(value, key) {
                     if (value.id == findDay)
                     {
-                        return value.rowid;
+                        return (value.options && value.options.db_rowid) ? value.options.db_rowid : value.rowid;
                     }
                 });
 
                 if(cart_row_id.length > 0){
                     var cart_row_id_val = cart_row_id[0];
+                    $(this).attr('data-productrowid',cart_row_id_val);
                 }else{
                     var cart_row_id_val = '';
                 }
 
                 
-                $(this).attr('data-productrowid',cart_row_id_val);
+                
                 var product_rowid = $(this).data('productrowid');
                 $.ajax({
                     "type": "POST",
@@ -551,7 +559,7 @@ $(document).ready(function () {
                     "data": {row_id:product_rowid},
                     "dataType": "JSON",
                     "success": function(response) {
-                        location.reload();
+                        //location.reload();
                     },
                     "error": function(response) {
                         console.log(response.errors);
@@ -561,7 +569,8 @@ $(document).ready(function () {
                 console.log('fff'+product_id);
                 $('#qty_'+product_id).addClass('d-none');
                 $('#btn_section4_'+product_id).removeClass('d-none');
-                
+                // 🔥 IMPORTANT: reset input to 1
+                    $('#' + product_id).val(1);
             }
           
             
@@ -610,8 +619,10 @@ function enableCartButton(variant_id) {
     $(".qty_change_add_id"+product_id).attr('data-productweight', weight);
     $("#btn_"+product_id).attr('data-productweight', weight);
     
-    var cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
-    cart_arr = JSON.parse(cart_arr);
+    if (login_user_id == 0) {
+        cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
+        cart_arr = JSON.parse(cart_arr);
+    }
 
         
     var cart_qty = $.map(cart_arr, function(value, key) {
@@ -624,7 +635,7 @@ function enableCartButton(variant_id) {
     var cart_row_id = $.map(cart_arr, function(value, key) {
         if (value.id == product_id && variant_id == value.options.variant_id)
         {
-            return value.rowid;
+            return (value.options && value.options.db_rowid) ? value.options.db_rowid : value.rowid;
         }
     });
     var varient_id = $.map(cart_arr, function(value, key) {
@@ -663,8 +674,10 @@ function enableCartButton(variant_id) {
 }
 
 function get_product_detail(api_url_prefix) {
-    var cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
-    cart_arr = JSON.parse(cart_arr);
+    if (login_user_id == 0) {
+        cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
+        cart_arr = JSON.parse(cart_arr);
+    }
     var cart_qty_val = 1;
     var url = $("#product_slug").val();
     var json_request = {
@@ -708,7 +721,7 @@ function get_product_detail(api_url_prefix) {
                             var cart_row_id = $.map(cart_arr, function(value, key) {
                                 if (value.id == product_id && variant_id == value.options.variant_id)
                                 {
-                                    return value.rowid;
+                                    return (value.options && value.options.db_rowid) ? value.options.db_rowid : value.rowid;
                                 }
                             });
                             var varient_id = $.map(cart_arr, function(value, key) {
@@ -855,7 +868,7 @@ function get_product_detail(api_url_prefix) {
                     var cart_row_id = $.map(cart_arr, function(value, key) {
                         if (value.id == product_id)
                         {
-                            return value.rowid;
+                            return (value.options && value.options.db_rowid) ? value.options.db_rowid : value.rowid;
                         }
                     });
 
@@ -1187,7 +1200,7 @@ $(document).on('change', '.product_varient', function() {
             var cart_row_id = $.map(cart_arr, function(value, key) {
                 if (value.id == product_id && variant_id == value.options.variant_id)
                 {
-                    return value.rowid;
+                    return (value.options && value.options.db_rowid) ? value.options.db_rowid : value.rowid;
                 }
             });
             var varient_id = $.map(cart_arr, function(value, key) {
@@ -1244,9 +1257,11 @@ function get_related_product(api_url_prefix, category_slug, product_id) {
         "product_id": product_id
     };
     var product = "";
-    var cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
-    cart_arr = JSON.parse(cart_arr);
-    
+    if (login_user_id == 0) {
+        cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
+        cart_arr = JSON.parse(cart_arr);
+    }
+    console.log(cart_arr);
     var cart_qty_val = 1;
     $.ajax({
         "type": "POST",
@@ -1274,7 +1289,7 @@ function get_related_product(api_url_prefix, category_slug, product_id) {
                                 var cart_row_id = $.map(cart_arr, function(value, key) {
                                     if (value.id == findDay)
                                     {
-                                        return value.rowid;
+                                        return (value.options && value.options.db_rowid) ? value.options.db_rowid : value.rowid;
                                     }
                                 });
 
