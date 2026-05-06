@@ -21,7 +21,7 @@
   <div class="container container-flex" id="cart-data">
     <div class="cart-page borderRemove">
       <h3>REVIEW YOUR ORDERS</h3>
-      <?php //print_r($this->cart->contents());exit; ?>
+      
         <div>
           <table class="review-table" width="100%" cellpadding="0" cellspacing="5" align="center">
             <?php if (count($this->cart->contents()) > 0) { ?>
@@ -35,15 +35,17 @@
               </tr>
 
               <?php $ArrProductIDs = array();
+
               if ($_COOKIE['can_deliver_perishable_products'] == 'Yes') {
-               
                 foreach ($this->cart->contents() as $items) {
                   $ArrProductIDs[$items['id']] = $items["price"] * $items["qty"];
+                  $product_slug = $items['options']['product_slug'] ?? $items['product_slug'] ?? '#';
+                  $product_image = $items['options']['image'] ?? $items['image'] ?? '#';
                   ?>
                   <tr class="cart-products">
                     <td>
-                      <img src="<?php echo $items["image"]; ?>" alt="bakery">
-                      <div class="cart_product"><a href="<?php echo 'product/' . $items["product_slug"]; ?>"
+                      <img src="<?php echo $product_image; ?>" alt="bakery">
+                      <div class="cart_product"><a href="<?php echo 'product/' . $product_slug; ?>"
                           target="_blank"><?php echo $items["name"] . " (" . $items["options"]['weight'] . "lb)"; ?></a></div>
                     </td>
                     <td>$
@@ -76,11 +78,13 @@
                   $ArrProductIDs[$items['id']] = $items["price"] * $items["qty"];
                   if ($items['is_perisible'] == '1')
                     $not_deliver_products[] = $items['name'];
+                    $product_slug = $items['options']['product_slug'] ?? $items['product_slug'] ?? '#';
+                    $product_image = $items['options']['image'] ?? $items['image'] ?? '#';
                   ?>
                   <tr class="cart-products">
                     <td>
-                      <img src="<?php echo $items["image"]; ?>" alt="bakery">
-                      <div class="cart_product"><a href="<?php echo 'product/' . $items["product_slug"]; ?>" target="_blank">
+                      <img src="<?php echo $product_image; ?>" alt="bakery">
+                      <div class="cart_product"><a href="<?php echo 'product/' . $product_slug; ?>" target="_blank">
                           <?php echo $items["name"] . " (" . $items["options"]['weight'] . "lb)"; ?></a>
                         <div class="mobile-view-show">
                           <div class="mobile-price">$ <?php echo $items["price"] * $items["qty"]; ?></div>
@@ -126,7 +130,6 @@
         <?php } ?>
     </div>
     <?php if (count($this->cart->contents()) > 0) { ?>
-    
       <div class="cart_totals borderRemove">
         <h3>Cart Total</h3>
         <ul>
@@ -188,6 +191,7 @@
         } ?>
         <?php 
         unset($_SESSION['redirect_after_login']);
+        //print_r($_COOKIE);exit;
         if (isset($_COOKIE['zipcode'])) {
           
           if ($_COOKIE['valid_zipcode'] == 'TRUE') {

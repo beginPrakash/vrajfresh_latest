@@ -166,12 +166,20 @@ $is_payment_received = true;
          </label>
       </div>
 
-      <div class="col-sm-4">
+      <div class="col-sm-3">
          <label>Payment Method : </label>
          <label style="font-weight:400; line-height: 20px;">
             <?php echo $ArrFieldData['payment_methodtype']; ?>
          </label>
       </div>
+      <?php if (!empty($ArrFieldData['order_platform'])) { ?>
+         <div class="col-sm-3">
+            <label>Order Platform : </label>
+            <label style="font-weight:400; line-height: 20px;">
+               <?php echo ucfirst($ArrFieldData['order_platform']); ?>
+            </label>
+         </div>
+      <?php } ?>
 
    </div>
 

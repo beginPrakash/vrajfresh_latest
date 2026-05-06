@@ -21,7 +21,7 @@
 
             <ul>
 
-                <li> <span><img src=<?php echo ASSET_URL . "images/map.svg"; ?>></span>
+                <li> <span><img src=<?php echo ASSET_URL . "images/map.svg"; ?> alt="Store location map"></span>
 
                     <div>
 
@@ -45,7 +45,7 @@
 
                 </li>
 
-                <li> <span><img src=<?php echo ASSET_URL . "images/mail.svg"; ?>></span>
+                <li> <span><img src=<?php echo ASSET_URL . "images/mail.svg"; ?> alt="Email contact icon"></span>
 
                     <div>
 

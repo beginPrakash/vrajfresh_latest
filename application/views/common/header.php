@@ -1,3 +1,8 @@
+<?php
+header("X-Frame-Options: SAMEORIGIN");
+header("X-Content-Type-Options: nosniff");
+header("Referrer-Policy: strict-origin-when-cross-origin");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <?php
@@ -8,23 +13,13 @@
 
 <head>
     <!-- Google Tag Manager -->
-    <script>
-        (function(w, d, s, l, i) {
-            w[l] = w[l] || [];
-            w[l].push({
-                'gtm.start': new Date().getTime(),
-                event: 'gtm.js'
-            });
-            var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s),
-                dl = l != 'dataLayer' ? '&l=' + l : '';
-            j.async = true;
-            j.src =
-                'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-            f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-NL8J4LCB');
-    </script>
-    <!-- End Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-WHKSZHHL');</script>
+<!-- End Google Tag Manager -->
+     <meta name="robots" content="noindex, nofollow">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -125,18 +120,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </script>
 
     <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NL8J4LCB"
-            height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-
-
-
-    <!-- End Google Tag Manager (noscript) -->
-    <div class="top-banner" style="display: none;"><div class="top-banner-text"></div></div>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WHKSZHHL"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+    <div class="top-banner" style="display: none;"></div>
     <header>
         <div class="container container-flex header">
             <div class="logo">
                 <a href="<?php echo BASE_URL; ?>">
-                    <img src=<?php echo ASSET_URL . "images/logo.png"; ?>>
+                    <img src=<?php echo ASSET_URL . "images/logo.png"; ?> alt="Vraj Fresh online grocery store logo">
                 </a>
             </div>
             <div class="zip-code mobile-hide">
@@ -144,7 +136,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <img src=<?php echo ASSET_URL . "images/map-pin.png"; ?> class="left-arrow">
                 <input name="zipcode" placeholder="Enter your zip code" type="text" id="zipcode" required maxlength="6" class="zipcode_only myinput">
                 <button onclick="setZipCodeCookie('header');" class="header_button">
-                    <img src=<?php echo ASSET_URL . "images/go.png"; ?>>
+                    <img src=<?php echo ASSET_URL . "images/go.png"; ?> alt="Submit">
                 </button>
                 <div id="zipcode_message1" class="error">
                     <?php if (isset($_COOKIE['zipcode_error_message'])) {
@@ -166,7 +158,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <div class="home-search" id="search-autocomplete">
                     <form action="<?php echo BASE_URL . 'products/search'; ?>" method="get">
                         <button type="submit" class="header_button">
-                            <img src=<?php echo ASSET_URL . "images/search-icon.png"; ?> class="searchimg">
+                            <img src=<?php echo ASSET_URL . "images/search-icon.png"; ?> class="searchimg" alt="Search products">
                         </button>
                         <input name="search" class="myinput" placeholder="Search for items..." type="text" id="search" required maxlength="4000">
                         <div class="search-autocomplete-result">
@@ -180,28 +172,30 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="my-account">
                 <ul>
                     <li class="mobile-show">
-                        <a href="javascript:void(0)" class="toggel-zipcode"><img src=<?php echo ASSET_URL . "images/mappin.svg"; ?> class="left-arrow"></a>
+                        <a href="javascript:void(0);" class="toggel-zipcode"><img src=<?php echo ASSET_URL . "images/mappin.svg"; ?> class="left-arrow" alt="Store map location"></a>
                     </li>
                     <?php if (!IsUserLogin()) { ?>
                         <?php if (isset($_COOKIE['user_id'])) { ?>
                             <li class="vraj-login1">
-                                <a href="<?php echo BASE_URL . 'my-orders'; ?>"><img src=<?php echo ASSET_URL . "images/user-icon.png"; ?>></a>
+                                <a href="<?php echo BASE_URL . 'my-orders'; ?>"><img src=<?php echo ASSET_URL . "images/user-icon.png"; ?> alt="User account login"></a>
                             </li>
                         <?php } else { ?>
 
                             <li class="vraj-login">
                                 <!-- <a href="<?php echo current_url() . '?login=true'; ?>"> <img src=<?php echo ASSET_URL . "images/user-icon.png"; ?>></a> -->
-                                <a href="<?php echo BASE_URL . 'login'; ?>"> <img src=<?php echo ASSET_URL . "images/user-icon.png"; ?>></a>
+                                <a href="<?php echo BASE_URL . 'login'; ?>"> <img src=<?php echo ASSET_URL . "images/user-icon.png"; ?> alt="User account login"></a>
                             </li>
                         <?php } ?>
                     <?php } else { ?>
                         <li class="vraj-login1">
-                            <a href="<?php echo BASE_URL . 'my-orders'; ?>"><img src=<?php echo ASSET_URL . "images/user-icon.png"; ?>></a>
+                            <a href="<?php echo BASE_URL . 'my-orders'; ?>"><img src=<?php echo ASSET_URL . "images/user-icon.png"; ?> alt="User account login"></a>
                         </li>
                     <?php } ?>
+                    <?php //print_r($this->cart->contents());
+                    //echo $this->cart->total_items(); exit;?>
                     <li>
                         <a href="<?php echo BASE_URL . 'cart-detail'; ?>">
-                            <img src=<?php echo ASSET_URL . "images/cart-icon.png"; ?>>
+                            <img src=<?php echo ASSET_URL . "images/cart-icon.png"; ?> alt="Shopping cart">
                             <span id="cartCount">
                                 <?php echo $this->cart->total_items(); ?>
                             </span>
@@ -211,9 +205,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
         </div>
         <div class="mobile-menu">
-            <img src=<?php echo ASSET_URL . "images/hamburger-menu.svg"; ?> alt="">
+            <img src=<?php echo ASSET_URL . "images/hamburger-menu.svg"; ?> alt="Open navigation menu">
         </div>
         <script>
+            var cart_arr = {};
             document.addEventListener('DOMContentLoaded', function() {
                 const leftArrow = document.querySelector('.menu-left-arrow');
                 const rightArrow = document.querySelector('.menu-right-arrow');
@@ -274,7 +269,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="menu-categories">
                         <ul id="menu-categories"></ul>
                         <div class="close-categories">
-                            <img src=<?php echo ASSET_URL . "images/close.png"; ?>>
+                            <img src=<?php echo ASSET_URL . "images/close.png"; ?> alt="Close popup">
                         </div>
                     </div>
                 </div>
@@ -284,7 +279,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <button class="scroll-arrow menu-right-arrow">&#187;</button>
                 </div>
                 <div class="close-menu">
-                    <img src=<?php echo ASSET_URL . "images/close.png"; ?>>
+                    <img src=<?php echo ASSET_URL . "images/close.png"; ?> alt="Close popup">
                 </div>
             </div>
         </nav>
@@ -325,6 +320,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 // Extract the pathname
                 var webpathname = urlObj.pathname;
                 login_cart_data(webpathname);
+            }else{
+                var cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
+                cart_arr = JSON.parse(cart_arr);
             }
 
 
@@ -599,7 +597,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         processData: false,
                         dataType: "JSON",
                         success: function(response) {
-
                             if (response.data != null) {
                                 $("#message").html('<div class="alert-success">' + response.success_message + "</div>");
                                 Cookies.set("user_id", response.data[0].user_id);
@@ -645,7 +642,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                     Cookies.set("city", response.data[0].city);
                                 }
 
-                                 $.ajax({
+                                $.ajax({
                                     type: "POST",
                                     url: front_url + "cart/save_user_cart_data",
                                     // data: form.serialize(),
@@ -721,7 +718,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             });
 
             $("#Frmregistration").validate({
-              
                 rules: {
                     first_name: 'required',
                     last_name: 'required',
@@ -738,7 +734,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         required: true,
                         number: true
                     }
-
                 },
                 messages: {
                     first_name: 'First name is required',
@@ -755,20 +750,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         required: 'Phone number is required',
                         email: 'Please enter only digits'
                     }
-                   
                     //zipcode: 'This field is required'
                 },
                 submitHandler: function(form) {
                     // form.submit();
-                    if (grecaptcha.getResponse().length === 0) {
-                        $('#recaptcha-error').show();
-                        $('#recaptcha-error').html('Please complete the CAPTCHA');
-                        return false;
-                    }else{  
-                        $('#recaptcha-error').html('');
-
-                    }
-
                     var form = $("#Frmregistration");
                     $.ajax({
                         "type": "POST",
@@ -870,7 +855,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 }
 
                             }
-                            menus = menus.concat("<li><a href='javascript:void();'>" + response.data[a].category_name + "</a><button class='but'></button><div class='submenu'><ul>" + child_menus + "</ul></div></li>");
+                            menus = menus.concat("<li><a href='javascript:void(0);'>" + response.data[a].category_name + "</a><button class='but'></button><div class='submenu'><ul>" + child_menus + "</ul></div></li>");
                         } else {
                             var menu_link = response.data[a].menu_link;
                             var category_slug = response.data[a].category_slug;
@@ -929,7 +914,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 }
 
                             }
-                            menus = menus.concat("<li class='nav__item'><a href='javascript:void();'>" + response.data[a].category_name + "</a><button class='but'></button><div class='mainsubmenu'><ul>" + child_menus + "</ul></div></li>");
+                            menus = menus.concat("<li class='nav__item'><a href='javascript:void(0);'>" + response.data[a].category_name + "</a><button class='but'></button><div class='mainsubmenu'><ul>" + child_menus + "</ul></div></li>");
                         } else {
                             var category_slug = response.data[a].category_slug;
                             var menu_link = response.data[a].menu_link;
@@ -1291,11 +1276,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     console.log(response);
                     if (response.is_successful == 1) {
                         for (let a = 0; a < response.data.length; a++) {
-                            //var top_banner = `${response.data[a].title} <a href="${response.data[a].url}">Click Here</a>`;
-                             var top_banner = `${response.data[a].title}`;
+                            var top_banner = `${response.data[a].title} <a href="${response.data[a].url}">Click Here</a>`;
+
                         }
                     }
-                    $(".top-banner-text").html(top_banner);
+                    $(".top-banner").html(top_banner);
                     $(".top-banner").show();
                 }
             });
@@ -1333,9 +1318,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 "success": function(response) {
 
                     if (response.is_successful == "1") {
+                        
                         console.log("cartData", response.data);
                         $("#cartCount").text('0');
                         $("#cartCount").text(response.data.total_items);
+                        cart_arr = response.data;
                         if (webpathname == "/cart-detail") {
                             $.ajax({
                                 "type": "POST",
@@ -1371,4 +1358,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 }
             });
         }
+
+        
     </script>

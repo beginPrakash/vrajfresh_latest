@@ -735,379 +735,399 @@ class Controller_orders extends CI_Controller
 		
 		$total_items = 0;
 		$cart_total = 0.00;
-		
-
-		$ArrCustomer = array();
-
-		$billing_id = $json_obj->billing_id;
-		$shipping_id = $json_obj->shipping_id;
-		$same_address = 0;
-
-		if (is_string($billing_id)) {
+		if(empty($json_obj->CardToken)  || empty($json_obj->CardPaymentMethod)){
 			
-			if($billing_id == "same_address"){
-				$same_address = 1;
-				$billing_id = 0;
+
+			if(empty($json_obj->CardPaymentMethod) && (!empty($json_obj->CardToken))){
+				$ArrPayment = array();
+				$errors = 'Please enter payment method id';
+				$success_message = '';
+			}elseif(!empty($json_obj->CardPaymentMethod) && (empty($json_obj->CardToken))){
+				$ArrPayment = array();
+				$errors = 'Please enter card token';
+				$success_message = '';
+			}else{
+				$ArrPayment = array();
+				$errors = 'Please enter card token and card payment method id';
+				$success_message = '';
 			}
-		}
-
-		$json_obj->billing_id = $billing_id;
-		$json_obj->same_address = $same_address;
-
-		$billing_state_id = $json_obj->shiping_state;
-		$ArrStateData = explode('|', $json_obj->state);
-		$shipping_state_id = $ArrStateData[1];
-
-		$ArrCustomer['substitution_product_ids'] = "";
-		if(isset($json_obj->substitution_product_ids) && !empty($json_obj->substitution_product_ids)){
-			$ArrCustomer['substitution_product_ids'] = implode(',', $json_obj->substitution_product_ids);
-		}
-		$ArrCustomer['same_address'] = $same_address;
-		$ArrCustomer['billing_id'] = $billing_id;
-		$ArrCustomer['shipping_id'] = $shipping_id;
-		
-			$ArrCustomer['card_id'] = "";
-			$ArrCustomer['save_card'] = 0;
-			$ArrCustomer['CardToken'] = ($json_obj->CardToken) ? $json_obj->CardToken : '';
-			$ArrCustomer['CardPaymentMethod'] = $json_obj->CardPaymentMethod;
-			$ArrCustomer['StripeCardID'] = "";
-		
-		
-		$ArrCustomer['order_tip'] = $json_obj->hdn_tip_amount; 
-		$ArrCustomer['user_id'] = $user_id;
-
-		$ArrCustomer['order_notes'] = $json_obj->order_comments;
-		$ArrCustomer['delivery_comments'] = $json_obj->delivery_comments;
-		$ArrCustomer['is_replace_item'] = $json_obj->substitue_preferences;
-		$ArrCustomer['delivery_type'] = $json_obj->delivery_type;
-		
-		$ArrCustomer['order_final_amount'] = $json_obj->cart_total;
-		$ArrCustomer['cart_total'] = $json_obj->cart_total;
-		$ArrCustomer['delivery_datetime'] = date("Y-m-d H:i:s", strtotime("+1 hours"));
-		$ArrCustomer['preparation_cost'] = $json_obj->preparation_cost;
-		$ArrCustomer['packaging_cost'] = $json_obj->packaging_cost;
-		$ArrCustomer['state_tax'] = $json_obj->state_tax;
-		$ArrCustomer['discount_amount'] = $json_obj->discount_amount;
-		$ArrCustomer['coupon_id'] = $json_obj->discount_id;
-		$ArrCustomer['earned_credit_val'] = $json_obj->earned_credit_val;
-		$ArrCustomer['earned_credit_checkbox'] = $json_obj->earned_credit_checkbox;
-		$delivery_date_time = date("Y-m-d", strtotime($json_obj->expec_delivery_date));
-		$ArrCustomer['delivery_datetime'] = $delivery_date_time;
-	
-		$ArrProduct = array();
-		$user_cart_data = $json_obj->cart_data;
-		if(count($user_cart_data) > 0){
-			foreach ($user_cart_data as $items) {
-				$Arr = array();
-				$Arr['product_id'] = $items->product_id;
-				$Arr['product_variant_id'] = $items->variant_id; /*$items["product_variant_id"];*/
-				$Arr['product_weight_gms'] = $items->weight; /*$items["product_variant_id"];*/
-				$Arr['qty'] = $items->quantity;
-				$Arr['total_amount'] = $items->quantity * $items->price;
-				$Arr['unit_price'] = $items->price;
-				$Arr['product_name'] = $items->product_name;		
-				$Arr['product_tax_amount'] = 0;
-				if($items->product_tax==1)
-				{
-					$Arr['product_tax_amount'] = number_format( (($ArrCustomer["state_tax"] * $Arr['total_amount']) / 100),2);
-				}
-				$Arr['created_by'] = 1;
-				$Arr['is_active'] = 1;
-				$ArrProduct[] = $Arr;
-			}
-		}
-		
+			send_response_to_api($ArrData, $errors, $success_message);
+		}else{
 
 
-		if (check_oauth_key($oauth_key)) {
+			$ArrCustomer = array();
 
-			if(isset($ArrCustomer['is_active']) && $ArrCustomer['is_active'] != ""){
-				$is_active = trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $ArrCustomer['is_active'])));
-			} else {
-				$is_active = 1;
-			}
+			$billing_id = $json_obj->billing_id;
+			$shipping_id = $json_obj->shipping_id;
+			$same_address = 0;
 
-			$same_address = $ArrCustomer['same_address'];
-			$billing_id = $ArrCustomer['billing_id'];
-			$shipping_id = $ArrCustomer['shipping_id'];
-			//$card_id = $ArrCustomer['card_id'];
-			//$save_card = $ArrCustomer['save_card'];
-			$CardToken = $ArrCustomer['CardToken'];
-			$CardPaymentMethodId = $ArrCustomer['CardPaymentMethod'];
-			//$StripeCardID = $ArrCustomer->StripeCardID;
-			$substitution_product_ids = $ArrCustomer['substitution_product_ids'];
-
-			//echo '<pre>';print_r($shipping_id);exit;
-			$billing_details = $this->master->get_row_detail('tbl_billing_address', array('billing_id' => $billing_id));
-			$shipping_details = $this->master->get_row_detail('tbl_shipping_address', array('shipping_id' => $shipping_id));
-			$user_details = $this->master->get_row_detail('tbl_users', array('user_id' => $user_id));
-
-			if($same_address == 1){
-				$billing_first_name = ($shipping_details) ? $shipping_details['first_name'] : '';
-				$billing_last_name = ($shipping_details) ? $shipping_details['last_name'] : '';
-				$billing_street_name = ($shipping_details) ? $shipping_details['shipping_street_address'] : '';
-				$billing_apartment_name = ($shipping_details) ? $shipping_details['shipping_apartment'] : '';
-				$billing_city = ($shipping_details) ? $shipping_details['shipping_city'] : '';
-				$billing_state_id = ($shipping_details) ? $shipping_details['shipping_state_id'] : 0;
-				$billing_zipcode = ($shipping_details) ? $shipping_details['shipping_zipcode'] : '';
-				$billing_country = ($shipping_details) ? $shipping_details['shipping_country_id'] : '';
-				$billing_phone = ($shipping_details) ? $shipping_details['shipping_phone'] : '';
-				$billing_email = ($user_details) ? $user_details['email'] : '';
-			} else {
-				$billing_first_name = ($billing_details) ? $billing_details['first_name'] : '';
-				$billing_last_name = ($billing_details) ? $billing_details['last_name'] : '';
-				$billing_street_name = ($billing_details) ? $billing_details['billing_street_address'] : '';
-				$billing_apartment_name = ($billing_details) ? $billing_details['billing_apartment'] : '';
-				$billing_city = ($billing_details) ? $billing_details['billing_city'] : '';
-				$billing_state_id = ($billing_details) ? $billing_details['billing_state_id'] : 0;
-				$billing_zipcode = ($billing_details) ? $billing_details['billing_zipcode'] : '';
-				$billing_country = ($billing_details) ? $billing_details['billing_country_id'] : '';
-				$billing_phone = ($billing_details) ? $billing_details['billing_phone'] : '';
-				$billing_email = ($user_details) ? $user_details['email'] : '';
-			}
-
-			$shipping_first_name = ($shipping_details) ? $shipping_details['first_name'] : '';
-			$shipping_last_name = ($shipping_details) ? $shipping_details['last_name'] : '';
-			$shipping_street_name = ($shipping_details) ? $shipping_details['shipping_street_address'] : '';
-			$shipping_apartment_name = ($shipping_details) ? $shipping_details['shipping_apartment'] : '';
-			$shipping_city = ($shipping_details) ? $shipping_details['shipping_city'] : '';
-			$shipping_state_id = ($shipping_details) ? $shipping_details['shipping_state_id'] : 0;
-			$shipping_zipcode = ($shipping_details) ? $shipping_details['shipping_zipcode'] : '';
-			$shipping_country = ($shipping_details) ? $shipping_details['shipping_country_id'] : '';
-			$shipping_phone = ($shipping_details) ? $shipping_details['shipping_phone'] : '';
-			$shipping_email = ($user_details) ? $user_details['email'] : '';
-
-			$ArrUserData = array(
-				'address' => trim($billing_street_name),
-				'address2' => trim($billing_apartment_name),
-				'city' => trim($billing_city),
-				'state' => trim($billing_state_id),
-				'country_id' => 235,
-				'zip' => $billing_zipcode,
-				'phone' => trim($billing_phone),
-				'shipping_street_address' => trim($shipping_street_name),
-				'shipping_apartment' => trim($shipping_apartment_name),
-				'shipping_city' => trim($shipping_city),
-				'shipping_state' => trim($shipping_state_id),
-				'shipping_zip_code' => $shipping_zipcode,
-				'shipping_phone' => trim($shipping_phone),
-			);
-
-			//echo '<pre>';print_r($ArrUserData);exit;
-			$this->users_model->update_user($ArrUserData, $user_id, 'tbl_users');
-
-			$data = array(
-				'user_id' => $user_id,
-				'coupon_id' => $ArrCustomer['coupon_id'],
-				'order_datetime' => date('Y-m-d'),
-				'order_status' => trim('Pending Payment'),
-				'order_notes' => $ArrCustomer['order_notes'],
-				'delivery_comments' => $ArrCustomer['delivery_comments'],
-				'discount_amount' => $ArrCustomer['discount_amount'],
-				'billing_first_name' => $billing_first_name,
-				'billing_last_name' => $billing_last_name,
-				'billing_street_name' => $billing_street_name,
-				'billing_apartment_name' => $billing_apartment_name,
-				'billing_city' => $billing_city,
-				'billing_state_id' => $billing_state_id,
-				'billing_zipcode' => $billing_zipcode,
-				'billing_country' => $billing_country,
-				'billing_phone' => $billing_phone,
-				'billing_email' => $billing_email,
-				'shipping_first_name' => $shipping_first_name,
-				'shipping_last_name' => $shipping_last_name,
-				'shipping_street_name' => $shipping_street_name,
-				'shipping_apartment_name' => $shipping_apartment_name,
-				'shipping_city' => $shipping_city,
-				'shipping_state_id' => $shipping_state_id,
-				'shipping_zipcode' => $shipping_zipcode,
-				'shipping_country' => $shipping_country,
-				'shipping_phone' => $shipping_phone,
-				'shipping_email' => $shipping_email,
-				'delivery_type' => trim($ArrCustomer['delivery_type']),
-				'payment_methodtype' => trim($ArrCustomer['payment_methodtype'] ?? ''),
-				'delivery_datetime' => date('Y-m-d', strtotime($ArrCustomer['delivery_datetime'])),
-				'is_replace_item' => trim($ArrCustomer['is_replace_item']),
-				'substitution_product_ids' => $substitution_product_ids,
-				'created_by' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $user_id))),
-				'is_flag' => 1,
-				'billing_id' => $billing_id,
-				'shipping_id' => $shipping_id,
-				'same_address' => $same_address,
-				'created_datetime' => date('Y-m-d H:i:s'),
-				'is_active' => $is_active
-			);
-			$result = $this->orders_model->add_order($data, 'tbl_orders');
-
-			$total_weight = 0;
-			$total_order_amount = 0;
-	
-			foreach ($ArrProduct as $product) {
-				$total_weight += trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', floatval($product['product_weight_gms']) * floatval($product['qty']))));
-				$order_product_data = array(
-					"order_id" => $result,
-					"product_id" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['product_id']))),
-					/*"product_name" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->product_name))),*/
-					"product_name" => $product['product_name'],
-					"unit_price" => trim($product['unit_price']),
-					"product_tax_amount" => trim($product['product_tax_amount']),
-					//"product_variant_id" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->product_variant_id))),
-					"product_variant_id" => ($product['product_variant_id']) ? $product['product_variant_id'] : 0,
-					"qty" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['qty']))),
-					'created_by' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['created_by']))),
-					'created_datetime' => date('Y-m-d H:i:s'),
-					'is_active' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['is_active']))),
-					'total_amount' => trim($product['total_amount'])
-				);
-				$result_product_id = $this->orders_model->add_order($order_product_data, 'tbl_order_products');
-				$total_order_amount += $product['total_amount'];
-			}
-
-			$shipping_charge = 0;
-			$order_total_amount = $ArrCustomer['cart_total'];
-			$discount_amount = $ArrCustomer['discount_amount'];
-			$preparation_cost = $ArrCustomer['preparation_cost'];
-			$packaging_cost = $ArrCustomer['packaging_cost'];
-			$state_tax = $ArrCustomer['state_tax'];
-			$coupon_id = $ArrCustomer['coupon_id'];
-			$fedex_tracking_id = 0;
-			$earned_credit_checkbox = $ArrCustomer['earned_credit_checkbox'];
-			
-			$order_data = array(
-				'order_amount' => trim($total_order_amount),
-				'fedex_tracking_id' => trim($fedex_tracking_id),
-				'fedex_shipping_charge' => trim($shipping_charge),
-				'order_tip' => trim($ArrCustomer['order_tip']),
-				//'order_total_tax' =>trim($json_obj->order_total_tax),
-				'coupon_id' => trim($coupon_id),
-				'discount_amount' => trim($discount_amount),
-				'order_total_amount' => trim($order_total_amount),
-				'blocked_amount' => trim($order_total_amount),
-				'preparation_cost' => trim($preparation_cost),
-				'packaging_cost' => trim($packaging_cost),
-				//'state_tax' => trim($state_tax),
-				'state_tax' => $state_tax,
-				//	'fedex_raw_response' =>$fedex_shipping_charge,
-				//	'stripe_raw_response' =>''
-			);
-			$order_id = $this->orders_model->update_order($order_data, $result, 'tbl_orders');
-
-			//find credits percentage
-			$find_credit_per =  $this->cashcredit_model->get_last_creditdetail();
-			$find_credit_id = $this->cashcredit_model->get_last_creditid();
-			$earned_credit_val = 0;
-			$used_credit_val = 0;
-			//calculate credit percentage
-			if(!empty($total_order_amount) && !empty($find_credit_per['credit_per'])){
+			if (is_string($billing_id)) {
 				
-				$earned_credit_val = ($find_credit_per['credit_per'] / 100) * $order_data['order_total_amount'];
-				$earned_credit_val = number_format($earned_credit_val,2);
+				if($billing_id == "same_address"){
+					$same_address = 1;
+					$billing_id = 0;
+				}
 			}
-		
+
+			$json_obj->billing_id = $billing_id;
+			$json_obj->same_address = $same_address;
+
+			$billing_state_id = $json_obj->shiping_state;
+			$ArrStateData = explode('|', $json_obj->state);
+			$shipping_state_id = $ArrStateData[1];
+
+			$ArrCustomer['substitution_product_ids'] = "";
+			if(isset($json_obj->substitution_product_ids) && !empty($json_obj->substitution_product_ids)){
+				$ArrCustomer['substitution_product_ids'] = implode(',', $json_obj->substitution_product_ids);
+			}
+			$ArrCustomer['same_address'] = $same_address;
+			$ArrCustomer['billing_id'] = $billing_id;
+			$ArrCustomer['shipping_id'] = $shipping_id;
 			
-			$billing_details = $this->master->get_row_detail('tbl_billing_address', array('billing_id' => $billing_id));
-			$shipping_details = $this->master->get_row_detail('tbl_shipping_address', array('shipping_id' => $shipping_id));
+				$ArrCustomer['card_id'] = "";
+				$ArrCustomer['save_card'] = 0;
+				$ArrCustomer['CardToken'] = ($json_obj->CardToken) ? $json_obj->CardToken : '';
+				$ArrCustomer['CardPaymentMethod'] = $json_obj->CardPaymentMethod;
+				$ArrCustomer['StripeCardID'] = "";
+			
+			
+			$ArrCustomer['order_tip'] = $json_obj->hdn_tip_amount; 
+			$ArrCustomer['user_id'] = $user_id;
 
-			$billing_id = $ArrCustomer['billing_id'];
-			$shipping_id = $ArrCustomer['shipping_id'];
-			$card_id = '';
-			$save_card = '';
-			$CardToken = $ArrCustomer['CardToken'];
-			$CardPaymentMethodId = $ArrCustomer['CardPaymentMethod'];
-			$StripeCardID = '';
+			$ArrCustomer['order_notes'] = $json_obj->order_comments;
+			$ArrCustomer['delivery_comments'] = $json_obj->delivery_comments;
+			$ArrCustomer['is_replace_item'] = $json_obj->substitue_preferences;
+			$ArrCustomer['delivery_type'] = $json_obj->delivery_type;
+			$ArrCustomer['order_platform'] = $json_obj->order_platform ?? '';
+			$ArrCustomer['order_final_amount'] = $json_obj->cart_total;
+			$ArrCustomer['cart_total'] = $json_obj->cart_total;
+			$ArrCustomer['delivery_datetime'] = date("Y-m-d H:i:s", strtotime("+1 hours"));
+			$ArrCustomer['preparation_cost'] = $json_obj->preparation_cost;
+			$ArrCustomer['packaging_cost'] = $json_obj->packaging_cost;
+			$ArrCustomer['state_tax'] = $json_obj->state_tax;
+			$ArrCustomer['discount_amount'] = $json_obj->discount_amount;
+			$ArrCustomer['coupon_id'] = $json_obj->discount_id;
+			$ArrCustomer['earned_credit_val'] = $json_obj->earned_credit_val;
+			$ArrCustomer['earned_credit_checkbox'] = $json_obj->earned_credit_checkbox;
+			$delivery_date_time = date("Y-m-d", strtotime($json_obj->expec_delivery_date));
+			$ArrCustomer['delivery_datetime'] = $delivery_date_time;
+		
+			$ArrProduct = array();
+			$user_cart_data = $json_obj->cart_data;
+			if(count($user_cart_data) > 0){
+				foreach ($user_cart_data as $items) {
+					$Arr = array();
+					$Arr['product_id'] = $items->product_id;
+					$Arr['product_variant_id'] = $items->variant_id; /*$items["product_variant_id"];*/
+					$Arr['product_weight_gms'] = $items->weight; /*$items["product_variant_id"];*/
+					$Arr['qty'] = $items->quantity;
+					$Arr['total_amount'] = $items->quantity * $items->price;
+					$Arr['unit_price'] = $items->price;
+					$Arr['product_name'] = $items->product_name;		
+					$Arr['product_tax_amount'] = 0;
+					if($items->product_tax==1)
+					{
+						$Arr['product_tax_amount'] = number_format( (($ArrCustomer["state_tax"] * $Arr['total_amount']) / 100),2);
+					}
+					$Arr['created_by'] = 1;
+					$Arr['is_active'] = 1;
+					$ArrProduct[] = $Arr;
+				}
+			}
+			
 
-			$ArrData = array(
-				'order_id' => $result,
-				'order_amount' => $order_data['order_total_amount'],
-				'billing_details' => $billing_details,
-				'shipping_details' => $shipping_details,
-				'existData' => array(
+
+			if (check_oauth_key($oauth_key)) {
+
+				if(isset($ArrCustomer['is_active']) && $ArrCustomer['is_active'] != ""){
+					$is_active = trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $ArrCustomer['is_active'])));
+				} else {
+					$is_active = 1;
+				}
+
+				$same_address = $ArrCustomer['same_address'];
+				$billing_id = $ArrCustomer['billing_id'];
+				$shipping_id = $ArrCustomer['shipping_id'];
+				//$card_id = $ArrCustomer['card_id'];
+				//$save_card = $ArrCustomer['save_card'];
+				$CardToken = $ArrCustomer['CardToken'];
+				$CardPaymentMethodId = $ArrCustomer['CardPaymentMethod'];
+				//$StripeCardID = $ArrCustomer->StripeCardID;
+				$substitution_product_ids = $ArrCustomer['substitution_product_ids'];
+
+				//echo '<pre>';print_r($shipping_id);exit;
+				$billing_details = $this->master->get_row_detail('tbl_billing_address', array('billing_id' => $billing_id));
+				$shipping_details = $this->master->get_row_detail('tbl_shipping_address', array('shipping_id' => $shipping_id));
+				$user_details = $this->master->get_row_detail('tbl_users', array('user_id' => $user_id));
+
+				if($same_address == 1){
+					$billing_first_name = ($shipping_details) ? $shipping_details['first_name'] : '';
+					$billing_last_name = ($shipping_details) ? $shipping_details['last_name'] : '';
+					$billing_street_name = ($shipping_details) ? $shipping_details['shipping_street_address'] : '';
+					$billing_apartment_name = ($shipping_details) ? $shipping_details['shipping_apartment'] : '';
+					$billing_city = ($shipping_details) ? $shipping_details['shipping_city'] : '';
+					$billing_state_id = ($shipping_details) ? $shipping_details['shipping_state_id'] : 0;
+					$billing_zipcode = ($shipping_details) ? $shipping_details['shipping_zipcode'] : '';
+					$billing_country = ($shipping_details) ? $shipping_details['shipping_country_id'] : '';
+					$billing_phone = ($shipping_details) ? $shipping_details['shipping_phone'] : '';
+					$billing_email = ($user_details) ? $user_details['email'] : '';
+				} else {
+					$billing_first_name = ($billing_details) ? $billing_details['first_name'] : '';
+					$billing_last_name = ($billing_details) ? $billing_details['last_name'] : '';
+					$billing_street_name = ($billing_details) ? $billing_details['billing_street_address'] : '';
+					$billing_apartment_name = ($billing_details) ? $billing_details['billing_apartment'] : '';
+					$billing_city = ($billing_details) ? $billing_details['billing_city'] : '';
+					$billing_state_id = ($billing_details) ? $billing_details['billing_state_id'] : 0;
+					$billing_zipcode = ($billing_details) ? $billing_details['billing_zipcode'] : '';
+					$billing_country = ($billing_details) ? $billing_details['billing_country_id'] : '';
+					$billing_phone = ($billing_details) ? $billing_details['billing_phone'] : '';
+					$billing_email = ($user_details) ? $user_details['email'] : '';
+				}
+
+				$shipping_first_name = ($shipping_details) ? $shipping_details['first_name'] : '';
+				$shipping_last_name = ($shipping_details) ? $shipping_details['last_name'] : '';
+				$shipping_street_name = ($shipping_details) ? $shipping_details['shipping_street_address'] : '';
+				$shipping_apartment_name = ($shipping_details) ? $shipping_details['shipping_apartment'] : '';
+				$shipping_city = ($shipping_details) ? $shipping_details['shipping_city'] : '';
+				$shipping_state_id = ($shipping_details) ? $shipping_details['shipping_state_id'] : 0;
+				$shipping_zipcode = ($shipping_details) ? $shipping_details['shipping_zipcode'] : '';
+				$shipping_country = ($shipping_details) ? $shipping_details['shipping_country_id'] : '';
+				$shipping_phone = ($shipping_details) ? $shipping_details['shipping_phone'] : '';
+				$shipping_email = ($user_details) ? $user_details['email'] : '';
+
+				$ArrUserData = array(
+					'address' => trim($billing_street_name),
+					'address2' => trim($billing_apartment_name),
+					'city' => trim($billing_city),
+					'state' => trim($billing_state_id),
+					'country_id' => 235,
+					'zip' => $billing_zipcode,
+					'phone' => trim($billing_phone),
+					'shipping_street_address' => trim($shipping_street_name),
+					'shipping_apartment' => trim($shipping_apartment_name),
+					'shipping_city' => trim($shipping_city),
+					'shipping_state' => trim($shipping_state_id),
+					'shipping_zip_code' => $shipping_zipcode,
+					'shipping_phone' => trim($shipping_phone),
+				);
+
+				//echo '<pre>';print_r($ArrUserData);exit;
+				$this->users_model->update_user($ArrUserData, $user_id, 'tbl_users');
+
+				$data = array(
+					'user_id' => $user_id,
+					'coupon_id' => $ArrCustomer['coupon_id'],
+					'order_datetime' => date('Y-m-d'),
+					'order_status' => trim('Pending Payment'),
+					'order_notes' => $ArrCustomer['order_notes'],
+					'delivery_comments' => $ArrCustomer['delivery_comments'],
+					'discount_amount' => $ArrCustomer['discount_amount'],
+					'billing_first_name' => $billing_first_name,
+					'billing_last_name' => $billing_last_name,
+					'billing_street_name' => $billing_street_name,
+					'billing_apartment_name' => $billing_apartment_name,
+					'billing_city' => $billing_city,
+					'billing_state_id' => $billing_state_id,
+					'billing_zipcode' => $billing_zipcode,
+					'billing_country' => $billing_country,
+					'billing_phone' => $billing_phone,
+					'billing_email' => $billing_email,
+					'shipping_first_name' => $shipping_first_name,
+					'shipping_last_name' => $shipping_last_name,
+					'shipping_street_name' => $shipping_street_name,
+					'shipping_apartment_name' => $shipping_apartment_name,
+					'shipping_city' => $shipping_city,
+					'shipping_state_id' => $shipping_state_id,
+					'shipping_zipcode' => $shipping_zipcode,
+					'shipping_country' => $shipping_country,
+					'shipping_phone' => $shipping_phone,
+					'shipping_email' => $shipping_email,
+					'delivery_type' => trim($ArrCustomer['delivery_type']),
+					'payment_methodtype' => trim($ArrCustomer['payment_methodtype'] ?? ''),
+					'delivery_datetime' => date('Y-m-d', strtotime($ArrCustomer['delivery_datetime'])),
+					'is_replace_item' => trim($ArrCustomer['is_replace_item']),
+					'substitution_product_ids' => $substitution_product_ids,
+					'created_by' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $user_id))),
+					'is_flag' => 1,
 					'billing_id' => $billing_id,
 					'shipping_id' => $shipping_id,
-					'card_id' => $card_id,
-					'save_card' => $save_card,
-					'CardToken' => $CardToken,
-					'StripeCardID' => $StripeCardID,
-					'CardPaymentMethodId' => $CardPaymentMethodId,
-				)
-			);
-
-			//save earned credit value
-			if(!empty($earned_credit_val)){
-				$earn_cr_data = array(
-					'user_id' => $user_id,
-					'cash_credit_id' => $find_credit_id ?? 0,
-					'order_id' => $result,
-					'type' => 'earned',
-					'amount' => $earned_credit_val,
-					'updated_datetime' => date('Y-m-d H:i:s'),
+					'same_address' => $same_address,
+					'created_datetime' => date('Y-m-d H:i:s'),
+					'is_active' => $is_active,
+					'order_platform' => trim($ArrCustomer['order_platform'])
 				);
-				$crt_id = $this->credittransaction_model->add_credittrans($earn_cr_data);
-			}
+				$result = $this->orders_model->add_order($data, 'tbl_orders');
 
-			//save used and earned value
-			if(!empty($earned_credit_checkbox)){
-				$used_crval = $ArrCustomer['earned_credit_val'];
-				$used_cr_data = array(
-					'user_id' => $user_id,
+				$total_weight = 0;
+				$total_order_amount = 0;
+		
+				foreach ($ArrProduct as $product) {
+					$total_weight += trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', floatval($product['product_weight_gms']) * floatval($product['qty']))));
+					$order_product_data = array(
+						"order_id" => $result,
+						"product_id" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['product_id']))),
+						/*"product_name" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->product_name))),*/
+						"product_name" => $product['product_name'],
+						"unit_price" => trim($product['unit_price']),
+						"product_tax_amount" => trim($product['product_tax_amount']),
+						//"product_variant_id" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->product_variant_id))),
+						"product_variant_id" => ($product['product_variant_id']) ? $product['product_variant_id'] : 0,
+						"qty" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['qty']))),
+						'created_by' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['created_by']))),
+						'created_datetime' => date('Y-m-d H:i:s'),
+						'is_active' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['is_active']))),
+						'total_amount' => trim($product['total_amount'])
+					);
+					$result_product_id = $this->orders_model->add_order($order_product_data, 'tbl_order_products');
+					$total_order_amount += $product['total_amount'];
+				}
+
+				$shipping_charge = 0;
+				$order_total_amount = $ArrCustomer['cart_total'];
+				$discount_amount = $ArrCustomer['discount_amount'];
+				$preparation_cost = $ArrCustomer['preparation_cost'];
+				$packaging_cost = $ArrCustomer['packaging_cost'];
+				$state_tax = $ArrCustomer['state_tax'];
+				$coupon_id = $ArrCustomer['coupon_id'];
+				$fedex_tracking_id = 0;
+				$earned_credit_checkbox = $ArrCustomer['earned_credit_checkbox'];
+				
+				$order_data = array(
+					'order_amount' => trim($total_order_amount),
+					'fedex_tracking_id' => trim($fedex_tracking_id),
+					'fedex_shipping_charge' => trim($shipping_charge),
+					'order_tip' => trim($ArrCustomer['order_tip']),
+					//'order_total_tax' =>trim($json_obj->order_total_tax),
+					'coupon_id' => trim($coupon_id),
+					'discount_amount' => trim($discount_amount),
+					'order_total_amount' => trim($order_total_amount),
+					'blocked_amount' => trim($order_total_amount),
+					'preparation_cost' => trim($preparation_cost),
+					'packaging_cost' => trim($packaging_cost),
+					//'state_tax' => trim($state_tax),
+					'state_tax' => $state_tax,
+					//	'fedex_raw_response' =>$fedex_shipping_charge,
+					//	'stripe_raw_response' =>''
+				);
+				$order_id = $this->orders_model->update_order($order_data, $result, 'tbl_orders');
+
+				//find credits percentage
+				$find_credit_per =  $this->cashcredit_model->get_last_creditdetail();
+				$find_credit_id = $this->cashcredit_model->get_last_creditid();
+				$earned_credit_val = 0;
+				$used_credit_val = 0;
+				//calculate credit percentage
+				if(!empty($total_order_amount) && !empty($find_credit_per['credit_per'])){
+					
+					$earned_credit_val = ($find_credit_per['credit_per'] / 100) * $order_data['order_total_amount'];
+					$earned_credit_val = number_format($earned_credit_val,2);
+				}
+			
+				
+				$billing_details = $this->master->get_row_detail('tbl_billing_address', array('billing_id' => $billing_id));
+				$shipping_details = $this->master->get_row_detail('tbl_shipping_address', array('shipping_id' => $shipping_id));
+
+				$billing_id = $ArrCustomer['billing_id'];
+				$shipping_id = $ArrCustomer['shipping_id'];
+				$card_id = '';
+				$save_card = '';
+				$CardToken = $ArrCustomer['CardToken'];
+				$CardPaymentMethodId = $ArrCustomer['CardPaymentMethod'];
+				$StripeCardID = '';
+
+				$ArrData = array(
 					'order_id' => $result,
-					'type' => 'used',
-					'amount' => -$used_crval,
-					'updated_datetime' => date('Y-m-d H:i:s'),
+					'order_amount' => $order_data['order_total_amount'],
+					'billing_details' => $billing_details,
+					'shipping_details' => $shipping_details,
+					'existData' => array(
+						'billing_id' => $billing_id,
+						'shipping_id' => $shipping_id,
+						'card_id' => $card_id,
+						'save_card' => $save_card,
+						'CardToken' => $CardToken,
+						'StripeCardID' => $StripeCardID,
+						'CardPaymentMethodId' => $CardPaymentMethodId,
+					)
 				);
 
-				$crt_id = $this->credittransaction_model->add_credittrans($used_cr_data);
-			}
+				//save earned credit value
+				if(!empty($earned_credit_val)){
+					$earn_cr_data = array(
+						'user_id' => $user_id,
+						'cash_credit_id' => $find_credit_id ?? 0,
+						'order_id' => $result,
+						'type' => 'earned',
+						'amount' => $earned_credit_val,
+						'updated_datetime' => date('Y-m-d H:i:s'),
+					);
+					$crt_id = $this->credittransaction_model->add_credittrans($earn_cr_data);
+				}
 
-			$order_id = $result;
+				//save used and earned value
+				if(!empty($earned_credit_checkbox)){
+					$used_crval = $ArrCustomer['earned_credit_val'];
+					$used_cr_data = array(
+						'user_id' => $user_id,
+						'order_id' => $result,
+						'type' => 'used',
+						'amount' => -$used_crval,
+						'updated_datetime' => date('Y-m-d H:i:s'),
+					);
 
-			/* check minimum order amount to block */
+					$crt_id = $this->credittransaction_model->add_credittrans($used_cr_data);
+				}
 
-			$config_response = $this->get_configuration_by_key("'block_minimum_amount','block_maximum_amount','block_percentage'");
+				$order_id = $result;
 
-			//echo "<pre>";		print_r($config_response); 			echo "</pre>";exit;
+				/* check minimum order amount to block */
 
-			if (!empty($config_response)) {
+				$config_response = $this->get_configuration_by_key("'block_minimum_amount','block_maximum_amount','block_percentage'");
 
-				if ($config_response[0]->configuration_value > $ArrData['order_amount']) {
+				//echo "<pre>";		print_r($config_response); 			echo "</pre>";exit;
 
-					$order_amount = $config_response[0]->configuration_value;
+				if (!empty($config_response)) {
 
-				} elseif ($config_response[1]->configuration_value < $ArrData['order_amount']) {
+					if ($config_response[0]->configuration_value > $ArrData['order_amount']) {
 
-					$order_amount = $config_response[1]->configuration_value;
+						$order_amount = $config_response[0]->configuration_value;
 
-				} else {
+					} elseif ($config_response[1]->configuration_value < $ArrData['order_amount']) {
 
-					$order_amount = $ArrData['order_amount'] + ($ArrData['order_amount'] * $config_response[2]->configuration_value / 100);
+						$order_amount = $config_response[1]->configuration_value;
+
+					} else {
+
+						$order_amount = $ArrData['order_amount'] + ($ArrData['order_amount'] * $config_response[2]->configuration_value / 100);
+
+					}
 
 				}
 
+				
+				$order_id = $ArrData['order_id'];
+				$shipping_details = $ArrData['shipping_details'];
+				$billing_details = $ArrData['billing_details'];
+
+				$order_amount = intval(round($order_amount * 100));
+				//echo $order_amount;exit;
+				//$order_amount = bcmul($order_amount, '100', 0);
+				//$this->new_payment_process($order_id, $order_amount, $shipping_details, $billing_details, $json_obj);
+
+				$zip_code = $shipping_details['shipping_zipcode'];
+				$sms_shipping_phone = $shipping_details['shipping_phone'];
+
+				$json_obj->order_amount = intval($order_amount);
+				$json_obj->order_id = $order_id;
+				$json_obj->payment_methodtype = '';
+				$json_obj->gpay_token_serialize = '';
+				$ArrPayment = $json_obj;
+
+				$same_address = $json_obj->same_address;
+
+				/*Payment Process Start*/
+				$this->payment_process($ArrPayment,$shipping_details,$billing_details,$user_id,$same_address);
 			}
-
-			
-			$order_id = $ArrData['order_id'];
-			$shipping_details = $ArrData['shipping_details'];
-			$billing_details = $ArrData['billing_details'];
-
-			$order_amount = intval(round($order_amount * 100));
-			//echo $order_amount;exit;
-			//$order_amount = bcmul($order_amount, '100', 0);
-			//$this->new_payment_process($order_id, $order_amount, $shipping_details, $billing_details, $json_obj);
-
-		$zip_code = $shipping_details['shipping_zipcode'];
-		$sms_shipping_phone = $shipping_details['shipping_phone'];
-
-		$json_obj->order_amount = intval($order_amount);
-		$json_obj->order_id = $order_id;
-		$json_obj->payment_methodtype = '';
-		$json_obj->gpay_token_serialize = '';
-		$ArrPayment = $json_obj;
-
-		$same_address = $json_obj->same_address;
-
-		/*Payment Process Start*/
-		$this->payment_process($ArrPayment,$shipping_details,$billing_details,$user_id,$same_address);
 		
 		}
 	}

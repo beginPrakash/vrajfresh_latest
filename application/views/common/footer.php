@@ -2,27 +2,27 @@
 	<div class="popup-container">
 		<div class="popup-left">
 			<ul>
-				<li><img src="<?php echo ASSET_URL . "images/pin.svg"; ?>" />
+				<li><img src="<?php echo ASSET_URL . "images/pin.svg"; ?>" alt="Location pin"/>
 					<p>449, Market Street Saddle Brook,<br />
 						NJ 07663</p>
 				</li>
-				<li><img src="<?php echo ASSET_URL . "images/phone.svg"; ?>" />
+				<li><img src="<?php echo ASSET_URL . "images/phone.svg"; ?>" alt="Phone contact icon"/>
 					<p>201-688-7887</p>
 				</li>
-				<li><img src="<?php echo ASSET_URL . "images/wall-clock.svg"; ?>" />
+				<li><img src="<?php echo ASSET_URL . "images/wall-clock.svg"; ?>" alt="Business hours"/>
 					<p>Monday - Sunday <br />
 						10:00 - 21:00</p>
 				</li>
 			</ul>
 		</div>
 		<div class="popup-right">
-			<h2>we are currently delivering to 100+ zip codes in nj and growing rapidly</h2>
+			<span>we are currently delivering to 100+ zip codes in nj and growing rapidly</span>
 			<p>Please check if we're in your area by simply entering zip code below.</p>
 			<form action="">
 				<input type="text" placeholder="Enter Zip Code..." name="zipcode_popup" id="zipcode_popup">
 				<input type="hidden"  name="zipcode_popup_value" id="zipcode_popup_value">
 				<div id="zipcode_popup_data"></div>
-				<button type="submit"  onclick="return setZipCodeCookie('popup');" ><img src="<?php echo ASSET_URL . "images/right-arrows.svg"; ?>" class=zipcode_popup_btn /></button>
+				<button type="submit"  onclick="return setZipCodeCookie('popup');" ><img src="<?php echo ASSET_URL . "images/right-arrows.svg"; ?>" class=zipcode_popup_btn alt=""/></button>
 			</form>
 			<div class="mb-3">
 				<div id="zipcode_popup_message" class="error"></div>
@@ -49,14 +49,14 @@
 	<div class="container">
 		<div class="container-flex ">
 			<div class="footer-grid">
-				<img src=<?php echo ASSET_URL . "images/logo.png"; ?> alt="">
+				<img src=<?php echo ASSET_URL . "images/logo.png"; ?> alt="Vraj Fresh online grocery store logo">
 				<h3 class="dnd">About Us <i class="arrow"></i></h3>
 				<ul>
-					<li><img src="<?php echo ASSET_URL . "images/map-pin.png"; ?>">449, Market Street Saddle Brook, NJ
+					<li><img src="<?php echo ASSET_URL . "images/map-pin.png"; ?>" alt="Store location">449, Market Street Saddle Brook, NJ
 						07663</li>
-					<li><a href="tel:201-688-7887"><img src="<?php echo ASSET_URL . "images/phone-icon.png"; ?>">201-688-7887</a></li>
-					<li><a href="mailto:orders@vrajfresh.com"><img src="<?php echo ASSET_URL . "images/mail-icon.png"; ?>">orders@vrajfresh.com</a></li>
-					<li><img src="<?php echo ASSET_URL . "images/watch-icon.png"; ?>">Work hours: 10:00 - 21:00, Monday
+					<li><a href="tel:201-688-7887"><img src="<?php echo ASSET_URL . "images/phone-icon.png"; ?>" alt="Call Vraj Fresh">201-688-7887</a></li>
+					<li><a href="mailto:orders@vrajfresh.com"><img src="<?php echo ASSET_URL . "images/mail-icon.png"; ?>" alt="Email support">orders@vrajfresh.com</a></li>
+					<li><img src="<?php echo ASSET_URL . "images/watch-icon.png"; ?>" alt="Store opening hours">Work hours: 10:00 - 21:00, Monday
 						- Sunday</li>
 				</ul>
 			</div>
@@ -125,7 +125,7 @@
 				</p>
 			</div>
 			<div>
-				<img src=<?php echo ASSET_URL . "images/Payment.png"; ?> alt="">
+				<img src=<?php echo ASSET_URL . "images/Payment.png"; ?> alt="Accepted payment methods at Vraj Fresh">
 			</div>
 			<div>
 				<p>©

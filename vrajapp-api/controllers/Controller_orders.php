@@ -141,6 +141,16 @@ class Controller_orders extends CI_Controller
 					'created_by'   => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->created_by))),
 					'created_datetime' => date('Y-m-d H:i:s'),
 					'is_active' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->is_active))),
+					$product_tax_amount = 0;
+
+					if($product->product_tax==1)
+
+					{
+
+						$product_tax_amount = number_format( (($json_obj->ArrCustomer->state_tax * $product->total_amount) / 100),2);
+
+					}
+					'product_tax_amount' => $product_tax_amount,
 					'total_amount' => trim($product->total_amount)
 				);
 				$result_product_id = $this->orders_model->add_order($order_product_data, 'tbl_order_products');

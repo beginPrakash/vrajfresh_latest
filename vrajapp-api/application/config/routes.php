@@ -170,6 +170,7 @@ $route['V1/forgot-password'] = 'V1/Controller_users/forgot_password';
 $route['V1/change-password'] = 'V1/Controller_users/change_password';
 $route['V1/get-user-address'] = 'V1/Controller_users/get_user_address';
 $route['V1/edit-user-address'] = 'V1/Controller_users/edit_user_address';
+$route['V1/logout'] = 'V1/Controller_users/logout';
 
 $route['V1/contact-mail'] = 'V1/Controller_users/contact_mail';
 $route['V1/delete-user-account'] = 'V1/Controller_users/delete_user_account';
@@ -219,3 +220,4 @@ $route['V1/update-intent'] = 'V1/Controller_orders/updateIntent';
 $route['V1/create-wishlist'] = 'V1/Controller_userwishlist/create_wishlist';
 $route['V1/user-wishlist'] = 'V1/Controller_userwishlist/get_wishlist_by_user_id';
 
+$route['V1/user-notifications'] = 'V1/Controller_usernotifications/get_notification_by_user_id';

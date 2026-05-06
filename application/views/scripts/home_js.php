@@ -110,7 +110,8 @@ $(document).ready(function() {
                 "data": JSON.stringify(json_request),
                 "dataType": "JSON",
                 "success": function(response) {
-                    $("#btn_" + section_id + "_" + product_id).text('Added');
+                    //$("#btn_" + section_id + "_" + product_id).text('Added');
+                    $('#qty_'+product_id).find('.qty_change_sub').attr('data-productrowid',response.data);
                     setTimeout(() => {
                         $("#btn_" + section_id + "_" + product_id).text('Add');
                     }, 3000);
@@ -234,10 +235,10 @@ $(document).ready(function() {
         
 
 
-        if (quantity != "" || quantity >= 1) {
+        if (quantity != "" || quantity > 0) {
             var total_qty = parseInt($("#cartCount").html()) - 1;
                 $("#cartCount").html(total_qty);
-            if(quantity > 1){
+            if(quantity > 0){
                 $.ajax({
                     "type": "POST",
                     "url": front_url + 'cart/add',
@@ -256,26 +257,28 @@ $(document).ready(function() {
                     }
                 });
             }else{
-                
-                var cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
-                cart_arr = JSON.parse(cart_arr);
+                if (login_user_id == 0) {
+                    cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
+                    cart_arr = JSON.parse(cart_arr);
+                }
                 var findDay =product_id; //find price for day 1
                 //find product row id
                 var cart_row_id = $.map(cart_arr, function(value, key) {
                     if (value.id == findDay)
                     {
-                        return value.rowid;
+                        return (value.options && value.options.db_rowid) ? value.options.db_rowid : value.rowid;
                     }
                 });
 
                 if(cart_row_id.length > 0){
                     var cart_row_id_val = cart_row_id[0];
+                    $(this).attr('data-productrowid',cart_row_id_val);
                 }else{
                     var cart_row_id_val = '';
                 }
 
                 
-                $(this).attr('data-productrowid',cart_row_id_val);
+                
                 var product_rowid = $(this).data('productrowid');
                 $.ajax({
                     "type": "POST",
@@ -283,6 +286,7 @@ $(document).ready(function() {
                     "data": {row_id:product_rowid},
                     "dataType": "JSON",
                     "success": function(response) {
+                        
                         //location.reload();
                     },
                     "error": function(response) {
@@ -294,6 +298,8 @@ $(document).ready(function() {
                 $('#qty_'+product_id).addClass('d-none');
                 $('#btn_section4_'+product_id).removeClass('d-none');
                 
+                // 🔥 IMPORTANT: reset input to 1
+                $('#' + product_id).val(1);
             }
           
             
@@ -1787,9 +1793,11 @@ function get_home_product_slider(api_url_prefix) {
         "zipcode": Cookies.get("zipcode")
     };
     var slider_html='';
-    var cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
-    cart_arr = JSON.parse(cart_arr);
-    
+    if (login_user_id == 0) {
+        cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
+        cart_arr = JSON.parse(cart_arr);
+    }
+console.log('cart_arr'+cart_arr);
     var cart_qty_val = 1;
 
     $.ajax({
@@ -1829,7 +1837,7 @@ function get_home_product_slider(api_url_prefix) {
                                 var cart_row_id = $.map(cart_arr, function(value, key) {
                                     if (value.id == findDay)
                                     {
-                                        return value.rowid;
+                                        return (value.options && value.options.db_rowid) ? value.options.db_rowid : value.rowid;
                                     }
                                 });
 
@@ -1914,7 +1922,7 @@ function get_home_product_slider(api_url_prefix) {
                                             } else {
                                             // var price_weight = '<span>' + product_slider_items[a].product_weight_gms + 'lb</span> - <strong>$' + product_slider_items[a].product_price + '</strong>';
                                             }
-                                    var buttonSection = ' <ul><li><div id="qty_'+ product_slider_items[a].product_id+'" class="quantity ' + out_of_stock_class +' '+ qty_class + '"><button type="button" id="sub" class="sub qty_change_sub" "data-productslug="' + product_slider_items[a].product_slug + '" data-productimage= "' + product_slider_items[a].product_image + '" data-isperisible="' + product_slider_items[a].is_perisible_products + '" data-section="section4" data-isperisible="' + product_slider_items[a].is_perisible_products + '" data-productname="' + product_slider_items[a].product_name + '" data-price=' + product_slider_items[a].sale_price + ' data-productid = ' + product_slider_items[a].product_id + ' data-productweight =' + product_slider_items[a].product_weight_gms +  ' data-producttax=' + product_slider_items[a].product_tax + ' data-productrowid='+cart_row_id_val+'>-</button><input type="text" id="' + product_slider_items[a].product_id + '" value="'+cart_qty_val+'" min="1" max="3" disabled /><button type="button" id="add" class="add qty_change_add" "data-productslug="' + product_slider_items[a].product_slug + '" data-productimage= "' + product_slider_items[a].product_image + '" data-isperisible="' + product_slider_items[a].is_perisible_products + '" data-section="section4" data-isperisible="' + product_slider_items[a].is_perisible_products + '" data-productname="' + product_slider_items[a].product_name + '" data-price=' + product_slider_items[a].sale_price + ' data-productid = ' + product_slider_items[a].product_id + ' data-productweight =' + product_slider_items[a].product_weight_gms +  ' data-producttax=' + product_slider_items[a].product_tax + '>+</button></div></li><li><button id= "btn_section4_' + product_slider_items[a].product_id + '"data-productslug="' + product_slider_items[a].product_slug + '" data-productimage= "' + product_slider_items[a].product_image + '" data-isperisible="' + product_slider_items[a].is_perisible_products + '" class="add_cart ' + out_of_stock_class + ' '+ add_class+'" data-section="section4" data-isperisible="' + product_slider_items[a].is_perisible_products + '" data-productname="' + product_slider_items[a].product_name + '" data-price=' + product_slider_items[a].sale_price + ' data-productid = ' + product_slider_items[a].product_id + ' data-productweight =' + product_slider_items[a].product_weight_gms +  ' data-producttax=' + product_slider_items[a].product_tax + '>Add</button></li></ul>';
+                                    var buttonSection = ' <ul><li><div id="qty_'+ product_slider_items[a].product_id+'" class="quantity ' + out_of_stock_class +' '+ qty_class + '"><button type="button" id="sub" class="sub qty_change_sub" data-productslug="' + product_slider_items[a].product_slug + '" data-productimage= "' + product_slider_items[a].product_image + '" data-isperisible="' + product_slider_items[a].is_perisible_products + '" data-section="section4" data-isperisible="' + product_slider_items[a].is_perisible_products + '" data-productname="' + product_slider_items[a].product_name + '" data-price=' + product_slider_items[a].sale_price + ' data-productid = ' + product_slider_items[a].product_id + ' data-productweight =' + product_slider_items[a].product_weight_gms +  ' data-producttax=' + product_slider_items[a].product_tax + ' data-productrowid='+cart_row_id_val+'>-</button><input type="text" id="' + product_slider_items[a].product_id + '" value="'+cart_qty_val+'" min="1" max="3" disabled /><button type="button" id="add" class="add qty_change_add" data-productslug="' + product_slider_items[a].product_slug + '" data-productimage= "' + product_slider_items[a].product_image + '" data-isperisible="' + product_slider_items[a].is_perisible_products + '" data-section="section4" data-isperisible="' + product_slider_items[a].is_perisible_products + '" data-productname="' + product_slider_items[a].product_name + '" data-price=' + product_slider_items[a].sale_price + ' data-productid = ' + product_slider_items[a].product_id + ' data-productweight =' + product_slider_items[a].product_weight_gms +  ' data-producttax=' + product_slider_items[a].product_tax + '>+</button></div></li><li><button id= "btn_section4_' + product_slider_items[a].product_id + '"data-productslug="' + product_slider_items[a].product_slug + '" data-productimage= "' + product_slider_items[a].product_image + '" data-isperisible="' + product_slider_items[a].is_perisible_products + '" class="add_cart ' + out_of_stock_class + ' '+ add_class+'" data-section="section4" data-isperisible="' + product_slider_items[a].is_perisible_products + '" data-productname="' + product_slider_items[a].product_name + '" data-price=' + product_slider_items[a].sale_price + ' data-productid = ' + product_slider_items[a].product_id + ' data-productweight =' + product_slider_items[a].product_weight_gms +  ' data-producttax=' + product_slider_items[a].product_tax + '>Add</button></li></ul>';
                                     
                                 }
 
@@ -1929,8 +1937,8 @@ function get_home_product_slider(api_url_prefix) {
                                 }
 
                                 product = product.concat('<div class="product-box"><a href="product/' + product_slider_items[a].product_slug +
-                                    '"> <div class="begin_img_container">'+tagdiscounttext+'<img src=' + product_slider_items[a].image + ' onerror=this.src="<?php echo BASE_URL; ?>assets/images/logo-2.png"></div><h4>' + product_slider_items[a].product_name +
-                                    '</h4></a>' + price_weight +buttonSection+'</div>'
+                                    '"> <div class="begin_img_container">'+tagdiscounttext+'<img src=' + product_slider_items[a].image + ' onerror=this.src="<?php echo BASE_URL; ?>assets/images/logo-2.png"></div><h3>' + product_slider_items[a].product_name +
+                                    '</h3></a>' + price_weight +buttonSection+'</div>'
                                     
                                     
                                     

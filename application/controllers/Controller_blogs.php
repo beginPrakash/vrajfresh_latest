@@ -12,44 +12,27 @@ class Controller_blogs extends CI_Controller
         $this->load->model('blogs_model');
     }
 
-    public function index() {
-    $products = $this->db
-    ->select('product_slug, modified_datetime')
-    ->where('is_active', 1)
-    ->order_by('modified_datetime', 'DESC')
-    ->get('tbl_products')
-    ->result();
+    public function index()
+    {
+        $limit = 2;
 
-$phtml = '';
+        // Get current page from URL
+        $page = $this->input->get('page');
+        $page = ($page) ? (int)$page : 1;
 
-foreach ($products as $product) {
+        $offset = ($page - 1) * $limit;
 
-    $lastmod = date('Y-m-d', strtotime($product->modified_datetime));
-    $days_old = (time() - strtotime($product->modified_datetime)) / (60 * 60 * 24);
+        // Total records
+        $total = $this->blogs_model->count_all();
 
-    if ($days_old <= 7) {
-        $priority = "0.9";
-        $changefreq = "daily";
-    } elseif ($days_old <= 30) {
-        $priority = "0.8";
-        $changefreq = "weekly";
-    } else {
-        $priority = "0.6";
-        $changefreq = "monthly";
-    }
+        // Fetch blogs
+        $data['blogs'] = $this->blogs_model->get_blogs($limit, $offset);
 
-    $phtml .= '
-    <url>
-        <loc>'.base_url('product/'.$product->product_slug).'</loc>
-        <lastmod>'.$lastmod.'</lastmod>
-        <changefreq>'.$changefreq.'</changefreq>
-        <priority>'.$priority.'</priority>
-    </url>';
-}
+        // Pagination calculation
+        $data['total_pages'] = ceil($total / $limit);
+        $data['current_page'] = $page;
 
-echo $phtml;
-        exit;
-        $this->load->view('blog-list');
+        $this->load->view('blog-list', $data);
     }
 
     public function fetch_blogs() {
@@ -57,7 +40,7 @@ echo $phtml;
         $page = $this->input->post('page');
         $start = ($page - 1) * $limit;
 
-        $data['blogs'] = $this->Blog_model->get_blogs($limit, $start);
+        $data['blogs'] = $this->blogs_model->get_blogs($limit, $start);
         echo json_encode($data);
     }
 
