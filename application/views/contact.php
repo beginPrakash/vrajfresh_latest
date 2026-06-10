@@ -6,11 +6,8 @@
 
         <h1>Contact Vraj Fresh</h1>
 
-        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-
-            industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
-
-            scrambled</p>
+        <p>Whether you’re looking for authentic Indian groceries, fresh produce, or kitchen favorites, the Vraj Fresh team is here to help. 
+            Fill out the form or reach out to us directly.</p>
 
     </div>
 
@@ -51,7 +48,7 @@
 
                         <h4>Email</h4>
 
-                        <p><a href="mailto:info@vrajfresh.com">info@vrajfresh.com</a></p>
+                        <p><a href="mailto:online@vrajfresh.com">online@vrajfresh.com</a></p>
 
                     </div>
 
@@ -64,8 +61,6 @@
         <div class="contact-right">
 
             <h3>Just say Hello!</h3>
-
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
 
             <form id="contact" method="post" action="">
 

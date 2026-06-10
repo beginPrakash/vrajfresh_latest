@@ -202,7 +202,7 @@ class Controller_blog extends CI_Controller
 
 				$row[] = getIsactiveButtonForList($aRow['is_active'], $aRow['blog_id'], 'tblblog_master', 'blog_id');
 
-				$row[] = '<div class="btn-group">' . getActionButtonForList($aRow['blog_id'], $this->module_name, array("V", "E", "D")) . "</div>";
+				$row[] = '<div class="btn-group">' . getActionButtonForList($aRow['blog_id'], $this->module_name, array("E", "D")) . "</div>";
 
 				$i++;
 

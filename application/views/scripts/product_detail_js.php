@@ -1048,12 +1048,12 @@ function get_delivery_message() {
     }
     if (delivery_type == 'Same Day Delivery') {
 
-        if (hr > 14) {
+        if (hr >= 14 && min > 0) {
             message = 'Order within ' + (24 - hr + 13) + ' hours' + ' : ' + (60 - min) + ' minutes and delivery By Tomorrow <?php $newDate1 = date('l', strtotime('+1 days'));
             echo $newDate1 ?>, ' + ' <?php $newDate = date('d/M/Y', strtotime('+1 days'));
                 echo $newDate; ?> ';
         }
-        if (hr <= 14) {
+        if (hr < 14) {
             message = 'Order within ' + (13 - hr) + ' hours' + ' : ' + (60 - min) + ' minutes and delivery By Today <?php echo date("l") ?>,' + ' <?php echo date("d/M/Y") ?> ';
         }
     }

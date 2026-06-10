@@ -14,7 +14,7 @@ class Controller_blogs extends CI_Controller
 
     public function index()
     {
-        $limit = 2;
+        $limit = 10;
 
         // Get current page from URL
         $page = $this->input->get('page');
@@ -35,13 +35,19 @@ class Controller_blogs extends CI_Controller
         $this->load->view('blog-list', $data);
     }
 
-    public function fetch_blogs() {
-        $limit = 6;
-        $page = $this->input->post('page');
-        $start = ($page - 1) * $limit;
+     public function details($slug = ''){
+        $blog = $this->blogs_model->get_blog_by_slug($slug);
 
-        $data['blogs'] = $this->blogs_model->get_blogs($limit, $start);
-        echo json_encode($data);
+        if(empty($blog))
+        {
+           
+        }
+
+        $data['blog'] = $blog;
+        $headerdata = array('meta_title' => $blog['meta_title'] ?? '','meta_description' => $blog['meta_description'] ?? '');
+        
+        $this->load->view('common/header', $headerdata);
+        $this->load->view('blog-detail', $data);
     }
 
 

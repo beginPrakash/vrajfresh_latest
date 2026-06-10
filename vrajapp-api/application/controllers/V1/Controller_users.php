@@ -55,24 +55,20 @@ class Controller_users extends CI_Controller
 
 	public function isValidUSNumber($number)
 	{
-		$this->sid   = 'test';
-		$this->token = 'test';
-		$this->from  = '+12052898725'; // e.g. +1415xxxxxxx
-		$to = '+1'.$number;
-		try {
-			$twilio = new \Twilio\Rest\Client($this->sid, $this->token);
-			$number = $twilio->lookups->v2->phoneNumbers($to)
-        ->fetch(["fields" => "line_type_intelligence"]);
+		// Remove spaces, dashes etc
+		$number = preg_replace('/[^0-9]/', '', $number);
 
-			if ($number->valid) {
-				return true;
-			}else{
-				return false;
-			}
-		} catch (Exception $e) {
-		
+		// Must be 11 digits starting with 1
+		if (strlen($number) != 11 || $number[0] != '1') {
 			return false;
 		}
+
+		// Area code must start 2-9
+		if ($number[1] < 2 || $number[1] > 9) {
+			return false;
+		}
+
+		return true;
 	}
 	
 	public function add_user()
@@ -141,17 +137,17 @@ class Controller_users extends CI_Controller
 						}
 
 						if(!empty($json_obj->phone_number)){
-							$this->sid   = 'test';
-							$this->token = 'test';
-							$this->from  = '+12052898725'; // e.g. +1415xxxxxxx
+							$sid   = TWILLO_SID;
+							$stoken = TWILLO_TOKEN;
+							$sfrom  = '+12052898725'; // e.g. +1415xxxxxxx
 							$to = '+1'.$json_obj->phone_number;
 							try {
-								$client = new \Twilio\Rest\Client($this->sid, $this->token);
+								$client = new \Twilio\Rest\Client($sid, $stoken);
 								$message = 'Your OTP is '.$gen_otp;
 								$sms = $client->messages->create(
 									$to,
 									[
-										'from' => $this->from,
+										'from' => $sfrom,
 										'body' => $message
 									]
 								);
@@ -159,7 +155,7 @@ class Controller_users extends CI_Controller
 								//print_r($sms);exit;
 								// return $sms->sid; // successexit;
 							} catch (Exception $e) {
-							
+							//print_r($e);exit;
 								$errors = $e->getMessage(); // error
 							}
 
@@ -340,8 +336,7 @@ class Controller_users extends CI_Controller
 			if (count($check_email) > 0) {
 				$data = array(
 					'user_name' => $json_obj->email,
-					'user_role_id' => $json_obj->user_role_id,
-					'user_token' => $json_obj->user_token
+					'user_role_id' => $json_obj->user_role_id
 				);
 				$result = $this->users_model->check_user($data);
 				if (count($result) > 0) {
@@ -453,7 +448,6 @@ class Controller_users extends CI_Controller
 							$this->db->insert('tbl_cart_items', $cart_item);
 						}
 					}
-					
 					if($result[0]->user_id == 2494){
 						$gen_otp = 8835;
 					}else{
@@ -461,45 +455,15 @@ class Controller_users extends CI_Controller
 						
 					}
 					
+				
 					$otp_data = array(
 						'user_id' => $result[0]->user_id,
 						'otp' => $gen_otp,
 						'created_datetime' => date('Y-m-d H:i:s'),
 						'modified_datetime' => date('Y-m-d H:i:s')
 					);
-				
+
 					$otp_code = $this->otpverification_model->add_otpcode($otp_data);
-
-					//save fcm token
-					$user_id = $result[0]->user_id; // dynamic
-					$new_token = $json_obj->user_token;
-
-					$row = $this->db->get_where('user_fcm_tokens', ['user_id' => $user_id,'token_type'=>'app'])->row();
-
-					if ($row) {
-
-						$tokens = explode(',', $row->fcm_tokens);
-
-						if (!in_array($new_token, $tokens)) {
-							$tokens[] = $new_token;
-						}
-
-						$this->db->where('user_id', $user_id);
-						$this->db->update('user_fcm_tokens', [
-							'fcm_tokens' => implode(',', $tokens),
-							'updated_at' => date('Y-m-d H:i:s')
-						]);
-
-					} else {
-
-						$this->db->insert('user_fcm_tokens', [
-							'user_id' => $user_id,
-							'fcm_tokens' => $new_token,
-							'token_type' => 'app',
-							'updated_at' => date('Y-m-d H:i:s')
-						]);
-					}
-				
 
 					// Remove spaces
 					$valid_emil = trim($json_obj->email);
@@ -523,17 +487,17 @@ class Controller_users extends CI_Controller
 							}
 						}
 					}else{
-						$this->sid   = 'test';
-						$this->token = 'test';
-						$this->from  = '+12052898725'; // e.g. +1415xxxxxxx
+						$sid   = TWILLO_SID;
+						$stoken = TWILLO_TOKEN;
+						$sfrom  = '+12052898725'; // e.g. +1415xxxxxxx
 						$to = '+1'.$json_obj->email;
 						try {
-							$client = new \Twilio\Rest\Client($this->sid, $this->token);
+							$client = new \Twilio\Rest\Client($sid, $stoken);
 							$message = 'Your OTP is '.$gen_otp;
 							$sms = $client->messages->create(
 								$to,
 								[
-									'from' => $this->from,
+									'from' => $sfrom,
 									'body' => $message
 								]
 							);
@@ -889,59 +853,4 @@ class Controller_users extends CI_Controller
 		}
 		send_response_to_api($ArrData, $errors, $success_message);
 	}
-	
-
-	public function logout()
-	{
-		$json_str = file_get_contents('php://input');
-		$json_obj = json_decode($json_str);
-
-		// Get Bearer Token
-		$authHeader = $this->input->get_request_header('Authorization', TRUE);
-		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-			$oauth_key = $matches[1];
-		} else {
-			$oauth_key = '';
-		}
-		$errors = $success_message = '';
-		$ArrData = array();
-		if (check_oauth_key($oauth_key)) {
-			$user_id = $json_obj->user_id; // dynamic user id
-			$remove_token = $json_obj->user_token;
-
-			$row = $this->db->get_where('user_fcm_tokens', ['user_id' => $user_id,'token_type'=>'app'])->row();
-
-			if ($row && !empty($row->fcm_tokens)) {
-
-				// Convert string to array
-				$tokens = explode(',', $row->fcm_tokens);
-
-				// Remove token
-				$tokens = array_filter($tokens, function($t) use ($remove_token) {
-					return trim($t) !== trim($remove_token);
-				});
-
-				// Re-index array
-				$tokens = array_values($tokens);
-
-				// Convert back to string
-				$updated_tokens = implode(',', $tokens);
-
-				// Update DB
-				$this->db->where('user_id', $user_id);
-				$this->db->update('user_fcm_tokens', [
-					'fcm_tokens' => $updated_tokens,
-					'updated_at' => date('Y-m-d H:i:s')
-				]);
-
-				$success_message = "Token removed";
-
-			} else {
-				$errors = "No tokens found";
-			}
-
-			send_response_to_api($ArrData, $errors, $success_message);
-		}
-	}
-	
 }
