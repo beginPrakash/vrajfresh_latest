@@ -19,16 +19,16 @@ class orderreport_model extends CI_Model
             if (@$_REQUEST['txtSearchFrom'] != "" && @$_REQUEST['txtSearchTo'] != "") {
                 $txtSearchFrom = date('Y-m-d', strtotime(@$_REQUEST['txtSearchFrom']));
                 $txtSearchTo = date('Y-m-d', strtotime(@$_REQUEST['txtSearchTo']));
-                $this->db->where('tbl_orders.order_datetime >=', $txtSearchFrom . " 00:00:00");
-                $this->db->where('tbl_orders.order_datetime <=', $txtSearchTo . " 23:59:59");
+                $this->db->where('tbl_orders.created_datetime >=', $txtSearchFrom . " 00:00:00");
+                $this->db->where('tbl_orders.created_datetime <=', $txtSearchTo . " 23:59:59");
             }
             if (@$_REQUEST['txtSearchFrom'] != "" && @$_REQUEST['txtSearchTo'] == "") {
                 $txtSearchFrom = date('Y-m-d', strtotime(@$_REQUEST['txtSearchFrom']));
-                $this->db->where('tbl_orders.order_datetime >=', $txtSearchFrom . " 00:00:00");
+                $this->db->where('tbl_orders.created_datetime >=', $txtSearchFrom . " 00:00:00");
             }
             if (@$_REQUEST['txtSearchTo'] != "" && @$_REQUEST['txtSearchFrom'] == "") {
                 $txtSearchTo = date('Y-m-d', strtotime(@$_REQUEST['txtSearchTo']));
-                $this->db->where('tbl_orders.order_datetime <=', $txtSearchTo . " 23:59:59");
+                $this->db->where('tbl_orders.created_datetime <=', $txtSearchTo . " 23:59:59");
             }
             if (@$_REQUEST['ddIsActive'] != "") {
                 $this->db->where('tbl_orders.order_status', $_REQUEST['ddIsActive']);
@@ -91,16 +91,16 @@ class orderreport_model extends CI_Model
             if (@$_REQUEST['txtSearchFrom'] != "" && @$_REQUEST['txtSearchTo'] != "") {
                 $txtSearchFrom = date('Y-m-d', strtotime(@$_REQUEST['txtSearchFrom']));
                 $txtSearchTo = date('Y-m-d', strtotime(@$_REQUEST['txtSearchTo']));
-                $this->db->where('tbl_orders.order_datetime >=', $txtSearchFrom . " 00:00:00");
-                $this->db->where('tbl_orders.order_datetime <=', $txtSearchTo . " 23:59:59");
+                $this->db->where('tbl_orders.created_datetime >=', $txtSearchFrom . " 00:00:00");
+                $this->db->where('tbl_orders.created_datetime <=', $txtSearchTo . " 23:59:59");
             }
             if (@$_REQUEST['txtSearchFrom'] != "" && @$_REQUEST['txtSearchTo'] == "") {
                 $txtSearchFrom = date('Y-m-d', strtotime(@$_REQUEST['txtSearchFrom']));
-                $this->db->where('tbl_orders.order_datetime >=', $txtSearchFrom . " 00:00:00");
+                $this->db->where('tbl_orders.created_datetime >=', $txtSearchFrom . " 00:00:00");
             }
             if (@$_REQUEST['txtSearchTo'] != "" && @$_REQUEST['txtSearchFrom'] == "") {
                 $txtSearchTo = date('Y-m-d', strtotime(@$_REQUEST['txtSearchTo']));
-                $this->db->where('tbl_orders.order_datetime <=', $txtSearchTo . " 23:59:59");
+                $this->db->where('tbl_orders.created_datetime <=', $txtSearchTo . " 23:59:59");
             }
             if (@$_REQUEST['ddIsActive'] != "") {
                 $this->db->where('tbl_orders.order_status', $_REQUEST['ddIsActive']);

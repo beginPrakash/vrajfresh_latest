@@ -52,7 +52,7 @@ class Controller_orderreport extends CI_Controller
 				// echo $get_total_order_unitcost;exit;
 				$row[] = $aRow['user_id'];
 				$row[] = $aRow['order_id'];
-				$row[] = $aRow['order_datetime'];
+				$row[] = $aRow['created_datetime'];
 				$row[] = $aRow['display_name'];
 				$row[] = $aRow['email'];
 				$row[] = $street_name.''.$aprt_name.''.$scity.''.$sstate.''.$szip;

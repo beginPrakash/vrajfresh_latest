@@ -291,14 +291,43 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
          <div>
             <!-- <input name="delivery_type" id="delivery_type_hour" type="radio" value="two_hour" class="chk_delivery_type"> -->
             <!-- <label for="delivery_type_hour" id="delivery_after_hr"> 2 Hours Delivery</label> -->
+            <?php
+
+               $timezone = new DateTimeZone("America/New_York");
+
+               // Current date/time in New York
+               $today = new DateTime("now", $timezone);
+
+               // Tomorrow date
+               $tomorrow = clone $today;
+               $tomorrow->modify('+1 day');
+
+               // Max date (+7 days)
+               $maxDate = clone $today;
+               $maxDate->modify('+7 day');
+
+               // Current hour and minute
+               $hr  = $today->format('H');
+               $min = $today->format('i');
+
+               // If time is after 2:00 PM
+               if ($hr >= 14 && $min > 0) {
+                  $today = $tomorrow;
+               }
+
+               // Final formatted date
+               $stext = $today->format('m-d-Y');
+
+
+            ?>
 			<div class="type-box">
-				<input name="delivery_type" id="delivery_type_day" type="radio" value="one_day"
-               class="chk_delivery_type" checked>
-				<label for="delivery_type_day"> One Day Delivery</label>
+				<input name="delivery_type" id="delivery_type_day" type="hidden" value="one_day"
+               class="chk_delivery_type">
+				<label><b>Expected Delivery Date : </b> <?php echo $stext; ?></label>
 			</div>
-			<label for="delivery_type_day"> Choose Date</label>
+			<!-- <label for="delivery_type_day"> Choose Date</label>
 			<input type="text" name="delivery_one_day_date" id="delivery_one_day_date" value="" readonly />
-            <span id="delivery_one_day_date-error" class="error"></span>
+            <span id="delivery_one_day_date-error" class="error"></span> -->
          </div>
          <?php }
             if ($_COOKIE['delivery_type'] == 'Twise in a week') { ?>
@@ -307,13 +336,13 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                <?php 
                $delivery_days = $_COOKIE['delivery_days'];
                $dayArray = explode(',', $delivery_days);
-               $deliveryDate = date('d-m-Y');
+               $deliveryDate = date('m-d-Y');
                
                $hours = date('H');
                $today = date('l');
                
                if(in_array($today, $dayArray) && $hours < 15){
-               	$deliveryDate = date('d-m-Y');
+               	$deliveryDate = date('m-d-Y');
                } else {
                	for ($i = 1; $i <= 7; $i++) {
                		// Get the date for the next iteration
@@ -329,7 +358,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                }
                echo $deliveryDate;
                
-               /* $t = date('d-m-Y');
+               /* $t = date('m-d-Y');
                
                
                if (date("l", strtotime($t)) == "Tuesday" || date("l", strtotime($t)) == "Wednesday" || date("l", strtotime($t)) == "Thursday") {
@@ -421,7 +450,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
              //  echo "<pre>";print_r($cart_items);
                
                foreach ($cart_items as $items) {
-               
+                  if($items['qty'] > 0){
                	?>
                   <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][cart_item_id]" value="<?php echo $items['cart_item_id']; ?>">
                   <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][row_id]" value="<?php echo $items['row_id']; ?>">
@@ -473,9 +502,11 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                <!--<td><?php //echo $items["name"]; 
                   ?></td>-->
             </tr>
+            <?php } } ?>
             <?php } ?>
-            <?php } ?>
+            <span id="substitu-pro-error" class="error"></span>
          </table>
+         
          <p class="or_text">Order Summary</p>
          <div class="cart_totals">
             <ul>
@@ -619,10 +650,11 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
             <?php if ($last_credit_per > 0) { ?>
             <p><span>You'll receive <b id="earn_cr_txtval"></b> credit when you place an order.</span></p>
             <?Php } ?>
-            <p>
+            <!-- <p>
                <b>Note: </b>Orders placed before 2:00PM, will be delivered same day between 5:00 PM - 9:00 PM.
                Orders placed after 2:00PM, will be delivered next day 5:00 PM - 9:00 PM
-            </p>
+            </p> -->
+            <br/>
             <?php if ($_COOKIE['delivery_type'] == 'Twise in a week') { ?>
          <label><b>Expected Delivery Date:</b></label>
             <p>
@@ -660,8 +692,38 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
         
          <?php } ?>
          <?php if ($_COOKIE['delivery_type'] == 'Express Delivery' || $_COOKIE['delivery_type'] == 'Same Day Delivery') { ?>
-            <?php $deliveryDate = date('m-d-Y');$expdeliveryDate = date('m-d-Y'); ?>
-            <p><label class="expected_d_date_label"><b>Expected Delivery Date : </b><?php echo $deliveryDate; ?></label></p>
+            <?php $deliveryDate = date('m-d-Y'); ?>
+            <?php
+
+               $timezone = new DateTimeZone("America/New_York");
+
+               // Current date/time in New York
+               $today = new DateTime("now", $timezone);
+
+               // Tomorrow date
+               $tomorrow = clone $today;
+               $tomorrow->modify('+1 day');
+
+               // Max date (+7 days)
+               $maxDate = clone $today;
+               $maxDate->modify('+7 day');
+
+               // Current hour and minute
+               $hr  = $today->format('H');
+               $min = $today->format('i');
+
+               // If time is after 2:00 PM
+               if ($hr >= 14 && $min > 0) {
+                  $today = $tomorrow;
+               }
+
+               // Final formatted date
+               $stext = $today->format('m-d-Y');
+               $expdeliveryDate = $today->format('m-d-Y');
+
+
+            ?>
+            <p><label class="expected_d_date_label"><b>Expected Delivery Date : </b><?php echo $stext; ?></label></p>
             <?php } ?>
             <input type="hidden" name="expec_delivery_date" id="expec_delivery_date" value="<?php echo $expdeliveryDate; ?>">
            <br/>

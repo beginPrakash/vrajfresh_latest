@@ -111,6 +111,9 @@ defined('FILE_UPLOAD_PATH') OR define('FILE_UPLOAD_PATH',ADMIN_URL."uploads/");
 
 defined('FILE_UPLOAD_PATH_REPORT') OR define('FILE_UPLOAD_PATH_REPORT','../admin/uploads/');
 
+defined('TWILLO_SID') or define('TWILLO_SID', '');
+defined('TWILLO_TOKEN') or define('TWILLO_TOKEN', '');
+
 
 defined('MODE') or define('MODE', 'PROD');
 

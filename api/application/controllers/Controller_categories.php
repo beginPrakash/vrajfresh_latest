@@ -403,7 +403,7 @@ class Controller_categories extends CI_Controller
 
 							$unique = array_map("unserialize", array_unique(array_map("serialize", $tempArray)));
 							usort($unique, function($a, $b) {
-								return $a['price'] - $b['price']; // Ascending sort by 'price'
+								return (float)$a['price'] - (float)$b['price']; // Ascending sort by 'price'
 							});
 							
 
@@ -558,7 +558,7 @@ class Controller_categories extends CI_Controller
 
 						$unique = array_map("unserialize", array_unique(array_map("serialize", $tempArray)));
 						usort($unique, function($a, $b) {
-							return $a['price'] - $b['price']; // Ascending sort by 'price'
+							return (float)$a['price'] - (float)$b['price'];
 						});
 
 						$ArrFinal[$i]->product_size = $unique;
@@ -791,7 +791,7 @@ class Controller_categories extends CI_Controller
 
 						$unique = array_map("unserialize", array_unique(array_map("serialize", $tempArray)));
 						usort($unique, function($a, $b) {
-							return $a['price'] - $b['price']; // Ascending sort by 'price'
+							return (float)$a['price'] - (float)$b['price'];
 						});
 						$ArrFinal[$i]->product_size = $unique;
 
@@ -809,6 +809,16 @@ class Controller_categories extends CI_Controller
 						} else {
 							$products[$key] = $value;
 						}
+
+						$p_sale_price = $product_result[$i]->sale_price;
+						$p_prod_price = $product_result[$i]->product_price;
+						$cal_tag_dicount = $this->products_model->calculate_tag_discount($p_prod_price,$p_sale_price);
+						if(!empty($cal_tag_dicount)){
+							$products['tag_discount'] = $cal_tag_dicount.'% OFF';
+						}else{
+							$products['tag_discount'] = '';
+						}
+
 					}
 					$result['products'][] = $products;
 				}

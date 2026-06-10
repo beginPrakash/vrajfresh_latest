@@ -979,15 +979,22 @@ ctoalamt =  $("#cart_total").val();
     } else {
         $('#billing-address-error').text("Please select billing address.");
     }
-
-    var substitute = document.getElementsByName("refund_for_unavailable");
-    for (var i = 0; i < substitute.length; i++) {
-        if (substitute[i].checked) {
-            SubstituteError = 0;
-            //isValid = true;
-            break;
-        }
+if($('input[type=radio][name=refund_for_unavailable]:checked').val() == '2'){
+    if ($('input[name="substitution_product_ids[]"]:checked').length > 0) {
+        SubstituteError = 0;
+         
     }
+    // var substitute = document.getElementsByName("substitution_product_ids");
+    // console.log(substitute.length);
+    // for (var i = 0; i < substitute.length; i++) {
+    //     if (substitute[i].checked) {
+    //         SubstituteError = 0;
+    //         //isValid = true;
+    //         break;
+    //     }
+
+    // }
+}
 
     if(ShippingAddressError == 1){
         if($("#shipping_address_count").val() > 0){
@@ -1010,9 +1017,14 @@ ctoalamt =  $("#cart_total").val();
     } */
 
     if(SubstituteError == 1){
-        $("#replace-policy-error").text("Please select an option.");
+        if($('input[type=radio][name=refund_for_unavailable]:checked').val() == '2'){
+            $("#substitu-pro-error").text("Please select an option.");
+        }else{
+            SubstituteError = 0;
+            $("#substitu-pro-error").text("");
+        }
     } else {
-        $("#replace-policy-error").text("");
+        $("#substitu-pro-error").text("");
     }
     
     if(SubstituteError == 0 && ShippingAddressError == 0 && BillingAddressError == 0 && DeliveryTypeError == 0 && DeliveryTypeDateError == 0){
@@ -1527,15 +1539,15 @@ function UpdateCartTax(taxPercentage) {
     }    
     ?>
 
-    var cart_contents = '<?php echo $cartContentsNew; ?>';
-    var cartObject = $.parseJSON(cart_contents);
-    
+    var cart_arr_user = '<?php echo json_encode($this->cart->contents()); ?>';
+    cart_arr_user = JSON.parse(cart_arr_user);
+   
     var counter = 1;
     var grandTotal = 0;
-    $.each(cartObject, function(i) {
+    $.each(cart_arr_user, function(i) {
 
-        var subtotal = cartObject[i].subtotal;
-        if (cartObject[i].product_tax == 1) {
+        var subtotal = cart_arr_user[i].subtotal;
+        if (cart_arr_user[i].product_tax == 1) {
             $("#product-tax-" + counter).text("$" + (taxPercentage * subtotal / 100).toFixed(2));
             grandTotal = (parseFloat(grandTotal) + (parseFloat(taxPercentage) * parseFloat(subtotal) / 100)).toFixed(2);
             subtotal = (parseFloat(subtotal) + (parseFloat(taxPercentage) * parseFloat(subtotal) / 100)).toFixed(2);
@@ -1575,12 +1587,15 @@ function GettototalCartTax(taxPercentage) {
 
     var cart_contents = '<?php echo $cartContentsNew; ?>';
     var cartObject = $.parseJSON(cart_contents);
+
+    var cart_arr_user = '<?php echo json_encode($this->cart->contents()); ?>';
+    cart_arr_user = JSON.parse(cart_arr_user);
     
     var grandTotal = 0;
-    $.each(cartObject, function(i) {
+    $.each(cart_arr_user, function(i) {
 
-        var subtotal = cartObject[i].subtotal;
-        if (cartObject[i].product_tax == 1) {
+        var subtotal = cart_arr_user[i].subtotal;
+        if (cart_arr_user[i].product_tax == 1) {
            grandTotal = (parseFloat(grandTotal) + (parseFloat(taxPercentage) * parseFloat(subtotal) / 100)).toFixed(2);
           
         } 

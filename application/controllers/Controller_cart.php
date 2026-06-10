@@ -448,114 +448,114 @@ class Controller_cart extends CI_Controller
 	}
 
 	public function login_cart_data()
-	{
-		$customer_id = 0;
+{
+    $customer_id = 0;
 
-		if (isset($this->session->userdata['logged_in']['user_id'])) {
-			$customer_id = $this->session->userdata['logged_in']['user_id'];
-		}
+    if (isset($this->session->userdata['logged_in']['user_id'])) {
+        $customer_id = $this->session->userdata['logged_in']['user_id'];
+    }
 
-		$oauth_key = $_POST['oauth_key'];
+    $oauth_key = $_POST['oauth_key'];
 
-		if (check_oauth_key($oauth_key) && $customer_id > 0) {
+    if (check_oauth_key($oauth_key) && $customer_id > 0) {
 
-			// ✅ DO NOT unset session manually ❌
-			// $this->session->unset_userdata('cart_contents');
+        // ✅ DO NOT unset session manually ❌
+        // $this->session->unset_userdata('cart_contents');
 
-			// ✅ CLEAR cart properly
-			$this->cart->destroy();
+        // ✅ CLEAR cart properly
+        $this->cart->destroy();
+		$this->db->query("DELETE FROM tbl_cart_items WHERE qty <= 0");
+        // ✅ Fetch DB cart
+        $query = $this->db->where('customer_id', $customer_id)
+                          ->get('tbl_cart_items');
 
-			// ✅ Fetch DB cart
-			$query = $this->db->where('customer_id', $customer_id)
-							->get('tbl_cart_items');
+        if ($query->num_rows() > 0) {
 
-			if ($query->num_rows() > 0) {
+            foreach ($query->result_array() as $cart_row) {
 
-				foreach ($query->result_array() as $cart_row) {
+                $product_id = $cart_row['id'];
+                $variant_id = $cart_row['options_variant_id'];
+                $quantity   = (int)$cart_row['qty'];
 
-					$product_id = $cart_row['id'];
-					$variant_id = $cart_row['options_variant_id'];
-					$quantity   = (int)$cart_row['qty'];
+                $found = false;
+                $rowid = '';
 
-					$found = false;
-					$rowid = '';
+                // ✅ Check existing cart item
+                foreach ($this->cart->contents() as $item) {
+                    if (
+                        $item['id'] == $product_id &&
+                        isset($item['options']['variant_id']) &&
+                        $item['options']['variant_id'] == $variant_id
+                    ) {
+                        $found = true;
+                        $rowid = $item['rowid'];
+                        break;
+                    }
+                }
 
-					// ✅ Check existing cart item
-					foreach ($this->cart->contents() as $item) {
-						if (
-							$item['id'] == $product_id &&
-							isset($item['options']['variant_id']) &&
-							$item['options']['variant_id'] == $variant_id
-						) {
-							$found = true;
-							$rowid = $item['rowid'];
-							break;
-						}
-					}
+                if ($found) {
 
-					if ($found) {
+                    // ✅ UPDATE
+                    $this->cart->update([
+                        'rowid' => $rowid,
+                        'qty'   => $quantity
+                    ]);
 
-						// ✅ UPDATE
-						$this->cart->update([
-							'rowid' => $rowid,
-							'qty'   => $quantity
-						]);
+                } else {
 
-					} else {
+                    // ✅ INSERT
+                    $this->cart->insert([
+                        'id'    => $product_id,
+                        'qty'   => $quantity,
+                        'price' => (float)$cart_row['price'],
+                        'name'  => $cart_row['name'],
+						'product_tax'  => $cart_row['product_tax'],
+						'is_perisible' => $cart_row['is_perisible'],
+                        'options' => [
+                            'variant_id' => $variant_id,
+                            'weight'     => $cart_row['options_weight'],
+                            'image'      => $cart_row['image'],
+                            'product_slug' => $cart_row['product_slug'],
+                            'is_perisible' => $cart_row['is_perisible'],
+                            'product_tax'  => $cart_row['product_tax'],
+                            'created_date' => $cart_row['created_date'],
+							'db_rowid' => $cart_row['row_id']
+                        ]
+                    ]);
+                }
+            }
+        }
+    }
 
-						// ✅ INSERT
-						$this->cart->insert([
-							'id'    => $product_id,
-							'qty'   => $quantity,
-							'price' => (float)$cart_row['price'],
-							'name'  => $cart_row['name'],
-							'product_tax'  => $cart_row['product_tax'],
-							'is_perisible' => $cart_row['is_perisible'],
-							'options' => [
-								'variant_id' => $variant_id,
-								'weight'     => $cart_row['options_weight'],
-								'image'      => $cart_row['image'],
-								'product_slug' => $cart_row['product_slug'],
-								'is_perisible' => $cart_row['is_perisible'],
-								'product_tax'  => $cart_row['product_tax'],
-								'created_date' => $cart_row['created_date'],
-								'db_rowid' => $cart_row['row_id']
-							]
-						]);
-					}
-				}
-			}
-		}
+   $contain = $this->cart->contents();
+$new_contain = [];
 
-		$contain = $this->cart->contents();
-		$new_contain = [];
+foreach ($contain as $key => $item) {
 
-		foreach ($contain as $key => $item) {
+   
+    // get db_rowid if available
+    if (isset($item['options']['db_rowid']) && !empty($item['options']['db_rowid'])) {
+        $db_rowid = $item['options']['db_rowid'];
+    } else {
+        $db_rowid = $key; // fallback
+    }
 
-		
-			// get db_rowid if available
-			if (isset($item['options']['db_rowid']) && !empty($item['options']['db_rowid'])) {
-				$db_rowid = $item['options']['db_rowid'];
-			} else {
-				$db_rowid = $key; // fallback
-			}
+    // ✅ replace rowid for output only
+    $item['rowid'] = $db_rowid;
 
-			// ✅ replace rowid for output only
-			$item['rowid'] = $db_rowid;
+    // 🔥 IMPORTANT: use DB rowid as ARRAY KEY
+    $new_contain[$db_rowid] = $item;
+}
 
-			// 🔥 IMPORTANT: use DB rowid as ARRAY KEY
-			$new_contain[$db_rowid] = $item;
-		}
-
-		$new_contain['total_items'] = $this->cart->total_items();
-		$new_contain['cart_total']  = $this->cart->total();
+$new_contain['total_items'] = $this->cart->total_items();
+$new_contain['cart_total']  = $this->cart->total();
 
 
-		$success_message = "Product Setup";
-		$errors = "";
+    $success_message = "Product Setup";
+    $errors = "";
 
-		send_response_to_api($new_contain, $errors, $success_message);
-	}
+    send_response_to_api($new_contain, $errors, $success_message);
+}
 
 	public function load_cart_data()
 	{
