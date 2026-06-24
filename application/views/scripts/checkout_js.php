@@ -8,6 +8,31 @@
 const front_urls = "<?php echo BASE_URL ?>";
 $(document).on('change', 'input[type=radio][name=shipping_id]', function() {
     var zipcode = $(this).attr('data-zipcode');
+    //check zipcode is valid or not
+    
+    $.ajax({
+        'async': false,
+        "type": "POST",
+        "url": api_url_prefix + 'get-zipcode-validation',
+        data: {
+            zipcode: zipcode,
+            oauth_key: "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT"
+        },
+        dataType: "json",
+        "success": function(response) {
+            
+            if (response.data == null) {
+                $('#shipping-address-select-error').text("Please select valid shipping zipcode address.");
+                $('input[type=radio][name=shipping_id]').prop('checked', false);
+            }else{
+                $('#shipping-address-select-error').text("");
+            }
+
+        },
+        "error": function(response) {
+        }
+    });
+
     var order_val = parseInt($('#hdn_subtotal').val());
     
     var minim_val;
@@ -33,17 +58,25 @@ $(document).on('change', 'input[type=radio][name=shipping_id]', function() {
             "error": function(response) {
             }
         });
+       
         if (confirm("Selected address has different zipcode. Please review the order before you proceed.")) {
+           
             $("#zipcode").val(zipcode);
             //setZipCodeCookie('header');
-            if(order_val < minim_val){
-                //console.log(front_urls + "cart-detail");
-                window.location.href = front_urls + "cart-detail?zipcode="+zipcode;
-                return false;
-            }else{
-                $("#zipcode").val(zipcode);
-                setZipCodeCookie('header');
-            }
+            
+                if(order_val < minim_val){
+                    if(minim_val != undefined){
+                        //console.log(front_urls + "cart-detail");
+                        window.location.href = front_urls + "cart-detail?zipcode="+zipcode;
+                        return false;
+                    }else{
+                        $('input[type=radio][name=shipping_id]').prop('checked', false);
+                    }
+                }else{
+                    $("#zipcode").val(zipcode);
+                    setZipCodeCookie('header');
+                }
+            
         } else {
             $('input[type=radio][name=shipping_id]').prop('checked', false);
         }    
@@ -303,7 +336,20 @@ function UpdateAddress(AddressType) {
     //FrmUpdateAddressRules[prefix + 'apartment'] = 'required';
     FrmUpdateAddressRules[prefix + 'city'] = 'required';
     FrmUpdateAddressRules[prefix + 'state_id'] = 'required';
-    FrmUpdateAddressRules[prefix + 'zipcode'] = { required: true, number: true };
+    FrmUpdateAddressRules[prefix + 'zipcode'] = { required: true, number: true,
+        remote: {
+            url: api_url_prefix + "get-zipcode-validation",
+            type: "POST",
+            data: {
+                zipcode: function () {
+                    return $("#" + prefix + "zipcode").val();
+                },
+                oauth_key: function() {
+                    return "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT";
+                }
+            }
+        }
+     };
     FrmUpdateAddressRules[prefix + 'phone'] = { required: true, number: true };
     
 
@@ -318,7 +364,8 @@ function UpdateAddress(AddressType) {
             [prefix + 'state_id'] : 'State is required',
             [prefix + 'zipcode'] : {
                 required: 'Zip code is required',
-                email: 'Please enter only digits'
+                email: 'Please enter only digits',
+                remote: 'Please enter valid zipcode'
             },
             [prefix + 'phone'] : {
                 required: 'Phone number is required',
@@ -385,7 +432,20 @@ function SaveAddress(AddressType) {
     //FrmAddAddressRules[prefix + 'apartment'] = 'required';
     FrmAddAddressRules[prefix + 'city'] = 'required';
     FrmAddAddressRules['check_' + prefix + 'state_id'] = 'required';
-    FrmAddAddressRules[prefix + 'zipcode'] = { required: true, number: true };
+    FrmAddAddressRules[prefix + 'zipcode'] = { required: true, number: true,
+        remote: {
+            url: api_url_prefix + "get-zipcode-validation",
+            type: "POST",
+            data: {
+                zipcode: function () {
+                    return $("#" + prefix + "zipcode").val();
+                },
+                oauth_key: function() {
+                    return "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT";
+                }
+            }
+        }
+     };
     FrmAddAddressRules[prefix + 'phone'] = { required: true, number: true };
 
     $("#Frm_" + prefix + "Address").validate({
@@ -399,7 +459,8 @@ function SaveAddress(AddressType) {
             ['check_' + prefix + 'state_id'] : 'State is required',
             [prefix + 'zipcode'] : {
                 required: 'Zip code is required',
-                email: 'Please enter only digits'
+                email: 'Please enter only digits',
+                remote: 'Please enter valid zipcode'
             },
             [prefix + 'phone'] : {
                 required: 'Phone number is required',
@@ -585,7 +646,7 @@ function addFixedTipAmount(tip_amount) {
         $("#hdn_tip_amount").val(0);
 
     }
-
+    calculateCheckoutTotal();
     }
 
 
@@ -601,6 +662,8 @@ function addCustomTip() {
     $(".order_tip").removeClass('active');
 
     $("#add_tip_button").show();
+
+    calculateCheckoutTotal();
 
 }
 
@@ -1020,8 +1083,8 @@ if($('input[type=radio][name=refund_for_unavailable]:checked').val() == '2'){
         if($('input[type=radio][name=refund_for_unavailable]:checked').val() == '2'){
             $("#substitu-pro-error").text("Please select an option.");
         }else{
-            SubstituteError = 0;
             $("#substitu-pro-error").text("");
+            SubstituteError = 0;
         }
     } else {
         $("#substitu-pro-error").text("");
@@ -1030,14 +1093,17 @@ if($('input[type=radio][name=refund_for_unavailable]:checked').val() == '2'){
     if(SubstituteError == 0 && ShippingAddressError == 0 && BillingAddressError == 0 && DeliveryTypeError == 0 && DeliveryTypeDateError == 0){
         AllErrorFixed = 1;
     }
-   
+   var finalAmount = calculateCheckoutTotal();
+    if (finalAmount <= 0) {
+        finalAmount = ctoalamt;
+    }
     if(AllErrorFixed == 1){
         const updateRes = await fetch("/api/stripe/update-intent", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
             intent_id: paymentIntentId,
-            amount: ctoalamt // new amount
+            amount: finalAmount // new amount
             })
         });
 
@@ -1262,6 +1328,7 @@ console.log('tax_add'+tax_product);
 
     $("#cart-tax").text(parseFloat(price).toFixed(2));
     //$("#cart-tax").text((Math.ceil(price * 100) / 100).toFixed(2));
+
 
     $("#cart-total").html(parseFloat(total_tax_sub));
 
@@ -1748,6 +1815,7 @@ $(document).ready(function() {
         });
     }
 
+
     if (order_amount != "" && order_amount != null) {
 
         $("#cart-total").html((parseFloat(order_amount) + parseFloat( <?php echo $preparation_cost + $packaging_cost; ?>)).toFixed(2));
@@ -1941,6 +2009,57 @@ $(document).ready(function() {
 	
 
 });
+
+var checkoutTotal = 0;
+
+function calculateCheckoutTotal() {
+
+
+    var subtotal = '<?php echo number_format($total_price,2); ?>';
+    subtotal = parseFloat(subtotal) || 0;
+
+    var preparation_cost = '<?php echo number_format($preparation_cost,2); ?>';
+    preparation_cost = parseFloat(preparation_cost) || 0;
+
+    var packaging_cost = '<?php echo number_format($packaging_cost,2); ?>';
+    packaging_cost = parseFloat(packaging_cost) || 0;
+
+    // Tax amount
+    var selectedOption = $("#state").val().split('|');
+
+    var selectedValue = selectedOption[0];
+    var taxAmount = GettototalCartTax(selectedValue);
+    taxAmount = parseFloat(taxAmount) || 0;
+
+    // Discount
+    var discount = parseFloat(sessionStorage.getItem("discount_amount")) || 0;
+
+    // Tip
+    var tip = parseFloat($("#hdn_tip_amount").val()) || 0;
+
+    // Credit
+    var credit = 0;
+    if ($('#earned_credit_checkbox').is(':checked')) {
+
+        var user_cr = '<?php echo number_format($earned_credit,2); ?>';
+        credit = parseFloat(user_cr) || 0;
+    }
+
+    checkoutTotal = subtotal + packaging_cost + preparation_cost + taxAmount + tip - discount - credit;
+
+    if (checkoutTotal < 0) {
+        checkoutTotal = 0;
+    }
+
+    checkoutTotal = parseFloat(checkoutTotal.toFixed(2));
+
+    // Update all fields
+    // $("#cart-total").html(checkoutTotal);
+    $("#cart_total").val(checkoutTotal);
+    // $("#hdn_order_amount").val(checkoutTotal);
+
+    return checkoutTotal;
+}
 
 
 

@@ -38,13 +38,8 @@ class Controller_blogs extends CI_Controller
      public function details($slug = ''){
         $blog = $this->blogs_model->get_blog_by_slug($slug);
 
-        if(empty($blog))
-        {
-           
-        }
-
         $data['blog'] = $blog;
-        $headerdata = array('meta_title' => $blog['meta_title'] ?? '','meta_description' => $blog['meta_description'] ?? '');
+        $headerdata = array('meta_title' => $blog['meta_title'] ?? '','meta_description' => $blog['meta_descriptions'] ?? '');
         
         $this->load->view('common/header', $headerdata);
         $this->load->view('blog-detail', $data);

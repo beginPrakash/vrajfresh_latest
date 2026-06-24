@@ -109,7 +109,7 @@ class Controller_cart extends CI_Controller
 					'delivery_days' => $ZipcodeDetails['delivery_days'],
 					'delivery_area_name' => $ZipcodeDetails['area_name'],
 					'delivery_state_id' => $ZipcodeDetails['state_id'],
-					'zipcode_success_message' => 'Yes, We deliver in your area!',
+					'zipcode_success_message' => '',
 					'zipcode_error_message' => '',
 					'valid_zipcode' => 'TRUE',
 				);
@@ -124,7 +124,7 @@ class Controller_cart extends CI_Controller
 					'delivery_area_name' => '',
 					'delivery_state_id' => '',
 					'zipcode_success_message' => '',
-					'zipcode_error_message' => 'Sorry We do not deliver in your area.',
+					'zipcode_error_message' => '',
 					'valid_zipcode' => 'FALSE',
 				);
 			}

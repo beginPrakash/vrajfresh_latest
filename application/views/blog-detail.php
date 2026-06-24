@@ -16,6 +16,11 @@
     margin-bottom:15px;
 }
 
+.blog-description h2, 
+.blog-description h3 {
+    display: block;
+}
+
 .blog-meta{
     color:#777;
     margin-bottom:20px;
@@ -29,6 +34,16 @@
 .blog-description img{
     max-width:100%;
     height:auto;
+}
+
+.blog-description ul,
+.blog-description li,
+.blog-description p {
+    display: flex !important;
+}
+
+.blog-description table tr td {
+    border: 1px solid #000;
 }
 
 .related-blogs h2{
@@ -49,6 +64,61 @@
 .blog-content{
     padding:20px;
 }
+.blog_cta_wrap, .cta_main_info {
+    background: #1e53a5;
+    border-radius: 12px;
+    padding: 50px 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+.blog_cta_wrap::before, .cta_main_info::before {
+    content: "";
+    background-image: url(https://cdn.moontechnolabs.com/live/new_mtpl_assets/images/new_blog/before_cta.png);
+    background-repeat: no-repeat;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 280px;
+    width: 307px;
+}
+.blog_cta_wrap span {
+    color: #fff !important;
+    position: relative;
+    padding-left: 20px;
+    line-height: 25px !important;
+    margin: 0;
+    font-weight: 600;
+    font-size: 28px;
+}
+.blog_cta_wrap p, .cta_main_info p {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 22px;
+    color: #fff;
+    padding-top: 10px;
+    text-align: center;
+}
+.blog_summary_text p {
+    font-size: 16px !important;
+    font-weight: 400;
+    line-height: 30px;
+    color: #fff;
+    padding-top: 16px;
+}
+.blog_cta_wrap a, .cta_main_info a {
+    animation: 2s infinite pulse;
+    background: rgba(255, 122, 47, 1);
+    padding: 10px;
+    color: #fff;
+    margin-top: 30px;
+    z-index: 9;
+    position: relative;
+    padding-top:8px;
+}
 </style>
 <section class="blog-detail-section py-5">
     <div class="container">
@@ -64,14 +134,28 @@
 
                 <h1><?= $blog['blog_title']; ?></h1>
 
-                <div class="blog-description">
-                    <?= $blog['blog_description']; ?>
-                </div>
+               
 
+                <?php $custom_section = '
+                    <div class="blog_cta_wrap">
+                    <span class="">'.$blog['cta_title'].'<br>
+                    </span><p></p>
+                    <p class="">'.$blog['cta_sub_title'].'</p>
+                    <p class=""><a id="talk_to_expert" class="btn" href="'.$blog['internal_link'].'">'.$blog['cta_btn_text'].'<br>
+                    </a></p>
+                    </div>';
+
+                    $table_of_content = str_replace('(CTA)', $custom_section, $blog['table_of_content']);
+                    $blog_content = str_replace('(CTA)', $custom_section, $blog['blog_description']);
+                    ?>
+
+               
                 <div class="blog-description">
-                    <?= $blog['table_of_content']; ?>
+                    <?= $blog_content; ?>
                 </div>
-                <p><?= $blog['internal_link']; ?></p>
+                <div class="blog-description">
+                    <?= $table_of_content; ?>
+                </div>
             </div>
 
         </div>

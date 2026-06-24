@@ -126,12 +126,45 @@
             </div>
 
           </div>
+          <div class="form-group">
+
+            <label for="exampleInputEmail1">CTA Title</label>
+
+            <input type="text" class="form-control" id="cta_title" name="cta_title" placeholder="CTA Title"
+
+              value="<?php echo (isset($ArrFieldData['cta_title'])) ? trim($ArrFieldData['cta_title']) : ''; ?>">
+
+
+
+          </div>
+          <div class="form-group">
+
+            <label for="exampleInputEmail1">CTA SUb Title</label>
+
+            <input type="text" class="form-control" id="cta_sub_title" name="cta_sub_title" placeholder="CTA Sub Title"
+
+              value="<?php echo (isset($ArrFieldData['cta_sub_title'])) ? trim($ArrFieldData['cta_sub_title']) : ''; ?>">
+
+
+
+          </div>
+          <div class="form-group">
+
+            <label for="exampleInputEmail1">CTA Button Text</label>
+
+            <input type="text" class="form-control" id="cta_btn_text" name="cta_btn_text" placeholder="CTA Button Text"
+
+              value="<?php echo (isset($ArrFieldData['cta_btn_text'])) ? trim($ArrFieldData['cta_btn_text']) : ''; ?>">
+
+
+
+          </div>
 
           <div class="form-group">
 
-            <label for="exampleInputEmail1">Internal linking capability</label>
+            <label for="exampleInputEmail1">CTA Link</label>
 
-            <input type="text" class="form-control" id="internal_link" name="internal_link" placeholder="Internal linking capability"
+            <input type="text" class="form-control" id="internal_link" name="internal_link" placeholder="CTA Link"
 
               value="<?php echo (isset($ArrFieldData['internal_link'])) ? trim($ArrFieldData['internal_link']) : ''; ?>">
 
