@@ -129,6 +129,7 @@ $route['get-zipcode-by-id'] = 'Controller_zipcodes/get_zipcode_by_id';
 $route['update-zipcode'] = 'Controller_zipcodes/update_zipcode';
 $route['delete-zipcode'] = 'Controller_zipcodes/delete_zipcode';
 $route['get-zipcode-detail'] = 'Controller_zipcodes/get_zipcode_detail';
+$route['get-zipcode-validation'] = 'Controller_zipcodes/get_zipcode_validation';
 $route['remove-zipcode-products'] = 'Controller_zipcodes/remove_zipcode_products';
 
 $route['get-tags'] = 'Controller_tags/get_tags';

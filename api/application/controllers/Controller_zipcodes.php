@@ -272,4 +272,27 @@ class Controller_zipcodes extends CI_Controller
 			send_response_to_api($ArrData, $errors, $success_message);
 		}
 	}
+
+	public function get_zipcode_validation()
+	{
+		$json_str = file_get_contents('php://input');
+		$json_obj = json_decode($json_str);
+		$oauth_key = $_POST['oauth_key'];
+		$errors = $success_message = '';
+		$ArrData = array();
+		if (check_oauth_key($oauth_key)) {
+			$data = array(
+				'zipcode' => $_POST['zipcode']
+			);
+			$zipcodeData = $this->zipcodes_model->get_zipcode_by_data($data['zipcode']);
+			//echo "<pre>";print_r($zipcodeData);exit;
+			$ArrData = $zipcodeData;
+			if (count($zipcodeData) > 0) {
+				echo 'true';
+			} else {
+				echo 'false';
+			}
+
+		}
+	}
 }

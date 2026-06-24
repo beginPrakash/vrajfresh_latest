@@ -4,8 +4,6 @@
 
 $(document).ready(function () {
 
-
- $('.related-products').load(location.href + ' .related-products > *');
     showProgress('div#spinner');
     get_product_detail(api_url_prefix);
     hideProgress('div#spinner');
@@ -1363,7 +1361,7 @@ function get_related_product(api_url_prefix, category_slug, product_id) {
 								var out_of_stock = "<div class='product-stock-message'></div>";
 								var out_of_stock_class = "";
 
-								console.log("product out of stock:" + response.data[a].is_out_of_stock + " and variant out of stock:" + variant_in_stock_count);
+								//console.log("product out of stock:" + response.data[a].is_out_of_stock + " and variant out of stock:" + variant_in_stock_count);
 								if (response.data[a].is_out_of_stock == 0) {
 									out_of_stock = "<div class='product-stock-message'>Product Out of stock</div>";
 									out_of_stock_class = "out_of_stock";

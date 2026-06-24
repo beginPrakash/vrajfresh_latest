@@ -65,7 +65,7 @@
                           <?php echo $items["name"] . " (" . $items["options"]['weight'] . "lb)"; ?></a>
                         <div class="mobile-view-show">
                           <div class="mobile-price">$ <?php echo $items["price"] * $items["qty"]; ?></div>
-                          <button type="button" name="remove" class="remove_inventory error" id="<?php echo $items["rowid"]; ?>">X</button>
+                          <button type="button" name="remove" class="remove_inventory error" data-newid="<?php echo $items["id"]; ?>" id="<?php echo $items["rowid"]; ?>">X</button>
                         </div>
                       </div>
                     </td>

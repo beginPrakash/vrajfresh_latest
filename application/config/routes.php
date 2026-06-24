@@ -83,7 +83,7 @@ $route['brand/(:any)'] = 'Controller_brands/products_list/$1';
 $route['brands'] = 'Controller_brands/brand_list';
 
 $route['blogs'] = 'Controller_blogs/index';
-$route['blog/details/(:any)'] = 'Controller_blogs/details/$1';
+$route['blog/(:any)'] = 'Controller_blogs/details/$1';
 
 $route['tag/(:any)'] = 'Controller_tags/products_list/$1';
 

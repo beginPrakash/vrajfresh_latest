@@ -143,7 +143,7 @@
                             <div class="blog-content">
                                 
                                 <h4>
-                                    <a href="<?php echo base_url('blog/details/'.$blog['blog_slug']); ?>"><?php echo $blog['blog_title']; ?></a>
+                                    <a href="<?php echo base_url('blog/'.$blog['blog_slug']); ?>"><?php echo $blog['blog_title']; ?></a>
                                 </h4>
 
                                 <p>
@@ -151,7 +151,7 @@
                                 </p>
 
                                 <div class="blog-footer">
-                                    <a href="<?php echo base_url('blog/details/'.$blog['blog_slug']); ?>">Read More</a>
+                                    <a href="<?php echo base_url('blog/'.$blog['blog_slug']); ?>">Read More</a>
                                 </div>
                             </div>
                         </div>

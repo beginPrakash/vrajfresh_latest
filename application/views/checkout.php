@@ -100,6 +100,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
 			         <?php } 
                } ?>
 		      </div>
+            <span id="shipping-address-select-error" class="error"></span>
          </div>
 
          <div class="billing-left" id="billingData">
