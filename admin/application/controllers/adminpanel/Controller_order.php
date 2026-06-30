@@ -859,7 +859,74 @@ class Controller_order extends CI_Controller
 			$this->order_model->update($order_id, $order_data);
 			//-------------------Update Order master end-------------------
 
+			//-------------------Start Delivery Status Push Notifications -------------------
 
+			$order_data_new = $this->order_model->getOrderById($order_id);
+			$title = '';
+			$body  = '';
+			$order_id = $order_data_new['order_id'];
+			$user_id  = $order_data_new['user_id'];
+
+			// Set dynamic content based on order status
+			if ($order_status == 'Out For Delivery') {
+				$title = 'Order Is Out For Delivery!';
+				$body  = "Your order #{$order_id} has been Out For Delivery.";
+			} elseif ($order_status == 'Completed') {
+				$title = 'Order Delivered!';
+				$body  = "Your order #{$order_id} has been Delivered.";
+			}
+
+			// 3. Only run if the status matches one of our targeted rules above
+			if (!empty($title) && !empty($body)) {
+
+				// Prepare shared custom data parameters
+				$extra_data = [
+					'type'     => 'ORDER_DETAILS',
+					'order_id' => $order_id,
+				];
+				$json_custom_data = json_encode($extra_data);
+
+				// ALWAYS log history in the master notification table
+				$insert_notification_data = [
+					'user_id'     => $user_id,
+					'title'       => $title,
+					'body'        => $body,
+					'custom_data' => $json_custom_data,
+					'read_status'      => 0 // 0 = Unread app notification inbox item
+				];
+				$this->db->insert('tbl_notification', $insert_notification_data);
+
+				// Check if the user has any active device tokens for Push Notifications
+				$this->db->where('user_id', $user_id);
+				$query = $this->db->get('tbl_user_fcm_tokens');
+
+				if ($query->num_rows() > 0) {
+					$fcm_tokens = $query->result_array();
+					$batch_queue_data = [];
+
+					// Loop through all found devices and prepare background queue payloads
+					foreach ($fcm_tokens as $row) {
+						if (!empty($row['fcm_token'])) {
+							$batch_queue_data[] = [
+								'user_id'      => $user_id,
+								'device_token' => $row['fcm_token'],
+								'title'        => $title,
+								'body'         => $body,
+								'custom_data'  => $json_custom_data,
+								'status'       => 'pending'
+							];
+						}
+					}
+
+					// 7. Fire a single batch insert to queue up all notifications simultaneously 
+					if (!empty($batch_queue_data)) {
+						$this->db->insert_batch('tbl_notification_queue', $batch_queue_data);
+					}
+				}
+			}
+			
+			//-------------------End Delivery Status Push Notifications -------------------
+			
 			//-------------------Send mail when order stsatus is Out For Delivery-------------------
 
 			if ($order_status == 'Out For Delivery') {

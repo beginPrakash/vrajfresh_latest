@@ -163,6 +163,7 @@ $route['V1/get-user-detail'] = 'V1/Controller_users/get_user_by_id';
 $route['V1/get-users'] = 'V1/Controller_users/get_users';
 $route['V1/add-user'] = 'V1/Controller_users/add_user';
 $route['V1/login'] = 'V1/Controller_users/login';
+$route['V1/logout'] = 'V1/Controller_users/logout';
 $route['V1/verify_otp'] = 'V1/Controller_users/verify_otp';
 $route['V1/regenerate_token'] = 'V1/Controller_users/regenerate_token';
 $route['V1/login-deliveryboy'] = 'V1/Controller_users/login_deliveryboy';
@@ -170,7 +171,6 @@ $route['V1/forgot-password'] = 'V1/Controller_users/forgot_password';
 $route['V1/change-password'] = 'V1/Controller_users/change_password';
 $route['V1/get-user-address'] = 'V1/Controller_users/get_user_address';
 $route['V1/edit-user-address'] = 'V1/Controller_users/edit_user_address';
-$route['V1/logout'] = 'V1/Controller_users/logout';
 
 $route['V1/contact-mail'] = 'V1/Controller_users/contact_mail';
 $route['V1/delete-user-account'] = 'V1/Controller_users/delete_user_account';

@@ -17,6 +17,7 @@ class Controller_users extends CI_Controller
 		$this->load->model('otpverification_model');
 		$this->load->model('usertoken_model');
 		$this->load->library('cart');
+		$this->load->model('Fcm_token_model');
 		error_reporting(0);
 	}
 	public function get_users()
@@ -254,9 +255,20 @@ class Controller_users extends CI_Controller
 
 				$result = $this->users_model->check_user($data);
 				
+				// Grab FCM details sent from the login form/API payload
+				$fcm_token   = $json_obj->fcm_token; // The FCM token sent from the client
+				$device_type = $json_obj->device_type; // e.g., 'android', 'ios'
+				if(!empty($fcm_token) && !in_array($device_type, ['android', 'ios'])) {
+					$errors = 'Invalid device type. Must be either android or ios.';
+					$ArrError = array('is_successful' => '0', 'error_code' => 401, 'data' => null, 'errors' => $errors);
+					$myJSON = json_encode($ArrError);
+					header('HTTP/1.1 401 Unauthorized');
+					echo $myJSON;
+					return;
+				}
+
 				//generate and save token
 					
-
 				$accessToken = bin2hex(random_bytes(32));
 				$refreshToken = bin2hex(random_bytes(32));
 				$utoken_data = array(
@@ -274,6 +286,12 @@ class Controller_users extends CI_Controller
         			$ArrData['refresh_token'] = $refreshToken;
         			$ArrData['expires_in'] = 86400;
 					$success_message = 'OTP Verified Successfully';
+
+					// Link device token to this user
+					if (!empty($fcm_token)) {
+						$this->Fcm_token_model->save_token($result[0]->user_id, $fcm_token, $device_type);
+					}
+
 					send_response_to_api($ArrData, $errors, $success_message);
 				} else {
 					$errors = 'OTP Not Verified Successfully';
@@ -299,6 +317,17 @@ class Controller_users extends CI_Controller
 		$ArrData = array();
 		$refreshToken = $json_obj->refresh_token;
 
+		// Grab FCM details sent from the login form/API payload
+		$fcm_token   = $json_obj->fcm_token; // The FCM token sent from the client
+		$device_type = $json_obj->device_type; // e.g., 'android', 'ios'
+		if(!empty($fcm_token) && !in_array($device_type, ['android', 'ios'])) {
+			$errors = 'Invalid device type. Must be either android or ios.';
+			$ArrError = array('is_successful' => '0', 'error_code' => 401, 'data' => null, 'errors' => $errors);
+			$myJSON = json_encode($ArrError);
+			header('HTTP/1.1 401 Unauthorized');
+			echo $myJSON;
+			return;
+		}
     	$record = $this->db->get_where('tbl_users_token', ['refresh_token' => $refreshToken])->row();
 
 		if (!$record || strtotime($record->refresh_expiry) < time()) {
@@ -313,6 +342,11 @@ class Controller_users extends CI_Controller
 			'access_token' => $newAccessToken,
 			'access_expiry' => date("Y-m-d H:i:s", strtotime("+24 hours"))
 		]);
+
+		// Link device token to this user
+		if (!empty($fcm_token)) {
+			$this->Fcm_token_model->save_token($record->user_id, $fcm_token, $device_type);
+		}
 		
 		$ArrData['status'] = true;
         $ArrData['access_token'] = $newAccessToken;
@@ -852,5 +886,38 @@ class Controller_users extends CI_Controller
 			$success_message = 'User not Exist';
 		}
 		send_response_to_api($ArrData, $errors, $success_message);
+	}
+
+	public function logout()
+	{
+
+		$json_str = file_get_contents('php://input');
+		$json_obj = json_decode($json_str);
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+
+		$errors = $success_message = '';
+		
+		$fcm_token = $json_obj->fcm_token;
+
+		$ArrData = array();
+		if (check_oauth_key($oauth_key)) {
+			// Delete the access token and refresh token from the database
+			$this->db->where('access_token', $oauth_key)->delete('tbl_users_token');
+
+			// delete the FCM token associated with this user and device type
+			if (!empty($fcm_token)) {
+				$this->Fcm_token_model->delete_token($fcm_token);
+			}
+			
+			$ArrData['status'] = true;
+			$success_message = 'Logout Successfully';
+			send_response_to_api($ArrData, $errors, $success_message);
+		}
 	}
 }
