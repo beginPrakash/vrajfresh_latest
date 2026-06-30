@@ -10,6 +10,8 @@ application/cache/*
 
 application/logs/*
 
+admin/application/config/firebase_credentials.json
+
 !application/logs/index.html
 
 
