@@ -489,7 +489,8 @@ $config['compress_output'] = FALSE;
 | helper' page of the user guide for information regarding date handling.
 |
 */
-$config['time_reference'] = 'local';
+//$config['time_reference'] = 'local';
+date_default_timezone_set('America/New_York');
 
 /*
 |--------------------------------------------------------------------------
@@ -527,5 +528,6 @@ $config['proxy_ips'] = '';
 $config['MaxFailedPayments'] = 2; /* Number of payment fail */
 $config['membership_cycle'] = 1; /* membership recuring cycle */
 $config['membership_cycle_duration'] = "Day"; /* membership recuring cycle type */
+$config['timezone'] = 'America/New_York';
 
 

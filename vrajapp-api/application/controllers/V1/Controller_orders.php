@@ -917,7 +917,7 @@ class Controller_orders extends CI_Controller
 				$data = array(
 					'user_id' => $user_id,
 					'coupon_id' => $ArrCustomer['coupon_id'],
-					'order_datetime' => date('Y-m-d'),
+					'order_datetime' => date('Y-m-d H:i:s'),
 					'order_status' => trim('Pending Payment'),
 					'order_notes' => $ArrCustomer['order_notes'],
 					'delivery_comments' => $ArrCustomer['delivery_comments'],

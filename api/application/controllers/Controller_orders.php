@@ -438,7 +438,7 @@ class Controller_orders extends CI_Controller
 			$data = array(
 				'user_id' => $user_id,
 				'coupon_id' => $json_obj->ArrCustomer->coupon_id,
-				'order_datetime' => date('Y-m-d'),
+				'order_datetime' => date('Y-m-d H:i:s'),
 				'order_status' => trim('Pending Payment'),
 				'order_notes' => $json_obj->ArrCustomer->order_notes,
 				'delivery_comments' => $json_obj->ArrCustomer->delivery_comments,
@@ -499,9 +499,9 @@ class Controller_orders extends CI_Controller
 					"product_id" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->product_id))),
 					/*"product_name" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->product_name))),*/
 					"product_name" => $product->product_name,
-					"product_tax" => $product->product_tax,
 					"unit_price" => trim($product->unit_price),
 					"product_tax_amount" => trim($product->product_tax_amount),
+					"product_tax" => $product->product_tax,
 					//"product_variant_id" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->product_variant_id))),
 					"product_variant_id" => ($product->product_variant_id) ? $product->product_variant_id : 0,
 					"qty" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->qty))),
@@ -1325,7 +1325,7 @@ class Controller_orders extends CI_Controller
                 'clientSecret' => $paymentIntent->client_secret,
 				'paymentId' => $paymentIntent->id
             ];
-		//print_r($paymentIntent);exit;
+//print_r($paymentIntent);exit;
             echo json_encode($output);
         } catch (Error $e) {
             http_response_code(500);
