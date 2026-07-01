@@ -93,6 +93,12 @@ $route['product-image-delete/(:num)/(:num)'] = 'adminpanel/controller_product/im
 $route['import-product'] = 'adminpanel/excel_import/index';
 $route['import-productmeta'] = 'adminpanel/excel_import/meta_index';
 
+/* COMING SOON PRODUCT */
+$route['product/coming-soon'] = 'adminpanel/Controller_product_coming_soon';
+$route['product/coming-soon/add'] = 'adminpanel/Controller_product_coming_soon/add';
+$route['product/coming-soon/update/(:num)'] = 'adminpanel/Controller_product_coming_soon/add/$1';
+$route['product/coming-soon/delete/(:num)'] = 'adminpanel/Controller_product_coming_soon/delete/$1';
+
 /* PROMOTIONAL CODE */
 $route['promotional-code'] = 'adminpanel/Controller_promotional_code';
 $route['promotional-code-delete/(:num)'] = 'adminpanel/Controller_promotional_code/delete_ajax/$1';

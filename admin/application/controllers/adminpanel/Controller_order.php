@@ -858,7 +858,8 @@ class Controller_order extends CI_Controller
 			
 			$this->order_model->update($order_id, $order_data);
 			//-------------------Update Order master end-------------------
-
+			
+			
 			//-------------------Start Delivery Status Push Notifications -------------------
 
 			$order_data_new = $this->order_model->getOrderById($order_id);
@@ -869,11 +870,11 @@ class Controller_order extends CI_Controller
 
 			// Set dynamic content based on order status
 			if ($order_status == 'Out For Delivery') {
-				$title = 'Order Is Out For Delivery!';
-				$body  = "Your order #{$order_id} has been Out For Delivery.";
+				$title = 'Your Order Is On the Way!';
+				$body  = "Your Vraj Fresh order #{$order_id} is on the way and will reach you soon.";
 			} elseif ($order_status == 'Completed') {
-				$title = 'Order Delivered!';
-				$body  = "Your order #{$order_id} has been Delivered.";
+				$title = 'Your Order Delivered Successfully!';
+				$body  = "Your Vraj Fresh order #{$order_id} has been Delivered. We hope you enjoy the freshness!";
 			}
 
 			// 3. Only run if the status matches one of our targeted rules above
@@ -926,7 +927,8 @@ class Controller_order extends CI_Controller
 			}
 			
 			//-------------------End Delivery Status Push Notifications -------------------
-			
+
+
 			//-------------------Send mail when order stsatus is Out For Delivery-------------------
 
 			if ($order_status == 'Out For Delivery') {
