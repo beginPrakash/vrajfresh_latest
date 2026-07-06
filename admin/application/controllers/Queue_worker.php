@@ -31,6 +31,10 @@ class Queue_worker extends CI_Controller {
 
         // 2. Obtain your FCM OAuth2 Access Token
         $accessToken = $this->_get_fcm_access_token();
+        if (!$accessToken) {
+            echo "Auth token Failed. Aborting queue processing.\n";
+            return;
+        }
 
         foreach ($jobs as $job) {
             $current_attempt = $job['attempts'] + 1;
@@ -125,20 +129,16 @@ class Queue_worker extends CI_Controller {
      * Generate and Cache Google OAuth2 Access Token for Firebase HTTP v1
      */
     private function _get_fcm_access_token() {
-        // 1. Initialize CodeIgniter's built-in file cache driver
         $this->load->driver('cache', array('adapter' => 'file'));
-        
         $cache_key = 'fcm_oauth_bearer_token';
         
-        // 2. Return the token directly if it is already cached
         if ($cached_token = $this->cache->get($cache_key)) {
             return $cached_token;
         }
 
-        // 3. Locate and load the Firebase Service Account JSON file
         $json_path = APPPATH . 'config/firebase_credentials.json';
         if (!file_exists($json_path)) {
-            log_message('error', 'Firebase credentials file missing at: ' . $json_path);
+            log_message('error', 'Firebase credentials file missing.');
             return FALSE;
         }
 
@@ -148,27 +148,37 @@ class Queue_worker extends CI_Controller {
             return FALSE;
         }
 
-        // 4. Construct the JSON Web Token (JWT) Payload
+        // Clean up literal text strings if necessary
+        $pkey_string = str_replace("\\n", "\n", $credentials['private_key']);
+        $private_key_resource = openssl_pkey_get_private($pkey_string);
+        
+        if (!$private_key_resource) {
+            log_message('error', 'OpenSSL failed to parse the private key.');
+            return FALSE;
+        }
+
         $current_time = time();
-        $jwt_header = json_encode(['alg' => 'RS256', 'typ' => 'JWT']);
-        $jwt_claim  = json_encode([
+        
+        // FIX 1: Add JSON_UNESCAPED_SLASHES so URLs are formatted cleanly
+        $jwt_header = json_encode(['alg' => 'RS256', 'typ' => 'JWT'], JSON_UNESCAPED_SLASHES);
+        
+        // FIX 2: Dynamic token_uri fallback matching Google's system expectations
+        $audience = isset($credentials['token_uri']) ? $credentials['token_uri'] : 'https://oauth2.googleapis.com/token';
+
+        $jwt_claim = json_encode([
             'iss'   => $credentials['client_email'],
             'scope' => 'https://www.googleapis.com/auth/firebase.messaging',
-            'aud'   => 'https://oauth2.googleapis.com/token',
-            'exp'   => $current_time + 3600, // Token expires in 1 hour
+            'aud'   => $audience,
+            'exp'   => $current_time + 3600,
             'iat'   => $current_time
-        ]);
+        ], JSON_UNESCAPED_SLASHES); // <--- CRITICAL: Keeps slashes raw!
 
-        // Encode Header and Claim using Base64Url encoding specification
         $base64_url_header = $this->_base64url_encode($jwt_header);
         $base64_url_claim  = $this->_base64url_encode($jwt_claim);
         $signature_input   = $base64_url_header . '.' . $base64_url_claim;
 
-        // 5. Crytographically sign the token using SHA-256 and the private key
-        $private_key = $credentials['private_key'];
         $signature = '';
-        
-        if (!openssl_sign($signature_input, $signature, $private_key, OPENSSL_ALGO_SHA256)) {
+        if (!openssl_sign($signature_input, $signature, $private_key_resource, OPENSSL_ALGO_SHA256)) {
             log_message('error', 'OpenSSL failed to sign the JWT assertion.');
             return FALSE;
         }
@@ -176,9 +186,8 @@ class Queue_worker extends CI_Controller {
         $base64_url_signature = $this->_base64url_encode($signature);
         $jwt_assertion = $signature_input . '.' . $base64_url_signature;
 
-        // 6. Exchange the completed JWT assertion for an actual Access Token
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://oauth2.googleapis.com/token');
+        curl_setopt($ch, CURLOPT_URL, $audience);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
@@ -186,10 +195,11 @@ class Queue_worker extends CI_Controller {
             'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
             'assertion'  => $jwt_assertion
         ]));
-
+        
         $response = curl_exec($ch);
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
+        // die('Debugging...' . $response);
 
         if ($http_code !== 200) {
             log_message('error', 'Google OAuth2 token exchange failed: ' . $response);
@@ -199,8 +209,7 @@ class Queue_worker extends CI_Controller {
         $token_data = json_decode($response, true);
         $access_token = $token_data['access_token'];
 
-        // 7. Cache the retrieved access token for 50 minutes (3000 seconds)
-        // This provides a 10-minute buffer before the token expires at Google
+        // Cache the validated token safely for 50 minutes (3000 seconds)
         $this->cache->save($cache_key, $access_token, 3000);
 
         return $access_token;
@@ -211,5 +220,87 @@ class Queue_worker extends CI_Controller {
      */
     private function _base64url_encode($data) {
         return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+    }
+
+
+    public function debug_key() {
+        $json_path = APPPATH . 'config/firebase_credentials.json';
+        
+        if (!file_exists($json_path)) {
+            echo "❌ Error: File not found at {$json_path}\n";
+            return;
+        }
+
+        $credentials = json_decode(file_get_contents($json_path), true);
+        $raw_key = $credentials['private_key'] ?? '';
+
+        echo "=== 1. Checking Raw Key String ===\n";
+        if (empty($raw_key)) {
+            echo "❌ Error: 'private_key' field is empty in your JSON file!\n";
+            return;
+        }
+        echo "✔ Raw key string found (" . strlen($raw_key) . " characters).\n";
+
+        echo "\n=== 2. Testing OpenSSL Parsing ===\n";
+        // Clean up literal text '\n' strings if copy-pasted raw
+        $pkey_cleaned = str_replace("\\n", "\n", $raw_key);
+        
+        $res = openssl_pkey_get_private($pkey_cleaned);
+        
+        if ($res === FALSE) {
+            echo "❌ OpenSSL CANNOT parse your private key!\n";
+            echo "Internal OpenSSL Error: " . openssl_error_string() . "\n";
+            
+            echo "\n💡 Troubleshooting Tips for this failure:\n";
+            echo "- Ensure the key starts EXACTLY with -----BEGIN PRIVATE KEY-----\\n\n";
+            echo "- Ensure the key ends EXACTLY with \\n-----END PRIVATE KEY-----\\n\n";
+            return;
+        } else {
+            echo "✔ OpenSSL parsed the private key successfully!\n";
+        }
+
+        echo "\n=== 3. Testing Crypto Signing ===\n";
+        $test_data = "test_string_to_sign";
+        $signature = "";
+        
+        if (openssl_sign($test_data, $signature, $res, OPENSSL_ALGO_SHA256)) {
+            echo "✔ Cryptographic signing works perfectly on your server!\n";
+            echo "Base64 Signature Output: " . base64_encode($signature) . "\n";
+        } else {
+            echo "❌ Signing failed.\n";
+            echo "Internal OpenSSL Error: " . openssl_error_string() . "\n";
+        }
+    }
+
+
+    public function check_time_drift() {
+        $ch = curl_init('https://oauth2.googleapis.com/token');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+        curl_setopt($ch, CURLOPT_NOBODY, true); // We only want the response headers
+        $response = curl_exec($ch);
+        curl_close($ch);
+        
+        // Extract Google's exact live server timestamp from their response header
+        if (preg_match('/date: (.*)\r/i', $response, $matches)) {
+            $google_time = strtotime($matches[1]);
+            $server_time = time();
+            $difference  = abs($server_time - $google_time);
+            
+            echo "=== Clock Synchronization Test ===\n";
+            echo "Google Live Time: " . date('Y-m-d H:i:s', $google_time) . " UTC\n";
+            echo "Your Server Time: " . date('Y-m-d H:i:s', $server_time) . " UTC\n";
+            echo "Time Difference:  " . $difference . " seconds\n\n";
+            
+            if ($difference > 30) {
+                echo "❌ CRITICAL FAILURE: Your server clock is out of sync by {$difference} seconds.\n";
+                echo "Google rejects any JWT signatures if the time difference exceeds 30 seconds.\n";
+                echo "Fix: Ask your hosting support to run 'sudo ntpdate pool.ntp.org' to sync the clock.\n";
+            } else {
+                echo "✔ SUCCESS: Your server clock is perfectly synced with Google down to the second.\n";
+            }
+        } else {
+            echo "Could not establish a connection to Google to check time.\n";
+        }
     }
 }

@@ -177,6 +177,9 @@ $route['V1/delete-user-account'] = 'V1/Controller_users/delete_user_account';
 $route['V1/update-user'] = 'V1/Controller_users/edit_user';
 $route['V1/user-activate'] = 'V1/Controller_users/user_activate';
 
+$route['V1/get-notifications'] = 'V1/Controller_notifications/get_notifications';
+$route['V1/mark-notification-read'] = 'V1/Controller_notifications/mark_notification_read';
+
 
 $route['V1/cart/add'] = 'V1/Controller_cart/add';
 $route['V1/cart/total-items'] = 'V1/Controller_cart/total_items';
@@ -220,4 +223,3 @@ $route['V1/update-intent'] = 'V1/Controller_orders/updateIntent';
 $route['V1/create-wishlist'] = 'V1/Controller_userwishlist/create_wishlist';
 $route['V1/user-wishlist'] = 'V1/Controller_userwishlist/get_wishlist_by_user_id';
 
-$route['V1/user-notifications'] = 'V1/Controller_usernotifications/get_notification_by_user_id';

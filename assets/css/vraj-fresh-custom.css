@@ -62,11 +62,6 @@ p {
 	font-size: 3.375em;
 }
 
-.vraj-title h1 {
-	color: #1e53a5;
-	font-size: 3.375em;
-}
-
 .vraj-btn {
 	padding: 15px 30px;
 	background: #209FCF;
@@ -411,19 +406,6 @@ button.but:before {
     margin-left: -9px;
 }
 
-.detailtag_img_container{
-    background-color: red;
-    color: #fff;
-    border: 1px solid #fff;
-    width: fit-content !important;
-    padding: 2px 7px 2px 7px;
-    border-radius: 7px;
-    font-size: 13px;
-    font-weight: bold;
-	margin-left: 10px;
-    line-height: 17px !important;
-}
-
 .cattag_container span {
     background-color: red;
     color: white;
@@ -435,6 +417,20 @@ button.but:before {
     font-weight: bold;
     margin-top: -9px;
     margin-left: -9px;
+}
+
+.detailtag_img_container{
+    background-color: red;
+    color: #fff;
+    border: 1px solid #fff;
+    width: fit-content !important;
+    padding: 2px 7px 2px 7px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: bold;
+	margin-left: 10px;
+    line-height: 17px !important;
+	
 }
 
 del.pprice_del {
@@ -586,7 +582,6 @@ ul.tabs {
 	background: #fff;
 	text-align: left;
 }
-
 .product-stock-message {
     color: red;
     font-style: italic;
@@ -2667,7 +2662,6 @@ body {
 	display: flex;
 	text-align: center;
 	font-weight: 600;
-
 	text-transform: uppercase;
 }
 
@@ -3157,10 +3151,6 @@ button.header_button_cart {
 
 .advertise_bottom img {
 	width: 100%;
-}
-
-.advertise_bottom_mobile img {
-    width: 100%;
 }
 
 .deskhide {
@@ -4013,4 +4003,69 @@ li.nav_items {
 
 .checkout-page .billing-right .substitue-box {
 	margin: 5px 0px;
+}
+
+
+.zipcode-bar {
+	background-color: #e6f2fd; /* Light blue background from image */
+	padding: 8px 24px;         /* Vertical and horizontal padding */
+}
+
+/* Flex Container replacing Bootstrap utilities */
+.zipcode-container {
+	display: flex;
+	justify-content: flex-end; /* Aligns all content to the right */
+	align-items: center;       /* Vertically centers text and icons */
+	flex-wrap: wrap;           /* Ensures responsiveness on smaller screens */
+	gap: 12px;                 /* Space between items */
+	max-width: 100%;
+	margin: 0 auto;
+}
+
+/* Individual Segment Styling */
+.zipcode-item {
+	display: flex;
+	align-items: center;
+	gap: 8px;                  /* Space between icon and text */
+	color: #2c3e50;            /* Dark slate/navy text color */
+	font-size: 13px;           /* Crisp, clean text size */
+	font-weight: 500;
+}
+
+.zipcode-item strong {
+	font-weight: 700;
+}
+
+/* Action/Edit Link */
+.zipcode-edit-link {
+	color: #2c3e50;
+	text-decoration: none;
+	display: inline-flex;
+	align-items: center;
+	transition: color 0.2s ease;
+}
+
+.zipcode-edit-link:hover {
+	color: #0066cc;            /* Subtle blue highlight on hover */
+}
+
+.zipcode-edit-link .fa-pencil {
+	font-size: 11px;           /* Makes the pencil slightly smaller, matching the reference */
+}
+
+/* Vertical Divider */
+.zipcode-divider {
+	color: #a0b2c6;            /* Soft muted blue for the pipeline */
+	user-select: none;         /* Prevents highlighting the divider text */
+}
+
+/* Responsive tweak for mobile viewports */
+@media (max-width: 576px) {
+	.zipcode-container {
+		justify-content: center; /* Centers content on small screens */
+		text-align: center;
+	}
+	.zipcode-divider {
+		display: none;          /* Hides vertical divider when items stack */
+	}
 }
