@@ -9,8 +9,16 @@ class Controller_products extends CI_Controller
     public function products_list($slug)
 
     {
-       
         $data = array('url' => $slug);
+        //find meta title and description by cat slug
+        $this->load->model('Product_model');
+        $find_category_meta = $this->Product_model->getCategoryMeta($slug);
+        if(!empty($find_category_meta)){
+            $headerdata = array('meta_title' => $find_category_meta[0]['meta_title'] ?? '','meta_description' => $find_category_meta[0]['meta_description'] ?? '');
+        
+            $this->load->view('common/header', $headerdata);
+
+        }
         $this->load->view('product-list', $data);
 
     }

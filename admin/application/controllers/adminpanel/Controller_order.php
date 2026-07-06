@@ -1234,6 +1234,17 @@ class Controller_order extends CI_Controller
 			</td>
 
 			<td>
+				<select name="product_status[]" class="form-control product_status" required>
+					<option value="">Select Product Status</option>
+					<option value="existing">Existing</option>
+					<option value="newly_added">Newly Added</option>
+					<option value="refunded">Refunded</option>
+					<option value="out_of_stock_refunded">Out Of Stock (Refunded)</option>
+					<option value="qty_changed">QTY Changed</option>
+				</select>
+			</td>
+
+			<td>
 				<input type="text" placeholder="Total Amount" class="form-control total_amount"
 					id="total_amount<?php echo $product_counter; ?>" name="ArrNewTotal_amount[]" value="" required readonly>
 				<input type="hidden"  class="form-control total_new_amount"

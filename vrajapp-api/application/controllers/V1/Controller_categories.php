@@ -561,7 +561,7 @@ class Controller_categories extends CI_Controller
 												$t['size'] = $val->product_variant_size;
 												$t['price'] = $val->variant_price;
 												$t['variant_id'] = $val->id;
-												// $t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
+												$t['is_out_of_stock'] = $val->is_out_of_stock;
 											$tempArray[] = $t;
 										}
 									}

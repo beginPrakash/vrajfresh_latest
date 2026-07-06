@@ -193,6 +193,16 @@
 
           </div>
 
+          <div class="form-group">
+
+            <label for="exampleInputEmail1">BLog JSON Schema</label>
+
+            <textarea class="form-control" rows="10" id="blog_schema" name="blog_schema"
+
+              placeholder="Enter Blog Schema"><?php echo (isset($ArrFieldData['blog_schema'])) ? trim($ArrFieldData['blog_schema']) : ''; ?></textarea>
+
+          </div>
+
           <div class="form-group radio_btn_design_nomal">
 
             <label for="exampleInputEmail1">Is Active</label>

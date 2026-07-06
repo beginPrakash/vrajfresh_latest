@@ -19,6 +19,23 @@ class Product_model extends CI_Model {
 
 	}
 
+
+	public function getCategoryMeta($category_slug='')
+
+	{
+
+		$this->db->select('*');
+
+		$this->db->from('category_meta');
+
+		$this->db->where('category_slug', $category_slug);
+
+		$query = $this->db->get();
+
+		return $query->result_array();
+
+	}
+
 	public function getBrandname($brand_id)
 
 	{

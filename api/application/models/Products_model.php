@@ -301,7 +301,7 @@ class Products_model extends CI_Model
 
             ->where('p.product_id', $data)
 
-            ->where('v.is_out_of_stock','1')
+            //->where('v.is_out_of_stock','1')
 
             // ->where('v.is_deleted','0')
             ->order_by('CAST(v.variant_price as UNSIGNED)', 'ASC')
