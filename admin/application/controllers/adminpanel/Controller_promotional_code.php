@@ -128,19 +128,6 @@ class Controller_promotional_code extends CI_Controller
 
 				}
 
-				$coupon_for = '';
-
-				if ($aRow['coupon_for'] == 'website') {
-
-					$coupon_for = 'Website';
-
-				} elseif ($aRow['coupon_for'] == 'mobile_aplication') {
-
-					$coupon_for = 'Mobile Application';
-
-				}
-				
-
 				$row[] = $actions;
 
 				$row[] = $aRow['promotional_code_id'];
@@ -153,7 +140,7 @@ class Controller_promotional_code extends CI_Controller
 
 				$row[] = $apply_to_product;
 
-				$row[] = $coupon_for;
+				//$row[] = $apply_to;
 
 				$row[] = $aRow['start_from'];
 
@@ -531,8 +518,6 @@ class Controller_promotional_code extends CI_Controller
 
 						'discount_type' => $this->input->post('discount_type'),
 
-						'coupon_for' => $this->input->post('coupon_for'),
-
 						'start_from' => date('Y-m-d', strtotime($this->input->post('start_from'))),
 
 						'valid_upto' => date('Y-m-d', strtotime($this->input->post('valid_upto'))),
@@ -698,14 +683,11 @@ class Controller_promotional_code extends CI_Controller
 				} else { // insert
 
 					//print_r($_REQUEST);
-
 					$promotional_code_add_data = array(
 
 						'promotional_code' => $this->input->post('promotional_code'),
 
 						'discount_type' => $this->input->post('discount_type'),
-
-						'coupon_for' => $this->input->post('coupon_for'),
 
 						'start_from' => date('Y-m-d', strtotime($this->input->post('start_from'))),
 
@@ -845,6 +827,11 @@ class Controller_promotional_code extends CI_Controller
 
 						$this->session->set_flashdata('success_message', 'Promotional Code details has been added successfully.');
 
+						$promotional_code_id = $insert_id;
+						if ($this->input->post('is_active') == 1) {
+							$this->notification_promocode($promotional_code_id);
+						}
+
 					} else {
 
 						$this->session->set_flashdata('error_message', 'Oops...! something went wrong, please try again');
@@ -952,6 +939,124 @@ class Controller_promotional_code extends CI_Controller
 
 
 	}
+
+	private function notification_promocode($promotional_code_id) {
+		$promotional_code_details = $this->promotional_code_model->getPromotionalCodeUsingID($promotional_code_id);
+		if(empty($promotional_code_details) || !is_array($promotional_code_details)) {
+			return;
+		}
+
+		$promotional_code = $promotional_code_details['promotional_code'];
+		$description = $promotional_code_details['description'];
+		$valid_upto = $promotional_code_details['valid_upto'];
+		$discount_type = $promotional_code_details['discount_type'];
+		$discount_value = $promotional_code_details['discount_value'];
+		$apply_to = $promotional_code_details['apply_to'];
+
+		$clientgroup_ids = array();
+		if($apply_to == 'SG') {  // Specific Group
+			$ArrSelectedClientGroup = $this->promotional_code_model->getPromotionalCodeClientGroup($promotional_code_id);
+			$ArrSelectedClientGroupId = array();
+
+			if (is_array($ArrSelectedClientGroup) && count($ArrSelectedClientGroup) > 0) {
+				foreach ($ArrSelectedClientGroup as $clientgroup) {
+					$ArrSelectedClientGroupId[] = $clientgroup['clientgroup_id'];
+				}
+			}
+			$clientgroup_ids = $ArrSelectedClientGroupId;
+		}
+
+		$aColumns = array('tbl_users.user_id', 'tbl_users.first_name','tbl_users.last_name','tbl_users.display_name', 'tbl_users.user_name','tbl_users.email', 'tbl_users.mobile_no', 'tbl_users.is_active');
+		$this->db->select('SQL_CALC_FOUND_ROWS ' . str_replace(' , ', ' ', implode(', ', $aColumns)), false);
+		$this->db->where('tbl_users.user_role_id', 4);
+		$this->db->where('tbl_users.is_active', 1);
+		$this->db->where('tbl_users.is_deleted', 0);
+
+		if($apply_to == 'NC') { // New Customer
+			// Left join orders and look for users where no order record exists
+			$this->db->join('tbl_orders', 'tbl_orders.user_id = tbl_users.user_id', 'left');
+			$this->db->where('tbl_orders.user_id IS NULL', null, false);
+
+		} else if($apply_to == 'RC') { // Returning Customer
+			// Inner join ensures they must have at least one entry in tbl_orders
+			$this->db->join('tbl_orders', 'tbl_orders.user_id = tbl_users.user_id', 'inner');
+			$this->db->group_by('tbl_users.user_id'); // Prevents duplicate rows if they have multiple orders
+
+		} elseif($apply_to == 'SG') {  // Specific Group
+
+			// Join with clientgroup details if IDs exist, otherwise fail safely
+			if (!empty($clientgroup_ids)) {
+				$this->db->join('tblclientgroup_details', 'tblclientgroup_details.user_id = tbl_users.user_id', 'inner');
+				$this->db->where_in('tblclientgroup_details.clientgroup_id', $clientgroup_ids);
+				$this->db->group_by('tbl_users.user_id'); // Prevents duplicate rows
+			} else {
+				// If no group IDs are selected, force the query to return empty safely
+				$this->db->where('tbl_users.user_id', 0); 
+			}
+		}
+
+		$this->db->order_by('tbl_users.user_id', 'desc');
+		$query = $this->db->get('tbl_users');
+		$result = $query->result_array();
+        // echo count($result);
+        // die(' count');
+
+        if (!empty($result) && is_array($result)) {
+
+            $title = substr($description??'New Offer', 0, 100);
+            $body  = "Use code {$promotional_code} & get {$discount_value} {$discount_type} OFF expires on {$valid_upto}";
+
+            // Prepare shared custom data parameters
+            $extra_data = [
+                'type'     => 'PROMO_CODE',
+                'promotional_code'     => $promotional_code,
+            ];
+            $json_custom_data = json_encode($extra_data);
+
+            foreach ($result as $user) {
+                $user_id = $user['user_id'];
+
+                // ALWAYS log history in the master notification table
+                $insert_notification_data = [
+                    'user_id'     => $user_id,
+                    'title'       => $title,
+                    'body'        => $body,
+                    'custom_data' => $json_custom_data,
+                    'read_status'      => 0 // 0 = Unread app notification inbox item
+                ];
+                $this->db->insert('tbl_notification', $insert_notification_data);
+
+                // Check if the user has any active device tokens for Push Notifications
+                $this->db->where('user_id', $user_id);
+                $query = $this->db->get('tbl_user_fcm_tokens');
+
+                if ($query->num_rows() > 0) {
+                    $fcm_tokens = $query->result_array();
+                    $batch_queue_data = [];
+
+                    // Loop through all found devices and prepare background queue payloads
+                    foreach ($fcm_tokens as $row) {
+                        if (!empty($row['fcm_token'])) {
+                            $batch_queue_data[] = [
+                                'user_id'      => $user_id,
+                                'device_token' => $row['fcm_token'],
+                                'title'        => $title,
+                                'body'         => $body,
+                                'custom_data'  => $json_custom_data,
+                                'status'       => 'pending'
+                            ];
+                        }
+                    }
+
+                    // Fire a single batch insert to queue up all notifications simultaneously 
+                    if (!empty($batch_queue_data)) {
+                        $this->db->insert_batch('tbl_notification_queue', $batch_queue_data);
+                    }
+                }
+            }
+
+        }   
+    }
 
 
 

@@ -124,6 +124,89 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
     <div class="top-banner" style="display: none;"></div>
+
+    <div class="zipcode-bar">
+        <input name="zipcode" type="hidden" id="zipcode" class="zipcode_only myinput">
+        <div class="zipcode-container">
+            
+            <div class="zipcode-item">
+                <i class="fa fa-map-marker" aria-hidden="true"></i>
+                <span>My Location - <strong><strong id="zipcode_display"><?php echo (isset($_COOKIE['zipcode'])) ? $_COOKIE['zipcode'] : 'Enter Zipcode'; ?></strong></strong></span>
+                <a href="javascript:void(0)" class="zipcode-edit-link" onclick="showZipCodepopup();" title="Edit Zipcode">
+                    <i class="fa fa-pencil ms-1" style="font-size: 0.75rem;" aria-hidden="true"></i>
+                </a>
+            </div>
+
+            <?php if (isset($_COOKIE['zipcode_success_message']) && !empty($_COOKIE['zipcode_success_message'])) { ?>
+            <span class="zipcode-divider">|</span>
+
+            <div class="zipcode-item">
+                <i class="fa fa-truck" aria-hidden="true"></i>
+                <?php
+                $deliveryDate = '';
+                if ($_COOKIE['delivery_type'] == 'Express Delivery' || $_COOKIE['delivery_type'] == 'Same Day Delivery') {
+                    $timezone = new DateTimeZone("America/New_York");
+                    // Current date/time in New York
+                    $today = new DateTime("now", $timezone);
+                    // Tomorrow date
+                    $tomorrow = clone $today;
+                    $tomorrow->modify('+1 day');
+
+                    // Max date (+7 days)
+                    $maxDate = clone $today;
+                    $maxDate->modify('+7 day');
+
+                    // Current hour and minute
+                    $hr  = $today->format('H');
+                    $min = $today->format('i');
+
+                    // If time is after 2:00 PM
+                    if ($hr >= 14 && $min > 0) {
+                        $today = $tomorrow;
+                    }
+
+                    // Final formatted date
+                    $deliveryDate = $today->format('l, d F Y');
+                }
+                if ($_COOKIE['delivery_type'] == 'Twise in a week') {
+                    $delivery_days = $_COOKIE['delivery_days'];
+                    $dayArray = explode(',', $delivery_days);
+                    $deliveryDate = date('m-d-Y');
+                    
+                    $hours = date('H');
+                    $today = date('l');
+                    
+                    if(in_array($today, $dayArray) && $hours < 15){
+                        $deliveryDate = date('l, d F Y');
+                    } else {
+                        for ($i = 1; $i <= 7; $i++) {
+                            // Get the date for the next iteration
+                            $nextDate = new DateTime();
+                            $nextDate->modify("+$i day");
+                        
+                            // Check if the day of the next date is in the dayArray
+                            if (in_array($nextDate->format('l'), $dayArray)) {
+                                $deliveryDate = $nextDate->format('l, d F Y)');
+                                break; // Exit the loop once a suitable delivery date is found
+                            }
+                        }
+                    }
+                }
+                ?>
+                <span><?php echo $deliveryDate; ?></span>
+            </div>
+            <?php } ?>
+            <?php if (isset($_COOKIE['zipcode_error_message']) && !empty($_COOKIE['zipcode_error_message'])) {?>
+            <span class="zipcode-divider">|</span>
+
+            <div class="zipcode-item">
+                <i class="fa fa-truck" aria-hidden="true"></i>
+                <span><?php echo $_COOKIE['zipcode_error_message']; ?></span>
+            </div>
+            <?php } ?>
+
+        </div>
+    </div>
     <header>
         <div class="container container-flex header">
             <div class="logo">
@@ -131,6 +214,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <img src=<?php echo ASSET_URL . "images/logo.png"; ?> alt="Vraj Fresh online grocery store logo">
                 </a>
             </div>
+            <?php /*
             <div class="zip-code mobile-hide">
                 <div></div>
                 <img src=<?php echo ASSET_URL . "images/map-pin.png"; ?> class="left-arrow">
@@ -149,6 +233,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     } ?>
                 </div>
             </div>
+            <?php */ ?>
             <?php
             $ch_ur = (isset($_SERVER['PATH_INFO']) && !empty($_SERVER['PATH_INFO'])) ? $_SERVER['PATH_INFO'] : '';
             if ($ch_ur == '/checkout') { ?>
@@ -1080,6 +1165,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             } else if (call_from == 'popup') {
                 $('#zipcode_popup').trigger('change');
                 var zipcode = $("#zipcode_popup_value").val();
+                if (zipcode == '') {
+                    var firstItem = $("#zipcode_popup_data ul").find("li:first").text();
+                    zipcode = firstItem.replace(/ *\([^)]*\) */g, "");
+                }
+                console.log(zipcode);
+                // return false;
+            }
+            else if (call_from == 'popup_new') {
+                $('#zipcode_popup_new').trigger('change');
+                var zipcode = $("#zipcode_popup_new_value").val();
                 if (zipcode == '') {
                     var firstItem = $("#zipcode_popup_data ul").find("li:first").text();
                     zipcode = firstItem.replace(/ *\([^)]*\) */g, "");
