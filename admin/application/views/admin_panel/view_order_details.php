@@ -202,6 +202,7 @@ $is_payment_received = true;
                      <th>Quantity</th>
                      <th>Price (in $)</th>
                      <th>Product Tax (in $)</th>
+                     <th>Product Status</th>
                      <th>Total (in $)</th>
                      <?php if ($editAllow == 'Yes') { ?>
                         <th>
@@ -258,6 +259,16 @@ $is_payment_received = true;
                               id="product_tax<?php echo $arr['order_product_id']; ?>"
                               name="product_tax[<?php echo $arr['order_product_id']; ?>]"
                               value="<?php echo $ptax_amount; ?>" required readonly>
+                        </td>
+                        <td>
+                           <select name="product_status[<?php echo $arr['order_product_id']; ?>]" class="form-control product_status" required>
+                              <option value="">Select Product Status</option>
+                              <option value="existing">Existing</option>
+                              <option value="newly_added">Newly Added</option>
+                              <option value="refunded">Refunded</option>
+                              <option value="out_of_stock_refunded">Out Of Stock (Refunded)</option>
+                              <option value="qty_changed">QTY Changed</option>
+                           </select>
                         </td>
 
                         <td>
@@ -480,7 +491,7 @@ $is_payment_received = true;
       <div class="row">
       <div class="col-sm-12">
          <br>
-         <button type="submit" class="btn btn-default" name="submit" id="submit" value="Submit">Generate Label PDF</button>
+         <button type="submit" class="btn btn-default" name="submit" id="submitbtn" value="Submit">Generate Label PDF</button>
       </div>
    </div>
 </form>
@@ -628,7 +639,29 @@ $is_payment_received = true;
          }
       });
    });
-   $("#submit").click(function () {
+   $("#submit").click(function (e) {
+      e.preventDefault();
+
+    let isValid = true;
+
+    $("#banner_frm").find("[required]").each(function () {
+
+        if ($(this).val().trim() == "") {
+
+            $(this).focus();
+            isValid = false;
+
+            toastr.error("Please select product/product status/qty.");
+
+            return false;
+        }
+
+    });
+
+    if (!isValid) {
+        return false;
+    }
+
       $.ajax({
          url: '<?php echo site_url(); ?>update-order-process/',
          type: 'POST',
@@ -805,6 +838,10 @@ $is_payment_received = true;
       if (!(event.which >= 48 && event.which <= 57)) {  
             event.preventDefault();
       }
+   });
+   $('.qty').on('keyup', function () {
+      console.log('sadasd');
+      $(this).closest('tr').find('.product_status').val('');
    });
 </script>
 

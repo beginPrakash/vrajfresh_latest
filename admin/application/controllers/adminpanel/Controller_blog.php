@@ -336,6 +336,8 @@ class Controller_blog extends CI_Controller
 			$blog_description = (trim($_POST['blog_description'])) ? $_POST['blog_description'] : '';
 
 			$cta_title = (trim($_POST['cta_title'])) ? $_POST['cta_title'] : '';
+
+			$blog_schema = (trim($_POST['blog_schema'])) ? $_POST['blog_schema'] : '';
 			
 			$cta_sub_title = (trim($_POST['cta_sub_title'])) ? $_POST['cta_sub_title'] : '';
 
@@ -422,6 +424,8 @@ class Controller_blog extends CI_Controller
 				'blog_description' => $blog_description,
 
 				'cta_title' => $cta_title,
+
+				'blog_schema' => $blog_schema,
 				
 				'cta_sub_title' => $cta_sub_title,
 
@@ -484,6 +488,8 @@ class Controller_blog extends CI_Controller
 			$table_of_content = (trim($_POST['table_of_content'])) ? $_POST['table_of_content'] : '';
 
 			$blog_description = (trim($_POST['blog_description'])) ? $_POST['blog_description'] : '';
+
+			$blog_schema = (trim($_POST['blog_schema'])) ? $_POST['blog_schema'] : '';
 
 			$cta_title = (trim($_POST['cta_title'])) ? $_POST['cta_title'] : '';
 			
@@ -584,6 +590,8 @@ class Controller_blog extends CI_Controller
 				'blog_description' => $blog_description,
 
 				'cta_title' => $cta_title,
+
+				'blog_schema' => $blog_schema,
 				
 				'cta_sub_title' => $cta_sub_title,
 
