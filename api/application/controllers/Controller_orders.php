@@ -514,11 +514,13 @@ class Controller_orders extends CI_Controller
 				//create order products log start
 				$order_product_data_log = array(
 					"order_id" => $result,
+					"order_product_id" => $result_product_id,
 					"product_id" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->product_id))),
 					/*"product_name" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->product_name))),*/
 					"product_name" => $product->product_name,
 					"unit_price" => trim($product->unit_price),
 					"product_tax_amount" => trim($product->product_tax_amount),
+					"product_tax_amount_old" => trim($product->product_tax_amount),
 					"product_tax" => $product->product_tax,
 					//"product_variant_id" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->product_variant_id))),
 					"product_variant_id" => ($product->product_variant_id) ? $product->product_variant_id : 0,
