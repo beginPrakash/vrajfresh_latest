@@ -1534,8 +1534,7 @@ function send_mail($email, $subject, $message) {
 	// Include PHPMailer library
 	
 	// Google API credentials
-	$clientID = '17611857669-17auiif79mg37o0m7o5q5vkhcn9571h8.apps.googleusercontent.com';
-	$clientSecret = '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';
+
 	// $refreshToken = 'YOUR_REFRESH_TOKEN';
 
 	// Sender's email address (Google Workspace)
