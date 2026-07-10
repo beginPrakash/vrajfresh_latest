@@ -172,6 +172,7 @@ $is_payment_received = true;
             <?php echo $ArrFieldData['payment_methodtype']; ?>
          </label>
       </div>
+
       <?php if (!empty($ArrFieldData['order_platform'])) { ?>
          <div class="col-sm-3">
             <label>Order Platform : </label>
@@ -261,13 +262,21 @@ $is_payment_received = true;
                               value="<?php echo $ptax_amount; ?>" required readonly>
                         </td>
                         <td>
-                           <select name="product_status[<?php echo $arr['order_product_id']; ?>]" class="form-control product_status" required>
+                           <select name="product_status[<?php echo $arr['order_product_id']; ?>]" class="form-control product_status" data-pid="<?php echo $arr['order_product_id']; ?>" required>
                               <option value="">Select Product Status</option>
-                              <option value="existing">Existing</option>
-                              <option value="newly_added">Newly Added</option>
-                              <option value="refunded">Refunded</option>
-                              <option value="out_of_stock_refunded">Out Of Stock (Refunded)</option>
-                              <option value="qty_changed">QTY Changed</option>
+                              <?php if (isset($arr['log_status'])){ ?>
+                                 <?php if ($arr['log_status'] != 'refunded' && $arr['log_status'] != 'out_of_stock_refunded') { ?>
+                                    <option value="existing" <?php echo ($arr['log_status'] == 'existing') ? 'selected' : ''; ?>>Existing</option>
+                                    <option value="newly_added" <?php echo ($arr['log_status'] == 'newly_added') ? 'selected' : ''; ?>>Newly Added</option>
+                                 <?php } ?>
+                                 <option value="refunded" <?php echo ($arr['log_status'] == 'refunded') ? 'selected' : ''; ?>>Refunded</option>
+                                 <option value="out_of_stock_refunded" <?php echo ($arr['log_status'] == 'out_of_stock_refunded') ? 'selected' : ''; ?>>Out Of Stock (Refunded)</option>
+                                 <?php if ($arr['log_status'] != 'refunded' && $arr['log_status'] != 'out_of_stock_refunded') { ?>
+                                    <option value="qty_changed" <?php echo ($arr['log_status'] == 'qty_changed') ? 'selected' : ''; ?>>QTY Changed</option>
+                                 <?php } ?>
+                              <?php } else { ?>
+                                 <option value="existing">Existing</option>
+                              <?php } ?>
                            </select>
                         </td>
 
@@ -283,12 +292,12 @@ $is_payment_received = true;
                         </td>
                         
                            <?php if ($editAllow == 'Yes') { ?>
-                              <td>
+                              <!-- <td>
                                  <a href="javascript:void(0);" class="remove-button" title="Click here to remove product"
                                     data="<?php echo $arr['order_product_id']; ?>">
                                     <img src="<?php echo admin_media(); ?>dist/img/close-2.png">
                                  </a>
-                              </td>
+                              </td> -->
                            <?php } ?>
                        
                      </tr>
@@ -491,7 +500,7 @@ $is_payment_received = true;
       <div class="row">
       <div class="col-sm-12">
          <br>
-         <button type="submit" class="btn btn-default" name="submit" id="submitbtn" value="Submit">Generate Label PDF</button>
+         <button type="submit" class="btn btn-default" name="submit" id="submit" value="Submit">Generate Label PDF</button>
       </div>
    </div>
 </form>
@@ -642,26 +651,25 @@ $is_payment_received = true;
    $("#submit").click(function (e) {
       e.preventDefault();
 
-    let isValid = true;
+      let isValid = true;
 
-    $("#banner_frm").find("[required]").each(function () {
+      $("#banner_frm").find("[required]").each(function () {
 
-        if ($(this).val().trim() == "") {
+         if ($(this).val().trim() == "") {
 
-            $(this).focus();
-            isValid = false;
+               $(this).focus();
+               isValid = false;
 
-            toastr.error("Please select product/product status/qty.");
+               toastr.error("Please select product/product status/qty.");
 
-            return false;
-        }
+               return false;
+         }
 
-    });
+      });
 
-    if (!isValid) {
-        return false;
-    }
-
+      if (!isValid) {
+         return false;
+      }
       $.ajax({
          url: '<?php echo site_url(); ?>update-order-process/',
          type: 'POST',
@@ -839,10 +847,18 @@ $is_payment_received = true;
             event.preventDefault();
       }
    });
+
    $('.qty').on('keyup', function () {
-      console.log('sadasd');
       $(this).closest('tr').find('.product_status').val('');
    });
+
+   // $(document).on('change', '.product_status', function () {
+   //    var selectedValue = $(this).val();
+   //    var pid=$(this).attr('data-pid');
+   //    if(selectedValue == 'out_of_stock' || selectedValue == 'out_of_stock_refunded'){
+   //       updateProductTotalAmount(0,pid);
+   //    }
+   // });
 </script>
 
 <?php if(is_array($ArrOrderTransactions) && count($ArrOrderTransactions)>0) { ?>

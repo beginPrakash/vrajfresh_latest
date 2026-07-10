@@ -96,7 +96,34 @@ class Stripe extends CI_Controller
 
 	}
 
-	
+	public function payment_refund_track()
+
+	{
+
+
+
+		$json_str = file_get_contents('php://input');
+
+		$json_obj = json_decode($json_str);
+
+		$ArrPayment = (array) $json_obj->ArrPayment;
+
+		$oauth_key = $json_obj->oauth_key;
+
+		$errors = $success_message = '';
+
+		$ArrData = array();
+
+		$refund_id = $ArrPayment['refund_id'];
+
+		//call function in common helper
+
+		$payment_details = stripe_payment_refund_track($refund_id);
+
+		send_response_to_api($payment_details, $errors, $success_message);
+
+	}
+
 
 	/* GET BLOCKED PAYMENT - ADMIN PROCESS */
 

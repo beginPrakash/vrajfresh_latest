@@ -488,6 +488,20 @@ function stripe_payment_capture($token, $payment_intent_id, $amount_to_capture)
 		return false;
 	}
 }
+
+function stripe_payment_refund_track($refund_id)
+{
+		require_once 'vendor/autoload.php';
+
+		$stripe = array("secret_key" => STRIPE_SECRET_KEY, "publishable_key" => STRIPE_PUBLISHABLE_KEY);
+
+		\Stripe\Stripe::setApiKey($stripe['secret_key']);
+		$intent = \Stripe\Refund::retrieve($refund_id);
+		$response = $response->jsonSerialize();
+		return $response;
+	
+}
+
 function stripe_payment_cancel($token, $payment_intent_id)
 {
 	if (!empty($token)) {
