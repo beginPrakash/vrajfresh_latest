@@ -361,13 +361,23 @@ class Controller_coupons extends CI_Controller
 
 
 								//echo "<br>".$price.":".$brand.":".$category."=".$total_applicapble_order_amount;
+								if ($result[0]->brand_ids != '' && $result[0]->exclude_category != '') {
+									if ($brand == 'y' && $category == 'n') {
 
-								if ($brand == 'y' && $category == 'y') {
+										$total_applicapble_order_amount = $total_applicapble_order_amount + $price;
 
-									$total_applicapble_order_amount = $total_applicapble_order_amount + $price;
+									}
+								}else if ($result[0]->brand_ids != '' && $result[0]->exclude_category == '') {
+									if ($brand == 'y') {
+										$total_applicapble_order_amount = $total_applicapble_order_amount + $price;
 
+									}
+								}else if ($result[0]->brand_ids == '' && $result[0]->exclude_category != '') {
+									if ($category == 'n') {
+										$total_applicapble_order_amount = $total_applicapble_order_amount + $price;
+
+									}
 								}
-
 							}
 
 						}

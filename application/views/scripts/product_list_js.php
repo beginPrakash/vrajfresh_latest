@@ -614,7 +614,7 @@
 				"success": function(response) {
 					if (response.data != null && response.data.product_id != null && response.data.category != null) {
 
-						product_title = '<h2>' + response.data.category.category_name + '</h2>';
+						product_title = '<h1 class="category_t_title">' + response.data.category.category_name + '</h1>';
 						for (let a = 0; a < response.data.products.length; a++) {
 							var findDay = response.data.products[a].product_id; //find price for day 1
                             var cart_qty = $.map(cart_arr, function(value, key) {
