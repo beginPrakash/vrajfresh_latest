@@ -301,7 +301,7 @@ class Products_model extends CI_Model
 
             ->where('p.product_id', $data)
 
-            //->where('v.is_out_of_stock','1')
+            ->where('v.is_out_of_stock','1')
 
             // ->where('v.is_deleted','0')
             ->order_by('CAST(v.variant_price as UNSIGNED)', 'ASC')
@@ -461,13 +461,11 @@ class Products_model extends CI_Model
 
     {
 
-        $query = $this->db->select('c.category_name,p.product_id,p.product_name,p.product_slug,p.product_image,p.product_price,p.product_weight_gms,pv.product_variant_size,pv.variant_price,pv.id,p.is_perisible_products,p.is_liker_products,p.is_cook_food_products,c.is_perisible_products as is_perisible_category,c.is_liker_category,c.is_cook_food_category,p.product_tax,p.is_out_of_stock')
+        $query = $this->db->select('c.category_name,p.product_id,p.product_name,p.product_slug,p.product_image,p.product_price,p.product_weight_gms,p.is_perisible_products,p.is_liker_products,p.is_cook_food_products,c.is_perisible_products as is_perisible_category,c.is_liker_category,c.is_cook_food_category,p.product_tax,p.is_out_of_stock')
 
             ->join('tbl_categories_products_mapping cpm', 'cpm.product_id=p.product_id')
 
             ->join('tbl_categories c', 'cpm.category_id=c.category_id')
-
-            ->join('tblproduct_variant pv', 'cpm.product_id=pv.product_id')
 
             ->where('c.category_slug', $slug)
 
@@ -499,7 +497,7 @@ class Products_model extends CI_Model
             }
 
 
-            $query=$this->db->limit('10')->get('tbl_products p');
+            $query=$this->db->limit('5')->get('tbl_products p');
             //echo $this->db->last_query();exit;
 
         return $query->result();

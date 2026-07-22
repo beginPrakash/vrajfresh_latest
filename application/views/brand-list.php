@@ -687,7 +687,7 @@
 				"success": function(response) {
 					if (response.data != null) {
 
-						product_title = '<h2>' + response.data.brand.brand_name + '</h2>';
+						product_title = '<h1 class="category_t_title">' + response.data.brand.brand_name + '</h1>';
 						if (response.data.product_id != null) {
 							// for (let a = 0; a < response.data.product_id.length; a++) {
 							// 	var price_weight = "";

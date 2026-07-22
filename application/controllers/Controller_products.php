@@ -9,16 +9,16 @@ class Controller_products extends CI_Controller
     public function products_list($slug)
 
     {
+
         $data = array('url' => $slug);
         //find meta title and description by cat slug
         $this->load->model('Product_model');
         $find_category_meta = $this->Product_model->getCategoryMeta($slug);
         if(!empty($find_category_meta)){
             $headerdata = array('meta_title' => $find_category_meta[0]['meta_title'] ?? '','meta_description' => $find_category_meta[0]['meta_description'] ?? '');
-        
             $this->load->view('common/header', $headerdata);
-
         }
+
         $this->load->view('product-list', $data);
 
     }
@@ -26,10 +26,11 @@ class Controller_products extends CI_Controller
     public function product_details($slug)
 
     {
+
         $this->load->model('Product_model');
         $product_meta = $this->Product_model->getProductDetail($slug);
-        //echo '<pre>';print_r($this->cart->contents());exit;
         $is_out_of_stock = $product_meta[0]['is_out_of_stock'] ?? '';
+        //echo '<pre>';print_r($this->cart->contents());exit;
         $data = [];
         $data['url'] = $slug;
         $data['meta_title'] = $product_meta[0]['meta_title'] ?? '';
@@ -48,7 +49,6 @@ class Controller_products extends CI_Controller
         $data['product_sku'] = $product_meta[0]['product_sku'] ?? '';
         $data['product_price'] = $product_meta[0]['sale_price'] ?? '';
         $data['is_stock'] = ($is_out_of_stock == 1) ? 'InStock' : 'OutStock';
-        
         $data['brand_name'] = $this->Product_model->getBrandname($product_meta[0]['brand_id']) ?? '';
         $data['category_name'] = $this->Product_model->getCategoryname($product_meta[0]['product_id']) ?? '';
         
@@ -56,7 +56,6 @@ class Controller_products extends CI_Controller
         
         $this->load->view('common/header', $headerdata);
         $this->load->view('product-detail', $data);
-        
 
     }
 

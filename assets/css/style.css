@@ -264,6 +264,10 @@ button {
     font-size: 12px !important;
 }
 
+.category_t_title{
+    font-size:27px;
+}
+
 .product_name {
     vertical-align: top;
     margin-top: 10px;

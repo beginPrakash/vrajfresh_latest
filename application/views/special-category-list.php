@@ -651,7 +651,7 @@
 					if(response.data.slider_detail != ""){
 						special_category_title=response.data.slider_detail[0].title;
 					}
-					brand_title = '<h2>'+special_category_title+'</h2>';
+					brand_title = '<h1 class="category_t_title">'+special_category_title+'</h1>';
 					if (response.data.product_detail != "") {
 						var first_variant_out_of_stock = false;
 						for (let a = 0; a < response.data.product_detail.length; a++) {
