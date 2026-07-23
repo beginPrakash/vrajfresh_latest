@@ -339,6 +339,10 @@ span.noti_count_or {
 
 				<li><a href="<?php echo base_url(); ?>app-configuration">Application Configuration</a></li>
 
+				<li><a href="<?php echo base_url(); ?>app-bannerdata">Application Banner</a></li>
+
+				<li><a href="<?php echo base_url(); ?>appbannercategory_product">Application Banner Category Product</a></li>
+
 				<li><a href="<?php echo base_url(); ?>state-wise-tax">State Wise Tax</a></li>
 
 				<li><a href="<?php echo base_url(); ?>cash-credits">Cash Credits</a></li>
@@ -428,6 +432,17 @@ span.noti_count_or {
 					</ul>
 
 				</li>
+<li class="treeview">
+				<a href="javascript:void(0);"> <span>Upcoming Product<br>Notification</span> <i class="fa fa-angle-left pull-right"></i> </a>
+
+					<ul class="treeview-menu">
+
+						<li><a href="<?php echo base_url(); ?>product/coming-soon/add">Add Upcoming Product</a> </li>
+
+						<li><a href="<?php echo base_url(); ?>product/coming-soon">View Upcoming Product</a> </li>
+
+					</ul>
+</li>
 
 			</ul>
 
@@ -486,6 +501,8 @@ span.noti_count_or {
 		</li>
 
 	<?php } ?>
+
+	
 
 	<?php
 

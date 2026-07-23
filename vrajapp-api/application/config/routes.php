@@ -216,6 +216,8 @@ $route['V1/get-advertise_bottom'] = 'V1/Controller_home/get_advertise_bottom';
 
 $route['V1/get_special_category_product'] = 'V1/Controller_home/get_special_category_product';
 $route['V1/get_app_version'] = 'V1/Controller_home/get_app_version';
+$route['V1/get_app_banner_data'] = 'V1/Controller_appbannerdata/get_app_banner_data';
+$route['V1/get_app_banner_category_data_by_id'] = 'V1/Controller_appbannerdata/get_app_banner_category_data_by_id';
 
 $route['V1/create-intent'] = 'V1/Controller_orders/createIntent';
 $route['V1/update-intent'] = 'V1/Controller_orders/updateIntent';

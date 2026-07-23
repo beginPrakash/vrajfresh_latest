@@ -64,7 +64,6 @@ class Controller_appconfiguration extends CI_Controller
 	{
 
 		$ArrData = $_POST['ArrData'];
-
 		
 		if (count($ArrData) > 0) {
 

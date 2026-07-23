@@ -40,6 +40,14 @@ $route['save-configuration'] = 'adminpanel/Controller_configuration/save_website
 
 $route['app-configuration'] = 'adminpanel/Controller_appconfiguration/website';
 $route['saveapp-configuration'] = 'adminpanel/Controller_appconfiguration/save_website_configuration';
+$route['app-bannerdata'] = 'adminpanel/Controller_bannerdata/getabannerdata';
+$route['saveapp-bannerdata'] = 'adminpanel/Controller_bannerdata/save_bannerdata';
+
+/* App Banner Category Product */
+$route['appbannercategory_product'] = 'adminpanel/Controller_catpro';
+$route['appbannercategory_product-delete/(:num)'] = 'adminpanel/Controller_catpro/delete_ajax/$1';
+$route['appbannercategory_product-add'] = 'adminpanel/Controller_catpro/add';
+$route['appbannercategory_product-update/(:num)'] = 'adminpanel/Controller_catpro/add/$1';
 
 /* CASH CREDITS */
 $route['cash-credits'] = 'adminpanel/Controller_credits/cashcredits';
