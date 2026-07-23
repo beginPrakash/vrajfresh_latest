@@ -1,3 +1,6 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spectrum-colorpicker2/dist/spectrum.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/spectrum-colorpicker2/dist/spectrum.min.js"></script>
 <div class="row">
 	<div class="col-md-12">
 
@@ -57,6 +60,7 @@
 
 							</div>
 
+
 							<div class="col-md-12">
 
 								<?php foreach ($ArrConfiguration as $Arr) { ?>
@@ -93,10 +97,26 @@
 
 													name="ArrData[<?php echo $Arr['configuration_id']; ?>]"><?php echo $Arr['configuration_value']; ?></textarea>
 
-											<?php } ?>
+											<?php } elseif ($Arr['field_type'] == 'copicker') { 
+												$header_color =  $Arr['configuration_value'] ?? '#ffffff';
+												?>
 
+												<input type="text" placeholder="<?php echo $Arr['configuration_key']; ?>"
 
+													class="form-control" id="colorPicker" name="ArrData[<?php echo $Arr['configuration_id']; ?>]"
 
+													value="<?php echo $Arr['configuration_value']; ?>" required />
+											<?php } elseif ($Arr['field_type'] == 'copickers') { 
+												$proheader_color =  $Arr['configuration_value'] ?? '#ffffff';
+												?>
+
+												<input type="text" placeholder="<?php echo $Arr['configuration_key']; ?>"
+
+													class="form-control" id="colorPickerpro" name="ArrData[<?php echo $Arr['configuration_id']; ?>]"
+
+													value="<?php echo $Arr['configuration_value']; ?>" required />
+													
+                                            <?php }?>
 
 
 										</div>
@@ -132,3 +152,22 @@
 			</div>
 
 		</div>
+		<script>
+			var head_color = '<?php echo $header_color; ?>';
+			var prohead_color = '<?php echo $proheader_color; ?>';
+$("#colorPicker").spectrum({
+    preferredFormat: "hex",
+    showInput: true,
+    showPalette: true,
+    allowEmpty: false,
+    color: head_color
+});
+
+$("#colorPickerpro").spectrum({
+    preferredFormat: "hex",
+    showInput: true,
+    showPalette: true,
+    allowEmpty: false,
+    color: prohead_color
+});
+</script>
