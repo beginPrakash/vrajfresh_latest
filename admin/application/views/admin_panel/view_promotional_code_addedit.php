@@ -921,6 +921,10 @@
 
 										<option value="">Select</option>
 
+										<option value="all" <?php echo (@$ArrFieldData['coupon_for'] == "all") ? 'Selected' : ''; ?>>All
+
+										</option>
+
 										<option value="website" <?php echo (@$ArrFieldData['coupon_for'] == "website") ? 'Selected' : ''; ?>>Website
 
 										</option>
