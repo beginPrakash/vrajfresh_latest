@@ -128,6 +128,18 @@ class Controller_promotional_code extends CI_Controller
 
 				}
 
+				$coupon_for = '';
+
+				if ($aRow['coupon_for'] == 'website') {
+
+					$coupon_for = 'Website';
+
+				} elseif ($aRow['coupon_for'] == 'mobile_aplication') {
+
+					$coupon_for = 'Mobile Application';
+
+				}
+
 				$row[] = $actions;
 
 				$row[] = $aRow['promotional_code_id'];
@@ -139,6 +151,8 @@ class Controller_promotional_code extends CI_Controller
 				//$row[] = $promotional_type;
 
 				$row[] = $apply_to_product;
+
+				$row[] = $coupon_for;
 
 				//$row[] = $apply_to;
 
@@ -518,6 +532,8 @@ class Controller_promotional_code extends CI_Controller
 
 						'discount_type' => $this->input->post('discount_type'),
 
+						'coupon_for' => $this->input->post('coupon_for'),
+
 						'start_from' => date('Y-m-d', strtotime($this->input->post('start_from'))),
 
 						'valid_upto' => date('Y-m-d', strtotime($this->input->post('valid_upto'))),
@@ -688,6 +704,8 @@ class Controller_promotional_code extends CI_Controller
 						'promotional_code' => $this->input->post('promotional_code'),
 
 						'discount_type' => $this->input->post('discount_type'),
+
+						'coupon_for' => $this->input->post('coupon_for'),
 
 						'start_from' => date('Y-m-d', strtotime($this->input->post('start_from'))),
 
