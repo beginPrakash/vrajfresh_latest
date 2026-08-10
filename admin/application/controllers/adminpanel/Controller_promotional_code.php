@@ -138,6 +138,10 @@ class Controller_promotional_code extends CI_Controller
 
 					$coupon_for = 'Mobile Application';
 
+				}elseif ($aRow['coupon_for'] == 'all') {
+
+					$coupon_for = 'All';
+
 				}
 
 				$row[] = $actions;
@@ -847,7 +851,7 @@ class Controller_promotional_code extends CI_Controller
 
 						$promotional_code_id = $insert_id;
 						if ($this->input->post('is_active') == 1) {
-							$this->notification_promocode($promotional_code_id);
+							//$this->notification_promocode($promotional_code_id);
 						}
 
 					} else {

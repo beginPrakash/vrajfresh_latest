@@ -732,8 +732,10 @@
                                         if(varient_id_val == response.data.product_detail[a].product_size[j].product_variant_id){
                                             selected = "selected";
                                         }
-                                        price_weight = price_weight.concat('<option '+selected+' value="' + response.data.product_detail[a].product_size[j].size + '-' + response.data.product_detail[a].product_size[j].price + '-' + response.data.product_detail[a].product_size[j].product_variant_id + '">' + response.data.product_detail[a].product_size[j].size + 'lb - $' + response.data.product_detail[a].product_size[j].price + '</option>');
-                                    }
+                                        if(response.data.product_detail[a].product_size[j].is_out_of_stock == 1){
+                                            price_weight = price_weight.concat('<option '+selected+' value="' + response.data.product_detail[a].product_size[j].size + '-' + response.data.product_detail[a].product_size[j].price + '-' + response.data.product_detail[a].product_size[j].product_variant_id + '">' + response.data.product_detail[a].product_size[j].size + 'lb - $' + response.data.product_detail[a].product_size[j].price + '</option>');
+}
+                                        }
                                     price_weight += '</select></form>';
                                     } else {
                                     // var price_weight = '<span>' + response.data.product_detail[a].product_weight_gms + 'lb</span> - <strong>$' + response.data.product_detail[a].product_price + '</strong>';

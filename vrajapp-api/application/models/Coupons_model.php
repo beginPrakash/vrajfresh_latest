@@ -73,22 +73,26 @@ class Coupons_model extends CI_Model
 	}
 
 
-	public function getGroupCustomerIds($ArrClientGroup)
+	public function getGroupCustomerIds($ArrClientGroup='')
 	{
-		$this->db->select("tblclientgroup_details.user_id");
-		$this->db->from('tblclientgroup_details');
-		$this->db->where_in('clientgroup_id', $ArrClientGroup);
+		if(!empty($ArrClientGroup)){
+			$this->db->select("tblclientgroup_details.user_id");
+			$this->db->from('tblclientgroup_details');
+			$this->db->where_in('clientgroup_id', $ArrClientGroup);
 
-		$query_result = $this->db->get();
-		if ($query_result->num_rows() > 0) {
-			$i = 0;
-			foreach ($query_result->result_array() as $row) {
-				foreach ($row as $key => $val) {
-					$sdata[$i++] = $val;
+			$query_result = $this->db->get();
+			if ($query_result->num_rows() > 0) {
+				$i = 0;
+				foreach ($query_result->result_array() as $row) {
+					foreach ($row as $key => $val) {
+						$sdata[$i++] = $val;
+					}
 				}
+				return $sdata;
+			} else {
+				return false;
 			}
-			return $sdata;
-		} else {
+		}else{
 			return false;
 		}
 	}

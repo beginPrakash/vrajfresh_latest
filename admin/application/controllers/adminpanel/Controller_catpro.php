@@ -326,6 +326,8 @@ $procat_name = $this->app_catpro_model->getBannercatnamebyId($aRow['category_id'
 
 						'product_link' => $this->input->post('product_link'),
 
+						'type' => $this->input->post('type'),
+
 						'category_id' => $this->input->post('category_id'),
 
 						'product_image' => $data['image_name']['file_name'],
@@ -479,6 +481,8 @@ $procat_name = $this->app_catpro_model->getBannercatnamebyId($aRow['category_id'
 					$banner_data = array(
 
 						'product_link' => $this->input->post('product_link'),
+
+						'type' => $this->input->post('type'),
 
 						'category_id' => $this->input->post('category_id'),
 'product_name' => $this->input->post('product_name'),

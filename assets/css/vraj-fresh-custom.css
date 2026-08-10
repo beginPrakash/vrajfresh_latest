@@ -78,7 +78,7 @@ p {
 header {
 	padding: 0.8em 0 0em 0;
 	position: sticky;
-	top: 0;
+	top: 33px;
 	background: #fff;
 	z-index: 9999;
 }
@@ -4009,6 +4009,9 @@ li.nav_items {
 .zipcode-bar {
 	background-color: #e6f2fd; /* Light blue background from image */
 	padding: 8px 24px;         /* Vertical and horizontal padding */
+	position: sticky;
+    top: 0;
+    z-index: 99999;
 }
 
 /* Flex Container replacing Bootstrap utilities */

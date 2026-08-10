@@ -1916,8 +1916,10 @@ console.log('cart_arr'+cart_arr);
                                                 if(varient_id_val == product_slider_items[a].product_size[j].product_variant_id){
                                                     selected = "selected";
                                                 }
-                                                price_weight = price_weight.concat('<option '+selected+' value="' + product_slider_items[a].product_size[j].size + '-' + product_slider_items[a].product_size[j].price + '-' + product_slider_items[a].product_size[j].product_variant_id + '">' + product_slider_items[a].product_size[j].size + 'lb - $' + product_slider_items[a].product_size[j].price + '</option>');
-                                            }
+                                                if(product_slider_items[a].product_size[j].is_out_of_stock == 1){
+                                                    price_weight = price_weight.concat('<option '+selected+' value="' + product_slider_items[a].product_size[j].size + '-' + product_slider_items[a].product_size[j].price + '-' + product_slider_items[a].product_size[j].product_variant_id + '">' + product_slider_items[a].product_size[j].size + 'lb - $' + product_slider_items[a].product_size[j].price + '</option>');
+}
+                                                }
                                             price_weight += '</select></form>';
                                             } else {
                                             // var price_weight = '<span>' + product_slider_items[a].product_weight_gms + 'lb</span> - <strong>$' + product_slider_items[a].product_price + '</strong>';

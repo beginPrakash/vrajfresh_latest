@@ -1176,17 +1176,17 @@ class Controller_order extends CI_Controller
 						$cls = 'red';
 						$disclas = 'disabletext';
 						$log_status= 'Out Of Stock (Refunded)';
-						$refun_pro_amount = $refun_pro_amount + $arr['unit_price'] + $arr['product_tax_amount'];
+						$refun_pro_amount = $refun_pro_amount + ($arr['unit_price'] * $arr['qty_order']) + $arr['product_tax_amount'];
 					}else if ($arr['log_status'] == 'refunded') {
 						$cls='red';
 						$disclas = 'disabletext';
 						$log_status= 'Refunded';
-						$refun_pro_amount = $refun_pro_amount + $arr['unit_price'] + $arr['product_tax_amount'];
+						$refun_pro_amount = $refun_pro_amount + ($arr['unit_price'] * $arr['qty_order']) + $arr['product_tax_amount'];
 					}else if ($arr['log_status'] == 'newly_added') {
 						$new_cl='new_ad';
 						$disclas = '';
 						$cls='green';
-						$log_status= 'Newly Added';
+						$log_status= 'Added Items';
 						$newly_pro_amount = $newly_pro_amount + $arr['total_amount'] + $arr['product_tax_amount'];
 					}else if ($arr['log_status'] == 'qty_changed') {
 						$disclas = '';
@@ -1195,7 +1195,7 @@ class Controller_order extends CI_Controller
 							if($arr['qty_ship'] > $arr['qty_order']){
 								$find_per_roduct_tax = $arr['product_tax_amount'] - $arr['product_tax_amount_old'];
 								$tqty = $arr['qty_ship'] - $arr['qty_order'];
-								$log_status= '+'.$tqty.' Newly Added';
+								$log_status= '+'.$tqty.' Added Items';
 								$newly_pro_amount = $newly_pro_amount + ($arr['unit_price'] * $tqty);
 							}else{
 								$find_per_roduct_tax = $arr['product_tax_amount_old'] - $arr['product_tax_amount'];
@@ -1217,7 +1217,7 @@ class Controller_order extends CI_Controller
 
 		
 
-//get refund track number
+				//get refund track number
 					$ref_track_number = $this->find_refund_track_number($order_id);
 					
 					$order_product_data .='<tr>';
@@ -1439,8 +1439,6 @@ class Controller_order extends CI_Controller
 					<option value="">Select Product Status</option>
 					<option value="existing">Existing</option>
 					<option value="newly_added">Newly Added</option>
-					<option value="refunded">Refunded</option>
-					<option value="out_of_stock_refunded">Out Of Stock (Refunded)</option>
 					<option value="qty_changed">QTY Changed</option>
 				</select>
 			</td>

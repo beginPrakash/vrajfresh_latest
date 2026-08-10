@@ -221,9 +221,10 @@ class Controller_home extends CI_Controller
 										$t['size'] = $arr1->product_variant_size;
 										$t['price'] = $arr1->variant_price;
 										$t['product_variant_id'] = $arr1->product_variant_id;
+										$t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
 										$tempArray[] = $t;
 									endif;
-									// $t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
+									
 									
 								}
 
@@ -780,7 +781,7 @@ class Controller_home extends CI_Controller
 								$t['size'] = $arr1->product_variant_size;
 								$t['price'] = $arr1->variant_price;
 								$t['product_variant_id'] = $arr1->product_variant_id;
-								// $t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
+								$t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
 							$tempArray[] = $t;
 							endif;
 						}

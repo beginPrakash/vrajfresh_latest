@@ -1,12 +1,12 @@
 <?php
 
-class Controller_product_coming_soon extends CI_Controller
+class Controller_coupon_notification extends CI_Controller
 {
 
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('product_commingsoon_model');
+        $this->load->model('coupon_notification_model');
         $this->load->model('common_model');
 
         if (!IsUserLogin()) {
@@ -18,7 +18,7 @@ class Controller_product_coming_soon extends CI_Controller
 
     public function index()
     {
-        $ArrData = $this->product_commingsoon_model->getProductListData($_POST);
+        $ArrData = $this->coupon_notification_model->getProductListData($_POST);
 
         if (@$_REQUEST['columns'] != "") {
             $output = array('sEcho' => $_REQUEST['draw'], 'iTotalRecords' => $ArrData['iTotalRecords'], 'iTotalDisplayRecords' => $ArrData['iTotalDisplayRecords'], 'aaData' => array());
@@ -27,16 +27,16 @@ class Controller_product_coming_soon extends CI_Controller
             foreach ($ArrData['result'] as $aRow) {
                 $row = $category_name = array();
                 $base_url = base_url();
-                $comingsoon_id = $aRow['comingsoon_id'];
+                $cooponnoti_id = $aRow['cooponnoti_id'];
                 $actions = '';
-                $actions .= '<input type="checkbox" name="delete[]" class="chkDelete" value="' . $comingsoon_id . '" /><div class="btn-group">';
-                $actions .= '<a href="' . $base_url . 'product/coming-soon/update/' . $comingsoon_id . '" class="btn btn-default btn-sm"><i class="fa fa-pencil"></i></a>';
-                $actions .= '<a rel="' . $base_url . 'product/coming-soon/delete/' . $comingsoon_id . '" class="deleteRecord btn btn-default btn-sm"><i class="fa fa-trash-o"></i></a></div>';
+                $actions .= '<input type="checkbox" name="delete[]" class="chkDelete" value="' . $cooponnoti_id . '" /><div class="btn-group">';
+                $actions .= '<a href="' . $base_url . 'coupon-notification/update/' . $cooponnoti_id . '" class="btn btn-default btn-sm"><i class="fa fa-pencil"></i></a>';
+                $actions .= '<a rel="' . $base_url . 'coupon-notification/delete/' . $cooponnoti_id . '" class="deleteRecord btn btn-default btn-sm"><i class="fa fa-trash-o"></i></a></div>';
 
                 $row[] = $actions;
-                $row[] = $aRow['product_name'];
+                $row[] = $aRow['title'];
                 //$row[] = implode(',',$category_name);
-                $row[] = $aRow['product_details'];
+                $row[] = $aRow['details'];
                 $row[] = date('m-d-Y H:i:s', strtotime($aRow['created_datetime']));
 
                 $i++;
@@ -47,16 +47,16 @@ class Controller_product_coming_soon extends CI_Controller
         }
         /* DATA TABLE END */
         $ArrPageData = array();
-        $ArrPageData['cms_title'] = 'Coming Soon Product';
-        $ArrPageData['button_url'] = base_url() . 'product/coming-soon/add';
-        $ArrPageData['button_label'] = 'Add Coming Soon Product';
-        $ArrPageData['view_name'] = 'view_product_coming_soon_list.php';
+        $ArrPageData['cms_title'] = 'Coupon Notification';
+        $ArrPageData['button_url'] = base_url() . 'coupon-notification/add';
+        $ArrPageData['button_label'] = 'Add Coupon Notification';
+        $ArrPageData['view_name'] = 'view_coupon_notification_list.php';
         $this->load->view('admin_panel/admin_panel', $ArrPageData);
     }
 
     public function delete($id)
 	{
-		$result = $this->product_commingsoon_model->soft_delete_product($id);
+		$result = $this->coupon_notification_model->soft_delete_product($id);
 		if ($result) {
 			echo 'Yes';
 		} else {
@@ -71,7 +71,7 @@ class Controller_product_coming_soon extends CI_Controller
 		$primary_idArr = explode(',', $id);
 		$result = 0;
 		foreach ($primary_idArr as $primary_id) {
-			$result += $this->product_commingsoon_model->soft_delete_product($primary_id);
+			$result += $this->coupon_notification_model->soft_delete_product($primary_id);
 		}
 		if ($result > 0) {
 			echo 1;
@@ -81,25 +81,25 @@ class Controller_product_coming_soon extends CI_Controller
 
 	}
 
-    public function add($comingsoon_id = 0)
+    public function add($cooponnoti_id = 0)
 	{	
 		
 		$ArrData = array();
-		$ArrData['ArrProducts'] = $this->product_commingsoon_model->product_list_data();
-		if ($comingsoon_id > 0) {
+		$ArrData['ArrProducts'] = $this->coupon_notification_model->product_list_data();
+		if ($cooponnoti_id > 0) {
             
             //GET PRODUCT DETAILS
-			$ArrData['product'] = $this->product_commingsoon_model->getProductUsingID($comingsoon_id);
-			$ArrData['cms_title'] = "Update Coming Soon Product";
-			$ArrData['edit_id'] = $comingsoon_id;
+			$ArrData['product'] = $this->coupon_notification_model->getProductUsingID($cooponnoti_id);
+			$ArrData['cms_title'] = "Update Coupon Notification";
+			$ArrData['edit_id'] = $cooponnoti_id;
 		} else {
-			$ArrData['cms_title'] = "Add Coming Soon Product";
+			$ArrData['cms_title'] = "Add Coupon Notification";
 			$ArrData['edit_id'] = '';
 		}
 
-		$ArrData['button_url'] = base_url() . 'product/coming-soon';
-		$ArrData['button_label'] = 'View Coming Soon Product';
-		$ArrData['view_name'] = 'view_product_coming_soon_addedit.php';
+		$ArrData['button_url'] = base_url() . 'coupon-notification';
+		$ArrData['button_label'] = 'View Coupon Notification';
+		$ArrData['view_name'] = 'view_coupon_notification_add_edit.php';
 
 		$css_assets = array(
 			array(ADMIN_PANEL_THEME_PATH . 'dist/css/jquery.multiselect.css'),
@@ -114,23 +114,24 @@ class Controller_product_coming_soon extends CI_Controller
 			
 			/* validation Process Start */
 			$this->load->library('form_validation');
-			$this->form_validation->set_rules('product_name', 'Product Name', 'required');
-			$this->form_validation->set_rules('product_details', 'Product Details', 'required');
+			$this->form_validation->set_rules('title', 'Title', 'required');
+			$this->form_validation->set_rules('details', 'Details', 'required');
 
 			/* validation Process End */
 			if ($this->form_validation->run()) {
-				if ($comingsoon_id > 0) { //update process
+				if ($cooponnoti_id > 0) { //update process
 					
 					$product_associate_to_id = '';
                     $product_update_data = array(
-                        'product_name' => $this->input->post('product_name'),
-                        'product_details' => $this->input->post('product_details'),
+                        'title' => $this->input->post('title'),
+                        'details' => $this->input->post('details'),
+                        'code' => $this->input->post('code'),
                         'modified_datetime' => date('Y-m-d H:i:s'),
                         'modified_by' => get_current_admin_id(),
                     );
 
                     //echo "<pre>";print_r($product_update_data);exit;
-                    $update = $this->product_commingsoon_model->update($comingsoon_id, $product_update_data);
+                    $update = $this->coupon_notification_model->update($cooponnoti_id, $product_update_data);
                     if($update){
                         $this->session->set_flashdata('success_message', 'Product details has been updated successfully.');
                     } else {
@@ -138,32 +139,34 @@ class Controller_product_coming_soon extends CI_Controller
                     }
 
 
-					redirect('product/coming-soon/');
+					redirect('coupon-notification/');
 
 				} else { // insert
 
-                    $product_name = $this->input->post('product_name') ?? '';
-                    $product_details = $this->input->post('product_details') ?? '';
+                    $title = $this->input->post('title') ?? '';
+                    $details = $this->input->post('details') ?? '';
+                    $promotional_code = $this->input->post('code') ?? '';
 
 					$product_data = array(
-						'product_name' => $product_name,
-						'product_details' => $product_details,
+						'title' => $title,
+						'details' => $details,
+                        'code' => $promotional_code, 
                         'modified_datetime' => date('Y-m-d H:i:s'),
                         'modified_by' => get_current_admin_id(),
 						'created_datetime' => date('Y-m-d H:i:s'),
 						'created_by' => get_current_admin_id()
 					);
 
-					$comingsoon_id = $this->product_commingsoon_model->add($product_data);
-					if ($comingsoon_id > 0) {
+					$cooponnoti_id = $this->coupon_notification_model->add($product_data);
+					if ($cooponnoti_id > 0) {
                         //-------------------Start Delivery Status Push Notifications -------------------
-                        $this->notification_coming_soon_product($product_name, $product_details);
+                        $this->notification_coming_soon_product($title, $details,$promotional_code);
                         //-------------------End Delivery Status Push Notifications -------------------
 						$this->session->set_flashdata('success_message', 'Product details has been added successfully.');
 					} else {
 						$this->session->set_flashdata('error_message', 'Oops...! something went wrong, please try again');
 					}
-					redirect('product/coming-soon/');
+					redirect('coupon-notification/');
 				}
 			} else {
 				$this->load->view('admin_panel/admin_panel', $ArrData);
@@ -173,7 +176,7 @@ class Controller_product_coming_soon extends CI_Controller
 		}
 	}
 
-    private function notification_coming_soon_product($product_name, $product_details){
+    private function notification_coming_soon_product($title, $details,$promotional_code){
         
 		$aColumns = array('tbl_users.user_id', 'tbl_users.first_name','tbl_users.last_name','tbl_users.display_name', 'tbl_users.user_name','tbl_users.email', 'tbl_users.mobile_no', 'tbl_users.is_active');
 		$this->db->select('SQL_CALC_FOUND_ROWS ' . str_replace(' , ', ' ', implode(', ', $aColumns)), false);
@@ -185,18 +188,19 @@ class Controller_product_coming_soon extends CI_Controller
         $result = $query->result_array();
         // echo count($result);
         // die(' count');
-        if(!empty($product_details)){
-            $product_details = strip_tags($product_details);
+        if(!empty($details)){
+            $details = strip_tags($details);
         }
 
         if (!empty($result) && is_array($result)) {
 
-            $title = "{$product_name} are Coming Soon!";
-            $body  = substr($product_details, 0, 100);
+           // $title = substr($description??'New Offer', 0, 100);
+            $body  = $details;
 
             // Prepare shared custom data parameters
             $extra_data = [
-                'type'     => 'COMING_SOON_PRODUCT',
+                'type'     => 'PROMO_CODE',
+                'promotional_code'     => $promotional_code,
             ];
             $json_custom_data = json_encode($extra_data);
 

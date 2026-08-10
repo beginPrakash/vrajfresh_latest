@@ -174,6 +174,29 @@ class Orders_model extends CI_Model
 
     }
 
+    public function getOrderById($order_id, $parm = "*")
+	{
+		$this->db->select('tbl_orders.' . $parm . ',tblpromotional_code.promotional_code,tblpromotional_code.discount_type as promo_dis_type,tblpromotional_code.maximum_order_discount as maximum_order_discount,tblpromotional_code.discount_value as promo_dis_val, stb.state as billing_state_name, sts.state as shipping_state_name, CASE 
+        WHEN tbl_orders.payment_methodtype = "google_pay" THEN "Google Pay"
+        WHEN tbl_orders.payment_methodtype = "apple_pay" THEN "Apple Pay"
+        ELSE "Stripe Card"
+    	END as payment_methodtype', false);
+		$this->db->from('tbl_orders');
+		$this->db->where('order_id', $order_id);
+		$this->db->where('tbl_orders.is_deleted', 0);
+		$this->db->join('tbl_users', 'tbl_users.user_id = tbl_orders.user_id', 'left');
+		$this->db->join('tblpromotional_code', 'tblpromotional_code.promotional_code_id  = tbl_orders.coupon_id ', 'left');
+		$this->db->join('state stb', 'stb.state_id = tbl_orders.billing_state_id', 'left');
+		$this->db->join('state sts', 'sts.state_id = tbl_orders.shipping_state_id', 'left');
+		$query = $this->db->get();
+		// echo $this->db->last_query();exit;
+		if ($query->num_rows() > 0) {
+			return $query->row_array();
+		} else {
+			return false;
+		}
+	}
+
     public function get_order_product_by_id($data)
 
     {

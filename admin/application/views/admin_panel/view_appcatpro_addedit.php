@@ -101,6 +101,35 @@ $Arrcategory_id = '';
 
                      </div>
 
+                     <div class="form-group">
+
+                        <div class="col-md-3">
+
+                           <label>Product Url Category: </label>
+
+                        </div>
+
+                        <div class="col-md-9">
+
+
+                           <select name="type" class="form-control select_nocler">
+
+										<option value="">Select Product Url Category</option>
+
+										<option value="category" <?php echo (@$banner['type'] == "category") ? 'Selected' : '' ?>>Category</option>
+
+										<option value="special-category" <?php echo (@$banner['type'] == "special-category") ? 'Selected' : '' ?>>Special Category</option>
+
+										<option value="brand" <?php echo (@$banner['type'] == "brand") ? 'Selected' : '' ?>>Brand</option>
+
+									</select>
+
+                              <?php echo form_error('type'); ?>
+
+                        </div>
+
+                     </div>
+
 
                      <div class="form-group">
 

@@ -34,7 +34,7 @@ class order_model extends CI_Model
         WHEN tbl_orders.payment_methodtype = "google_pay" THEN "Google Pay"
         WHEN tbl_orders.payment_methodtype = "apple_pay" THEN "Apple Pay"
         ELSE "Stripe Card"
-    END as payment_methodtype', false);
+    	END as payment_methodtype', false);
 		$this->db->from('tbl_orders');
 		$this->db->where('order_id', $order_id);
 		$this->db->where('tbl_orders.is_deleted', 0);

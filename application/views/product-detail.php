@@ -94,7 +94,6 @@
         from {opacity: 0;}
         to {opacity: 1;}
     }
-
     @media (max-width: 768px) {
     .tab-buttons {
         flex-direction: column;

@@ -381,6 +381,8 @@ class Controller_coupons extends CI_Controller
 										$total_applicapble_order_amount = $total_applicapble_order_amount + $price;
 
 									}
+								}else if ($brand == 'y' && $category == 'y') {
+									$total_applicapble_order_amount = $total_applicapble_order_amount + $price;
 								}
 
 							}

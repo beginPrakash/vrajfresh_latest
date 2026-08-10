@@ -338,7 +338,7 @@ class Products_model extends CI_Model
 
     {
 
-        $query = $this->db->select('p.product_id,p.product_slug,p.product_name,pi.image,p.product_image,p.product_price,p.sale_price,p.product_weight_gms,pv.product_variant_size,pv.variant_price,pv.id AS product_variant_id,p.is_perisible_products,p.product_tax,p.is_out_of_stock,c.is_perisible_products AS category_is_perisible_products,p.is_liker_products,p.is_cook_food_products,c.is_liker_category AS category_is_liker_category,c.is_cook_food_category AS category_is_cook_food_category')
+        $query = $this->db->select('p.product_id,p.product_slug,p.product_name,pi.image,p.product_image,p.product_price,p.sale_price,p.product_weight_gms,pv.product_variant_size,pv.variant_price,pv.id AS product_variant_id,pv.is_out_of_stock as varaint_is_out_of_stock,p.is_perisible_products,p.product_tax,p.is_out_of_stock,c.is_perisible_products AS category_is_perisible_products,p.is_liker_products,p.is_cook_food_products,c.is_liker_category AS category_is_liker_category,c.is_cook_food_category AS category_is_cook_food_category')
 
             //->join('tbl_users u','u.user_id=pv.created_by','left')
 
@@ -350,7 +350,7 @@ class Products_model extends CI_Model
 
             ->join('tbl_categories c', 'cpm.category_id=c.category_id', "LEFT")
 
-            ->where('p.is_deleted', '0')->where('p.product_id IN (' . $data["product_id"] . ')');
+            ->where('p.is_deleted', '0')->where('p.is_active', '1')->where('p.product_id IN (' . $data["product_id"] . ')');
 
             if(isset($data['can_deliver_perishable_products']) && $data['can_deliver_perishable_products'] == "No"){
             
@@ -496,7 +496,8 @@ class Products_model extends CI_Model
                 $this->db->where("IF(c.is_cook_food_category = '2' , p.is_cook_food_products = '1', 1)");
             }
 
-
+            // Random order
+            $this->db->order_by('RAND()');
             $query=$this->db->limit('5')->get('tbl_products p');
             //echo $this->db->last_query();exit;
 

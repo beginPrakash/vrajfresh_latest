@@ -150,6 +150,7 @@ $route['V1/update-order'] = 'V1/Controller_orders/update_order';
 $route['V1/get-order-by-user-id'] = 'V1/Controller_orders/get_order_by_user_id';
 $route['V1/get-credit-transaction-by-user-id'] = 'V1/Controller_credittransaction/get_credit_transaction_by_user_id';
 $route['V1/get-order-dropdownlist-by-user'] = 'V1/Controller_orders/get_order_dropdown_user_id';
+$route['V1/get-total-credit'] = 'V1/Controller_credittransaction/get_total_credit';
 $route['V1/deliveryboy-get-order-by-user-id'] = 'V1/Controller_orders/deliveryboy_get_order_by_user_id';
 $route['V1/report-order'] = 'V1/Controller_orders/report_order';
 $route['V1/requested-product'] = 'V1/Controller_orders/requested_product';
@@ -212,7 +213,9 @@ $route['V1/get_home_product_slider'] = 'V1/Controller_home/get_home_product_slid
 // $route['V1/get-shop_ayurvedic'] = 'V1/Controller_home/get_shop_ayurvedic';
 $route['V1/get-home_banner'] = 'V1/Controller_home/get_home_banner';
 $route['V1/get-advertise_top'] = 'V1/Controller_home/get_advertise_top';
+$route['V1/get-advertise_top_single'] = 'V1/Controller_home/get_advertise_top_single';
 $route['V1/get-advertise_bottom'] = 'V1/Controller_home/get_advertise_bottom';
+$route['V1/get-advertise_bottom_last'] = 'V1/Controller_home/get_advertise_bottom_last';
 
 $route['V1/get_special_category_product'] = 'V1/Controller_home/get_special_category_product';
 $route['V1/get_app_version'] = 'V1/Controller_home/get_app_version';

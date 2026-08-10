@@ -25,7 +25,7 @@ class Credittransaction_model extends CI_Model
         ->select_sum('cr.amount')
         ->join('tbl_orders o', 'cr.order_id=o.order_id', 'left')
         ->where('cr.user_id',$user_id)
-        ->where_in('o.order_status',['Completed','Processing'])
+        ->where_in('o.order_status',['Completed'])
         ->from('tbl_credit_transaction cr')
         ->get();
         return $query->row_array();
@@ -39,7 +39,7 @@ class Credittransaction_model extends CI_Model
         ->from('tbl_credit_transaction cr')
             ->join('tbl_orders o', 'cr.order_id=o.order_id', 'left')
             ->where('cr.user_id', $data)
-            ->order_by('cr.crt_id', 'asc')
+            ->order_by('cr.order_id', 'asc')
             ->get();
 
         return $query->result();
