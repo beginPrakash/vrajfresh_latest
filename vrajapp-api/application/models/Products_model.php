@@ -297,7 +297,7 @@ class Products_model extends CI_Model
 
     {
 
-        $query = $this->db->select('v.product_variant_size,v.variant_price,v.id,v.is_out_of_stock, v.variant_image')
+        $query = $this->db->select('v.product_variant_size,v.variant_price,v.id,v.is_out_of_stock, v.variant_image,v.is_out_of_stock as varaint_is_out_of_stock')
 
             ->join('tblproduct_variant v', 'v.product_id=p.product_id', 'left')
 
@@ -327,7 +327,7 @@ class Products_model extends CI_Model
 
             ->where('p.product_id', $data)
 
-            //->where('v.is_out_of_stock','1')
+            ->where('v.is_out_of_stock','1')
 
             // ->where('v.is_deleted','0')
             ->order_by('CAST(v.variant_price as UNSIGNED)', 'ASC')
@@ -366,10 +366,11 @@ class Products_model extends CI_Model
 
         $productIds = explode(",", $data["product_id"]);
 
-        $query = $this->db->select('p.product_id,p.product_slug,p.product_name,pi.image,p.product_image,p.product_price,p.sale_price,p.product_weight_gms,pv.product_variant_size,pv.variant_price,pv.id AS product_variant_id,p.is_perisible_products,p.product_tax,p.is_out_of_stock,c.is_perisible_products AS category_is_perisible_products,p.is_liker_products,p.is_cook_food_products,c.is_liker_category AS category_is_liker_category,c.is_cook_food_category AS category_is_cook_food_category')
+        $query = $this->db->select('p.product_id,p.product_slug,p.product_name,pi.image,p.product_image,p.product_price,p.sale_price,p.product_weight_gms,pv.product_variant_size,pv.variant_price,pv.id AS product_variant_id,pv.is_out_of_stock as varaint_is_out_of_stock,p.is_perisible_products,p.product_tax,p.is_out_of_stock,c.is_perisible_products AS category_is_perisible_products,p.is_liker_products,p.is_cook_food_products,c.is_liker_category AS category_is_liker_category,c.is_cook_food_category AS category_is_cook_food_category')
 
             //->join('tbl_users u','u.user_id=pv.created_by','left')
             ->where('p.is_deleted', '0')
+            ->where('p.is_active', '1')
             ->where_in("p.product_id", $productIds)
             ->join('tbl_product_images pi', 'p.product_id=pi.product_id', 'left')
 
@@ -433,6 +434,7 @@ class Products_model extends CI_Model
             pv.product_variant_size,
             pv.variant_price,
             pv.id AS product_variant_id,
+            pv.is_out_of_stock as varaint_is_out_of_stock,
             p.is_perisible_products,
             p.product_tax,
             p.is_out_of_stock,
@@ -450,6 +452,7 @@ class Products_model extends CI_Model
         $this->db->join('tbl_categories c', 'cpm.category_id=c.category_id', 'left');
 
         $this->db->where('p.is_deleted', '0');
+        $this->db->where('p.is_active', '1');
         $this->db->where_in("p.product_id", $productIds);
 
         /* ---- FILTERS ---- */
@@ -471,7 +474,7 @@ class Products_model extends CI_Model
         $this->db->stop_cache(); // END cache
 
         /* ---- PAGINATION ---- */
-        $this->db->group_by("p.product_id");
+        //$this->db->group_by("p.product_id");
         $this->db->limit($limit, $offset);
 
         /* ---- FINAL QUERY ---- */
@@ -521,6 +524,7 @@ class Products_model extends CI_Model
         $this->db->join('tbl_categories c', 'cpm.category_id=c.category_id', 'left');
 
         $this->db->where('p.is_deleted', '0');
+        $this->db->where('p.is_active', '1');
         $this->db->where_in("p.product_id", $productIds);
 
         /* ---- FILTERS ---- */
@@ -593,7 +597,7 @@ class Products_model extends CI_Model
 
     {
 
-        $query = $this->db->select('p.product_id,p.product_name,p.product_slug,p.product_image,p.product_price,p.product_weight_gms,pv.product_variant_size,pv.variant_price,pv.id,p.is_perisible_products,p.is_liker_products,p.is_cook_food_products,p.is_out_of_stock,pv.is_out_of_stock as variant_is_out_of_stock,p.product_tax')
+        $query = $this->db->select('p.product_id,p.product_name,p.product_slug,p.product_image,p.product_price,p.product_weight_gms,pv.product_variant_size,pv.variant_price,pv.id,p.is_perisible_products,p.is_liker_products,p.is_cook_food_products,p.is_out_of_stock,pv.is_out_of_stock as varaint_is_out_of_stock,p.product_tax')
 
             ->join('tbl_categories_products_mapping cpm', 'cpm.product_id=p.product_id')
 
@@ -636,13 +640,11 @@ class Products_model extends CI_Model
 
     {
 
-        $query = $this->db->select('c.category_name,p.product_id,p.product_name,p.product_slug,p.product_image,p.product_price,p.product_weight_gms,pv.product_variant_size,pv.variant_price,pv.id,p.is_perisible_products,p.is_liker_products,p.is_cook_food_products,c.is_perisible_products as is_perisible_category,c.is_liker_category,c.is_cook_food_category,p.product_tax,p.is_out_of_stock')
+        $query = $this->db->select('c.category_name,p.product_id,p.product_name,p.product_slug,p.product_image,p.product_price,p.product_weight_gms,p.is_perisible_products,p.is_liker_products,p.is_cook_food_products,c.is_perisible_products as is_perisible_category,c.is_liker_category,c.is_cook_food_category,p.product_tax,p.is_out_of_stock')
 
             ->join('tbl_categories_products_mapping cpm', 'cpm.product_id=p.product_id')
 
             ->join('tbl_categories c', 'cpm.category_id=c.category_id')
-
-            ->join('tblproduct_variant pv', 'cpm.product_id=pv.product_id')
 
             ->where('c.category_slug', $slug)
 
@@ -674,6 +676,8 @@ class Products_model extends CI_Model
             }
 
 
+            // Random order
+            $this->db->order_by('RAND()');
             $query=$this->db->limit('10')->get('tbl_products p');
             //echo $this->db->last_query();exit;
 

@@ -49,10 +49,12 @@ class Controller_products extends CI_Controller
         $data['product_sku'] = $product_meta[0]['product_sku'] ?? '';
         $data['product_price'] = $product_meta[0]['sale_price'] ?? '';
         $data['is_stock'] = ($is_out_of_stock == 1) ? 'InStock' : 'OutStock';
+        $og_image = base_url('admin/uploads/products/'.$data['product_image']);
+        $og_url = base_url('product/'.$slug);
         $data['brand_name'] = $this->Product_model->getBrandname($product_meta[0]['brand_id']) ?? '';
         $data['category_name'] = $this->Product_model->getCategoryname($product_meta[0]['product_id']) ?? '';
         
-        $headerdata = array('meta_title' => $product_meta[0]['meta_title'] ?? '','meta_description' => $product_meta[0]['meta_description'] ?? '');
+        $headerdata = array('meta_title' => $product_meta[0]['meta_title'] ?? '','meta_description' => $product_meta[0]['meta_description'] ?? '','og_title' => $data['product_name'] ?? '','og_description' => $data['product_description'] ?? '','og_image' => $og_image ?? '','og_url' => $og_url ?? '');
         
         $this->load->view('common/header', $headerdata);
         $this->load->view('product-detail', $data);

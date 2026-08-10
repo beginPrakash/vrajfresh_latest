@@ -243,9 +243,10 @@ class Controller_home extends CI_Controller
 										$t['size'] = $arr1->product_variant_size;
 										$t['price'] = $arr1->variant_price;
 										$t['product_variant_id'] = $arr1->product_variant_id;
+										$t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
 										$tempArray[] = $t;
 									endif;
-									// $t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
+									
 									
 								}
 
@@ -676,6 +677,59 @@ class Controller_home extends CI_Controller
 			send_response_to_api($ArrData, $errors, $success_message);
 	}
 
+	public function get_advertise_top_single()
+	{
+		$json_str = file_get_contents('php://input');
+		$json_obj = json_decode($json_str);
+
+		$errors = $success_message = '';
+		$ArrData = array();
+		$result = array();
+
+			$data = array(
+				'is_active' => $json_obj->is_active_only,
+				'search_keyword' => $json_obj->search_keyword,
+				'limit' => $json_obj->limit,
+				'page_no' => $json_obj->page_no,
+			);
+			$result_val = $this->home_model->get_advertise_top_model_single($data);
+			$ad_banner=array();
+			$ad_banner_mobile=array();
+			for ($i = 0; $i < count($result_val); $i++) {
+				if(!empty($result_val[$i]->adv_image)){
+					$ad_slug = substr($result_val[$i]->adv_link, strrpos($result_val[$i]->adv_link, '/') + 1);
+					$ad_banner[] = [
+						'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->adv_image,
+						'ad_link'=>$result_val[$i]->adv_link,
+						'ad_slug'=>$ad_slug,
+						'ad_url_category'  => $result_val[$i]->advt_url_category,
+						'ad_slug' => $this->getLastValueFromUrl($result_val[$i]->adv_link),
+						
+					];
+				}
+				if(!empty($result_val[$i]->adv_mobapp_image)){
+					$ad_slug = substr($result_val[$i]->adv_link, strrpos($result_val[$i]->adv_link, '/') + 1);
+					$ad_banner_mobile[] = [
+						'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->adv_mobapp_image,
+						'ad_link'=>$result_val[$i]->adv_link,
+						'ad_slug'=>$ad_slug,
+						'ad_url_category'  => $result_val[$i]->advt_url_category,
+						'ad_slug' => $this->getLastValueFromUrl($result_val[$i]->adv_link),
+					];
+				}
+			}
+			$result['ad_banner']=$ad_banner;
+			$result['ad_banner_mobile']=$ad_banner_mobile;
+
+			if (count($result) > 0) {
+				$ArrData = $result;
+				$success_message = '';
+			} else {
+				$errors = 'No Data Available';
+			}
+			send_response_to_api($ArrData, $errors, $success_message);
+	}
+
 	public function get_advertise_bottom()
 	{
 		$json_str = file_get_contents('php://input');
@@ -685,6 +739,9 @@ class Controller_home extends CI_Controller
 		$errors = $success_message = '';
 		$ArrData = array();
 		$result = array();
+		$Z_liker = '';
+		$Z_perisible = '';
+		$Z_cook_food = '';
 		
 			if($zipcode != ""){
 				$newData['zipcode'] = $zipcode;
@@ -705,6 +762,138 @@ class Controller_home extends CI_Controller
 				'page_no' => $json_obj->page_no,
 			);
 			$result_val = $this->home_model->get_advertise_bottom_model($data);
+			$ad_banner=array();
+			$ad_banner_mobile=array();
+			for ($i = 0; $i < count($result_val); $i++) {
+				
+				$alternate_image = 0;
+				
+				if($result_val[$i]->category_id > 0){
+					
+					$CategoryDetails = $this->master->get_row_detail('tbl_categories', array('category_id' => $result_val[$i]->category_id));
+					if(!empty($CategoryDetails)){
+						
+						$C_perisible = $CategoryDetails['is_perisible_products'];
+						$C_liker = $CategoryDetails['is_liker_category'];
+						$C_cook_food = $CategoryDetails['is_cook_food_category'];
+
+						if($Z_perisible == 'No' && $C_perisible != 0){
+							if($C_perisible == 1){
+								$alternate_image = 1;
+							} else {
+								if($P_perisible == 0){
+									$alternate_image = 1;
+								}
+							}
+						}
+						if($alternate_image == 0){
+							if($Z_liker == 'No' && $C_liker != 0){
+								if($C_liker == 1){
+									$alternate_image = 1;
+								} else {
+									if($P_liker == 0){
+										$alternate_image = 1;
+									}
+								}
+							}
+						}
+						if($alternate_image == 0){
+							if($Z_cook_food == 'No' && $C_cook_food != 0){
+								if($C_cook_food == 1){
+									$alternate_image = 1;
+								} else {
+									if($P_cook_food == 0){
+										$alternate_image = 1;
+									}
+								}
+							}
+						}
+					}
+
+				}
+				if($alternate_image == 0){
+					if(!empty($result_val[$i]->adv_image)){
+						$ad_slug = substr($result_val[$i]->adv_link, strrpos($result_val[$i]->adv_link, '/') + 1);
+						$ad_banner[] = [
+							'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->adv_image,
+							'ad_link'=>$result_val[$i]->adv_link,
+							'ad_url_category'  => $result_val[$i]->advt_url_category,
+							'ad_slug' => $this->getLastValueFromUrl($result_val[$i]->adv_link),
+						];
+					}
+					if(!empty($result_val[$i]->adv_mobapp_image)){
+						$ad_slug = substr($result_val[$i]->adv_link, strrpos($result_val[$i]->adv_link, '/') + 1);
+						$ad_banner_mobile[] = [
+							'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->adv_mobapp_image,
+							'ad_link'=>$result_val[$i]->adv_link,
+							'ad_url_category'  => $result_val[$i]->advt_url_category,
+							'ad_slug' => $this->getLastValueFromUrl($result_val[$i]->adv_link),
+						];
+					}
+				} else {
+					
+					if(!empty($result_val[$i]->alt_adv_image)){
+						$ad_banner[] = [
+							'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->alt_adv_image,
+							'ad_link'=>$result_val[$i]->alt_adv_link,
+							'ad_url_category'  => $result_val[$i]->advt_url_category,
+							'ad_slug' => $this->getLastValueFromUrl($result_val[$i]->alt_adv_link),
+						];
+					}
+
+					if(!empty($result_val[$i]->alt_adv_mobapp_image)){
+						$ad_banner_mobile[] = [
+							'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->alt_adv_mobapp_image,
+							'ad_link'=>$result_val[$i]->alt_adv_link,
+							'ad_url_category'  => $result_val[$i]->advt_url_category,
+							'ad_slug' => $this->getLastValueFromUrl($result_val[$i]->alt_adv_link),
+						];
+					}
+				}
+			}
+			$result['ad_banner']=$ad_banner;
+			$result['ad_banner_mobile']=$ad_banner_mobile;
+
+			if (count($result) > 0) {
+				$ArrData = $result;
+				$success_message = '';
+			} else {
+				$errors = 'No Data Available';
+			}
+			send_response_to_api($ArrData, $errors, $success_message);
+	}
+
+	public function get_advertise_bottom_last()
+	{
+		$json_str = file_get_contents('php://input');
+		$json_obj = json_decode($json_str);
+
+		$zipcode = (isset($json_obj->zipcode) && $json_obj->zipcode != "") ? $json_obj->zipcode : '';
+		$errors = $success_message = '';
+		$ArrData = array();
+		$result = array();
+		$Z_liker = '';
+		$Z_perisible = '';
+		$Z_cook_food = '';
+			if($zipcode != ""){
+				$newData['zipcode'] = $zipcode;
+				$zipcodeData = $this->zipcodes_model->get_zipcode_by_data($newData['zipcode']);
+				if (count($zipcodeData) > 0) {
+					
+					$Z_perisible = $zipcodeData[0]->can_deliver_perishable_products;
+					$Z_liker = $zipcodeData[0]->can_deliver_liker_products;
+					$Z_cook_food = $zipcodeData[0]->can_deliver_cook_food_products;
+
+				}
+			}
+
+			$data = array(
+				'is_active' => $json_obj->is_active_only,
+				'search_keyword' => $json_obj->search_keyword,
+				'limit' => $json_obj->limit,
+				'page_no' => $json_obj->page_no,
+			);
+			$result_val = $this->home_model->get_advertise_bottom_model_last($data);
 			$ad_banner=array();
 			$ad_banner_mobile=array();
 			for ($i = 0; $i < count($result_val); $i++) {
@@ -867,7 +1056,7 @@ class Controller_home extends CI_Controller
 								$t['size'] = $arr1->product_variant_size;
 								$t['price'] = $arr1->variant_price;
 								$t['product_variant_id'] = $arr1->product_variant_id;
-								// $t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
+								$t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
 							$tempArray[] = $t;
 							endif;
 						}

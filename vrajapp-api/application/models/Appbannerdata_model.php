@@ -34,7 +34,7 @@ class Appbannerdata_model extends CI_Model
 
 		$ArrProductData = array();
 
-		$this->db->select('product_name,product_image,product_link as slug');
+		$this->db->select('product_name,product_image,product_link as slug,type');
         $this->db->where('category_id',$category_id);
 		$this->db->where('is_active',1);
 		$this->db->order_by('product_srno','ASC');

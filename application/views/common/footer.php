@@ -16,7 +16,7 @@
 			</ul>
 		</div>
 		<div class="popup-right">
-			<span>we are currently delivering to 100+ zip codes in nj and growing rapidly</span>
+			<span class="popup-title">we are currently delivering to 100+ zip codes in nj and growing rapidly</span>
 			<p>Please check if we're in your area by simply entering zip code below.</p>
 			<form action="">
 				<input type="text" placeholder="Enter Zip Code..." name="zipcode_popup" id="zipcode_popup">
@@ -36,6 +36,7 @@
 		<div class="close-popup"><a href="javascript:void(0)">X</a></div>
 	</div>
 </div>
+
 <script>
         $(document).ready(function() {
 			$('.footer-grid h3').on('click', function() {
@@ -166,15 +167,24 @@
 <script src="<?php echo ASSET_URL . 'js/forgot_password.js'; ?>"></script>
 <script src="<?php echo ASSET_URL . 'js/jquery.zoom.js'; ?>"></script>
 <script>
+	function showZipCodepopup() {
+		$('.popup-container').width('400px');
+		$('.popup-left').hide();
+		$('.popup-title').hide();
+		$('.popup-ul').hide();
+		jQuery(".popup").show();
+	}
 	$(document).ready(function() {
 		// ==================== start zipcode popup ====================
 		// console.log(sessionStorage.getItem("zipcode_popup"))
 		if (!Cookies.get("zipcode")=='1' && !sessionStorage.getItem("zipcode_popup")) {
 			jQuery(".popup").show();
+			$('.zipcode-bar').hide();
 			sessionStorage.setItem("zipcode_popup", "1");
 			// Cookies.set("zipcode_popup", '1');
 		}
 		jQuery(".close-popup").click(function(){
+			$('.zipcode-bar').show();
 			jQuery(".popup").hide();
 		});
 		// $( "#zipcode_popup" ).on('change',function(e){

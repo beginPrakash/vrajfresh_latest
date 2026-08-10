@@ -501,57 +501,23 @@ class product_model extends CI_Model
 
 		/* search by keyword */
 
-		$i = 0;
+		if (@$_POST['search']['value'] || @$_POST['txtSearchKeyWord']) /*if datatable send POST for search*/{
 
-		foreach ($column_search as $item) { /*loop column */
-
-			if (@$_POST['search']['value'] || @$_POST['txtSearchKeyWord']) /*if datatable send POST for search*/{
-
-				if ($i === 0) {
-
-					$this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
-
-					if ($_POST['search']['value'] && $_POST['txtSearchKeyWord']) {
-
-						$this->db->like($item, $_POST['search']['value']);
-
-						$this->db->or_like($item, $_POST['txtSearchKeyWord']);
-
-					} else if ($_POST['search']['value'] && !$_POST['txtSearchKeyWord']) {
-
-						$this->db->like($item, $_POST['search']['value']);
-
-					} else if (!$_POST['search']['value'] && $_POST['txtSearchKeyWord']) {
-
-						$this->db->like($item, $_POST['txtSearchKeyWord']);
-
-					}
-
-				} else {
 
 					if ($_POST['search']['value']) {
 
-						$this->db->or_like($item, $_POST['search']['value']);
+						$this->db->like('tbl_products.product_name', $_POST['search']['value']);
 
 					}
 
 					if ($_POST['txtSearchKeyWord']) {
 
-						$this->db->or_like($item, $_POST['txtSearchKeyWord']);
+						$this->db->like('tbl_products.product_name', $_POST['txtSearchKeyWord']);
 
 					}
 
-				}
+				
 
-				if (count($column_search) - 1 == $i) {
-
-					$this->db->group_end(); /*close bracket*/
-
-				}
-
-			}
-
-			$i++;
 
 		}
 
@@ -678,41 +644,9 @@ class product_model extends CI_Model
 
 		/* search by keyword */
 
-		$i = 0;
+		if ($_POST['txtSearchKeyWord']) {
 
-		foreach ($column_search as $item) { /*loop column */
-
-			if ($_POST['txtSearchKeyWord']) /*if datatable send POST for search*/{
-
-				if ($i === 0) {
-
-					$this->db->group_start();
-
-					if ($_POST['txtSearchKeyWord']) {
-
-						$this->db->like($item, $_POST['txtSearchKeyWord']);
-
-					}
-
-				} else {
-
-					if ($_POST['txtSearchKeyWord']) {
-
-						$this->db->or_like($item, $_POST['txtSearchKeyWord']);
-
-					}
-
-				}
-
-				if (count($column_search) - 1 == $i) {
-
-					$this->db->group_end(); /*close bracket*/
-
-				}
-
-			}
-
-			$i++;
+			$this->db->like('tbl_products.product_name', $_POST['txtSearchKeyWord']);
 
 		}
 

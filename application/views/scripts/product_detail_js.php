@@ -4,6 +4,8 @@
 
 $(document).ready(function () {
 
+
+ $('.related-products').load(location.href + ' .related-products > *');
     showProgress('div#spinner');
     get_product_detail(api_url_prefix);
     hideProgress('div#spinner');
@@ -1031,8 +1033,8 @@ function get_delivery_message() {
     let hr, min;
 
     parts.forEach(part => {
-        if (part.type === 'hour') hr = part.value;
-        if (part.type === 'minute') min = part.value;
+        if (part.type === 'hour') hr = parseInt(part.value, 10);
+        if (part.type === 'minute') min = parseInt(part.value, 10);
     });
 
    
@@ -1044,9 +1046,10 @@ function get_delivery_message() {
         }
         message = message + '<br>* Order before 2:00 PM and you can expect your order within 4 hours with our Express Delivery.'
     }
+  
     if (delivery_type == 'Same Day Delivery') {
 
-        if (hr >= 14 && min > 0) {
+         if (hr >= 14 && min > 0) {
             message = 'Order within ' + (24 - hr + 13) + ' hours' + ' : ' + (60 - min) + ' minutes and delivery By Tomorrow <?php $newDate1 = date('l', strtotime('+1 days'));
             echo $newDate1 ?>, ' + ' <?php $newDate = date('d/M/Y', strtotime('+1 days'));
                 echo $newDate; ?> ';
@@ -1054,6 +1057,7 @@ function get_delivery_message() {
         if (hr < 14) {
             message = 'Order within ' + (13 - hr) + ' hours' + ' : ' + (60 - min) + ' minutes and delivery By Today <?php echo date("l") ?>,' + ' <?php echo date("d/M/Y") ?> ';
         }
+
     }
     if (delivery_type == 'Twise in a week') {
         const dayArray = delivery_days.split(",");
@@ -1361,7 +1365,7 @@ function get_related_product(api_url_prefix, category_slug, product_id) {
 								var out_of_stock = "<div class='product-stock-message'></div>";
 								var out_of_stock_class = "";
 
-								//console.log("product out of stock:" + response.data[a].is_out_of_stock + " and variant out of stock:" + variant_in_stock_count);
+								console.log("product out of stock:" + response.data[a].is_out_of_stock + " and variant out of stock:" + variant_in_stock_count);
 								if (response.data[a].is_out_of_stock == 0) {
 									out_of_stock = "<div class='product-stock-message'>Product Out of stock</div>";
 									out_of_stock_class = "out_of_stock";

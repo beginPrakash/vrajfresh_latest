@@ -432,8 +432,8 @@ span.noti_count_or {
 					</ul>
 
 				</li>
-<li class="treeview">
-				<a href="javascript:void(0);"> <span>Upcoming Product<br>Notification</span> <i class="fa fa-angle-left pull-right"></i> </a>
+				<li class="treeview">
+					<a href="javascript:void(0);"> <span>Upcoming Product<br>Notification</span> <i class="fa fa-angle-left pull-right"></i> </a>
 
 					<ul class="treeview-menu">
 
@@ -442,7 +442,18 @@ span.noti_count_or {
 						<li><a href="<?php echo base_url(); ?>product/coming-soon">View Upcoming Product</a> </li>
 
 					</ul>
-</li>
+				</li>
+				<li class="treeview">
+					<a href="javascript:void(0);"> <span>Coupon<br>Notification</span> <i class="fa fa-angle-left pull-right"></i> </a>
+
+					<ul class="treeview-menu">
+
+						<li><a href="<?php echo base_url(); ?>coupon-notification/add">Add Coupon Notification</a> </li>
+
+						<li><a href="<?php echo base_url(); ?>coupon-notification">View Coupon Notification</a> </li>
+
+					</ul>
+				</li>
 
 			</ul>
 

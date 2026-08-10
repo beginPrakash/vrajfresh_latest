@@ -497,7 +497,7 @@ function stripe_payment_refund_track($refund_id)
 
 		\Stripe\Stripe::setApiKey($stripe['secret_key']);
 		$intent = \Stripe\Refund::retrieve($refund_id);
-		$response = $response->jsonSerialize();
+		$response = $intent->jsonSerialize();
 		return $response;
 	
 }

@@ -2226,6 +2226,7 @@ class Controller_products extends CI_Controller
 											$t['size'] = $arr1->product_variant_size;
 											$t['price'] = $arr1->variant_price;
 											$t['variant_id'] = $arr1->id;
+											$t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
 										}
 										$tempArray[] = $t;
 									}
@@ -2261,6 +2262,7 @@ class Controller_products extends CI_Controller
 											$t['size'] = $arr1->product_variant_size;
 											$t['price'] = $arr1->variant_price;
 											$t['variant_id'] = $arr1->id;
+											$t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
 										}
 										$tempArray[] = $t;
 									}
@@ -2295,6 +2297,7 @@ class Controller_products extends CI_Controller
 									$t['size'] = $arr1->product_variant_size;
 									$t['price'] = $arr1->variant_price;
 									$t['variant_id'] = $arr1->id;
+									$t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
 								}
 								$tempArray[] = $t;
 							}
@@ -2381,6 +2384,7 @@ class Controller_products extends CI_Controller
 								$t['size'] = $arr1->product_variant_size;
 								$t['price'] = $arr1->variant_price;
 								$t['variant_id'] = $arr1->id;
+								$t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
 							}
 							$tempArray[] = $t;
 						}
@@ -2830,7 +2834,7 @@ class Controller_products extends CI_Controller
 
 						$previous_variant_id = "";
 
-						foreach ($temp_result as $arr1) {
+						//foreach ($temp_result as $arr1) {
 
 
 
@@ -2852,7 +2856,12 @@ class Controller_products extends CI_Controller
 
 							// }
 
-							$prod_var_arr = $this->Products_model->get_variant_by_product_id($arr['product_id']);
+
+							//$previous_variant_id = $arr1['id'];
+
+						//}
+
+						$prod_var_arr = $this->Products_model->get_variant_by_product_id($arr['product_id']);
 						if(count($prod_var_arr) > 0){
 							foreach($prod_var_arr as $key => $val){
 								if(!empty($val->id)){
@@ -2864,10 +2873,6 @@ class Controller_products extends CI_Controller
 									$tempArray[] = $t;
 								}
 							}
-						}
-
-							$previous_variant_id = $arr1['id'];
-
 						}
 
 

@@ -407,7 +407,7 @@ class Controller_categories extends CI_Controller
 												$t['size'] = $val->product_variant_size;
 												$t['price'] = $val->variant_price;
 												$t['variant_id'] = $val->id;
-												$t['is_out_of_stock'] = $val->is_out_of_stock;
+												$t['is_out_of_stock'] = $val->varaint_is_out_of_stock;
 											$tempArray[] = $t;
 										}
 									}
@@ -501,7 +501,11 @@ class Controller_categories extends CI_Controller
 		$category_result = "";
 		$result = array();
 
-		$category_result = $this->categories_model->get_category_by_slug(['category_slug'=>$json_obj->category_slug]);
+		if(!empty($json_obj->brand_slug)){
+			$brand_result = $this->brands_model->get_brand_by_slug(['brand_slug'=>$json_obj->brand_slug]);
+		}else{
+			$category_result = $this->categories_model->get_category_by_slug(['category_slug'=>$json_obj->category_slug]);
+		}
 		$category_id_url = $category_result[0]->category_id;
 		// echo 'category_id_url: '.$category_id_url;
 		$category_id_arr = $json_obj->category_id;
@@ -511,13 +515,25 @@ class Controller_categories extends CI_Controller
 			}
 			
 		}
+
+		$brand_id_url = $brand_result[0]->brand_id;
+		// echo 'brand_id_url: '.$brand_id_url;
+		$brand_id_arr = $json_obj->brand_id;
+		if(!empty($brand_id_url)){
+			if(!in_array($brand_id_url, $brand_id_arr)){
+				$brand_id_arr[] = $brand_id_url;
+			}
+			
+		}
 		$category_id = implode(",", $category_id_arr);
+		$brand_id = implode(",", $brand_id_arr);
+
 
 		
 			$data = array(
 				'category_id' => $category_id,
 				// 'category_id' => implode(",", $json_obj->category_id),
-				'brand_id' => implode(",", $json_obj->brand_id),
+				'brand_id' => $brand_id,
 				'tag_id' => implode(",", $json_obj->tag_id),
 				'min_price' => $json_obj->min_price,
 				'max_price' => $json_obj->max_price,
@@ -561,7 +577,7 @@ class Controller_categories extends CI_Controller
 												$t['size'] = $val->product_variant_size;
 												$t['price'] = $val->variant_price;
 												$t['variant_id'] = $val->id;
-												$t['is_out_of_stock'] = $val->is_out_of_stock;
+												$t['is_out_of_stock'] = $val->varaint_is_out_of_stock;
 											$tempArray[] = $t;
 										}
 									}

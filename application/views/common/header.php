@@ -26,6 +26,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <meta name="author" content="">
     <title><?= (isset($meta_title) && !empty($meta_title)) ? $meta_title : 'VrajFresh'; ?></title>
     <meta name="description" content="<?= (isset($meta_description) && !empty($meta_description)) ? $meta_description : 'VrajFresh'; ?>">
+    <?php if(isset($og_title)) { ?>
+        <meta property="og:title" content="<?php echo $og_title; ?>">
+        <meta property="og:description" content="<?php echo htmlspecialchars(trim(preg_replace('/\s+/', ' ', strip_tags($og_description))), ENT_QUOTES, 'UTF-8'); ?>">
+        <meta property="og:image" content="<?php echo $og_image; ?>">
+        <meta property="og:url" content="<?php echo $og_url; ?>">
+    <?php } ?>
     <link rel="shortcut icon" type="image/png" href=<?php echo ASSET_URL . "images/favicon.png"; ?>>
     <link href='<?php echo ASSET_URL . "css/slick.css?v=1.1"; ?>' rel="stylesheet">
     <link href='<?php echo ASSET_URL . "css/vraj-fresh-custom.css?v=" . date("d.H.m.s"); ?>' rel="stylesheet">
@@ -157,8 +163,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     $maxDate->modify('+7 day');
 
                     // Current hour and minute
-                    $hr  = $today->format('H');
-                    $min = $today->format('i');
+                    $hr  = (int)$today->format('H');
+                    $min = (int)$today->format('i');
 
                     // If time is after 2:00 PM
                     if ($hr >= 14 && $min > 0) {
@@ -256,9 +262,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <input type="hidden" value="<?Php echo $ch_ur; ?>" class="curs_name">
             <div class="my-account">
                 <ul>
-                    <li class="mobile-show">
+                    <!-- <li class="mobile-show">
                         <a href="javascript:void(0);" class="toggel-zipcode"><img src=<?php echo ASSET_URL . "images/mappin.svg"; ?> class="left-arrow" alt="Store map location"></a>
-                    </li>
+                    </li> -->
                     <?php if (!IsUserLogin()) { ?>
                         <?php if (isset($_COOKIE['user_id'])) { ?>
                             <li class="vraj-login1">
@@ -494,6 +500,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                             var price_weight = "";
                                         }
 
+                                        let product_price=response.data.products[a].product_price;
+									    let sale_price=response.data.products[a].sale_price;
+                                        let final_p_price = product_price;
+                                        if(product_price != sale_price){
+											final_p_price=sale_price;
+									    }
+
                                         // product = product.concat('<li class="product-box"><a href="<?php echo BASE_URL; ?>product/' + response.data.products[a].product_slug + '"><img src=' + response.data.products[a].product_image + ' onerror=this.src="<?php echo ADMIN_URL; ?>uploads/logo-2.png" ><div><h4>' + response.data.products[a].product_name + '</h4></a>' + price_weight + out_of_stock + '<ul><li><div class="quantity ' + out_of_stock_class + '"><button type="button" id="sub" class="sub">-</button><input type="text" class = "prod_add1" id="' + response.data.products[a].product_id + '" value="1" min="1" max="3" disabled /><button type="button" id="add" class="add">+</button></div></li><li><button id= "btn_' + response.data.products[a].product_id + '" class="add_cart ' + out_of_stock_class + '" data-isperisible="' + response.data.products[a].is_perisible_products + '" data-productslug="' + response.data.products[a].product_slug + '" data-productimage= "' + response.data.products[a].product_image + '" data-productname="' + response.data.products[a].product_name + '" data-price=' + response.data.products[a].product_price + ' data-productid = ' + response.data.products[a].product_id + ' data-productweight =' + response.data.products[a].product_weight_gms + ' data-producttax="' + response.data.products[a].product_tax + '" >Add</button></li></ul></div></li>');
                                         product += `
                                         <div class="product-box-dropdown">
@@ -504,7 +517,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                             </div>
                                             <div class="title-box">
                                                 <div><a href="<?php echo BASE_URL; ?>product/${response.data.products[a].product_slug}">${response.data.products[a].product_name}</a></div>
-                                                <div>${response.data.products[a].product_price}</div>
+                                                <div>${final_p_price}</div>
                                             </div>`;
                                         product += `<div class="cart-box">
                                             ${out_of_stock}
@@ -519,7 +532,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                                 </div>
                                                 </li>
                                                 <li>
-                                                <button type="button" id= "btn_${response.data.products[a].product_id}" class="add_cart_search ${out_of_stock_class}" data-isperisible="${response.data.products[a].is_perisible_products}" data-productslug="${response.data.products[a].product_slug}" data-productimage= "${response.data.products[a].product_image}" data-productname="${response.data.products[a].product_name}" data-price="${response.data.products[a].product_price}" data-productid = "${response.data.products[a].product_id}" data-productweight ="${response.data.products[a].product_weight_gms}" data-producttax="${response.data.products[a].product_tax}" >Add</button>
+                                                <button type="button" id= "btn_${response.data.products[a].product_id}" class="add_cart_search ${out_of_stock_class}" data-isperisible="${response.data.products[a].is_perisible_products}" data-productslug="${response.data.products[a].product_slug}" data-productimage= "${response.data.products[a].product_image}" data-productname="${response.data.products[a].product_name}" data-price="${final_p_price}" data-productid = "${response.data.products[a].product_id}" data-productweight ="${response.data.products[a].product_weight_gms}" data-producttax="${response.data.products[a].product_tax}" >Add</button>
                                                 </li>`;
 
                                         } else {

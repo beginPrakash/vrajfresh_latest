@@ -44,6 +44,7 @@ class Home_model extends CI_Model
         $query = $this->db->select('*')
             ->where('is_deleted', '0')
             ->where('is_active', '1')
+            ->where('home_product_slider_id <=', 8)
             ->get('tbl_home_product_slider');
         return $query->result();
     }
@@ -117,12 +118,35 @@ class Home_model extends CI_Model
 
     public function get_advertise_top_model()
     {
+        $count = $this->db
+        ->where([
+            'is_deleted' => 0,
+            'is_active'  => 1,
+            'adv_type'   => 'top'
+        ])
+        ->count_all_results('tbl_advertise_top');
         $query = $this->db->select('*')
             ->where([
                 'is_deleted' => 0,
                 'is_active'  => 1,
                 'adv_type'   => 'top'
             ])
+            ->order_by('adv_srno','ASC')
+            ->limit($count - 2)
+            ->get('tbl_advertise_top');
+        return $query->result();
+    }
+
+    public function get_advertise_top_model_single()
+    {
+        $query = $this->db->select('*')
+            ->where([
+                'is_deleted' => 0,
+                'is_active'  => 1,
+                'adv_type'   => 'top'
+            ])
+            ->order_by('adv_srno', 'DESC')
+            ->limit(2)
             ->get('tbl_advertise_top');
         return $query->result();
     }
@@ -136,6 +160,21 @@ class Home_model extends CI_Model
                 'adv_type'   => 'bottom'
             ])
             ->order_by('adv_srno', 'ASC')
+            ->limit(1)
+            ->get('tbl_advertise_top');
+        return $query->result();
+    }
+
+    public function get_advertise_bottom_model_last()
+    {
+        $query = $this->db->select('*')
+            ->where([
+                'is_deleted' => 0,
+                'is_active'  => 1,
+                'adv_type'   => 'bottom'
+            ])
+            ->order_by('adv_srno', 'ASC')
+            ->limit(10,1)
             ->get('tbl_advertise_top');
         return $query->result();
     }

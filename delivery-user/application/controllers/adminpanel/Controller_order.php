@@ -10,6 +10,7 @@ class Controller_order extends CI_Controller
 		$this->load->model('order_model');
 		$this->load->model('common_model');
 		$this->load->model('user_model');
+		$this->load->model('transactions_model');
 		$this->load->model('order_product_model');
 		$this->load->model('Master_model', 'master');
 		$this->load->library('image_lib');
@@ -175,6 +176,48 @@ class Controller_order extends CI_Controller
 	}
 
 
+	public function find_refund_track_number($order_id){
+		//find refund id
+		$refund_id = $this->transactions_model->getRefundTransactionsBYOrderIdSingle($order_id);
+		if(!empty($refund_id)){
+			$url = API_URL . "api/stripe/payment_refund_track";
+
+			$ArrPayment = array(
+				"refund_id" => $refund_id
+			);
+
+			$data = array(
+				"oauth_key" => "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+				"ArrPayment" => $ArrPayment
+			);
+
+			$curl = curl_init();
+
+			curl_setopt_array($curl, array(
+				CURLOPT_URL => $url,
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_ENCODING => "",
+				CURLOPT_MAXREDIRS => 10,
+				CURLOPT_TIMEOUT => 30,
+				CURLOPT_FOLLOWLOCATION => true,
+				CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+				CURLOPT_CUSTOMREQUEST => "POST",
+				CURLOPT_POSTFIELDS => json_encode($data),
+				CURLOPT_HTTPHEADER => array(
+					"Content-Type: application/json",
+					"Accept: application/json"
+				),
+			));
+
+			$response = curl_exec($curl);
+			$refund = json_decode($response);
+			if (isset($refund->data->destination_details)) {
+				$ref_no = $refund->data->destination_details->card->reference;
+			}
+		}
+		return $ref_no ?? '';
+	}
+
 	public function update_order_process()
 	{
 		$uploadPath = $_SERVER['DOCUMENT_ROOT'] . '/admin/uploads/products/';
@@ -291,59 +334,142 @@ class Controller_order extends CI_Controller
 				}
 
 				$order_product_data='';
-				$ArrOrderProduct = $this->order_product_model->getOrderProductByOrderId($order_id);
+				$refun_pro_amount = 0;
+				$newly_pro_amount = 0;
+				$disclas = '';
+				$new_cl = '';
+				$ArrOrderProduct = $this->order_product_model->getOrderProductLogByOrderId($order_id);
 				foreach ($ArrOrderProduct as $arr) {
-					if ($arr['old_qty'] > 0) {
-						$qty=$arr['old_qty'];
+					if ($arr['log_status'] == 'out_of_stock_refunded') {
+						$cls = 'red';
+						$disclas = 'disabletext';
+						$log_status= 'Out Of Stock (Refunded)';
+						$refun_pro_amount = $refun_pro_amount + $arr['unit_price'] + $arr['product_tax_amount'];
+					}else if ($arr['log_status'] == 'refunded') {
+						$cls='red';
+						$disclas = 'disabletext';
+						$log_status= 'Refunded';
+						$refun_pro_amount = $refun_pro_amount + $arr['unit_price'] + $arr['product_tax_amount'];
+					}else if ($arr['log_status'] == 'newly_added') {
+						$new_cl='new_ad';
+						$disclas = '';
+						$cls='green';
+						$log_status= 'Newly Added';
+						$newly_pro_amount = $newly_pro_amount + $arr['total_amount'] + $arr['product_tax_amount'];
+					}else if ($arr['log_status'] == 'qty_changed') {
+						$disclas = '';
+						$cls='green';
+						if($arr['qty_order'] != $arr['qty_ship']){
+							if($arr['qty_ship'] > $arr['qty_order']){
+								$find_per_roduct_tax = $arr['product_tax_amount'] - $arr['product_tax_amount_old'];
+								$tqty = $arr['qty_ship'] - $arr['qty_order'];
+								$log_status= '+'.$tqty.' Newly Added';
+								$newly_pro_amount = $newly_pro_amount + ($arr['unit_price'] * $tqty);
+							}else{
+								$find_per_roduct_tax = $arr['product_tax_amount_old'] - $arr['product_tax_amount'];
+								$tqty = $arr['qty_order'] - $arr['qty_ship'];
+								$log_status= '-'.$tqty.' Removed';
+								$refun_pro_amount = $refun_pro_amount + ($arr['unit_price'] * $tqty);
+							}
+						}	
 					}else{
-						$qty=$arr['qty'];
+						$disclas = '';
+						$new_cl='';
+						$cls='';
+						$log_status = '';
 					}
 					$product_tax='NT';
 					if (!empty($arr['product_tax'])) {
 						$product_tax='T';
 					}
-					$order_product_data .='<tr>
-						<td>'.$arr['product_name'].'</td>
-						<td>$'.$arr['unit_price'].'</td>
-						<td>'.$qty.'</th>
-					   	<td>'.$product_tax.'</td>
-					   	<td>$'.$arr['total_amount'].'</td>
-					</tr>';
+
+		
+					$ref_track_number='';
+					//get refund track number
+					$ref_track_number = $this->find_refund_track_number($order_id);
+					
+					$order_product_data .='<tr>';
+					if(!empty($disclas)){
+						$order_product_data .='<td style="color: #999;text-decoration: line-through;opacity: 0.7;cursor: not-allowed;">'.$arr['product_name'].'</td>';
+					}else if(!empty($new_cl)){
+						$order_product_data .='<td style="color: #107aaf;font-weight:bold;">'.$arr['product_name'].'</td>';
+					}else{
+						$order_product_data .='<td>'.$arr['product_name'].'</td>';
+					}
+					$order_product_data .='<td>$'.$arr['unit_price'].'</td>
+						<td>'.$product_tax.'</td>
+						<td>'.$arr['qty_order'].'</td>
+						<td>'.$arr['qty_ship'].'</td>
+					   	<td>$'.$arr['total_amount'].'</td>';
+					if($cls=='green'){
+						$order_product_data .='<td style="color:green">'.$log_status.'</td>';
+					}else if($cls=='red'){
+						$order_product_data .='<td style="color:red">'.$log_status.'</td>';
+					}else{
+						$order_product_data .='<td>'.$log_status.'</td>';
+					}
+					
+					$order_product_data .='</tr>';
 				}
 				$order_product_data .='<tr>
-					<td colspan="4" class="right-txt">Shipping Charge :</td>
+					<td colspan="6" class="right-txt">Shipping Charge :</td>
 					<td>$'.$ArrOrderDetails['fedex_shipping_charge'].'</td>
 				</tr>';
 				$order_product_data .='<tr>
-					<td colspan="4" class="right-txt">Tip Amount :</td>
+					<td colspan="6" class="right-txt">Tip Amount :</td>
 					<td>$'.$ArrOrderDetails['order_tip'].'</td>
 				</tr>';
 				$order_product_data .='<tr>
-					<td colspan="4" class="right-txt">Order Discount :</td>
+					<td colspan="6" class="right-txt">Order Discount :</td>
 					<td>$'.$ArrOrderDetails['discount_amount'].'</td>
 				</tr>';
 				$order_product_data .='<tr>
-					<td colspan="4" class="right-txt">Preparation Cost :</td>
+					<td colspan="6" class="right-txt">Preparation Cost :</td>
 					<td>$'.$ArrOrderDetails['preparation_cost'].'</td>
 				</tr>';
 				$order_product_data .='<tr>
-					<td colspan="4" class="right-txt">Packaging Cost :</td>
+					<td colspan="6" class="right-txt">Packaging Cost :</td>
 					<td>$'.$ArrOrderDetails['packaging_cost'].'</td>
 				</tr>';
+				$first_total_paid = $this->transactions_model->getTransactionsBYOrderIdSingle($order_id);
 				$order_product_data .='<tr>
-					<td colspan="4" class="right-txt">Total :</td>
+					<td colspan="6" class="right-txt">Total :</td>
+					<td>$'.$first_total_paid.'</td>
+				</tr>';
+				$order_product_data .='<tr>
+					<td colspan="6" class="right-txt" style="color:green">Added Items :</td>
+					<td style="color:green">+$'.number_format($newly_pro_amount,2).'</td>
+				</tr>';
+				$order_product_data .='<tr>
+					<td colspan="6" class="right-txt" style="color:red">Out Of Stock / Refunded :</td>
+					<td style="color:red">-$'.number_format($refun_pro_amount,2).'</td>
+				</tr>';
+				$order_product_data .='<tr>
+					<td colspan="6" class="right-txt">Final Capture Amount :</td>
 					<td>$'.$ArrOrderDetails['order_total_amount'].'</td>
 				</tr>';
+				$ref_track_number_text ='';
+				if(!empty($ref_track_number)){
+					$ref_track_number_text .='<tr><td style="padding-top: 20px;padding-bottom: 20px;">';
+					$ref_track_number_text .='<p>';
+					$ref_track_number_text .='If you need to check the refund status with your bank, please provide the following Refund Tracking Number (ARN):</p>';
+
+					$ref_track_number_text .='<p>';
+					$ref_track_number_text .='<strong>Tracking Number (ARN):</strong> '.$ref_track_number.'';
+					$ref_track_number_text .='</p>';
+					$ref_track_number_text .='</td></tr>';
+				}
 
 				//send email
 				$subject = "Delivered: items from order #".$order_id;
 				$order_content = file_get_contents('templates/completed_mail.html');
 				$order_content_pdf = file_get_contents('templates/completed_pdf.html');
 
-				$arr_replace = array('##order_date##', '##order_id##', '##customer_name##', '##order_delivey_time##', '##address##','##customer_email##','##shipping_first_name##','##shipping_last_name##','##shipping_street_name##','##shipping_city##','##shipping_state##','##shipping_country##','##shipping_zipcode##','##shipping_phone##','##billing_first_name##','##billing_last_name##','##billing_street_name##','##billing_city##','##billing_state##','##billing_country##','##billing_zipcode##','##billing_phone##','##order_product_data##','##replace_item_text##','##order_status##');
-				$arr_replace_with = array($order_date, $order_id, $customer_name, $order_delivey_time, $address,$customer_email,$ArrOrderDetails['shipping_first_name'],$ArrOrderDetails['shipping_last_name'],$ArrOrderDetails['shipping_street_name'] .' '. $ArrOrderDetails['shipping_apartment_name'] , $ArrOrderDetails['shipping_city'] , $ArrOrderDetails['shipping_state_name'] , 'United States' , $ArrOrderDetails['shipping_zipcode'] , $ArrOrderDetails['shipping_phone'],$ArrOrderDetails['shipping_first_name'],$ArrOrderDetails['shipping_last_name'],$ArrOrderDetails['billing_street_name'] .' '. $ArrOrderDetails['billing_apartment_name'] , $ArrOrderDetails['billing_city'] , $ArrOrderDetails['billing_state_name'] , 'United States' , $ArrOrderDetails['billing_zipcode'] , $ArrOrderDetails['billing_phone'],$order_product_data,$replace_item_text,$ArrOrderDetails['order_status']);
+				$arr_replace = array('##order_date##', '##order_id##', '##customer_name##', '##order_delivey_time##', '##address##','##customer_email##','##shipping_first_name##','##shipping_last_name##','##shipping_street_name##','##shipping_city##','##shipping_state##','##shipping_country##','##shipping_zipcode##','##shipping_phone##','##billing_first_name##','##billing_last_name##','##billing_street_name##','##billing_city##','##billing_state##','##billing_country##','##billing_zipcode##','##billing_phone##','##order_product_data##','##replace_item_text##','##order_status##','##ref_track_number_text##');
+				$arr_replace_with = array($order_date, $order_id, $customer_name, $order_delivey_time, $address,$customer_email,$ArrOrderDetails['shipping_first_name'],$ArrOrderDetails['shipping_last_name'],$ArrOrderDetails['shipping_street_name'] .' '. $ArrOrderDetails['shipping_apartment_name'] , $ArrOrderDetails['shipping_city'] , $ArrOrderDetails['shipping_state_name'] , 'United States' , $ArrOrderDetails['shipping_zipcode'] , $ArrOrderDetails['shipping_phone'],$ArrOrderDetails['shipping_first_name'],$ArrOrderDetails['shipping_last_name'],$ArrOrderDetails['billing_street_name'] .' '. $ArrOrderDetails['billing_apartment_name'] , $ArrOrderDetails['billing_city'] , $ArrOrderDetails['billing_state_name'] , 'United States' , $ArrOrderDetails['billing_zipcode'] , $ArrOrderDetails['billing_phone'],$order_product_data,$replace_item_text,$ArrOrderDetails['order_status'],$ref_track_number_text);
 				$order_content = str_replace($arr_replace, $arr_replace_with, $order_content);
 				$order_content_pdf = str_replace($arr_replace, $arr_replace_with, $order_content_pdf);
+
 
 				$this->load->library('pdf');
 				$this->dompdf->loadHtml($order_content_pdf);

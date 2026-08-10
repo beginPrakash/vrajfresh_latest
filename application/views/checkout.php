@@ -308,8 +308,8 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                $maxDate->modify('+7 day');
 
                // Current hour and minute
-               $hr  = $today->format('H');
-               $min = $today->format('i');
+               $hr  = (int)$today->format('H');
+               $min = (int)$today->format('i');
 
                // If time is after 2:00 PM
                if ($hr >= 14 && $min > 0) {
@@ -710,8 +710,8 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                $maxDate->modify('+7 day');
 
                // Current hour and minute
-               $hr  = $today->format('H');
-               $min = $today->format('i');
+               $hr  = (int)$today->format('H');
+               $min = (int)$today->format('i');
 
                // If time is after 2:00 PM
                if ($hr >= 14 && $min > 0) {
@@ -937,8 +937,8 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
       let hr, min;
 
       parts.forEach(part => {
-         if (part.type === 'hour') hr = part.value;
-         if (part.type === 'minute') min = part.value;
+         if (part.type === 'hour') hr = parseInt(part.value, 10);
+        if (part.type === 'minute') min = parseInt(part.value, 10);
       });
 
       if(hr >= 14 && min > 0){
@@ -1264,3 +1264,11 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
 	
 </style>
 
+if place order - default status is existing default
+- add delete icon (add popup and select option refunded/out of stock)
+- remove refunded/out odf stock in list
+
+
+Coupon
+  - add option all
+    - use for web and app both

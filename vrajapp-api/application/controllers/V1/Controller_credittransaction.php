@@ -13,6 +13,7 @@ class Controller_credittransaction extends CI_Controller
 		header('Access-Control-Allow-Headers: AccountKey,x-requested-with, Content-Type, content-type, origin, authorization, accept, client-security-token, host, date, cookie, cookie2');
 		header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 		$this->load->model('orders_model');
+		$this->load->model('cart_model');
 		$this->load->model('credittransaction_model');
 		$this->load->model('Master_model', 'master');
 		//error_reporting(0);
@@ -61,6 +62,37 @@ class Controller_credittransaction extends CI_Controller
 				$success_message = '';
 			} else {
 				$errors = 'No Transaction Found';
+			}
+			send_response_to_api($ArrData, $errors, $success_message);
+		}
+	}
+
+	public function get_total_credit()
+	{
+
+		$json_str = file_get_contents('php://input');
+		$json_obj = json_decode($json_str);
+
+		// Get Bearer Token
+		$authHeader = $this->input->get_request_header('Authorization', TRUE);
+		if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+			$oauth_key = $matches[1];
+		} else {
+			$oauth_key = '';
+		}
+
+		$errors = $success_message = '';
+		$ArrData = array();
+		if (check_oauth_key($oauth_key)) {
+			try {
+			$customer_id = $this->cart_model->userid_by_token($oauth_key);	
+			$credit_total_date = $this->credittransaction_model->get_credit_sum($customer_id);
+			$credit_total = ($credit_total_date['amount'] > 0) ? $credit_total_date['amount'] : 0.00;
+			$ArrData['earned_credit'] =round($credit_total,2);
+			$success_message = 'Data listed successfully';
+			} catch (Exception $e) {
+				$ArrData = array();
+				$errors = 'No Data Available';
 			}
 			send_response_to_api($ArrData, $errors, $success_message);
 		}

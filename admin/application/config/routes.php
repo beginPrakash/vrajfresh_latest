@@ -107,6 +107,12 @@ $route['product/coming-soon/add'] = 'adminpanel/Controller_product_coming_soon/a
 $route['product/coming-soon/update/(:num)'] = 'adminpanel/Controller_product_coming_soon/add/$1';
 $route['product/coming-soon/delete/(:num)'] = 'adminpanel/Controller_product_coming_soon/delete/$1';
 
+/* COUPON NOTIFICATION */
+$route['coupon-notification'] = 'adminpanel/Controller_coupon_notification';
+$route['coupon-notification/add'] = 'adminpanel/Controller_coupon_notification/add';
+$route['coupon-notification/update/(:num)'] = 'adminpanel/Controller_coupon_notification/add/$1';
+$route['coupon-notification/delete/(:num)'] = 'adminpanel/Controller_coupon_notification/delete/$1';
+
 /* PROMOTIONAL CODE */
 $route['promotional-code'] = 'adminpanel/Controller_promotional_code';
 $route['promotional-code-delete/(:num)'] = 'adminpanel/Controller_promotional_code/delete_ajax/$1';

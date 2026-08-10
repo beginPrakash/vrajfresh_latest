@@ -19,6 +19,13 @@ class Queue_worker extends CI_Controller {
      * This method processes the queue entries
      */
     public function process() {
+
+        $secret_key = '866bcfa3e717b4baadd1fff149cdcdef'; // Change this to your own secret key
+    
+        // if (!$this->input->is_cli_request() && $this->input->get('key') !== $secret_key) {
+        //     show_404();
+        //     return;
+        // }
         // 1. Grab a chunk of 100 pending records directly
         $this->db->where('status', 'pending');
         $this->db->limit(100);
