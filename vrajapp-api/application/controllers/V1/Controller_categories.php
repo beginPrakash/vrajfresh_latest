@@ -407,7 +407,7 @@ class Controller_categories extends CI_Controller
 												$t['size'] = $val->product_variant_size;
 												$t['price'] = $val->variant_price;
 												$t['variant_id'] = $val->id;
-												$t['is_out_of_stock'] = $val->varaint_is_out_of_stock;
+												$t['is_out_of_stock'] = $val->is_out_of_stock;
 											$tempArray[] = $t;
 										}
 									}
@@ -499,6 +499,7 @@ class Controller_categories extends CI_Controller
 		$errors = $success_message = '';
 		$ArrData = array();
 		$category_result = "";
+		$brand_result = "";
 		$result = array();
 
 		if(!empty($json_obj->brand_slug)){
@@ -515,7 +516,7 @@ class Controller_categories extends CI_Controller
 			}
 			
 		}
-
+		
 		$brand_id_url = $brand_result[0]->brand_id;
 		// echo 'brand_id_url: '.$brand_id_url;
 		$brand_id_arr = $json_obj->brand_id;
@@ -577,7 +578,7 @@ class Controller_categories extends CI_Controller
 												$t['size'] = $val->product_variant_size;
 												$t['price'] = $val->variant_price;
 												$t['variant_id'] = $val->id;
-												$t['is_out_of_stock'] = $val->varaint_is_out_of_stock;
+												$t['is_out_of_stock'] = $val->is_out_of_stock;
 											$tempArray[] = $t;
 										}
 									}

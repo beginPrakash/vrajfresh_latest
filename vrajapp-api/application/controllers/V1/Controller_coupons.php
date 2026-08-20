@@ -365,6 +365,7 @@ class Controller_coupons extends CI_Controller
 
 								//echo "<br>".$price.":".$brand.":".$category."=".$total_applicapble_order_amount;
 
+								//echo "<br>".$price.":".$brand.":".$category."=".$total_applicapble_order_amount;
 								if ($result[0]->brand_ids != '' && $result[0]->exclude_category != '') {
 									if ($brand == 'y' && $category == 'n') {
 

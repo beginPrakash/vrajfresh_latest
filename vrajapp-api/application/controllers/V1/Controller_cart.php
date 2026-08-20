@@ -262,6 +262,30 @@ class Controller_cart extends CI_Controller
 		if (check_oauth_key($oauth_key)) {
 			try {
 			$customer_id = $this->cart_model->userid_by_token($oauth_key);	
+			//delete sold out product start
+			$this->db->query("DELETE c FROM tbl_cart_items c
+			LEFT JOIN tbl_products p ON p.product_id = c.id
+			LEFT JOIN tblproduct_variant v ON v.id = c.options_variant_id
+			WHERE c.customer_id = $customer_id
+			AND ( c.qty <= 0
+				OR (
+				c.options_variant_id IS NOT NULL
+				AND c.options_variant_id != 0
+				AND (
+					v.id IS NULL
+					OR v.is_out_of_stock = 0
+				)
+			)
+			OR (
+				(c.options_variant_id IS NULL OR c.options_variant_id = 0)
+				AND (
+					p.product_id IS NULL
+					OR p.is_out_of_stock = 0
+				)
+			)
+			)");
+			//delete sold out product end
+			
 			$ArrData = $this->cart_model->get_cart_by_customer($customer_id);
 			$success_message = 'Data listed successfully';
 			} catch (Exception $e) {

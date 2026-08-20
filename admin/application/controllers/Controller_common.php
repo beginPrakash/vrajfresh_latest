@@ -96,6 +96,7 @@ class Controller_common extends CI_Controller
 
 
 
+
 	public function ajaxStatusUpdateAnyColumn()
 
 	{

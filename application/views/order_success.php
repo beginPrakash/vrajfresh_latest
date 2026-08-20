@@ -1,23 +1,1 @@
-<?php require_once('common/header.php'); ?>
-<section class="order-receiver">
-	<div class="container">
-		<h3>Your order has been received</h3>
-		<i class="fa fa-check" aria-hidden="true"></i>
-		<strong>Thank you for your purchase!</strong>
-		<span>Your Order ID is : <b>
-				<?php echo $order_id; ?>
-			</b>
-		</span>
-		<p>you will receive an order confirmation email with details of your order</p>
-		<a href="
-		<?php echo BASE_URL; ?>">Continue Shopping </a>
-	</div>
-</section>
-<?php require_once('common/common_js.php'); ?>
-<?php require_once('common/footer.php'); ?>
-<script>
-sessionStorage.setItem("discount_amount", 0);
-sessionStorage.setItem("order_amount", 0);
-sessionStorage.setItem("coupon_code", "");
-sessionStorage.setItem("coupon_id",0);
-</script>
+<?php require_once('common/header.php'); ?><script>  fbq('track', 'Purchase');</script><section class="order-receiver">	<div class="container">		<h3>Your order has been received</h3>		<i class="fa fa-check" aria-hidden="true"></i>		<strong>Thank you for your purchase!</strong>		<span>Your Order ID is : <b>				<?php echo $order_id; ?>			</b>		</span>		<p>you will receive an order confirmation email with details of your order</p>		<a href="		<?php echo BASE_URL; ?>">Continue Shopping </a>	</div></section><?php require_once('common/common_js.php'); ?><?php require_once('common/footer.php'); ?><?php    $order_items = isset($_SESSION['order_items']) ? $_SESSION['order_items'] : [];        $items_js = [];    foreach ($order_items as $index => $item) {        $items_js[] = [            "item_id" => $item['product_id'],            "item_name" => $item['product_name'],            "affiliation" => "Vraj Fresh",            "coupon" => "",            "discount" => 0,            "index" => $index,            "price" => $item['unit_price'],            "quantity" => $item['qty']        ];    }        $items_json = json_encode($items_js);?><script>    var order_amount = <?php echo ((int)$_SESSION['order_amount'])/100; ?>;  /*gtag("event", "purchase", {    "transaction_id": "<?php echo $_SESSION['order_id']; ?>",    "value": order_amount,    "currency": "USD",    "items": [    {      "item_id": "VF1",      "item_name": "VF Product",      "affiliation": "Vraj Fresh",      "coupon": "",      "discount": 0,      "index": 0,      "item_brand": "VF",      "price": order_amount,      "quantity": 1    }]});*/dataLayer.push({ ecommerce: null });  // Clear the previous ecommerce object.dataLayer.push({  event: "purchase",  ecommerce: {    transaction_id: "<?php echo $_SESSION['order_id']; ?>",    "value": order_amount,    "currency": "USD",    items: <?php echo $items_json; ?>  }});/*"items": [    {      "item_id": "VF1",      "item_name": "VF Product",      "affiliation": "Vraj Fresh",      "coupon": "",      "discount": 0,      "index": 0,      "item_brand": "VF",      "price": order_amount,      "quantity": 1    }]*//*dataLayer.push({   "event":  "purchase",   "ecommerce":  {    "transaction_id": "<?php echo $_SESSION['order_id']; ?>",    "currency": "USD",    "tax": 0,    "shipping": 0,    "value": order_amount,    "items": [    {      "item_id": "VF1",      "item_name": "VF Product",      "affiliation": "Vraj Fresh",      "coupon": "",      "discount": 0,      "index": 0,      "item_brand": "VF",      "price": order_amount,      "quantity": 1    }]  }});*/sessionStorage.setItem("discount_amount", 0);sessionStorage.setItem("order_amount", 0);sessionStorage.setItem("coupon_code", "");sessionStorage.setItem("coupon_id",0);</script><?php  unset($_SESSION["ordre_id"]); unset($_SESSION["order_amount"]);?>

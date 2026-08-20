@@ -1,11 +1,10 @@
- 
 
 <script>
 
 $(document).ready(function () {
 
 
- $('.related-products').load(location.href + ' .related-products > *');
+
     showProgress('div#spinner');
     get_product_detail(api_url_prefix);
     hideProgress('div#spinner');
@@ -153,7 +152,7 @@ $(document).ready(function () {
 					"data": JSON.stringify(json_request),
 					"dataType": "JSON",
 					"success": function(response) {
-                        $('#qty_'+product_id).find('.qty_change_sub').attr('data-productrowid',response.data);
+                        $('#qty_'+product_id).find('.qty_change_sub_detail').attr('data-productrowid',response.data);
 						$("#btn_" + product_id).text('Added');
 						setTimeout(() => {
 							//$(".add").prev().val(1);
@@ -362,6 +361,7 @@ $(document).ready(function () {
                         cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
                         cart_arr = JSON.parse(cart_arr);
                     }
+
                     var findDay =product_id; //find price for day 1
                     //find product row id
                     var cart_row_id = $.map(cart_arr, function(value, key) {
@@ -378,8 +378,6 @@ $(document).ready(function () {
                         var cart_row_id_val = '';
                     }
 
-                    
-                    
                     var product_rowid = $(this).data('productrowid');
                     $.ajax({
                         "type": "POST",
@@ -387,18 +385,19 @@ $(document).ready(function () {
                         "data": {row_id:product_rowid},
                         "dataType": "JSON",
                         "success": function(response) {
-                           // location.reload();
+                            //location.reload();
                         },
                         "error": function(response) {
-                            console.log(response.errors);
+                            //console.log(response.errors);
                         }
                     });
                     //location.reload();
-                   
+                    //console.log('fff'+product_id);
                     $('#qty_'+product_id).addClass('d-none');
                     $('#btn_'+product_id).removeClass('d-none');
                     // 🔥 IMPORTANT: reset input to 1
                     $('#' + product_id).val(1);
+
                 }
             } else {
             alert("Please Enter quantity");
@@ -534,6 +533,7 @@ $(document).ready(function () {
                     cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
                     cart_arr = JSON.parse(cart_arr);
                 }
+
                 var findDay =product_id; //find price for day 1
                 //find product row id
                 var cart_row_id = $.map(cart_arr, function(value, key) {
@@ -550,8 +550,6 @@ $(document).ready(function () {
                     var cart_row_id_val = '';
                 }
 
-                
-                
                 var product_rowid = $(this).data('productrowid');
                 $.ajax({
                     "type": "POST",
@@ -562,15 +560,17 @@ $(document).ready(function () {
                         //location.reload();
                     },
                     "error": function(response) {
-                        console.log(response.errors);
+                        //console.log(response.errors);
                     }
                 });
                 //location.reload();
-                console.log('fff'+product_id);
+                //console.log('fff'+product_id);
                 $('#qty_'+product_id).addClass('d-none');
                 $('#btn_section4_'+product_id).removeClass('d-none');
                 // 🔥 IMPORTANT: reset input to 1
-                    $('#' + product_id).val(1);
+                $('#' + product_id).val(1);
+
+                
             }
           
             
@@ -593,20 +593,23 @@ function enableCartButton(variant_id) {
     var parent = $(".variant"+variant_id).data('weight_string');
     var price = $(".variant"+variant_id).data('price');
     var imageURL = $(".variant"+variant_id).data('url');
-
+    
     var product_id = $(".variant"+variant_id).data('productid');
     
     var weight = "";
     if (parent && parent != "") {
+        
+        // var variant_detail = parent.split('-');
+        // var weight = variant_detail[0];
         let parentStr = String(parent);
 
         if (parentStr.includes("-")) {
             var variant_detail = parentStr.split('-');
             var weight = variant_detail[0];
         }else{
-            var weight = parentStr;
+            var weight = parent;
         }
-    }   
+    }
     $(".qty_change_sub_id"+product_id).attr('data-price', price);
     $(".qty_change_add_id"+product_id).attr('data-price', price);
     $("#btn_"+product_id).attr('data-price', price);
@@ -623,6 +626,7 @@ function enableCartButton(variant_id) {
         cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
         cart_arr = JSON.parse(cart_arr);
     }
+
 
         
     var cart_qty = $.map(cart_arr, function(value, key) {
@@ -678,6 +682,7 @@ function get_product_detail(api_url_prefix) {
         cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
         cart_arr = JSON.parse(cart_arr);
     }
+
     var cart_qty_val = 1;
     var url = $("#product_slug").val();
     var json_request = {
@@ -795,8 +800,8 @@ function get_product_detail(api_url_prefix) {
                         var simple_price_weight = '';
                         var max_price = Math.max.apply(Math, price); // 3
                         var min_price = Math.min.apply(Math, price); // 1
-                        var price_weight = '<span id="variant-price">$' + min_price + '- $' + max_price + '</span>';
-                        //var price_weight = '<span id="variant-price">$' + min_price + '</span>';
+                        //var price_weight = '<span id="variant-price">$' + min_price + '- $' + max_price + '</span>';
+                        var price_weight = '<span id="variant-price">$' + min_price + '</span>';
                     }
                     price_weight1 += '</ul></div>';
                 } else {
@@ -979,11 +984,11 @@ function get_product_detail(api_url_prefix) {
                 } else {
                     var product_sub_name = '';
                 }
-                //if (response.data.product_description != "" && response.data.product_description != null) {
-                    //var product_description = '<p>' + response.data.product_description + '</p>';
-               // } else {
-                    //var product_description = '';
-               // }
+                // if (response.data.product_description != "" && response.data.product_description != null) {
+                //     var product_description = '<p>' + response.data.product_description + '</p>';
+                // } else {
+                //     var product_description = '';
+                // }
                 var out_of_stock = "<div class='product-stock-message-detail'></div>";
                 var out_of_stock_class = "";
                 /* IF PRODUCR IS sold out ELSE FIRST VARIANT sold out ELSE */
@@ -1020,9 +1025,6 @@ function get_delivery_message() {
     var delivery_days = Cookies.get("delivery_days");
 
     var current = new Date();
-   // var hr = current.getHours();
-    //var min = current.getMinutes();
-
     const parts = new Intl.DateTimeFormat('en-US', {
         timeZone: 'America/New_York',
         hour: '2-digit',
@@ -1036,8 +1038,6 @@ function get_delivery_message() {
         if (part.type === 'hour') hr = parseInt(part.value, 10);
         if (part.type === 'minute') min = parseInt(part.value, 10);
     });
-
-   
     var message = '';
     if (delivery_type == 'Express Delivery') {
         message = 'Order within 23 hours and get delivery tomorrow';
@@ -1046,10 +1046,9 @@ function get_delivery_message() {
         }
         message = message + '<br>* Order before 2:00 PM and you can expect your order within 4 hours with our Express Delivery.'
     }
-  
     if (delivery_type == 'Same Day Delivery') {
 
-         if (hr >= 14 && min > 0) {
+        if (hr >= 14 && min > 0) {
             message = 'Order within ' + (24 - hr + 13) + ' hours' + ' : ' + (60 - min) + ' minutes and delivery By Tomorrow <?php $newDate1 = date('l', strtotime('+1 days'));
             echo $newDate1 ?>, ' + ' <?php $newDate = date('d/M/Y', strtotime('+1 days'));
                 echo $newDate; ?> ';
@@ -1057,7 +1056,6 @@ function get_delivery_message() {
         if (hr < 14) {
             message = 'Order within ' + (13 - hr) + ' hours' + ' : ' + (60 - min) + ' minutes and delivery By Today <?php echo date("l") ?>,' + ' <?php echo date("d/M/Y") ?> ';
         }
-
     }
     if (delivery_type == 'Twise in a week') {
         const dayArray = delivery_days.split(",");
@@ -1263,7 +1261,7 @@ function get_related_product(api_url_prefix, category_slug, product_id) {
         cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
         cart_arr = JSON.parse(cart_arr);
     }
-    console.log(cart_arr);
+ 
     var cart_qty_val = 1;
     $.ajax({
         "type": "POST",
@@ -1387,7 +1385,6 @@ function get_related_product(api_url_prefix, category_slug, product_id) {
         }
     });
 }
-
 function openTab(evt, tabName) {
 
     let tabcontent = document.querySelectorAll(".tab-content");
@@ -1399,6 +1396,5 @@ function openTab(evt, tabName) {
     document.getElementById(tabName).classList.add("active");
     evt.currentTarget.classList.add("active");
 }
-
 </script>
 

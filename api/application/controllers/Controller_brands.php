@@ -227,7 +227,6 @@ class Controller_brands extends CI_Controller
                     // usort($tempArray, function($a, $b) {
 					// 	return $a['size'] <=> $b['size'];
 					// });
-
 					$unique = array_map("unserialize", array_unique(array_map("serialize", $tempArray)));
 					usort($unique, function($a, $b) {
 						return $a['price'] - $b['price']; // Ascending sort by 'price'

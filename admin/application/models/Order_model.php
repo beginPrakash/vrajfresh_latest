@@ -34,7 +34,7 @@ class order_model extends CI_Model
         WHEN tbl_orders.payment_methodtype = "google_pay" THEN "Google Pay"
         WHEN tbl_orders.payment_methodtype = "apple_pay" THEN "Apple Pay"
         ELSE "Stripe Card"
-    	END as payment_methodtype', false);
+    END as payment_methodtype', false);
 		$this->db->from('tbl_orders');
 		$this->db->where('order_id', $order_id);
 		$this->db->where('tbl_orders.is_deleted', 0);
@@ -109,7 +109,7 @@ class order_model extends CI_Model
 
 		$column_order = array(null, 'tbl_orders.order_id', 'tbl_orders.order_datetime', 'tbl_users.display_name', 'tbl_users.mobile_no', 'tbl_orders.order_total_amount', 'tbl_orders.order_status', 'tbl_orders.is_active', 'tbl_orders.created_datetime');
 
-		$aColumns = array('tbl_orders.order_id', 'tbl_orders.order_datetime','tbl_orders.delivery_datetime', 'tbl_users.display_name', 'tbl_users.mobile_no', 'tbl_orders.order_total_amount', 'tbl_orders.order_status', 'tbl_orders.is_active', 'tbl_orders.created_datetime');
+		$aColumns = array('tbl_orders.order_id', 'tbl_orders.order_datetime', 'tbl_orders.delivery_datetime', 'tbl_users.display_name', 'tbl_users.mobile_no', 'tbl_orders.order_total_amount', 'tbl_orders.order_status', 'tbl_orders.is_active', 'tbl_orders.created_datetime');
 
 		$column_search = array('tbl_orders.order_id', 'tbl_users.display_name', 'tbl_users.first_name', 'tbl_users.last_name', 'tbl_users.email', 'tbl_orders.order_status', 'tbl_users.mobile_no');
 
@@ -209,9 +209,8 @@ class order_model extends CI_Model
 	public function getMonthlyOrderNumbers()
 	{
 
-		$sql = "SELECT MONTHNAME(created_datetime) as month,count(*) as order_count,SUM(order_total_amount) as order_total FROM `tbl_orders` WHERE 1=1 AND created_datetime >= DATE_FORMAT(NOW() - INTERVAL 11 MONTH, '%Y-%m-01') AND created_datetime <= LAST_DAY(NOW())
-  GROUP BY MONTH(created_datetime)";
-  $query = $this->db->query($sql);
+		$sql = "SELECT MONTHNAME(created_datetime) as month,count(*) as order_count,SUM(order_total_amount) as order_total FROM `tbl_orders` WHERE 1=1 GROUP BY MONTH(created_datetime)";
+		$query = $this->db->query($sql);
 		if ($query->num_rows() > 0) {
 			return $query->result_array();
 		}
@@ -237,6 +236,7 @@ class order_model extends CI_Model
 		}
 	}
 
+	
 	public function getDeliverypersonlist()
     {
         $ArrDeliveryusersList = array();

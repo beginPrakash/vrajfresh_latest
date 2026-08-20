@@ -74,10 +74,10 @@ class Controller_cms extends CI_Controller
         $this->load->view('cms', $data);
     }
 
-
     public function get_cms_by_slug($url)
 
     {
+
         $data = array('url' => $url);
 
         $this->load->view('cms', $data);

@@ -262,11 +262,12 @@ if (!function_exists('facebook_login')) {
 
 if (!function_exists('IsUserLogin')) {
 
-    function IsUserLogin()
-    {
-        $ci = &get_instance();
+	function IsUserLogin()
 
-        // Restore session from cookie if session expired
+	{
+
+		$ci = &get_instance();
+		// Restore session from cookie if session expired
         if (
             !isset($ci->session->userdata['logged_in']) &&
             $ci->input->cookie('user_id')
@@ -290,9 +291,9 @@ if (!function_exists('IsUserLogin')) {
         ) {
             return true;
         }
+		return false;
+	}
 
-        return false;
-    }
 }
 
 /* Get States with Tax Code */
@@ -634,6 +635,7 @@ function remove_special_characters($string)
 	return strtolower(trim(str_replace(' ', '', $new_string)));
 
 }
+
 function get_ci_rowid($db_rowid) {
     $CI =& get_instance();
 

@@ -187,7 +187,7 @@ if (!function_exists('getIsactiveButtonForList')) {
     }
 }
 
-/* RETURN IS ACTIVE BUTTON IN LIST PAGE */
+/* RETURN IS SOLD BUTTON IN LIST PAGE */
 if (!function_exists('getIssoldoutButtonForList')) {
     function getIssoldoutButtonForList($is_soldout, $primary_key_value, $table_name, $primary_key_name)
     {
@@ -3242,8 +3242,8 @@ function send_mail($email, $subject, $message,$attachment='') {
 	// Include PHPMailer library
 	
 	// Google API credentials
-	$clientID = '17611857669-17auiif79mg37o0m7o5q5vkhcn9571h8.apps.googleusercontent.com';
-	$clientSecret = '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';
+	$clientID = '#';
+	$clientSecret = '#';
 	// $refreshToken = 'YOUR_REFRESH_TOKEN';
 
 	// Sender's email address (Google Workspace)
@@ -3270,7 +3270,8 @@ function send_mail($email, $subject, $message,$attachment='') {
 		$mail->SMTPAuth = true;
 		$mail->Username = $senderEmail;
 		// $mail->Password = 'uwttjgpqsmbigcei'; // Your email password or app password if 2-Step Verification is enabled
-		$mail->Password = 'dsgvjyolexvianvm'; // Your email password or app password if 2-Step Verification is enabled
+		// $mail->Password = 'dsgvjyolexvianvm'; // Your email password or app password if 2-Step Verification is enabled
+		$mail->Password = '#'; // Updated on 22 Feb, 2025
 		$mail->SMTPSecure = 'tls';
 		$mail->Port = 587;
 		// $mail->SMTPDebug = 4;

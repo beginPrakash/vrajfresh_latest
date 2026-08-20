@@ -212,9 +212,11 @@ class Controller_zipcodes extends CI_Controller
 			} else {
 				$errors = 'No data available';
 			}
+
 			$ArrData = $cartData;
 			$success_message = "Product Setup";
 			$errors = "";
+
 
 			send_response_to_api_with_extra_parameters($ArrData, $ArrData2, $errors, $success_message);
 		}
@@ -268,6 +270,7 @@ class Controller_zipcodes extends CI_Controller
 			} else {
 				$errors = 'No data available';
 			}
+
 
 			send_response_to_api($ArrData, $errors, $success_message);
 		}

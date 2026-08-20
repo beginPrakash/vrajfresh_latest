@@ -54,6 +54,7 @@ class Excel_import extends CI_Controller
 
 	}
 
+
 	function meta_index()
 
 	{
@@ -65,9 +66,6 @@ class Excel_import extends CI_Controller
 		$this->load->view('admin_panel/admin_panel', $ArrPageData);
 
 	}
-
-
-
 
 
 	function import()
@@ -997,8 +995,6 @@ class Excel_import extends CI_Controller
 		}
 
 	}
-
-
 
 }
 

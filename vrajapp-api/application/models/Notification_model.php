@@ -43,4 +43,13 @@ class Notification_model extends CI_Model
 
         return ($this->db->affected_rows() > 0);
     }
+
+    public function mark_as_readall($user_id)
+    {
+        $this->db->set('read_status', 1);
+        $this->db->where('user_id', $user_id);
+        $this->db->update('tbl_notification');
+
+        return ($this->db->affected_rows() > 0);
+    }
 }

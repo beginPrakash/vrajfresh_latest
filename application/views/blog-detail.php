@@ -230,5 +230,4 @@
     });
 </script>
 <?php  echo $blog['blog_schema'] ?? ''; ?>
-
 <?php require_once('common/footer.php'); ?>

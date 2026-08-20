@@ -25,7 +25,7 @@ class Credittransaction_model extends CI_Model
         ->select_sum('cr.amount')
         ->join('tbl_orders o', 'cr.order_id=o.order_id', 'left')
         ->where('cr.user_id',$user_id)
-        ->where('o.order_status','Completed')
+        ->where_in('o.order_status',['Completed'])
         ->from('tbl_credit_transaction cr')
         ->get();
         return $query->row_array();

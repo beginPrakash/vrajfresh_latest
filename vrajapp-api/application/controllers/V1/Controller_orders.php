@@ -522,6 +522,7 @@ class Controller_orders extends CI_Controller
 	
 		if($payment_response['status'] == true){
 
+
 			$payment_details = $payment_response['data'];
 			
 			if ($payment_details['status'] == 'succeeded') {
@@ -1040,30 +1041,32 @@ class Controller_orders extends CI_Controller
 						'is_active' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['is_active']))),
 						'total_amount' => trim($product['total_amount'])
 					);
-				$result_product_id = $this->orders_model->add_order($order_product_data, 'tbl_order_products');
-				//create order products log start
-				$order_product_data_log = array(
-					"order_id" => $result,
-					"order_product_id" => $result_product_id,
-						"product_id" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['product_id']))),
-						/*"product_name" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->product_name))),*/
-						"product_name" => $product['product_name'],
-						"unit_price" => trim($product['unit_price']),
-						"product_tax_amount" => trim($product['product_tax_amount']),
-						"product_tax_amount_old" => trim($product['product_tax_amount']),
-						//"product_variant_id" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->product_variant_id))),
-						"product_variant_id" => ($product['product_variant_id']) ? $product['product_variant_id'] : 0,
-						"qty" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['qty']))),
-					"qty_order" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['qty']))),
-					"qty_ship" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['qty']))),
-					'created_by' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['created_by']))),
-					'created_datetime' => date('Y-m-d H:i:s'),
-					'is_active' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['is_active']))),
-					'total_amount' => trim($product['total_amount'])
-					
-				);
-				$result_product_id = $this->orders_model->add_order($order_product_data_log, 'tbl_order_products_log');
-				//create order products log end
+					$result_product_id = $this->orders_model->add_order($order_product_data, 'tbl_order_products');
+
+					//create order products log start
+					$order_product_data_log = array(
+						"order_id" => $result,
+						"order_product_id" => $result_product_id,
+							"product_id" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['product_id']))),
+							/*"product_name" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->product_name))),*/
+							"product_name" => $product['product_name'],
+							"unit_price" => trim($product['unit_price']),
+							"product_tax_amount" => trim($product['product_tax_amount']),
+							"product_tax_amount_old" => trim($product['product_tax_amount']),
+							//"product_variant_id" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product->product_variant_id))),
+							"product_variant_id" => ($product['product_variant_id']) ? $product['product_variant_id'] : 0,
+							"qty" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['qty']))),
+						"qty_order" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['qty']))),
+						"qty_ship" => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['qty']))),
+						'created_by' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['created_by']))),
+						'created_datetime' => date('Y-m-d H:i:s'),
+						'is_active' => trim(htmlspecialchars(preg_replace('/[^A-Za-z0-9\-]/', '', $product['is_active']))),
+						'total_amount' => trim($product['total_amount'])
+						
+					);
+					$result_product_id = $this->orders_model->add_order($order_product_data_log, 'tbl_order_products_log');
+					//create order products log end
+
 					$total_order_amount += $product['total_amount'];
 				}
 
@@ -1374,6 +1377,7 @@ class Controller_orders extends CI_Controller
 			$this->orders_model->update_order($order_data, $result, 'tbl_orders');
 			$ArrData = $result;
 			if ($result) {
+			
 				$success_message = 'Order added successfully';
 				$users = $this->orders_model->get_users_data($result);
 				$subject = "Order Place Successfully";

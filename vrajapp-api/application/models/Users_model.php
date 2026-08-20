@@ -152,8 +152,7 @@ class Users_model extends CI_Model
         return $query->result();
     }
 
-
-   public function delete_user_by_emailphone($data)
+    public function delete_user_by_emailphone($data)
     {
         $this->db->query("SET FOREIGN_KEY_CHECKS = 0");
 
@@ -174,5 +173,4 @@ class Users_model extends CI_Model
             return false;  // no data deleted
         }
     }
-    
 }

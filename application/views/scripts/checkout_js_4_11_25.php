@@ -7,9 +7,6 @@
 /***********************************************************************************************************/
 const front_urls = "<?php echo BASE_URL ?>";
 $(document).on('change', 'input[type=radio][name=shipping_id]', function() {
-    if ($('#zipcode_message1').length && $.trim($('#zipcode_message1').text()) !== '') {
-        $('input[type=radio][name=shipping_id]').prop('checked', false);
-    }
     var zipcode = $(this).attr('data-zipcode');
     var order_val = parseInt($('#hdn_subtotal').val());
     
@@ -31,7 +28,6 @@ $(document).on('change', 'input[type=radio][name=shipping_id]', function() {
                 if (response.data != null) {
                     minim_val = response.data[0].minimum_order_value;
                 } 
-                
 
             },
             "error": function(response) {
@@ -41,13 +37,9 @@ $(document).on('change', 'input[type=radio][name=shipping_id]', function() {
             $("#zipcode").val(zipcode);
             //setZipCodeCookie('header');
             if(order_val < minim_val){
-                if(minim_val != undefined){
-                    //console.log(front_urls + "cart-detail");
-                    window.location.href = front_urls + "cart-detail?zipcode="+zipcode;
-                    return false;
-                }else{
-                    $('input[type=radio][name=shipping_id]').prop('checked', false);
-                }
+                //console.log(front_urls + "cart-detail");
+                window.location.href = front_urls + "cart-detail?zipcode="+zipcode;
+                return false;
             }else{
                 $("#zipcode").val(zipcode);
                 setZipCodeCookie('header');
@@ -311,20 +303,7 @@ function UpdateAddress(AddressType) {
     //FrmUpdateAddressRules[prefix + 'apartment'] = 'required';
     FrmUpdateAddressRules[prefix + 'city'] = 'required';
     FrmUpdateAddressRules[prefix + 'state_id'] = 'required';
-    FrmUpdateAddressRules[prefix + 'zipcode'] = { required: true, number: true,
-        remote: {
-            url: api_url_prefix + "get-zipcode-validation",
-            type: "POST",
-            data: {
-                zipcode: function () {
-                    return $("#" + prefix + "zipcode").val();
-                },
-                oauth_key: function() {
-                    return "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT";
-                }
-            }
-        }
-     };
+    FrmUpdateAddressRules[prefix + 'zipcode'] = { required: true, number: true };
     FrmUpdateAddressRules[prefix + 'phone'] = { required: true, number: true };
     
 
@@ -339,8 +318,7 @@ function UpdateAddress(AddressType) {
             [prefix + 'state_id'] : 'State is required',
             [prefix + 'zipcode'] : {
                 required: 'Zip code is required',
-                email: 'Please enter only digits',
-                remote: 'Please enter valid zipcode'
+                email: 'Please enter only digits'
             },
             [prefix + 'phone'] : {
                 required: 'Phone number is required',
@@ -407,20 +385,7 @@ function SaveAddress(AddressType) {
     //FrmAddAddressRules[prefix + 'apartment'] = 'required';
     FrmAddAddressRules[prefix + 'city'] = 'required';
     FrmAddAddressRules['check_' + prefix + 'state_id'] = 'required';
-    FrmAddAddressRules[prefix + 'zipcode'] = { required: true, number: true,
-        remote: {
-            url: api_url_prefix + "get-zipcode-validation",
-            type: "POST",
-            data: {
-                zipcode: function () {
-                    return $("#" + prefix + "zipcode").val();
-                },
-                oauth_key: function() {
-                    return "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT";
-                }
-            }
-        }
-     };
+    FrmAddAddressRules[prefix + 'zipcode'] = { required: true, number: true };
     FrmAddAddressRules[prefix + 'phone'] = { required: true, number: true };
 
     $("#Frm_" + prefix + "Address").validate({
@@ -434,8 +399,7 @@ function SaveAddress(AddressType) {
             ['check_' + prefix + 'state_id'] : 'State is required',
             [prefix + 'zipcode'] : {
                 required: 'Zip code is required',
-                email: 'Please enter only digits',
-                remote: 'Please enter valid zipcode'
+                email: 'Please enter only digits'
             },
             [prefix + 'phone'] : {
                 required: 'Phone number is required',
@@ -502,7 +466,6 @@ function addTipAmount(tip_amount) {
 		console.log("total:" + total);
 
 		$("#tip_remove_button").show();
-        $("#update_tip_button").show();
 
 		$(".cart-tip").show();
 
@@ -527,7 +490,7 @@ function addTipAmount(tip_amount) {
 
 		$(".tip_remove_button").hide();
 
-        $("#update_tip_button").hide();
+
 
 		$("#cart-total").html(sub_total);
 
@@ -620,7 +583,7 @@ function addFixedTipAmount(tip_amount) {
         $("#hdn_tip_amount").val(0);
 
     }
-    calculateCheckoutTotal();
+
     }
 
 
@@ -636,8 +599,6 @@ function addCustomTip() {
     $(".order_tip").removeClass('active');
 
     $("#add_tip_button").show();
-
-    calculateCheckoutTotal();
 
 }
 
@@ -689,8 +650,6 @@ function removeTipAmount() {
     $("#tip_amount").hide();
 
     $("#add_tip_button").hide();
-
-    $("#update_tip_button").hide();
 
     $("#tip_remove_button").hide();
 
@@ -924,231 +883,8 @@ function checkstripeCard ()
     }
 }
 
-
-const stripe = Stripe('<?php echo STRIPE_PUBLISHABLE_KEY; ?>');
-
-
-
-let elements;
-
-var ctoalamt =  $("#cart_total").val();
-var suser_id = '<?php echo $this->session->userdata['logged_in']['user_id']; ?>';
-var szipcode = $('#zip_code').val();
-console.log('szipcode'+szipcode);
-// The items the customer wants to buy
-const items = [{amount: ctoalamt,suser_id:suser_id,szipcode:szipcode }];
-
-// Fetches a payment intent and captures the client secret
-async function initialize() {
-  const { clientSecret, paymentId } = await fetch("/api/stripe/create-intent", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ ctoalamt, suser_id }),
-  }).then((r) => r.json());
-paymentIntentId = paymentId;
-  elements = stripe.elements({ clientSecret , paymentMethodCreation: 'manual' });
-
-  const paymentElementOptions = {
-    layout: "accordion",
-  };
-
-
-  const paymentElement = elements.create("payment", paymentElementOptions);
-  paymentElement.mount("#payment-element");
-  
-}
-
-$('#checkout-submit').on('click', async function (e) {
-  e.preventDefault();
-ctoalamt =  $("#cart_total").val();
-  $(this).prop('disabled', true).text('Loading...');
-
-    var isValid = false;
-    var AllErrorFixed = 0;
-    
-    var SubstituteError = 1;
-    var ShippingAddressError = 1;
-    var BillingAddressError = 1;
-    var CardAllError = 1;
-    //var CardNumberError = 1;
-    //var CardExpiryError = 1;
-    //var CardSecurityCodeError = 1;
-    //var CardHolderError = 1;
-    var DeliveryTypeError = 1;
-    var DeliveryTypeDateError = 0;
-
-    if($('input[type=radio][name=delivery_type]:checked').val() == "one_day"){
-        DeliveryTypeDateError = 1;
-        if($("#delivery_one_day_date").val() != ""){
-            DeliveryTypeError = 0;
-            DeliveryTypeDateError = 0;
-        }
-        
-    } else {
-        if($('input[type=radio][name=delivery_type]:checked').val() != ""){
-            DeliveryTypeError = 0;
-        }
-    }
-    if(DeliveryTypeDateError == 0){
-        $("#delivery_one_day_date-error").text("");
-    } else {
-        $("#delivery_one_day_date-error").text("Please select delivery date.");
-    }
-
-    if($("#shipping_address_count").val() > 0){
-        if($('input[type=radio][name=shipping_id]:checked').val() > 0){
-            ShippingAddressError = 0;
-        }
-    }
-
-    /* if($("#billing_address_count").val() > 0){
-        if($('input[type=radio][name=billing_id]:checked').val() > 0){
-            BillingAddressError = 0;
-        }
-    } */
-    if($('input[type=radio][name=billing_id]:checked').val() != ""){
-        if(typeof($('input[type=radio][name=billing_id]:checked').val()) == 'undefined'){
-            $('#billing-address-error').text("Please select billing address.");
-        } else {
-            BillingAddressError = 0;
-            $('#billing-address-error').text("");
-        }    
-    } else {
-        $('#billing-address-error').text("Please select billing address.");
-    }
-
-    // var substitute = document.getElementsByName("refund_for_unavailable");
-    // for (var i = 0; i < substitute.length; i++) {
-    //     if (substitute[i].checked) {
-    //         SubstituteError = 0;
-    //         //isValid = true;
-    //         break;
-    //     }
-    // }
-
-    if($('input[type=radio][name=refund_for_unavailable]:checked').val() == '2'){
-        if ($('input[name="substitution_product_ids[]"]:enabled:checked').length > 0) {
-            SubstituteError = 0;
-            
-        }
-    }
-
-    if(SubstituteError == 1){
-        if($('input[type=radio][name=refund_for_unavailable]:checked').val() == '2'){
-            console.log('here');
-            $("#substitu-pro-error").text("Please select an option.");
-        }else{
-            $("#substitu-pro-error").text("");
-        }
-    } else {
-        $("#substitu-pro-error").text("");
-    }
-
-    if(ShippingAddressError == 1){
-        if($("#shipping_address_count").val() > 0){
-            $('#shipping-address-error').text("Please select shipping address.");
-        } else {
-            $('#shipping-address-error').text("Please add new shipping address.");
-        }
-    } else {
-        $('#shipping-address-error').text("");
-    }
-
-    /* if(BillingAddressError == 1){
-        if($("#billing_address_count").val() > 0){
-            $('#billing-address-error').text("Please select billing address.");
-        } else {
-            $('#billing-address-error').text("Please add new billing address.");
-        }
-    } else {
-        $('#billing-address-error').text("");
-    } */
-
-    if(SubstituteError == 1){
-        if($('input[type=radio][name=refund_for_unavailable]:checked').val() == '2'){
-            $("#substitu-pro-error").text("Please select an option.");
-        }else{
-            SubstituteError = 0;
-            $("#substitu-pro-error").text("");
-        }
-    } else {
-        $("#substitu-pro-error").text("");
-    }
-
-    
-    
-    if(SubstituteError == 0 && ShippingAddressError == 0 && BillingAddressError == 0 && DeliveryTypeError == 0 && DeliveryTypeDateError == 0){
-        AllErrorFixed = 1;
-    }
-    var finalAmount = calculateCheckoutTotal();
-    console.log(finalAmount);
-    if (finalAmount <= 0) {
-        finalAmount = ctoalamt;
-    }
-    if(AllErrorFixed == 1){
-        const updateRes = await fetch("/api/stripe/update-intent", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-            intent_id: paymentIntentId,
-            amount: finalAmount // new amount
-            })
-        });
-
-        const data = await updateRes.json();
-  
-        clientSecret = data.clientSecret;
-        intent_id = data.paymentId;
-        // STEP 1: Validate payment element input
-        const { error: submitError } = await elements.submit();
-        if (submitError) {
-            alert(submitError.message);
-            $(this).prop('disabled', false).text('Proceed to Pay');
-            return;
-        }
-
-        // ✅ ONLY confirmPayment (no createPaymentMethod)
-        const { error: confirmError, paymentIntent } =
-            await stripe.confirmPayment({
-            elements,
-            clientSecret: clientSecret,
-            redirect: "if_required"
-            });
-
-
-        if (confirmError) {
-            alert(confirmError.message);
-            $(this).prop('disabled', false).text('Proceed to Pay');
-            return;
-        }
-
-        if (paymentIntent.status === "succeeded") {
-
-            console.log("✅ Payment successful", paymentIntent.id);
-
-            // set values AFTER success
-            $("#CardPaymentMethod").val(paymentIntent.payment_method);
-            $("#CardToken").val(paymentIntent.id);
-
-            document.getElementById("checkoutForm").submit();
-        }
-        
-    } else {
-        $("#checkout-submit").prop('disabled', false);
-        $("#checkout-submit").text('Proceed to Pay');
-        alert("Please fill out all required fields or Select an option for replacement policy.");
-        return false;
-    }
-
-
-  
-});
-
-
-initialize();
-
-
-function validateFormsd() {
+	
+function validateForm() {
 
     
 
@@ -1304,12 +1040,11 @@ function taxCalc() {
 
     // $("#hdn_order_amount").val();
 
-    // var price = (selectedValue / 100) * taxable_products_amount;
-    var price = GettototalCartTax(selectedValue);
+    var price = (selectedValue / 100) * taxable_products_amount;
 
-    //console.log("price" + price);
+    console.log("price" + price);
 
-    //console.log("sub_total" + sub_total);
+    console.log("sub_total" + sub_total);
 
     var total_tax_sub = (parseFloat(sub_total) + parseFloat(price)).toFixed(2);
 
@@ -1593,14 +1328,12 @@ function UpdateCartTax(taxPercentage) {
 
     var cart_contents = '<?php echo $cartContentsNew; ?>';
     var cartObject = $.parseJSON(cart_contents);
-    var cart_arr_user = '<?php echo json_encode($this->cart->contents()); ?>';
-    cart_arr_user = JSON.parse(cart_arr_user);
-    var counter = 1;
     
-    $.each(cart_arr_user, function(i) {
+    var counter = 1;
+    $.each(cartObject, function(i) {
 
-        var subtotal = cart_arr_user[i].subtotal;
-        if (cart_arr_user[i].product_tax == 1) {
+        var subtotal = cartObject[i].subtotal;
+        if (cartObject[i].product_tax == 1) {
             $("#product-tax-" + counter).text("$" + (taxPercentage * subtotal / 100).toFixed(2));
             subtotal = (parseFloat(subtotal) + (parseFloat(taxPercentage) * parseFloat(subtotal) / 100)).toFixed(2);
         } else {
@@ -1612,50 +1345,6 @@ function UpdateCartTax(taxPercentage) {
     });
 
 }
-
-function GettototalCartTax(taxPercentage) {
-
-
-    if (taxPercentage == "") {
-
-        taxPercentage = 0;
-
-    }
-
-
-
-    <?php
-    
-    $cartContentsArr = isset($_SESSION["cart_contents"]) ? $_SESSION["cart_contents"] : '';
-    $cartContentsNew = '';
-    if(is_array($cartContentsArr)){
-        
-        unset($cartContentsArr['cart_total'], $cartContentsArr['total_items']);
-        $cartContentsArr = json_encode($cartContentsArr);
-        $cartContentsNew = addslashes($cartContentsArr);
-    }    
-    ?>
-
-    var cart_contents = '<?php echo $cartContentsNew; ?>';
-    var cartObject = $.parseJSON(cart_contents);
-
-    var cart_arr_user = '<?php echo json_encode($this->cart->contents()); ?>';
-    cart_arr_user = JSON.parse(cart_arr_user);
-    
-    var grandTotal = 0;
-    $.each(cart_arr_user, function(i) {
-
-        var subtotal = cart_arr_user[i].subtotal;
-        if (cart_arr_user[i].product_tax == 1) {
-           grandTotal = (parseFloat(grandTotal) + (parseFloat(taxPercentage) * parseFloat(subtotal) / 100)).toFixed(2);
-          
-        } 
-
-    });
-    return grandTotal;
-
-}
-
 
 
 
@@ -1994,55 +1683,6 @@ $(document).ready(function() {
 
 });
 
-var checkoutTotal = 0;
 
-function calculateCheckoutTotal() {
-
-
-    var subtotal = '<?php echo number_format($total_price,2); ?>';
-    subtotal = parseFloat(subtotal) || 0;
-
-    var preparation_cost = '<?php echo number_format($preparation_cost,2); ?>';
-    preparation_cost = parseFloat(preparation_cost) || 0;
-
-    var packaging_cost = '<?php echo number_format($packaging_cost,2); ?>';
-    packaging_cost = parseFloat(packaging_cost) || 0;
-
-    // Tax amount
-    var selectedOption = $("#state").val().split('|');
-
-    var selectedValue = selectedOption[0];
-    var taxAmount = GettototalCartTax(selectedValue);
-    taxAmount = parseFloat(taxAmount) || 0;
-
-    // Discount
-    var discount = parseFloat(sessionStorage.getItem("discount_amount")) || 0;
-
-    // Tip
-    var tip = parseFloat($("#hdn_tip_amount").val()) || 0;
-
-    // Credit
-    var credit = 0;
-    if ($('#earned_credit_checkbox').is(':checked')) {
-
-        var user_cr = '<?php echo number_format($earned_credit,2); ?>';
-        credit = parseFloat(user_cr) || 0;
-    }
-
-    checkoutTotal = subtotal + packaging_cost + preparation_cost + taxAmount + tip - discount - credit;
-
-    if (checkoutTotal < 0) {
-        checkoutTotal = 0;
-    }
-
-    checkoutTotal = parseFloat(checkoutTotal.toFixed(2));
-
-    // Update all fields
-    // $("#cart-total").html(checkoutTotal);
-    $("#cart_total").val(checkoutTotal);
-    // $("#hdn_order_amount").val(checkoutTotal);
-console.log('checkoutTotal'+checkoutTotal);
-    return checkoutTotal;
-}
 
 </script>

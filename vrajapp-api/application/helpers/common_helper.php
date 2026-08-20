@@ -782,7 +782,8 @@ function send_mail($email, $subject, $message,$attachment='') {
 	// Include PHPMailer library
 	
 	// Google API credentials
-	
+	$clientID = '17611857669-17auiif79mg37o0m7o5q5vkhcn9571h8.apps.googleusercontent.com';
+	$clientSecret = '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';
 	// $refreshToken = 'YOUR_REFRESH_TOKEN';
 
 	// Sender's email address (Google Workspace)
@@ -809,8 +810,8 @@ function send_mail($email, $subject, $message,$attachment='') {
 		$mail->SMTPAuth = true;
 		$mail->Username = $senderEmail;
 		// $mail->Password = 'uwttjgpqsmbigcei'; // Your email password or app password if 2-Step Verification is enabled
-		 $mail->Password = 'dsgvjyolexvianvm'; // Your email password or app password if 2-Step Verification is enabled
-		
+		// $mail->Password = 'dsgvjyolexvianvm'; // Your email password or app password if 2-Step Verification is enabled
+		$mail->Password = 'jcfp mqgx xhcg dcbw'; // Updated on 22 Feb, 2025
 		$mail->SMTPSecure = 'tls';
 		$mail->Port = 587;
 		// $mail->SMTPDebug = 4;
@@ -866,6 +867,7 @@ function send_mail($email, $subject, $message,$attachment='') {
 	}
 	
 }
+
 
 
 function send_contact_mail($to_email, $from_email, $subject, $message)

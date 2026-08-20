@@ -16,8 +16,8 @@ class Controller_users extends CI_Controller
 		$this->load->model('users_model');
 		$this->load->model('otpverification_model');
 		$this->load->model('usertoken_model');
-		$this->load->library('cart');
 		$this->load->model('Fcm_token_model');
+		$this->load->library('cart');
 		error_reporting(0);
 	}
 	public function get_users()
@@ -269,6 +269,7 @@ class Controller_users extends CI_Controller
 
 				//generate and save token
 					
+
 				$accessToken = bin2hex(random_bytes(32));
 				$refreshToken = bin2hex(random_bytes(32));
 				$utoken_data = array(
@@ -328,6 +329,7 @@ class Controller_users extends CI_Controller
 			echo $myJSON;
 			return;
 		}
+
     	$record = $this->db->get_where('tbl_users_token', ['refresh_token' => $refreshToken])->row();
 
 		if (!$record || strtotime($record->refresh_expiry) < time()) {
@@ -342,7 +344,6 @@ class Controller_users extends CI_Controller
 			'access_token' => $newAccessToken,
 			'access_expiry' => date("Y-m-d H:i:s", strtotime("+24 hours"))
 		]);
-
 		// Link device token to this user
 		if (!empty($fcm_token)) {
 			$this->Fcm_token_model->save_token($record->user_id, $fcm_token, $device_type);

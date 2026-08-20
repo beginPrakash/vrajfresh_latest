@@ -40,6 +40,7 @@ class Controller_report_about_order extends CI_Controller
 
 		$ArrData = $this->report_about_order_model->getReportAboutOrderListData();
 		$update_read_status = $this->report_about_order_model->UpdateReadReportAboutOrderStatus();
+
 		if (@$_REQUEST['columns'] != "") {
 
 			$output = array('sEcho' => $_REQUEST['draw'], 'iTotalRecords' => $ArrData['iTotalRecords'], 'iTotalDisplayRecords' => $ArrData['iTotalDisplayRecords'], 'aaData' => array());

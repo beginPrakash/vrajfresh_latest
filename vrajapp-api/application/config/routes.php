@@ -149,8 +149,8 @@ $route['V1/deliveryboy-order-by-id'] = 'V1/Controller_orders/deliveryboy_order_b
 $route['V1/update-order'] = 'V1/Controller_orders/update_order';
 $route['V1/get-order-by-user-id'] = 'V1/Controller_orders/get_order_by_user_id';
 $route['V1/get-credit-transaction-by-user-id'] = 'V1/Controller_credittransaction/get_credit_transaction_by_user_id';
-$route['V1/get-order-dropdownlist-by-user'] = 'V1/Controller_orders/get_order_dropdown_user_id';
 $route['V1/get-total-credit'] = 'V1/Controller_credittransaction/get_total_credit';
+$route['V1/get-order-dropdownlist-by-user'] = 'V1/Controller_orders/get_order_dropdown_user_id';
 $route['V1/deliveryboy-get-order-by-user-id'] = 'V1/Controller_orders/deliveryboy_get_order_by_user_id';
 $route['V1/report-order'] = 'V1/Controller_orders/report_order';
 $route['V1/requested-product'] = 'V1/Controller_orders/requested_product';
@@ -180,6 +180,7 @@ $route['V1/user-activate'] = 'V1/Controller_users/user_activate';
 
 $route['V1/get-notifications'] = 'V1/Controller_notifications/get_notifications';
 $route['V1/mark-notification-read'] = 'V1/Controller_notifications/mark_notification_read';
+$route['V1/notification-readall'] = 'V1/Controller_notifications/notification_readall';
 
 
 $route['V1/cart/add'] = 'V1/Controller_cart/add';

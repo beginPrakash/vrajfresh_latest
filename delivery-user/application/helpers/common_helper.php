@@ -3270,7 +3270,7 @@ function send_mail($email, $subject, $message,$attachment='') {
 		$mail->SMTPAuth = true;
 		$mail->Username = $senderEmail;
 		// $mail->Password = 'uwttjgpqsmbigcei'; // Your email password or app password if 2-Step Verification is enabled
-		$mail->Password = 'dsgvjyolexvianvm'; // Your email password or app password if 2-Step Verification is enabled
+		$mail->Password = ' jcfp mqgx xhcg dcbw'; // Your email password or app password if 2-Step Verification is enabled
 		$mail->SMTPSecure = 'tls';
 		$mail->Port = 587;
 		// $mail->SMTPDebug = 4;
@@ -3312,10 +3312,10 @@ function send_mail($email, $subject, $message,$attachment='') {
 		// Send email
 		if ($mail->send()) {
 			return true;
-			// echo 'Email sent successfully';
+		//echo 'Email sent successfully';exit;
 		} else {
 			// Handle errors (You can log or return false as needed)
-			// echo $mail->ErrorInfo;
+			 //echo $mail->ErrorInfo;exit;
 			$myfile = fopen("logs2.txt", "w");
 			fwrite($myfile, $mail->ErrorInfo);
 			fclose($myfile);

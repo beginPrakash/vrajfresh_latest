@@ -226,7 +226,7 @@ $is_payment_received = true;
                      $total_tax += $arr['product_tax_amount'];
                      // echo $net_total;
                      ?>
-                     <tr>
+                     <tr id="protr_<?php echo $arr['order_product_id']; ?>">
                         <td>
                            <input type="hidden" name="ArrOrderProductIds[]" value="<?php echo $arr['order_product_id']; ?>">
                           
@@ -262,20 +262,22 @@ $is_payment_received = true;
                               value="<?php echo $ptax_amount; ?>" required readonly>
                         </td>
                         <td>
-                           <select name="product_status[<?php echo $arr['order_product_id']; ?>]" class="form-control product_status" data-pid="<?php echo $arr['order_product_id']; ?>" required>
+                           <select name="product_status[<?php echo $arr['order_product_id']; ?>]" class="form-control product_status" data-pid="<?php echo $arr['order_product_id']; ?>" id="product_status_<?php echo $arr['order_product_id']; ?>" required>
                               <option value="">Select Product Status</option>
                               <?php if (isset($arr['log_status'])){ ?>
                                  <?php if ($arr['log_status'] != 'refunded' && $arr['log_status'] != 'out_of_stock_refunded') { ?>
                                     <option value="existing" <?php echo ($arr['log_status'] == 'existing') ? 'selected' : ''; ?>>Existing</option>
                                     <option value="newly_added" <?php echo ($arr['log_status'] == 'newly_added') ? 'selected' : ''; ?>>Newly Added</option>
                                  <?php } ?>
+                                 <?php if ($arr['log_status'] == 'refunded' || $arr['log_status'] == 'out_of_stock_refunded') { ?>
                                  <option value="refunded" <?php echo ($arr['log_status'] == 'refunded') ? 'selected' : ''; ?>>Refunded</option>
                                  <option value="out_of_stock_refunded" <?php echo ($arr['log_status'] == 'out_of_stock_refunded') ? 'selected' : ''; ?>>Out Of Stock (Refunded)</option>
+                                 <?php } ?>
                                  <?php if ($arr['log_status'] != 'refunded' && $arr['log_status'] != 'out_of_stock_refunded') { ?>
                                     <option value="qty_changed" <?php echo ($arr['log_status'] == 'qty_changed') ? 'selected' : ''; ?>>QTY Changed</option>
                                  <?php } ?>
                               <?php } else { ?>
-                                 <option value="existing">Existing</option>
+                                 <option value="existing" selected>Existing</option>
                               <?php } ?>
                            </select>
                         </td>
@@ -292,12 +294,15 @@ $is_payment_received = true;
                         </td>
                         
                            <?php if ($editAllow == 'Yes') { ?>
-                              <!-- <td>
-                                 <a href="javascript:void(0);" class="remove-button" title="Click here to remove product"
-                                    data="<?php echo $arr['order_product_id']; ?>">
-                                    <img src="<?php echo admin_media(); ?>dist/img/close-2.png">
-                                 </a>
-                              </td> -->
+                              <td>
+                                 <?php if (isset($arr['log_status'])){ ?>
+                                 <?php if ($arr['log_status'] != 'refunded' && $arr['log_status'] != 'out_of_stock_refunded') { ?>
+                                    <a href="javascript:void(0);" class="remove-button" title="Click here to remove product"
+                                       data="<?php echo $arr['order_product_id']; ?>">
+                                       <img src="<?php echo admin_media(); ?>dist/img/close-2.png">
+                                    </a>
+                                 <?php } } ?>
+                              </td>
                            <?php } ?>
                        
                      </tr>
@@ -313,6 +318,7 @@ $is_payment_received = true;
                      <td id="divTaxTotal" style="padding: 6px 13px;">
                      <?php echo $total_tax; ?>
                      </td>
+                     <td></td>
                      <td id="divNetTotal" style="padding: 6px 13px;">
                         <?php echo $net_total; ?>
                      </td>
@@ -601,6 +607,55 @@ $is_payment_received = true;
    <br>
 <?php } ?>
 
+<div class="modal fade" id="statusModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow">
+
+            <div class="modal-header bg-primary">
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+                <h5 class="modal-title">
+                    Change Product Status
+                </h5>
+
+            </div>
+
+            <div class="modal-body">
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        Select Product Status
+                    </label>
+                     <input type="hidden" name="dele_order_product_id" class="dele_order_product_id">
+                    <select class="form-select form-control" id="product_status_popup">
+                        <option value="">Select Status</option>
+                        <option value="refunded">Refunded</option>
+                        <option value="out_of_stock_refunded">Out Of Stock (Refunded)</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal">
+                    Cancel
+                </button>
+
+                <button type="button"
+                        class="btn btn-success"
+                        id="btnSaveStatus">
+                    Save Changes
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
 <script>
    $(document).ready(function () {
 
@@ -637,17 +692,46 @@ $is_payment_received = true;
          });
       });
       $("#product").on('click', '.remove-button', function (e) {
-         if (confirm("Do you want to remove order product?") == true) {
-            RemoveProductFromOrder($(this).attr("data"));
-            var whichtr = $(this).closest("tr");
-            whichtr.remove();
-            var product_counter = parseInt($("#product_counter").val());
-            product_counter = product_counter - 1;
-            $("#product_counter").val(product_counter);
-            updateFooterTotal();
-         }
+         $("#statusModal").modal("show");
+         var order_pro_id = $(this).attr("data");
+         $('.dele_order_product_id').val(order_pro_id);
+         // if (confirm("Do you want to remove order product?") == true) {
+         //    RemoveProductFromOrder($(this).attr("data"));
+         //    var whichtr = $(this).closest("tr");
+         //    whichtr.remove();
+         //    var product_counter = parseInt($("#product_counter").val());
+         //    product_counter = product_counter - 1;
+         //    $("#product_counter").val(product_counter);
+         //    updateFooterTotal();
+         // }
       });
    });
+   $("#btnSaveStatus").click(function () {
+
+        var status = $("#product_status_popup").val();
+
+        if (status == "") {
+            alert("Please select status.");
+            return;
+        }
+var selectedProductId = $('.dele_order_product_id').val();
+
+        // Call your existing function to recalculate totals
+        updateProductTotalAmount(0, selectedProductId);
+        $("#qty" + selectedProductId).val("0");
+        $("#product_status_" +selectedProductId +" option:selected").remove();
+        if(status == 'refunded'){
+            $("#product_status_" + selectedProductId).append('<option value="refunded" selected>Refunded</option>').val('refunded');
+        }
+        if(status == 'out_of_stock_refunded'){
+            $("#product_status_" + selectedProductId).append('<option value="out_of_stock_refunded" selected>Out Of Stock (Refunded)</option>').val('out_of_stock_refunded');
+        }
+        
+        $("#product_status_" + selectedProductId).val(status).trigger('change');
+//$("#protr_"+ selectedProductId).hide();
+        $("#statusModal").modal("hide");
+
+    });
    $("#submit").click(function (e) {
       e.preventDefault();
 
@@ -678,7 +762,7 @@ $is_payment_received = true;
             toastr.success('Order has been updated successfully!');
             $("#searchSubmit").click();
             $(".close").click();
-            location.reload();
+            //location.reload();
          }
       });
    });

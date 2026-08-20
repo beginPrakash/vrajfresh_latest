@@ -4,9 +4,9 @@ unset($_SESSION['redirect_after_login']);
 if (!IsUserLogin()) {
     // Save requested page
     $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
-
+    
     header("Location: ".BASE_URL . "login");
-}?>
+} ?>
 <section class="categories-banner">
 
     <h2>Address</h2>

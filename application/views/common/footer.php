@@ -16,7 +16,7 @@
 			</ul>
 		</div>
 		<div class="popup-right">
-			<span class="popup-title">we are currently delivering to 100+ zip codes in nj and growing rapidly</span>
+			<span>we are currently delivering to 100+ zip codes in nj and growing rapidly</span>
 			<p>Please check if we're in your area by simply entering zip code below.</p>
 			<form action="">
 				<input type="text" placeholder="Enter Zip Code..." name="zipcode_popup" id="zipcode_popup">
@@ -36,9 +36,9 @@
 		<div class="close-popup"><a href="javascript:void(0)">X</a></div>
 	</div>
 </div>
-
 <script>
         $(document).ready(function() {
+            
 			$('.footer-grid h3').on('click', function() {
                 $(this).toggleClass('expanded'); // Toggle class on h3
                 $(this).next('ul').toggleClass('expanded'); // Toggle class on ul
@@ -105,6 +105,7 @@
 					<li><a href="<?php echo SITE_URL . 'contact'; ?>">Contact</a></li>
 					<li><a href="<?php echo SITE_URL . 'promotions'; ?>">Promotions</a></li>
 					<li><a href="<?php echo SITE_URL . 'new-products'; ?>">New products</a></li>
+					<!-- <li><a href="<?php echo SITE_URL . 'blogs'; ?>">Blogs</a></li> -->
 				</ul>
 			</div>
 			<div class="footer-grid">
@@ -170,9 +171,10 @@
 	function showZipCodepopup() {
 		$('.popup-container').width('400px');
 		$('.popup-left').hide();
-		$('.popup-title').hide();
+		$('.popup-right span').hide();
 		$('.popup-ul').hide();
 		jQuery(".popup").show();
+		
 	}
 	$(document).ready(function() {
 		// ==================== start zipcode popup ====================
@@ -184,8 +186,8 @@
 			// Cookies.set("zipcode_popup", '1');
 		}
 		jQuery(".close-popup").click(function(){
-			$('.zipcode-bar').show();
 			jQuery(".popup").hide();
+			$('.zipcode-bar').show();
 		});
 		// $( "#zipcode_popup" ).on('change',function(e){
 		// 	$("#zipcode_popup_value").val('');
@@ -288,15 +290,8 @@
 
 	});
 </script>
-<!-- Global site tag (gtag.js) - Google Analytics + Google Adwords -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-179492286-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'AW-363117506');
-  gtag('config', 'UA-179492286-1');
-</script>
+
+
 </body>
 
 </html>

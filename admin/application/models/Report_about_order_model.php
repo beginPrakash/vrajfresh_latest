@@ -66,21 +66,6 @@ class report_about_order_model extends CI_Model
 
 	}
 
-	public function UpdateReadReportAboutOrderStatus(){
-		$this->db->where('is_read', 1);
-
-		$this->db->update('tbl_order_complains', array('is_read'=>0));
-		if ($this->db->affected_rows() > 0) {
-
-			return true;
-
-		} else {
-
-			return false;
-
-		}
-	}
-
 
 
 	public function getReportAboutOrderById($order_complain_id)
@@ -375,6 +360,21 @@ class report_about_order_model extends CI_Model
 
 		return $rResult->result_array();
 
+	}
+
+	public function UpdateReadReportAboutOrderStatus(){
+		$this->db->where('is_read', 1);
+
+		$this->db->update('tbl_order_complains', array('is_read'=>0));
+		if ($this->db->affected_rows() > 0) {
+
+			return true;
+
+		} else {
+
+			return false;
+
+		}
 	}
 
 }

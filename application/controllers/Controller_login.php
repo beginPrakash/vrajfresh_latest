@@ -101,5 +101,4 @@ class Controller_login extends CI_Controller
     {
         $this->load->view('delete-account');
     }
-
 }

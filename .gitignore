@@ -11,6 +11,11 @@ application/cache/*
 application/logs/*
 
 admin/application/config/firebase_credentials.json
+application/controllers/client_credentials.json
+admin/application/helpers/common_helper.php
+application/helpers/common_helper.php
+api/application/helpers/common_helper.php
+vrajapp-api/application/helpers/common_helper.php
 
 !application/logs/index.html
 

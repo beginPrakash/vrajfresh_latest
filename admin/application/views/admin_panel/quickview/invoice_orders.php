@@ -94,8 +94,6 @@ error_reporting(0);
 
                 <?php echo $ArrFieldDatashow['shipping_phone']; ?><br>
 
-                
-
                 Delivery Method: Free Delivery<br>
 
                 Item Replacement:
@@ -119,6 +117,7 @@ Order Note:
 
 <?php echo $ArrFieldDatashow['order_notes']; ?><br>
 <?php } ?>
+
             </div>
 
 
@@ -173,10 +172,6 @@ Order Note:
 
                     <?php echo $ArrFieldDatashow['delivery_datetime']; ?><br>
                 <?php } ?>
-
-                <b>Payment Method:</b>
-
-                <?php echo $ArrFieldDatashow['payment_methodtype']; ?><br>
 
 
             </div>
@@ -426,39 +421,6 @@ Order Note:
                         echo '0';
 
                     } ?>
-
-                </td>
-
-            </tr>
-
-            <tr>
-
-                <td colspan="5"
-
-                    style="text-align: right ; height:30px; border:1px solid rgb(218 218 218);padding-right: 1%;">Earned Credit Value
-
-                </td>
-
-                <td style="height:30px;border:1px solid rgb(218 218 218);text-align: center;">$
-
-                    <?php echo $earned_cr_val; ?>
-
-                </td>
-
-            </tr>
-
-            
-            <tr>
-
-                <td colspan="5"
-
-                    style="text-align: right ; height:30px; border:1px solid rgb(218 218 218);padding-right: 1%;">Used Credit Value
-
-                </td>
-
-                <td style="height:30px;border:1px solid rgb(218 218 218);text-align: center;">$
-
-                    <?php echo $used_cr_val; ?>
 
                 </td>
 

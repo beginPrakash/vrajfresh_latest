@@ -144,4 +144,38 @@ class Controller_notifications extends CI_Controller
             send_response_to_api($ArrData, $errors, $success_message);
         }
     }
+
+    public function notification_readall() {
+        $json_str = file_get_contents('php://input');
+        $json_obj = json_decode($json_str);
+
+        // Get Bearer Token
+        $authHeader = $this->input->get_request_header('Authorization', TRUE);
+        if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            $oauth_key = $matches[1];
+        } else {
+            $oauth_key = '';
+        }
+
+        $errors = $success_message = '';
+        $ArrData = array();
+
+        if (check_oauth_key($oauth_key)) {
+            try {
+                // Get user_id from token
+                $this->db->where('access_token', $oauth_key);
+                $query = $this->db->get('tbl_users_token');
+                $user_token_data = $query->row_array();
+                $user_id = $user_token_data['user_id'];
+
+                 // Call model to update status
+                $is_marked = $this->notification_model->mark_as_readall($user_id);
+                $success_message = 'Notification marked as read successfully.';
+
+            } catch (Exception $e) {
+                $errors = "There is a problem updating the notification.";
+            }
+            send_response_to_api($ArrData, $errors, $success_message);
+        }
+    }
 }

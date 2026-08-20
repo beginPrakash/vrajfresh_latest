@@ -90,10 +90,6 @@
         display: block;
     }
 
-    @keyframes fadeEffect {
-        from {opacity: 0;}
-        to {opacity: 1;}
-    }
     @media (max-width: 768px) {
     .tab-buttons {
         flex-direction: column;
@@ -270,6 +266,7 @@
 <?php require_once('common/common_js.php'); ?>
 
 <?php require_once('scripts/product_detail_js.php'); ?>
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -315,7 +312,5 @@ dataLayer.push({
   }
 });
 </script>
-
-
 
 <?php require_once('common/footer.php'); ?>

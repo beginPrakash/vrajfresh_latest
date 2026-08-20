@@ -13,6 +13,7 @@ class Controller_order extends CI_Controller
 		$this->load->model('transactions_model');
 		$this->load->model('user_model');
 		$this->load->model('credittransaction_model');
+		$this->load->model('promotional_code_model');
 		$this->load->model('Master_model', 'master');
 		$this->module_name = 'order';
 
@@ -54,12 +55,13 @@ class Controller_order extends CI_Controller
 				$d1 = date("Y-m-d", strtotime($aRow['created_datetime']));
 				$d2 = date("Y-m-d", strtotime($aRow['delivery_datetime']));
 				$cdate = date("Y-m-d");
+
 				$rows_cls='';
 				if (($d1 != $d2) && ($aRow['order_status']!= 'Completed') && ($d2 > $cdate)) {
 					$rows_cls = "deldate_diffrow";
 				}
 				$row["DT_RowClass"] = $rows_cls;
-
+				
 				$row[] = $actions;
 				$row[] = $aRow['order_id'];
 				$row[] = $aRow['created_datetime'];
@@ -466,7 +468,6 @@ class Controller_order extends CI_Controller
 		if (abs($DiffAmount) < 0.00001) {
 			$DiffAmount = 0;
 		}
-
 		$orderdetails['is_revert'] = $is_revert;
 		$orderdetails['is_capture'] = $is_capture;
 		$orderdetails['DiffAmount'] = ($DiffAmount > 0) ? number_format($DiffAmount,2) : $DiffAmount;
@@ -484,7 +485,7 @@ class Controller_order extends CI_Controller
 				}
 			}
 		}
-
+		
 		$check_order_log = $this->order_product_model->getOrderProductLogByOrderId($id);
 		if(!empty($check_order_log)){
 			$ArrPageData['ArrOrderProduct'] = $this->order_product_model->getOrderProductLogByOrderId($id);
@@ -492,12 +493,14 @@ class Controller_order extends CI_Controller
 			$ArrPageData['ArrOrderProduct'] = $this->order_product_model->getOrderProductByOrderId($id);
 		}
 		
+
 		$ArrPageData['ArrOrderTransactions'] = $this->transactions_model->getTransactionsBYOrderId($id);
 		
 		$ArrPageData['ArrUser'] = $this->user_model->getUserByID($ArrPageData['ArrFieldData']['user_id']);
 		
 		$ArrPageData['ArrOrderStatus'] = getOrderStatus();
 
+		
 		$delivery_person_list = $this->order_model->getDeliverypersonlist();
 		
 		$ArrPageData['delivery_person_list'] = $delivery_person_list;
@@ -505,10 +508,11 @@ class Controller_order extends CI_Controller
 		$earned_trans_credit = $this->credittransaction_model->getCredittransdetails($id,'earned');
 		$used_trans_credit = $this->credittransaction_model->getCredittransdetails($id,'used');
 		$order_credit_per = $this->credittransaction_model->getCreditperbycreditid($id);
-		
+
 		$ArrPageData['ArrFieldData']['earned_trans_credit'] = $earned_trans_credit ?? 0;
 		$ArrPageData['ArrFieldData']['used_trans_credit'] = $used_trans_credit ?? 0;
 		$ArrPageData['ArrFieldData']['order_credit_per'] = $order_credit_per ?? 0;
+
 		$ArrPageData['view_name'] = 'view_' . $this->module_name . '_details.php';
 
 		$js_assets = array(
@@ -572,7 +576,7 @@ class Controller_order extends CI_Controller
 			]);
 
 			$response = curl_exec($curl);
-			//print_r($response);exit;
+			
 			if ($response === false || $response == null) {
 				$error = curl_error($curl);
 			}
@@ -580,7 +584,7 @@ class Controller_order extends CI_Controller
 			curl_close($curl);
 
 			$response = json_decode($response);
-			//print_r($response);exit;
+			
 			if(isset($response->is_successful) && $response->is_successful == 1){
 
 				$ArrData = $response;
@@ -591,23 +595,7 @@ class Controller_order extends CI_Controller
 		$this->send_response_to_api($ArrData, $errors, $success_message);
 	}
 
-	function send_response_to_api($ArrData, $errors = '', $success_message = '')
-	{
-		//header("Access-Control-Allow-Origin: *");
-		if ((is_array($ArrData) && count($ArrData) > 0) || $success_message != '') {
-			$ArrResponse = array('is_successful' => '1', 'error_code' => -1, 'data' => $ArrData, 'errors' => '', 'success_message' => $success_message);
-			$myJSON = json_encode($ArrResponse);
-			header('Content-Type: application/json');
-			echo $myJSON;
-		} else {
-			$ArrError = array('is_successful' => '0', 'error_code' => 400, 'data' => null, 'errors' => $errors, 'success_message' => '');
-			$myJSON = json_encode($ArrError);
-			header('Content-Type: application/json');
-			echo $myJSON;
-		}
-	}
-
-	public function find_refund_track_number($order_id){
+		public function find_refund_track_number($order_id){
 		//find refund id
 		$refund_id = $this->transactions_model->getRefundTransactionsBYOrderIdSingle($order_id);
 		$url = API_URL . "stripe/payment_refund_track";
@@ -648,6 +636,57 @@ class Controller_order extends CI_Controller
 	}
 
 
+
+	function send_response_to_api($ArrData, $errors = '', $success_message = '')
+	{
+		//header("Access-Control-Allow-Origin: *");
+		if ((is_array($ArrData) && count($ArrData) > 0) || $success_message != '') {
+			$ArrResponse = array('is_successful' => '1', 'error_code' => -1, 'data' => $ArrData, 'errors' => '', 'success_message' => $success_message);
+			$myJSON = json_encode($ArrResponse);
+			header('Content-Type: application/json');
+			echo $myJSON;
+		} else {
+			$ArrError = array('is_successful' => '0', 'error_code' => 400, 'data' => null, 'errors' => $errors, 'success_message' => '');
+			$myJSON = json_encode($ArrError);
+			header('Content-Type: application/json');
+			echo $myJSON;
+		}
+	}
+
+	public function get_coupon_amount($data){
+
+			$url = API_URL . "get-coupon-amount-to-admin";
+			$curl = curl_init();
+
+			curl_setopt_array($curl, array(
+				CURLOPT_URL => $url,
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_ENCODING => "",
+				CURLOPT_MAXREDIRS => 10,
+				CURLOPT_TIMEOUT => 30,
+				CURLOPT_FOLLOWLOCATION => true,
+				CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+				CURLOPT_CUSTOMREQUEST => "POST",
+				CURLOPT_POSTFIELDS => json_encode($data),
+				CURLOPT_HTTPHEADER => array(
+					"Content-Type: application/json",
+					"Accept: application/json"
+				),
+			));
+
+			$response = curl_exec($curl);
+		
+			$response_data = json_decode($response);
+
+			$discount_amount = 0;
+
+			if (!empty($response_data->data) && isset($response_data->data->discount_amount)) {
+				$discount_amount = $response_data->data->discount_amount;
+			}
+
+			return $discount_amount;
+	}
+	
 	public function update_order_process()
 	{
 		//echo "<pre>";print_r($_POST);exit;
@@ -693,7 +732,7 @@ class Controller_order extends CI_Controller
 						'modified_datetime' => date('Y-m-d H:i:s'),
 						'modified_by' => get_current_admin_id(),
 					);
-
+					
 					$ArrOrderProductDataLog = array(
 						'qty' => $ArrQty[$order_product_id],
 						'qty_ship' => $ArrQty[$order_product_id],
@@ -708,6 +747,7 @@ class Controller_order extends CI_Controller
 					if(($ArrProductlog_status[$order_product_id] == 'refunded') || $ArrProductlog_status[$order_product_id] == 'out_of_stock_refunded'){
 						$this->order_product_model->deleteProductrefunded($order_product_id);
 					}
+
 					$order_product_total_tax = $order_product_total_tax + $product_tax_amount;
 					$this->order_product_model->update($order_product_id, $ArrOrderProductData);
 					$this->order_product_model->updateLog($order_product_id, $ArrOrderProductDataLog);
@@ -830,6 +870,7 @@ class Controller_order extends CI_Controller
 						);
 						$this->order_product_model->addOrderProLog($ArrOrderProductDataLog);
 						
+
 						$total_order_amount += $ArrNewTotal_amount[$key];
 					}
 				}
@@ -837,6 +878,7 @@ class Controller_order extends CI_Controller
 			}
 			//-------------------Newly Added Products Process End-------------------
 
+			
 			//if not saved in log then save product log start-----------------------------------
 			$check_order_log = $this->order_product_model->getOrderProductLogByOrderId($order_id);
 			if(empty($check_order_log)){
@@ -868,6 +910,8 @@ class Controller_order extends CI_Controller
 
 		//if not saved in log then save product log end-----------------------------------
 
+
+
 			$final_order_amount = 0;
 			$total_latest_order_pro = $this->order_model->getTotalOrderProductsSum($order_id);
 			$final_order_amount = $total_latest_order_pro[0]['total_amount'];
@@ -891,26 +935,39 @@ class Controller_order extends CI_Controller
 			// 		}
 			// 	}
 			// }
+
+			//get order pro
+			$order_pro_exist_datas = $this->order_product_model->getOrderProductByOrderId($order_id);
+			if(count($order_pro_exist_datas) > 0){
+				foreach($order_pro_exist_datas as $key => $val){
+						//get product ids for coupon calculation
+						$product_ids[$val['product_id']] = $val['total_amount'];
+					
+				}
+			}
+
 				$total_dis_amount = 0;
 				if ($orderdetails['promotional_code'] != '') { 
-					$promo_dis_val = $orderdetails['promo_dis_val'];
-					$dis_type=$orderdetails['promo_dis_type'];
-					$maximum_dis_val=$orderdetails['maximum_order_discount'];
-					if($dis_type=='%'){
-						$total_dis_amount = ($promo_dis_val/100) * $final_order_amount;
-						if($total_dis_amount < $maximum_dis_val){
-							$total_dis_amount = $total_dis_amount;
-						}else{
-							$total_dis_amount = $maximum_dis_val;
-						}
-					}else{
+					//find coupon code
+					$coupon_code_apply = $this->promotional_code_model->getPromotionalCodeUsingID($orderdetails['coupon_id']);
+					$applied_coupon_code = $coupon_code_apply['promotional_code'] ?? '';
+					$ArrCouponData = array(
+						"oauth_key" => "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+						"customer_id" => $orderdetails['user_id'],
+						"order_amount" => $final_order_amount,
+						"coupon_code" => $applied_coupon_code,
+						"product_ids" => $product_ids
+					);
+
+					$total_dis_amount = $this->get_coupon_amount($ArrCouponData);
+				}else{
 						// $total_prod = intval($this->input->post('total_or_qty'));
 						// $total_order_sum = $orderdetails['order_amount'];
 						// $find_perc = ($total_prod / $total_order_sum) * 100;
 						// $total_dis_amount = ($find_perc/100) * $final_order_amount;
 						$total_dis_amount = $promo_dis_val;
-					}
 				}
+				
 
 
 			$shipping_charge = $this->input->post('shipping_charge');
@@ -929,7 +986,7 @@ class Controller_order extends CI_Controller
 			$delivery_user_comment = $this->input->post('delivery_user_comment');
 
 			if(!empty($order_credit_per)):
-				$ord_total_amount = $final_order_amount + $shipping_charge + $preparation_cost + $packaging_cost + $order_tip + $used_credit_v - $discount_amount;
+				$ord_total_amount = $total_order_amount + $shipping_charge + $preparation_cost + $packaging_cost + $order_tip + $used_credit_v - $discount_amount;
 				$total_ear_cr_amount = ($order_credit_per/100) * $ord_total_amount;
 				if(!empty($total_ear_cr_amount)):
 					$crtr_data = array(
@@ -939,7 +996,7 @@ class Controller_order extends CI_Controller
 				endif;
 			endif;
 			
-			
+			//$order_total_amount = $total_order_amount + $shipping_charge + $preparation_cost + $packaging_cost + $order_tip - $discount_amount;
 			$order_total_amount = $total_order_amount + $shipping_charge + $preparation_cost + $packaging_cost + $order_tip + $used_credit_v - $discount_amount;
 			// if($total_updated_order_diff > 0){
 			// 	$diff_c_dis = $orderdetails['totaldiff_coupon_discount'];
@@ -968,17 +1025,16 @@ class Controller_order extends CI_Controller
 				);
 			//}
 			
+			
 			if ($order_status != '') {
 				$order_data['order_status'] = trim($order_status);
 				if($order_status == 'Processed' && !empty($delivery_user_id)){
 					$order_data['order_status'] = trim('Out For Delivery');
 				}
 			}
-			
 			$this->order_model->update($order_id, $order_data);
 			//-------------------Update Order master end-------------------
-			
-			
+
 			//-------------------Start Delivery Status Push Notifications -------------------
 
 			$order_data_new = $this->order_model->getOrderById($order_id);
@@ -1046,8 +1102,6 @@ class Controller_order extends CI_Controller
 			}
 			
 			//-------------------End Delivery Status Push Notifications -------------------
-
-
 			//-------------------Send mail when order stsatus is Out For Delivery-------------------
 
 			if ($order_status == 'Out For Delivery') {
@@ -1088,27 +1142,27 @@ class Controller_order extends CI_Controller
 				// 	</tr>';
 				// }
 				// $order_product_data .='<tr>
-				// 	<td colspan="6" class="right-txt">Shipping Charge :</td>
+				// 	<td colspan="4" class="right-txt">Shipping Charge :</td>
 				// 	<td>$'.$ArrOrderDetails['fedex_shipping_charge'].'</td>
 				// </tr>';
 				// $order_product_data .='<tr>
-				// 	<td colspan="6" class="right-txt">Tip Amount :</td>
+				// 	<td colspan="4" class="right-txt">Tip Amount :</td>
 				// 	<td>$'.$ArrOrderDetails['order_tip'].'</td>
 				// </tr>';
 				// $order_product_data .='<tr>
-				// 	<td colspan="6" class="right-txt">Order Discount :</td>
+				// 	<td colspan="4" class="right-txt">Order Discount :</td>
 				// 	<td>$'.$ArrOrderDetails['discount_amount'].'</td>
 				// </tr>';
 				// $order_product_data .='<tr>
-				// 	<td colspan="6" class="right-txt">Preparation Cost :</td>
+				// 	<td colspan="4" class="right-txt">Preparation Cost :</td>
 				// 	<td>$'.$ArrOrderDetails['preparation_cost'].'</td>
 				// </tr>';
 				// $order_product_data .='<tr>
-				// 	<td colspan="6" class="right-txt">Packaging Cost :</td>
+				// 	<td colspan="4" class="right-txt">Packaging Cost :</td>
 				// 	<td>$'.$ArrOrderDetails['packaging_cost'].'</td>
 				// </tr>';
 				// $order_product_data .='<tr>
-				// 	<td colspan="6" class="right-txt">Total :</td>
+				// 	<td colspan="4" class="right-txt">Total :</td>
 				// 	<td>$'.$ArrOrderDetails['order_total_amount'].'</td>
 				// </tr>';
 
@@ -1171,6 +1225,7 @@ class Controller_order extends CI_Controller
 				$disclas = '';
 				$new_cl = '';
 				$ArrOrderProduct = $this->order_product_model->getOrderProductLogByOrderId($order_id);
+
 				foreach ($ArrOrderProduct as $arr) {
 					if ($arr['log_status'] == 'out_of_stock_refunded') {
 						$cls = 'red';
@@ -1210,14 +1265,12 @@ class Controller_order extends CI_Controller
 						$cls='';
 						$log_status = '';
 					}
+					
 					$product_tax='NT';
 					if (!empty($arr['product_tax'])) {
 						$product_tax='T';
 					}
-
-		
-
-				//get refund track number
+					//get refund track number
 					$ref_track_number = $this->find_refund_track_number($order_id);
 					
 					$order_product_data .='<tr>';
@@ -1315,7 +1368,7 @@ class Controller_order extends CI_Controller
 				// Save the PDF file locally
 				file_put_contents($file_path, $pdf_content);
 
-//print_r($order_content);exit;
+
 				send_mail($email, $subject, $order_content,$file_path);
 				
 				// old code bkp
@@ -1398,13 +1451,12 @@ class Controller_order extends CI_Controller
 				$name = 'ArrNewProducts[]';
 				$ArrOptions = array('' => "Select");
 				foreach ($ArrProducts as $key => $value) {
-
 					if(!empty($value['sale_price'])){
 						$p_price = $value['sale_price'];
 					}else{
 						$p_price = $value['product_price'];
 					}
-					
+
 					if (isset($value['id']) && $value['id'] > 0) {
 						$val = $value['product_id'] . "|" . $value['id'] . "|" . $value['variant_price'] . "|" . $value['product_name'] . "|" . $value['product_tax'];
 						$data = $value['product_name'] . " - " . $value['product_variant_size'] . " lb";
@@ -1444,6 +1496,7 @@ class Controller_order extends CI_Controller
 			</td>
 
 			<td>
+
 				<input type="text" placeholder="Total Amount" class="form-control total_amount"
 					id="total_amount<?php echo $product_counter; ?>" name="ArrNewTotal_amount[]" value="" required readonly>
 				<input type="hidden"  class="form-control total_new_amount"

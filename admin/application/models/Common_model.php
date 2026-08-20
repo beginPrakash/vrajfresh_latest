@@ -68,7 +68,6 @@ class common_model extends CI_Model
 
 	}
 
-	
 	public function updateIsSold($primary_id, $column_name, $table_name)
 
 	{
@@ -129,6 +128,7 @@ class common_model extends CI_Model
 
 
 	}
+
 
 
 	public function select($vars, $table_name, $where = "", $order_by = "", $group_by = "")

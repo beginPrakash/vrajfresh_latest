@@ -93,7 +93,6 @@ class Controller_product extends CI_Controller
 				$row[] = $aRow['product_price'];
 				$row[] = $aRow['sale_price'];
 				$row[] = $aRow['unit_cost'];
-
 				if ($aRow['product_image'] == '') {
 					$row[] = $imag = '<img height="70px" width="70px" src="' . $base_url . 'uploads/noimg.gif" border=0 alt="No-Image">';
 				} else {
@@ -590,7 +589,6 @@ class Controller_product extends CI_Controller
 						$product_data['sale_price'] = $this->input->post('sale_price');
 					if ($this->input->post('unit_cost') != '')
 						$product_data['unit_cost'] = $this->input->post('unit_cost');
-
 					$product_id = $this->product_model->add($product_data);
 					if ($product_id > 0) {
 
@@ -703,7 +701,7 @@ class Controller_product extends CI_Controller
 							}
 						}
 						//END UPLOAD IMAGES
-
+						$this->notification_new_product($product_id, $this->input->post('product_name'), $this->input->post('product_slug'), $this->input->post('product_price'), $this->input->post('sale_price'), $this->input->post('product_image'));
 						$this->session->set_flashdata('success_message', 'Product details has been added successfully.');
 					} else {
 						$this->session->set_flashdata('error_message', 'Oops...! something went wrong, please try again');
@@ -764,9 +762,11 @@ class Controller_product extends CI_Controller
 			<td>
 				<input type="text" placeholder="Stock SKU" class="form-control" name="ArrVariantSKU[]" value="" required>
 			</td>
+
 			<td>
 				<input type="text" placeholder="Unit Cost" class="form-control" name="ArrUnitCost[]" value="" required>
 			</td>
+
 			<td>
 				<select name="ArrOutOfStock[]" class="form-control" title="Is sold out?">
 					<option value="1" selected>No</option>
@@ -862,5 +862,78 @@ class Controller_product extends CI_Controller
 			['horizontal' => 'center', 'vertical' => 'middle'],
 		];
 	}
+
+	private function notification_new_product($product_id, $product_name, $product_slug){
+        
+		$aColumns = array('tbl_users.user_id', 'tbl_users.first_name','tbl_users.last_name','tbl_users.display_name', 'tbl_users.user_name','tbl_users.email', 'tbl_users.mobile_no', 'tbl_users.is_active');
+		$this->db->select('SQL_CALC_FOUND_ROWS ' . str_replace(' , ', ' ', implode(', ', $aColumns)), false);
+		$this->db->where('user_role_id', 4);
+		$this->db->where('is_active', 1);
+		$this->db->where('is_deleted', 0);
+        $this->db->order_by('tbl_users.user_id', 'desc');
+        $query = $this->db->get('tbl_users');
+        $result = $query->result_array();
+        // echo count($result);
+        // die(' count');
+
+        if (!empty($result) && is_array($result)) {
+
+            $title = "New Arrivals";
+            $body  = "{$product_name} is here - ready to serve!";
+
+            // Prepare shared custom data parameters
+            $extra_data = [
+                'type'     => 'NEW_PRODUCT',
+				'product_id' => $product_id,
+				'product_name' => $product_name,
+				'product_slug' => $product_slug
+            ];
+            $json_custom_data = json_encode($extra_data);
+
+            foreach ($result as $user) {
+                $user_id = $user['user_id'];
+
+                // ALWAYS log history in the master notification table
+                $insert_notification_data = [
+                    'user_id'     => $user_id,
+                    'title'       => $title,
+                    'body'        => $body,
+                    'custom_data' => $json_custom_data,
+                    'read_status'      => 0 // 0 = Unread app notification inbox item
+                ];
+                $this->db->insert('tbl_notification', $insert_notification_data);
+
+                // Check if the user has any active device tokens for Push Notifications
+                $this->db->where('user_id', $user_id);
+                $query = $this->db->get('tbl_user_fcm_tokens');
+
+                if ($query->num_rows() > 0) {
+                    $fcm_tokens = $query->result_array();
+                    $batch_queue_data = [];
+
+                    // Loop through all found devices and prepare background queue payloads
+                    foreach ($fcm_tokens as $row) {
+                        if (!empty($row['fcm_token'])) {
+                            $batch_queue_data[] = [
+                                'user_id'      => $user_id,
+                                'device_token' => $row['fcm_token'],
+                                'title'        => $title,
+                                'body'         => $body,
+                                'custom_data'  => $json_custom_data,
+                                'status'       => 'pending'
+                            ];
+                        }
+                    }
+
+                    // Fire a single batch insert to queue up all notifications simultaneously 
+                    if (!empty($batch_queue_data)) {
+                        $this->db->insert_batch('tbl_notification_queue', $batch_queue_data);
+                    }
+                }
+            }
+
+        }
+        
+    }
 
 }

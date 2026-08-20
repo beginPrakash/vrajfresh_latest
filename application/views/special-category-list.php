@@ -495,8 +495,6 @@
                         var cart_row_id_val = '';
                     }
 
-                    
-                    
                     var product_rowid = $(this).data('productrowid');
                     $.ajax({
                         "type": "POST",
@@ -507,15 +505,15 @@
                             //location.reload();
                         },
                         "error": function(response) {
-                            console.log(response.errors);
+                            //console.log(response.errors);
                         }
                     });
-                    //location.reload();
-                
+
                     $('#qty_'+product_id).addClass('d-none');
                     $('#btn_'+product_id).removeClass('d-none');
                     // 🔥 IMPORTANT: reset input to 1
                     $('#' + product_id).val(1);
+
                     
                 }
             
@@ -639,6 +637,8 @@
             cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
             cart_arr = JSON.parse(cart_arr);
         }
+
+		
 		var cart_qty_val = 1;
 		$.ajax({
 			"type": "POST",
@@ -734,13 +734,14 @@
                                         }
                                         if(response.data.product_detail[a].product_size[j].is_out_of_stock == 1){
                                             price_weight = price_weight.concat('<option '+selected+' value="' + response.data.product_detail[a].product_size[j].size + '-' + response.data.product_detail[a].product_size[j].price + '-' + response.data.product_detail[a].product_size[j].product_variant_id + '">' + response.data.product_detail[a].product_size[j].size + 'lb - $' + response.data.product_detail[a].product_size[j].price + '</option>');
-}
                                         }
+                                    }
+
                                     price_weight += '</select></form>';
                                     } else {
                                     // var price_weight = '<span>' + response.data.product_detail[a].product_weight_gms + 'lb</span> - <strong>$' + response.data.product_detail[a].product_price + '</strong>';
                                     }
-								var buttonSection = ' <ul><li><div id="qty_'+ response.data.product_detail[a].product_id+'" class="quantity ' + out_of_stock_class +' '+ qty_class + '"><button type="button" id="sub" class="sub qty_change_sub" data-productslug="' + response.data.product_detail[a].product_slug + '" data-productimage= "' + response.data.product_detail[a].product_image + '" data-isperisible="' + response.data.product_detail[a].is_perisible_products + '" data-section="section4" data-isperisible="' + response.data.product_detail[a].is_perisible_products + '" data-productname="' + response.data.product_detail[a].product_name + '" data-price=' + response.data.product_detail[a].sale_price + ' data-productid = ' + response.data.product_detail[a].product_id + ' data-productweight =' + response.data.product_detail[a].product_weight_gms +  ' data-producttax=' + response.data.product_detail[a].product_tax + ' data-productrowid='+cart_row_id_val+'>-</button><input type="text" id="' + response.data.product_detail[a].product_id + '" value="'+cart_qty_val+'" min="1" max="3" disabled /><button type="button" id="add" class="add qty_change_add" data-productslug="' + response.data.product_detail[a].product_slug + '" data-productimage= "' + response.data.product_detail[a].product_image + '" data-isperisible="' + response.data.product_detail[a].is_perisible_products + '" data-section="section4" data-isperisible="' + response.data.product_detail[a].is_perisible_products + '" data-productname="' + response.data.product_detail[a].product_name + '" data-price=' + response.data.product_detail[a].sale_price + ' data-productid = ' + response.data.product_detail[a].product_id + ' data-productweight =' + response.data.product_detail[a].product_weight_gms +  ' data-producttax=' + response.data.product_detail[a].product_tax + ' data-productrowid=' + cart_row_id_val + '>+</button></div></li><li><button id= "btn_' + response.data.product_detail[a].product_id + '"data-productslug="' + response.data.product_detail[a].product_slug + '" data-productimage= "' + response.data.product_detail[a].product_image + '" data-isperisible="' + response.data.product_detail[a].is_perisible_products + '" class="add_cart ' + out_of_stock_class + ' '+ add_class+'" data-section="section4" data-isperisible="' + response.data.product_detail[a].is_perisible_products + '" data-productname="' + response.data.product_detail[a].product_name + '" data-price=' + response.data.product_detail[a].sale_price + ' data-productid = ' + response.data.product_detail[a].product_id + ' data-productweight =' + response.data.product_detail[a].product_weight_gms +  ' data-producttax=' + response.data.product_detail[a].product_tax + ' data-productrowid='+cart_row_id_val+'>Add</button></li></ul>';
+								var buttonSection = ' <ul><li><div id="qty_'+ response.data.product_detail[a].product_id+'" class="quantity ' + out_of_stock_class +' '+ qty_class + '"><button type="button" id="sub" class="sub qty_change_sub" data-productslug="' + response.data.product_detail[a].product_slug + '" data-productimage= "' + response.data.product_detail[a].product_image + '" data-isperisible="' + response.data.product_detail[a].is_perisible_products + '" data-section="section4" data-isperisible="' + response.data.product_detail[a].is_perisible_products + '" data-productname="' + response.data.product_detail[a].product_name + '" data-price=' + response.data.product_detail[a].sale_price + ' data-productid = ' + response.data.product_detail[a].product_id + ' data-productweight =' + response.data.product_detail[a].product_weight_gms +  ' data-producttax=' + response.data.product_detail[a].product_tax + ' data-productrowid='+cart_row_id_val+'>-</button><input type="text" id="' + response.data.product_detail[a].product_id + '" value="'+cart_qty_val+'" min="1" max="3" disabled /><button type="button" id="add" class="add qty_change_add" data-productslug="' + response.data.product_detail[a].product_slug + '" data-productimage= "' + response.data.product_detail[a].product_image + '" data-isperisible="' + response.data.product_detail[a].is_perisible_products + '" data-section="section4" data-isperisible="' + response.data.product_detail[a].is_perisible_products + '" data-productname="' + response.data.product_detail[a].product_name + '" data-price=' + response.data.product_detail[a].sale_price + ' data-productid = ' + response.data.product_detail[a].product_id + ' data-productweight =' + response.data.product_detail[a].product_weight_gms +  ' data-producttax=' + response.data.product_detail[a].product_tax + ' data-productrowid=' + cart_row_id_val + '>+</button></div></li><li><button id= "btn_' + response.data.product_detail[a].product_id + '"data-productslug="' + response.data.product_detail[a].product_slug + '" data-productimage= "' + response.data.product_detail[a].product_image + '" data-isperisible="' + response.data.product_detail[a].is_perisible_products + '" class="add_cart ' + out_of_stock_class + ' '+ add_class+'" data-section="section4" data-isperisible="' + response.data.product_detail[a].is_perisible_products + '" data-productname="' + response.data.product_detail[a].product_name + '" data-price=' + response.data.product_detail[a].sale_price + ' data-productid = ' + response.data.product_detail[a].product_id + ' data-productweight =' + response.data.product_detail[a].product_weight_gms +  ' data-producttax=' + response.data.product_detail[a].product_tax + ' data-productrowid=' + cart_row_id_val + '>Add</button></li></ul>';
 								
 							}
 
@@ -753,6 +754,7 @@
                             if (objectLength > 1) {
                                 tagdiscounttext = '';
                             }
+
 							product = product.concat('<div class="product-box"><a href="<?php echo BASE_URL; ?>product/' + response.data.product_detail[a].product_slug +
 								'"> <div class="begin_img_container">'+tagdiscounttext+'<img src=' + response.data.product_detail[a].image + ' onerror=this.src="<?php echo BASE_URL; ?>assets/images/logo-2.png"></div><h4>' + response.data.product_detail[a].product_name +
 								'</h4></a>' + price_weight +buttonSection+'</div>'

@@ -28,6 +28,13 @@ class Coupons_model extends CI_Model
 			->get('tblpromotional_code');
 		return $query->result();
 	}
+
+	public function get_coupon_by_code_admin($data)
+	{
+		$query = $this->db->where('promotional_code', $data['coupon_code'])->get('tblpromotional_code');
+		return $query->result();
+	}
+	
 	public function get_coupon_by_id($data)
 	{
 		$query = $this->db->where('promotional_code_id ', $data)

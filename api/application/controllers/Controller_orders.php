@@ -667,6 +667,7 @@ class Controller_orders extends CI_Controller
 			}
 			
 			if ($result) {
+
 				$success_message = 'Order added successfully';
 				$users = $this->orders_model->get_users_data($result);
 				$subject = "Order Place Successfully";

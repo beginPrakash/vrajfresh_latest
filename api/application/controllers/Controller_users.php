@@ -79,7 +79,12 @@ class Controller_users extends CI_Controller
 			);
 			$user_exist = $this->users_model->user_exist($user_data);
 			if ($user_exist > 0) {
-				$errors = 'Email Already Exist.Please try another Email';
+				$user_rdata = $this->users_model->get_user_by_email($json_obj->email);
+				if (count($user_rdata) > 0) {
+					$errors = 'Email ID Already Exist.Please try another Email ID';
+				}else{
+					$errors = 'Mobile number Already Exist.Please try another Mobile number';
+				}
 			} else {
 				
 				$user_id = $this->users_model->add_user($user_data, 'tbl_users');
@@ -291,7 +296,6 @@ class Controller_users extends CI_Controller
 						}
 					}
 					$ArrData = $result;
-					
 					if($json_obj->prev_url == 'cart-detail' || $json_obj->prev_f_url == 'checkout' || $json_obj->prev_f_url == 'my-address' || $json_obj->prev_f_url == 'my-orders' || $json_obj->prev_f_url == 'my-account' || $json_obj->prev_f_url == 'change-password'){
 						$prev_url = $json_obj->prev_f_url;
 					}else{
@@ -537,7 +541,6 @@ class Controller_users extends CI_Controller
 	}
 	public function contact_mail()
 	{
-
 		$json_str = json_encode($_POST);
 		$json_obj = json_decode($json_str);
 
@@ -577,6 +580,7 @@ class Controller_users extends CI_Controller
 			send_response_to_api($ArrData,$errors,$success_message);
 		}
 	}
+
 	public function user_activate()
 	{
 		$json_str = json_encode($_POST);
