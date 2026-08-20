@@ -67,9 +67,6 @@ $route['delete-brand'] = 'Controller_brands/delete_brand';
 $route['get-brand-product-detail'] = 'Controller_brands/get_brand_product_detail';
 $route['get-brand-product-search'] = 'Controller_brands/get_brand_product_search';
 
-$route['get-blogs'] = 'Controller_blog/get_blogs';
-$route['get-blog-by-id'] = 'Controller_blog/get_blog_by_id';
-
 $route['get-cms'] = 'Controller_cms/get_cms';
 $route['add-cms'] = 'Controller_cms/add_cms';
 $route['get-cms-by-id'] = 'Controller_cms/get_cms_by_id';
@@ -178,7 +175,7 @@ $route['cart/total-items'] = 'Controller_cart/total_items';
 $route['get-menus'] = 'controller_menus/get_menu';
 
 $route['get-coupon-amount'] = 'controller_coupons/get_coupon_amount';
-
+$route['get-coupon-amount-to-admin'] = 'controller_coupons/get_coupon_amount_to_admin';
 
 
 $route['add-cart-item'] = 'Controller_cart/add_cart';
@@ -208,7 +205,5 @@ $route['get-advertise_bottom'] = 'Controller_home/get_advertise_bottom';
 
 $route['get_special_category_product'] = 'Controller_home/get_special_category_product';
 
-
 $route['stripe/create-intent'] = 'Controller_orders/createIntent';
 $route['stripe/update-intent'] = 'Controller_orders/updateIntent';
-

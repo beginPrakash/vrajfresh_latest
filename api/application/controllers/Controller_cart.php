@@ -72,7 +72,7 @@ class Controller_cart extends CI_Controller
 		$ArrData = array();
 		if (check_oauth_key($oauth_key)) {
 			try {
-				$is_product_addtocart = $this->cart_model->is_product_addtocart($json_obj->ArrCartItem->id,$json_obj->ArrCartItem->customer_id,$json_obj->ArrCartItem->options_variant_id);
+					$is_product_addtocart = $this->cart_model->is_product_addtocart($json_obj->ArrCartItem->id,$json_obj->ArrCartItem->customer_id,$json_obj->ArrCartItem->options_variant_id);
 					if(empty($is_product_addtocart)){
 						$ArrCartData = array(
 							'customer_id' => trim($json_obj->ArrCartItem->customer_id),
@@ -97,6 +97,7 @@ class Controller_cart extends CI_Controller
 						);
 						$this->cart_model->update_usercart_item($ArrCartData,$is_product_addtocart);
 					}
+
 			} catch (Exception $e) {
 				$ArrData = array();
 				$errors = 'No Data Available';
@@ -105,7 +106,7 @@ class Controller_cart extends CI_Controller
 		}
 	}
 
-
+	
 	public function generate_unique_rowid()
 	{
 		do {
@@ -119,6 +120,8 @@ class Controller_cart extends CI_Controller
 
 		return $row_id;
 	}
+
+
 
 	public function add_luser_cart()
 	{
@@ -155,7 +158,7 @@ class Controller_cart extends CI_Controller
 						$this->cart_model->add($ArrCartData);
 					}else{
 						$ArrCartData = array(
-							'row_id' => trim($row_id),	
+							'row_id' => trim($row_id),
 							'qty' => trim($val['qty']),
 						);
 						$this->cart_model->update_usercart_item($ArrCartData,$is_product_addtocart);

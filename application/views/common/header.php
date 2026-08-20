@@ -1,8 +1,3 @@
-<?php
-header("X-Frame-Options: SAMEORIGIN");
-header("X-Content-Type-Options: nosniff");
-header("Referrer-Policy: strict-origin-when-cross-origin");
-?>
 <!DOCTYPE html>
 <html lang="en">
 <?php
@@ -12,18 +7,36 @@ header("Referrer-Policy: strict-origin-when-cross-origin");
 ?>
 
 <head>
+
     <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-WHKSZHHL');</script>
-<!-- End Google Tag Manager -->
-     <meta name="robots" content="noindex, nofollow">
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-WHKSZHHL');</script>
+    <!-- End Google Tag Manager -->
+
+     <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1PKZMFV141"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-1PKZMFV141');
+
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "vtnve5a0i9");
+        
+    </script>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="FNeLESBhXnmv7O-GJWgi96TbBopIy-wCVCGEWJgPkno" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="author" content="">
     <title><?= (isset($meta_title) && !empty($meta_title)) ? $meta_title : 'VrajFresh'; ?></title>
     <meta name="description" content="<?= (isset($meta_description) && !empty($meta_description)) ? $meta_description : 'VrajFresh'; ?>">
     <?php if(isset($og_title)) { ?>
@@ -32,6 +45,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <meta property="og:image" content="<?php echo $og_image; ?>">
         <meta property="og:url" content="<?php echo $og_url; ?>">
     <?php } ?>
+    <meta name="author" content="">
+    <title>VrajFresh</title>
     <link rel="shortcut icon" type="image/png" href=<?php echo ASSET_URL . "images/favicon.png"; ?>>
     <link href='<?php echo ASSET_URL . "css/slick.css?v=1.1"; ?>' rel="stylesheet">
     <link href='<?php echo ASSET_URL . "css/vraj-fresh-custom.css?v=" . date("d.H.m.s"); ?>' rel="stylesheet">
@@ -62,13 +77,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             background: red;
         }
     </style>
-    <!-- Google Tag Manager -->
-    <!-- <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-59WDGKMS');</script> -->
-    <!-- End Google Tag Manager -->
+    
     <meta name="google-site-verification" content="xaJvsYfgjva1zg6alJmoQ0Er7XPWoDt0zunyKPNcHiE" />
 
     <!-- Facebook Pixel Code -->
@@ -108,29 +117,13 @@ $actual_link = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP
 ?>
 
 <body class="banner-empty">
-    <!-- Google Tag Manager (noscript) -->
-    <!-- <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-59WDGKMS"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript> -->
-    <!-- End Google Tag Manager (noscript) -->
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T2DPW5CY6X"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
 
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-
-        gtag('config', 'G-T2DPW5CY6X');
-    </script>
-
-    <!-- Google Tag Manager (noscript) -->
+ <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WHKSZHHL"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
-    <div class="top-banner" style="display: none;"></div>
 
+    <div class="top-banner top-banner-text" style="display: none;"></div>
     <div class="zipcode-bar">
         <input name="zipcode" type="hidden" id="zipcode" class="zipcode_only myinput">
         <div class="zipcode-container">
@@ -262,9 +255,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <input type="hidden" value="<?Php echo $ch_ur; ?>" class="curs_name">
             <div class="my-account">
                 <ul>
-                    <!-- <li class="mobile-show">
-                        <a href="javascript:void(0);" class="toggel-zipcode"><img src=<?php echo ASSET_URL . "images/mappin.svg"; ?> class="left-arrow" alt="Store map location"></a>
-                    </li> -->
+                    <li class="mobile-show">
+                        <a href="javascript:void(0)" class="toggel-zipcode"><img src=<?php echo ASSET_URL . "images/mappin.svg"; ?> class="left-arrow" alt="Store map location"></a>
+                    </li>
                     <?php if (!IsUserLogin()) { ?>
                         <?php if (isset($_COOKIE['user_id'])) { ?>
                             <li class="vraj-login1">
@@ -273,7 +266,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         <?php } else { ?>
 
                             <li class="vraj-login">
-                                <!-- <a href="<?php echo current_url() . '?login=true'; ?>"> <img src=<?php echo ASSET_URL . "images/user-icon.png"; ?>></a> -->
+                                <!-- <a href="<?php echo current_url() . '?login=true'; ?>"> <img src=<?php echo ASSET_URL . "images/user-icon.png"; ?> alt="User account login"></a> -->
                                 <a href="<?php echo BASE_URL . 'login'; ?>"> <img src=<?php echo ASSET_URL . "images/user-icon.png"; ?> alt="User account login"></a>
                             </li>
                         <?php } ?>
@@ -282,8 +275,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                             <a href="<?php echo BASE_URL . 'my-orders'; ?>"><img src=<?php echo ASSET_URL . "images/user-icon.png"; ?> alt="User account login"></a>
                         </li>
                     <?php } ?>
-                    <?php //print_r($this->cart->contents());
-                    //echo $this->cart->total_items(); exit;?>
                     <li>
                         <a href="<?php echo BASE_URL . 'cart-detail'; ?>">
                             <img src=<?php echo ASSET_URL . "images/cart-icon.png"; ?> alt="Shopping cart">
@@ -852,6 +843,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 },
                 submitHandler: function(form) {
                     // form.submit();
+                    if (grecaptcha.getResponse().length === 0) {
+                        $('#recaptcha-error').show();
+                        $('#recaptcha-error').html('Please complete the CAPTCHA');
+                        return false;
+                    }else{  
+                        $('#recaptcha-error').html('');
+
+                    }
                     var form = $("#Frmregistration");
                     $.ajax({
                         "type": "POST",
@@ -953,7 +952,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 }
 
                             }
-                            menus = menus.concat("<li><a href='javascript:void(0);'>" + response.data[a].category_name + "</a><button class='but'></button><div class='submenu'><ul>" + child_menus + "</ul></div></li>");
+                            menus = menus.concat("<li><a href='javascript:void();'>" + response.data[a].category_name + "</a><button class='but'></button><div class='submenu'><ul>" + child_menus + "</ul></div></li>");
                         } else {
                             var menu_link = response.data[a].menu_link;
                             var category_slug = response.data[a].category_slug;
@@ -1012,7 +1011,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 }
 
                             }
-                            menus = menus.concat("<li class='nav__item'><a href='javascript:void(0);'>" + response.data[a].category_name + "</a><button class='but'></button><div class='mainsubmenu'><ul>" + child_menus + "</ul></div></li>");
+                            menus = menus.concat("<li class='nav__item'><a href='javascript:void();'>" + response.data[a].category_name + "</a><button class='but'></button><div class='mainsubmenu'><ul>" + child_menus + "</ul></div></li>");
                         } else {
                             var category_slug = response.data[a].category_slug;
                             var menu_link = response.data[a].menu_link;
@@ -1184,8 +1183,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 }
                 console.log(zipcode);
                 // return false;
-            }
-            else if (call_from == 'popup_new') {
+            }else if (call_from == 'popup_new') {
                 $('#zipcode_popup_new').trigger('change');
                 var zipcode = $("#zipcode_popup_new_value").val();
                 if (zipcode == '') {
@@ -1384,12 +1382,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     console.log(response);
                     if (response.is_successful == 1) {
                         for (let a = 0; a < response.data.length; a++) {
-                            var top_banner = `${response.data[a].title} <a href="${response.data[a].url}">Click Here</a>`;
+                            //var top_banner = `${response.data[a].title} <a href="${response.data[a].url}">Click Here</a>`;
+                            var top_banner = `${response.data[a].title}`;
 
                         }
-                    }
-                    $(".top-banner").html(top_banner);
+                        $(".top-banner-text").html(top_banner);
                     $(".top-banner").show();
+                    }
+                    
                 }
             });
         }
@@ -1426,7 +1426,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 "success": function(response) {
 
                     if (response.is_successful == "1") {
-                        
                         console.log("cartData", response.data);
                         $("#cartCount").text('0');
                         $("#cartCount").text(response.data.total_items);
@@ -1466,6 +1465,4 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 }
             });
         }
-
-        
     </script>

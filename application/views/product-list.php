@@ -496,7 +496,7 @@
 							var out_of_stock = "<div class='product-stock-message'></div>";
 							var out_of_stock_class = "";
 							if (response.data.is_out_of_stock == 0 || first_variant_out_of_stock) {
-								out_of_stock = "<div class='product-stock-message'>Product is Sold out</div>";
+								out_of_stock = "<div class='product-stock-message'>Product is sold out</div>";
 								out_of_stock_class = "out_of_stock";
 							}
 

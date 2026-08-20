@@ -89,6 +89,48 @@ class Controller_order extends CI_Controller
 		$this->load->view('admin_panel/quickview/table.php', $data);
 	}
 
+	public function find_refund_track_number($order_id){
+		//find refund id
+		$refund_id = $this->transactions_model->getRefundTransactionsBYOrderIdSingle($order_id);
+		if(!empty($refund_id)){
+			$url = API_URL . "api/stripe/payment_refund_track";
+
+			$ArrPayment = array(
+				"refund_id" => $refund_id
+			);
+
+			$data = array(
+				"oauth_key" => "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+				"ArrPayment" => $ArrPayment
+			);
+
+			$curl = curl_init();
+
+			curl_setopt_array($curl, array(
+				CURLOPT_URL => $url,
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_ENCODING => "",
+				CURLOPT_MAXREDIRS => 10,
+				CURLOPT_TIMEOUT => 30,
+				CURLOPT_FOLLOWLOCATION => true,
+				CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+				CURLOPT_CUSTOMREQUEST => "POST",
+				CURLOPT_POSTFIELDS => json_encode($data),
+				CURLOPT_HTTPHEADER => array(
+					"Content-Type: application/json",
+					"Accept: application/json"
+				),
+			));
+
+			$response = curl_exec($curl);
+			$refund = json_decode($response);
+			if (isset($refund->data->destination_details)) {
+				$ref_no = $refund->data->destination_details->card->reference;
+			}
+		}
+		return $ref_no ?? '';
+	}
+
 	/* UPDATE ORDER START */
 	public function update_order_page($order_id)
 	{
@@ -176,51 +218,9 @@ class Controller_order extends CI_Controller
 	}
 
 
-	public function find_refund_track_number($order_id){
-		//find refund id
-		$refund_id = $this->transactions_model->getRefundTransactionsBYOrderIdSingle($order_id);
-		if(!empty($refund_id)){
-			$url = API_URL . "api/stripe/payment_refund_track";
-
-			$ArrPayment = array(
-				"refund_id" => $refund_id
-			);
-
-			$data = array(
-				"oauth_key" => "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
-				"ArrPayment" => $ArrPayment
-			);
-
-			$curl = curl_init();
-
-			curl_setopt_array($curl, array(
-				CURLOPT_URL => $url,
-				CURLOPT_RETURNTRANSFER => true,
-				CURLOPT_ENCODING => "",
-				CURLOPT_MAXREDIRS => 10,
-				CURLOPT_TIMEOUT => 30,
-				CURLOPT_FOLLOWLOCATION => true,
-				CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-				CURLOPT_CUSTOMREQUEST => "POST",
-				CURLOPT_POSTFIELDS => json_encode($data),
-				CURLOPT_HTTPHEADER => array(
-					"Content-Type: application/json",
-					"Accept: application/json"
-				),
-			));
-
-			$response = curl_exec($curl);
-			$refund = json_decode($response);
-			if (isset($refund->data->destination_details)) {
-				$ref_no = $refund->data->destination_details->card->reference;
-			}
-		}
-		return $ref_no ?? '';
-	}
-
 	public function update_order_process()
 	{
-		$uploadPath = $_SERVER['DOCUMENT_ROOT'] . '/admin/uploads/products/';
+$uploadPath = $_SERVER['DOCUMENT_ROOT'] . '/admin/uploads/products/';
 		$config['upload_path'] = $uploadPath; // set the filter image types
 		$config['allowed_types'] = 'gif|jpg|jpeg|png'; //load the upload library
 		$config['file_name'] = GUID();
@@ -249,10 +249,9 @@ class Controller_order extends CI_Controller
 
 			}
 
-            $flag = true;
+$flag = true;
 			$this->order_model->update($order_id, $order_data);
 			//-------------------Update Order master end-------------------
-
 
 			//-------------------Start Delivery Status Push Notifications -------------------
 
@@ -344,17 +343,17 @@ class Controller_order extends CI_Controller
 						$cls = 'red';
 						$disclas = 'disabletext';
 						$log_status= 'Out Of Stock (Refunded)';
-						$refun_pro_amount = $refun_pro_amount + $arr['unit_price'] + $arr['product_tax_amount'];
+						$refun_pro_amount = $refun_pro_amount + ($arr['unit_price'] * $arr['qty_order']) + $arr['product_tax_amount'];
 					}else if ($arr['log_status'] == 'refunded') {
 						$cls='red';
 						$disclas = 'disabletext';
 						$log_status= 'Refunded';
-						$refun_pro_amount = $refun_pro_amount + $arr['unit_price'] + $arr['product_tax_amount'];
+						$refun_pro_amount = $refun_pro_amount + ($arr['unit_price'] * $arr['qty_order']) + $arr['product_tax_amount'];
 					}else if ($arr['log_status'] == 'newly_added') {
 						$new_cl='new_ad';
 						$disclas = '';
 						$cls='green';
-						$log_status= 'Newly Added';
+						$log_status= 'Added Items';
 						$newly_pro_amount = $newly_pro_amount + $arr['total_amount'] + $arr['product_tax_amount'];
 					}else if ($arr['log_status'] == 'qty_changed') {
 						$disclas = '';
@@ -363,7 +362,7 @@ class Controller_order extends CI_Controller
 							if($arr['qty_ship'] > $arr['qty_order']){
 								$find_per_roduct_tax = $arr['product_tax_amount'] - $arr['product_tax_amount_old'];
 								$tqty = $arr['qty_ship'] - $arr['qty_order'];
-								$log_status= '+'.$tqty.' Newly Added';
+								$log_status= '+'.$tqty.' Added Items';
 								$newly_pro_amount = $newly_pro_amount + ($arr['unit_price'] * $tqty);
 							}else{
 								$find_per_roduct_tax = $arr['product_tax_amount_old'] - $arr['product_tax_amount'];
@@ -469,7 +468,6 @@ class Controller_order extends CI_Controller
 				$arr_replace_with = array($order_date, $order_id, $customer_name, $order_delivey_time, $address,$customer_email,$ArrOrderDetails['shipping_first_name'],$ArrOrderDetails['shipping_last_name'],$ArrOrderDetails['shipping_street_name'] .' '. $ArrOrderDetails['shipping_apartment_name'] , $ArrOrderDetails['shipping_city'] , $ArrOrderDetails['shipping_state_name'] , 'United States' , $ArrOrderDetails['shipping_zipcode'] , $ArrOrderDetails['shipping_phone'],$ArrOrderDetails['shipping_first_name'],$ArrOrderDetails['shipping_last_name'],$ArrOrderDetails['billing_street_name'] .' '. $ArrOrderDetails['billing_apartment_name'] , $ArrOrderDetails['billing_city'] , $ArrOrderDetails['billing_state_name'] , 'United States' , $ArrOrderDetails['billing_zipcode'] , $ArrOrderDetails['billing_phone'],$order_product_data,$replace_item_text,$ArrOrderDetails['order_status'],$ref_track_number_text);
 				$order_content = str_replace($arr_replace, $arr_replace_with, $order_content);
 				$order_content_pdf = str_replace($arr_replace, $arr_replace_with, $order_content_pdf);
-
 
 				$this->load->library('pdf');
 				$this->dompdf->loadHtml($order_content_pdf);

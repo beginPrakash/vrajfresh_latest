@@ -466,7 +466,7 @@
 								var out_of_stock = "<div class='product-stock-message'></div>";
 								var out_of_stock_class = "";
 
-								console.log("product Sold out:" + response.data.products[a].is_out_of_stock + " and variant Sold out:" + variant_in_stock_count);
+								console.log("product sold out:" + response.data.products[a].is_out_of_stock + " and variant sold out:" + variant_in_stock_count);
 								if (response.data.products[a].is_out_of_stock == 0) {
 									out_of_stock = "<div class='product-stock-message'>Product Sold out</div>";
 									out_of_stock_class = "out_of_stock";
@@ -611,20 +611,20 @@
 
 							var out_of_stock = "<div class='product-stock-message'></div>";
 							var out_of_stock_class = "";
-							console.log(response.data.products[a].product_name.substring(0, 32) + "====product Sold out:" + response.data.products[a].is_out_of_stock + " and variant Sold out:" + variant_in_stock_count + "is_variant_product" + is_variant_product);
-							/* PRODUCT IS IN STOCK AND ALL VARIANT Sold out  */
+							console.log(response.data.products[a].product_name.substring(0, 32) + "====product sold out:" + response.data.products[a].is_out_of_stock + " and variant sold out:" + variant_in_stock_count + "is_variant_product" + is_variant_product);
+							/* PRODUCT IS IN STOCK AND ALL VARIANT SOLD OUT  */
 							if (response.data.products[a].is_out_of_stock == 0 && variant_in_stock_count == 0) {
 								var price_weight = "";
 								out_of_stock = "<div class='product-stock-message'>Product Sold out</div>";
 								out_of_stock_class = "out_of_stock";
 							}
-							/* PRODUCT IS Sold out */
+							/* PRODUCT IS SOLD OUT */
 							if (response.data.products[a].is_out_of_stock == 0) {
 								out_of_stock = "<div class='product-stock-message'>Product Sold out</div>";
 								out_of_stock_class = "out_of_stock";
 								var price_weight = "";
 							}
-							/* PRODUCT IS VARIANT AND ALL VARIANT Sold out */
+							/* PRODUCT IS VARIANT AND ALL VARIANT SOLD OUT */
 							if (is_variant_product == 1 && variant_in_stock_count == 0) {
 								var price_weight = "";
 								out_of_stock = "<div class='product-stock-message'>Product Sold out</div>";

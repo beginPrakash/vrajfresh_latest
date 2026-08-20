@@ -16,6 +16,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
 }
 ?>
 <script type="text/javascript" src="https://js.stripe.com/v3/"></script>
+<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
 <style>
    .StripeElement {
       padding: 10px 12px;
@@ -71,9 +72,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
 					            <p><b><?php echo $shipping_address[$i]['first_name'] . ' '. $shipping_address[$i]['last_name']; ?></b></p>
                            <?php $address = '';
                            $address = ($address != "") ? $address .= ", ".$shipping_address[$i]['shipping_street_address'] : $address = $shipping_address[$i]['shipping_street_address'];
-                           if(!empty($shipping_address[$i]['shipping_apartment'])){
-                              $address = ($address != "") ? $address .= ", ".$shipping_address[$i]['shipping_apartment'] : $address = $shipping_address[$i]['shipping_apartment'];
-                           }
+                           $address = ($address != "") ? $address .= ", ".$shipping_address[$i]['shipping_apartment'] : $address = $shipping_address[$i]['shipping_apartment'];
                            $address = ($address != "") ? $address .= ", ".$shipping_address[$i]['shipping_city'] : $address = $shipping_address[$i]['shipping_city'];
                            $address = ($address != "") ? $address .= ", ".$shipping_address[$i]['state_name'] : $address = $shipping_address[$i]['state_name']; ?>
                            <p><?php echo $address; ?></p>
@@ -122,9 +121,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                         <p><b><?php echo $billing_address[$i]['first_name'] . ' '. $billing_address[$i]['last_name']; ?></b></p>
                         <?php $address = '';
                         $address = ($address != "") ? $address .= ", ".$billing_address[$i]['billing_street_address'] : $address = $billing_address[$i]['billing_street_address'];
-                        if(!empty($billing_address[$i]['billing_apartment'])){
-                           $address = ($address != "") ? $address .= ", ".$billing_address[$i]['billing_apartment'] : $address = $billing_address[$i]['billing_apartment'];
-                        }
+                        $address = ($address != "") ? $address .= ", ".$billing_address[$i]['billing_apartment'] : $address = $billing_address[$i]['billing_apartment'];
                         $address = ($address != "") ? $address .= ", ".$billing_address[$i]['billing_city'] : $address = $billing_address[$i]['billing_city'];
                         $address = ($address != "") ? $address .= ", ".$billing_address[$i]['state_name'] : $address = $billing_address[$i]['state_name']; ?>
                         <p><?php echo  $address; ?></p>
@@ -146,8 +143,15 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                <?php } } ?>
             </div>
          </div>
-         
-
+         <div class="billing-left" id="CardData">
+            <h3>Payment</h3>
+            <span>All transactions are secure and encrypted.</span>
+            </br>
+         <div>
+			<div class="add-card">
+				<input type="radio" name="card_id" id="card_id_" value="0" <?php if($card_count == 0){ echo 'CHECKED'; } ?>> <label>Add Another Credit Card</label>
+				<input type="hidden" name="card_count" id="card_count" value="<?php echo $card_count; ?>" >
+			</div>
             <select name="state" id="state" style="display:none;" data-tax="">
                <?php
                   $tax_percentage = 0;
@@ -171,19 +175,34 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                   } ?>><?php echo $state_data; ?></option>
                <?php } ?>
             </select>
-        
-       
-        
-     
-               <input type="hidden" name="CardToken" id="CardToken" />
-               <input type="hidden" name="StripeCardID" id="StripeCardID" />
-               <input type="hidden" name="CardPaymentMethod" id="CardPaymentMethod" />
+         </div>
+         <div id="card-element" class="StripeElement"  role="group" aria-labelledby="card-label" <?php if($card_count > 0){ ?> style="display:none;" <?php } ?>>
+         <!-- A Stripe Element will be inserted here. -->
+         </div>
+         <!-- Used to display form errors. -->
+         <div id="card-errors" role="alert" aria-live="assertive" class="error"></div>
+         <div class="card-form" <?php if($card_count > 0){ ?> style="display:none;" <?php } ?>> 
+         
+            <input type="hidden" name="CardToken" id="CardToken" />
+            <input type="hidden" name="StripeCardID" id="StripeCardID" />
+            <input type="hidden" name="CardPaymentMethod" id="CardPaymentMethod" />
+            
+            <br>
+            <input type="checkbox" name="save_card" id="save_card" value="1" /> <lable for="save_card">Save my information for a faster checkout </lable>
+         </div>
+         <hr><br>
+         
+         <?php if(!empty($cards)){ ?>
+         <?php for($i = 0; $i < count($cards); $i++){ ?>
+            <div class="type-box">
+               <input type="radio" name="card_id" id="card_id<?php echo $i; ?>" value="<?php echo $cards[$i]['card_id']; ?>" <?php if($cards[$i]['card_id'] == $card_id){ echo 'CHECKED'; } ?>>
+               <p><?php echo $cards[$i]['card_brand']. " - " . $cards[$i]['card_holder'] ." ". $cards[$i]['card_no']; ?></p>
+            </div>
+         <?php } ?>
 
-
-      <div id="payment-element">
-        <!--Stripe.js injects the Payment Element-->
+         <?php } ?>
       </div>
-      <span id="payment-error" class="error"></span>
+
       <div class="billing-left">
          <div id="shipingAddressBox" style="display:none;">
             <div>
@@ -222,47 +241,18 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
             </div>
          </div>
          <?php if ($_COOKIE['delivery_type'] == 'Express Delivery' || $_COOKIE['delivery_type'] == 'Same Day Delivery') { ?>
-		<h3>Delivery Date</h3>
+		<h3>Delivery Type</h3>
          <div>
             <!-- <input name="delivery_type" id="delivery_type_hour" type="radio" value="two_hour" class="chk_delivery_type"> -->
             <!-- <label for="delivery_type_hour" id="delivery_after_hr"> 2 Hours Delivery</label> -->
 			<div class="type-box">
-				<input name="delivery_type" id="delivery_type_day" type="hidden" value="one_day"
-               class="chk_delivery_type">
-            <?php
-
-               $timezone = new DateTimeZone("America/New_York");
-
-               // Current date/time in New York
-               $today = new DateTime("now", $timezone);
-
-               // Tomorrow date
-               $tomorrow = clone $today;
-               $tomorrow->modify('+1 day');
-
-               // Max date (+7 days)
-               $maxDate = clone $today;
-               $maxDate->modify('+7 day');
-
-               // Current hour and minute
-               $hr  = (int)$today->format('H');
-               $min = (int)$today->format('i');
-
-               // If time is after 2:00 PM
-               if ($hr >= 14 && $min > 0) {
-                  $today = $tomorrow;
-               }
-
-               // Final formatted date
-               $stext = $today->format('m-d-Y');
-
-
-            ?>
-				<label><b>Expected Delivery Date : </b> <?php echo $stext; ?></label>
+				<input name="delivery_type" id="delivery_type_day" type="radio" value="one_day"
+               class="chk_delivery_type" checked>
+				<label for="delivery_type_day"> One Day Delivery</label>
 			</div>
-			<!-- <label for="delivery_type_day"> Choose Date</label>
+			<label for="delivery_type_day"> Choose Date</label>
 			<input type="text" name="delivery_one_day_date" id="delivery_one_day_date" value="" readonly />
-            <span id="delivery_one_day_date-error" class="error"></span> -->
+            <span id="delivery_one_day_date-error" class="error"></span>
          </div>
          <?php }
             if ($_COOKIE['delivery_type'] == 'Twise in a week') { ?>
@@ -271,13 +261,13 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                <?php 
                $delivery_days = $_COOKIE['delivery_days'];
                $dayArray = explode(',', $delivery_days);
-               $deliveryDate = date('m-d-Y');
+               $deliveryDate = date('d-m-Y');
                
                $hours = date('H');
                $today = date('l');
                
                if(in_array($today, $dayArray) && $hours < 15){
-               	$deliveryDate = date('m-d-Y');
+               	$deliveryDate = date('d-m-Y');
                } else {
                	for ($i = 1; $i <= 7; $i++) {
                		// Get the date for the next iteration
@@ -293,7 +283,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                }
                echo $deliveryDate;
                
-               /* $t = date('m-d-Y');
+               /* $t = date('d-m-Y');
                
                
                if (date("l", strtotime($t)) == "Tuesday" || date("l", strtotime($t)) == "Wednesday" || date("l", strtotime($t)) == "Thursday") {
@@ -334,8 +324,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
             <input placeholder="Enter Tip Amount" name="tip_amount" id="tip_amount" type="text"
                style="display:none;" onkeypress="return isNumber(event)">
             <span id="tip_error_message" style="display:none;color:red;" >Please enter valid amount</span>
-            <a href="javascript:void(0);" onClick="addCustomTipAmount()" id="add_tip_button" style="display:none;color: #fff;border: none;padding: 8px 9px;cursor: pointer;background: #1e53a5;border-radius: 2px;">Add Tip</a>
-            <a href="javascript:void(0);" onClick="addCustomTipAmount()" id="update_tip_button" style="display:none;color: #fff;border: none;padding: 8px 9px;cursor: pointer;background: #1e53a5;border-radius: 2px;">Update Tip</a>
+            <a href="javascript:void();" onClick="addCustomTipAmount()" id="add_tip_button" style="display:none;color: #fff;border: none;padding: 8px 9px;cursor: pointer;background: #1e53a5;border-radius: 2px;">Add Tip</a>
             <span id="tip_remove_button" style="display:none; " ><a href="javascript:void(0);" onClick="removeTipAmount()" style="color: #fff;border: none;padding: 8px 9px;cursor: pointer;background: #1e53a5;border-radius: 2px;">Remove Tip</a></span>
          </div>
       </div>
@@ -351,7 +340,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
       
    </div>
    <div class="col-md-8">
-      <?php //print_r($cart_items); 
+      <?php //print_r($this->cart->contents()); 
          ?>
       <div class="billing-right" id="SubstitutiondeData">
          <h3 id="required_policy">SUBSTITUTION PREFERENCES<small title="required">*</small></h3>
@@ -379,27 +368,14 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                <th scope="col">TAX($) </th>
                <th scope="col">TOTAL</th>
             </tr>
-            <?php if (count($cart_items) > 0) {
+            <?php if (count($this->cart->contents()) > 0) {
                $counter = 1;
                
-               //echo "<pre>";print_r($cart_items);exit;
+               //echo "<pre>";print_r($this->cart->contents());exit;
                
-               foreach ($cart_items as $items) {
-                  if($items['qty'] > 0){
+               foreach ($this->cart->contents() as $items) {
+               
                	?>
-               <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][cart_item_id]" value="<?php echo $items['cart_item_id']; ?>">
-               <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][row_id]" value="<?php echo $items['row_id']; ?>">
-               <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][customer_id]" value="<?php echo $items['customer_id']; ?>">
-               <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][product_id]" value="<?php echo $items['id']; ?>">
-               <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][name]" value="<?php echo $items['name']; ?>">
-               <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][image]" value="<?php echo $items['image']; ?>">
-               <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][price]" value="<?php echo $items['price']; ?>">
-               <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][qty]" value="<?php echo $items['qty']; ?>">
-               <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][product_slug]" value="<?php echo $items['product_slug']; ?>">
-               <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][is_perisible]" value="<?php echo $items['is_perisible']; ?>">
-               <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][product_tax]" value="<?php echo $items['product_tax']; ?>">
-               <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][options_weight]" value="<?php echo $items['options_weight']; ?>">
-               <input type="hidden" name="cartitemarr[<?php echo $counter; ?>][options_variant_id]" value="<?php echo $items['options_variant_id']; ?>">
             <tr>
                <td class="substitution_products_div" style="display:none;">
                   <input type="checkbox" name="substitution_product_ids[]" class="substitution_products checkbox" value="<?php echo $items['id']; ?>" />
@@ -407,7 +383,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                <td>
                   <img src="<?php echo $items["image"]; ?>" alt="<?php echo $items["name"]; ?>">
                   <span class="product_name">
-                  <?php echo $items["name"]. " (" . $items['options_weight'] . "lb)"; ?>
+                  <?php echo $items["name"]; ?>
                   </span>
                </td>
                <td>
@@ -437,9 +413,8 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                <!--<td><?php //echo $items["name"]; 
                   ?></td>-->
             </tr>
-            <?php } }?>
             <?php } ?>
-            <span id="substitu-pro-error" class="error"></span>
+            <?php } ?>
          </table>
          <p class="or_text">Order Summary</p>
          <div class="cart_totals">
@@ -469,11 +444,11 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                      
                      $tax_add = 0;
                      
-                     if (count($cart_items) > 0) {
+                     if (count($this->cart->contents()) > 0) {
                      
                      	$total_price = 0;
                      
-                     	foreach ($cart_items as $items) {
+                     	foreach ($this->cart->contents() as $items) {
                      
                      		$total_price += ($items["price"] * $items["qty"]);
                      
@@ -583,26 +558,25 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
             <?php if ($last_credit_per > 0) { ?>
             <p><span>You'll receive <b id="earn_cr_txtval"></b> credit when you place an order.</span></p>
             <?Php } ?>
-            <!-- <p>
-               <b>Note: </b>Orders placed before 2:00PM, will be delivered same day between 5:00 PM - 9:00 PM.
-               Orders placed after 2:00PM, will be delivered next day 5:00 PM - 9:00 PM
-            </p> -->
-            <br/>
+            <p>
+               <b>Note: </b>Orders placed before 3:00PM, will be delivered same day between 5:00 PM - 9:00 PM.
+               Orders placed after 3:00PM, will be delivered next day 5:00 PM - 9:00 PM
+            </p>
             <?php if ($_COOKIE['delivery_type'] == 'Twise in a week') { ?>
          <label><b>Expected Delivery Date:</b></label>
             <p>
             <?php 
                $delivery_days = $_COOKIE['delivery_days'];
                $dayArray = explode(',', $delivery_days);
-               $deliveryDate = date('m-d-Y');
-               $expdeliveryDate = date('m-d-Y');
+               $deliveryDate = date('d-m-Y');
+               $expdeliveryDate = date('d-m-Y');
                
                $hours = date('H');
                $today = date('l');
                
                if(in_array($today, $dayArray) && $hours < 15){
-               	$deliveryDate = date('m-d-Y');
-                  $expdeliveryDate = date('m-d-Y');
+               	$deliveryDate = date('d-m-Y');
+                  $expdeliveryDate = date('d-m-Y');
                } else {
                	for ($i = 1; $i <= 7; $i++) {
                		// Get the date for the next iteration
@@ -612,51 +586,21 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                		// Check if the day of the next date is in the dayArray
                		if (in_array($nextDate->format('l'), $dayArray)) {
                			$deliveryDate = $nextDate->format('l (d F, Y)');
-                        $expdeliveryDate = $nextDate->format('m-d-Y');
+                        $expdeliveryDate = $nextDate->format('d-m-Y');
                			break; // Exit the loop once a suitable delivery date is found
                		}
                	}
                }
                echo $deliveryDate;
-              $expdeliveryDate;
+              echo $expdeliveryDate;
                
                ?>
             </p>
         
          <?php } ?>
          <?php if ($_COOKIE['delivery_type'] == 'Express Delivery' || $_COOKIE['delivery_type'] == 'Same Day Delivery') { ?>
-            <?php $deliveryDate = date('m-d-Y');?>
-            <?php
-
-               $timezone = new DateTimeZone("America/New_York");
-
-               // Current date/time in New York
-               $today = new DateTime("now", $timezone);
-
-               // Tomorrow date
-               $tomorrow = clone $today;
-               $tomorrow->modify('+1 day');
-
-               // Max date (+7 days)
-               $maxDate = clone $today;
-               $maxDate->modify('+7 day');
-
-               // Current hour and minute
-               $hr  = (int)$today->format('H');
-               $min = (int)$today->format('i');
-
-               // If time is after 2:00 PM
-               if ($hr >= 14 && $min > 0) {
-                  $today = $tomorrow;
-               }
-
-               // Final formatted date
-               $stext = $today->format('m-d-Y');
-               $expdeliveryDate = $today->format('m-d-Y');
-
-
-            ?>
-            <p><label class="expected_d_date_label"><b>Expected Delivery Date : </b><?php echo $stext; ?></label></p>
+            <?php $deliveryDate = date('d-m-Y');$expdeliveryDate = date('d-m-Y'); ?>
+            <p><label class="expected_d_date_label"><b>Expected Delivery Date : </b><?php echo $deliveryDate; ?></label></p>
             <?php } ?>
             <input type="hidden" name="expec_delivery_date" id="expec_delivery_date" value="<?php echo $expdeliveryDate; ?>">
            <br/>
@@ -664,9 +608,9 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                if ($_COOKIE['valid_zipcode']) {
                
                      if ($this->cart->total() > 0) { ?>
-               <button type="button" class="vraj-btn" id="checkout-submit"
+               <button type="button" onclick="return validateForm()" class="vraj-btn" name="submit" id="checkout-submit"
                   value="Processed to Pay">Proceed to Pay</button>
-               
+               <button style="display:none;" type="submit" name="submit" id="submit" value="Processed to Pay">Checkout Form Submit</button>
                <?php
                   }
                
@@ -863,39 +807,21 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
 <?php require_once('scripts/checkout_js.php'); ?>
 <script>
    $(function() {
-      var today = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
+      var today = new Date();
       var tomorrow = new Date(today);
       tomorrow.setDate(today.getDate() + 1);
 
       var maxDate = new Date(today);
       maxDate.setDate(today.getDate() + 7);
 
-      const parts = new Intl.DateTimeFormat('en-US', {
-         timeZone: 'America/New_York',
-         hour: '2-digit',
-         minute: '2-digit',
-         hour12: false
-      }).formatToParts(new Date());
-
-      let hr, min;
-
-      parts.forEach(part => {
-         if (part.type === 'hour') hr = part.value;
-         if (part.type === 'minute') min = part.value;
-      });
-
-      if(hr >= 14 && min > 0){
-         today = tomorrow;
-      }
-
       $("#delivery_one_day_date").datepicker({
-            dateFormat: 'mm/dd/yy',
+            dateFormat: 'dd/mm/yy',
             minDate: 0,
             maxDate: 7,
             defaultDate: today
-      });
+      }).datepicker("setDate", today);
 
-      $('#delivery_one_day_date').on('change', function (ev) {
+      $('#delivery_one_day_date').datepicker({dateFormat: 'dd-mm-yy'}).on('change', function (ev) {
          var firstDate = $(this).val();
          var text = firstDate.replace('/', '-');
          text = text.replace('/', '-');
@@ -904,14 +830,32 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
          $('.expected_d_date_label').html('<b>Expected Delivery Date : </b></label>'+text);
         
       });
-
-      // THEN set date
-      $("#delivery_one_day_date").datepicker("setDate", today).trigger("change");
-      // disable previous dates based on selected date
-      $("#delivery_one_day_date").datepicker("option", "minDate", today);
    });
    
- 
+   let checkoutformsubmit = 0;
+   
+   var stripe = Stripe('<?php echo STRIPE_PUBLISHABLE_KEY; ?>');
+    var elements = stripe.elements();
+
+    var style = {
+      base: {
+        fontSize: '16px',
+        color: '#32325d',
+      }
+    };
+
+    var card = elements.create('card', { style: style });
+    card.mount('#card-element');
+
+    card.on('change', function(event) {
+      var displayError = document.getElementById('card-errors');
+      if (event.error) {
+        displayError.textContent = event.error.message;
+      } else {
+        displayError.textContent = '';
+      }
+    });
+
    $(document).on('click', '#AddShippingAddressbtn', function() {
       
       $("#Frm_shipping_Address")[0].reset();

@@ -324,7 +324,7 @@
 
                     $("#order_status").html(response.data.order_status);
 
-                    $("#payment_method").html(response.data.payment_methodtype);
+                     $("#payment_method").html(response.data.payment_methodtype);
 
                     $("#shipping_first_name").html(response.data.shipping_first_name);
 

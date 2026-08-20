@@ -217,10 +217,11 @@
 	}
 }
 
-@media only screen and (min-width: 585px) and (max-width: 992px)  {
+@media only screen and (min-width: 395px) and (max-width: 992px)  {
 .mobile-menu{
-top:60px;
+top:73px;
 }
+
 }
 
 .search-autocomplete-result.open .image-box img{

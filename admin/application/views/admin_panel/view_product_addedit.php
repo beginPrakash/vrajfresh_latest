@@ -343,11 +343,9 @@ $(document).ready(function() {
                                              <td>
                                                 <input type="text" placeholder="SKU" class="form-control" name="ArrVariantSKU[]" value="<?php echo $value['variant_sku']; ?>" required>
                                              </td>
-
                                              <td>
                                                 <input type="text" placeholder="Unit Cost" class="form-control" name="ArrUnitCost[]" value="<?php echo $value['unit_cost']; ?>" required>
                                              </td>
-
                                              <td>
                                                 <select name="ArrOutOfStock[]" class="form-control" title="Is sold out?">
                                                    <option value="1" <?php if ($value['is_out_of_stock'] == 1) {
@@ -791,7 +789,6 @@ $(document).ready(function() {
                            </div>
 
                         </div>
-                        
                         <div class="clearfix"></div>
                         <div class="col-md-2 col-md-offset-5">
                            <div>
@@ -878,11 +875,6 @@ $(document).ready(function() {
                                  });
                               }
                         <?php } ?>
-                        $('.only_number').keypress(function(event) {
-                           if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
-                                 event.preventDefault();
-                           }
-                        });
                      </script>
 
                   </div>

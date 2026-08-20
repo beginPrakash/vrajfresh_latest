@@ -19,7 +19,6 @@ class Product_model extends CI_Model {
 
 	}
 
-
 	public function getCategoryMeta($category_slug='')
 
 	{
@@ -67,29 +66,4 @@ class Product_model extends CI_Model {
 		return $category_data[0]['category_name'] ?? '';
 
 	}
-
-	    public function checkProductStock($product_id = 0, $variant_id = 0)
-{
-    // Check Variant Product
-    if (!empty($variant_id) && !empty($product_id)) {
-
-        $product_data = $this->db
-            ->select('is_out_of_stock')
-            ->from('tblproduct_variant')
-            ->where('id', $variant_id)
-			->where('product_id', $product_id)
-            ->get()
-            ->row();
-
-	}else{
-		$product_data = $this->db
-            ->select('product_id,is_out_of_stock')
-            ->from('tbl_products')
-            ->where('product_id', $product_id)
-            ->where('is_deleted', 0)
-            ->get()
-            ->row();
-	}
-return $product_data;
-}
 }

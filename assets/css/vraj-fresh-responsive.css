@@ -412,10 +412,6 @@
 		right: 15px;
 	}
 
-	.banner-empty .mobile-menu {
-		top: 40px;
-	}
-
 	.mobile-menu {
 		display: inline-block;
 		position: fixed;
@@ -895,13 +891,13 @@
 	.popular-product .slick-dots {
 		margin-top: 0;
 	}
+
 }
 
 @media only screen and (max-width: 479px) {
 	.my-account li {
 		margin-left: 5px;
 	}
-
 	.product-details-right ul {
 		width: 100%;
 	}
@@ -1043,6 +1039,11 @@
 		display: block;
 	}
 
+    .top-banner-text {
+        padding: 0;
+        margin: 0 auto;
+        text-align: center;
+    }
 	.navigation {
 		display: none;
 	}
@@ -1205,8 +1206,34 @@
 	.vraj-title .popular-product.sign-up-form .login {
 		width: 100%;
 	}
+   
 }
 
+@media (max-width: 567px) {
+    #talk_to_expert {
+        display: inline-block;
+        max-width: 100%;
+        width: auto;
+        padding: 10px 15px;
+        font-size: 14px;
+        line-height: 20px;
+        text-align: center;
+        white-space: normal;
+        word-break: normal;
+    }
+
+    .blog_cta_wrap p {
+        text-align: center;
+        margin: 0;
+    }
+}
+
+
+@media (max-width: 395px) {
+	.banner-empty .mobile-menu {
+		top: 100px;
+	}
+}
 
 .price-filter .v_options {
 	margin-right: 10px;

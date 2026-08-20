@@ -134,7 +134,10 @@
 					"data": JSON.stringify(json_request),
 					"dataType": "JSON",
 					"success": function(response) {
+
 						$('#qty_'+product_id).find('.qty_change_sub').attr('data-productrowid',response.data);
+
+
 						$("#btn_" + product_id).text('Added');
 						//	alert('Product Added Into Cart');
 						//  $("#cart-details").html(data);
@@ -217,62 +220,42 @@
 			}
     	});
 
-		$(document).on('click', '.qty_change_sub', function () {
-        var product_id = $(this).data('productid');
-        //console.log("product_id:" + product_id);
-        var product_name = $(this).data('productname');
-        var image = $(this).data('productimage');
-        var quantity = $('#' + product_id).val();
-        var product_slug = $(this).data('productslug');
-        var is_perisible = $(this).data('isperisible');
-        var product_tax = $(this).data('producttax');
-        
-        //jQuery("#" + tab_id).addClass('price-current');
-        var tab_id = $(".price-current").attr('data-tab');
-        //console.log("tab_id:" + tab_id);
-        var parent = $("li.price-current").attr('data-weight_string');
-        if (parent && parent != "") {
-            
-            $("#price-filter li").removeClass("select");
-            var selected = $(this).closest('li').addClass('select');
-            
-            var tab_id = $("li.price-current").attr('data-tab');
-
-            
-            var variant_price = $(".variant"+tab_id).attr('data-price');
-            var weight_current = $(".variant"+tab_id).attr('data-weight_string');
-
-            //console.log("variant_price:" + variant_price);
-
-            if (tab_id == undefined || tab_id == null || tab_id == '' && variant_price == undefined || variant_price == null || variant_price == '') {
-                var selectedLi = $("li[value='" + weight_current + "']");
-                var tab_id = selectedLi.data("tab");
-                var variant_price = selectedLi.data("price");
-            }
-
-            var weight = weight_current;
-            var price = variant_price;
-            var variant_id = tab_id;
-        } else {
-            var price = $(this).data('price');
-            var weight = $(this).data('productweight');
-        }
-
-        var json_request = {
-            "oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
-            "product_id": product_id,
-            "product_name": product_name,
-            "price": price,
-            "quantity": quantity,
-            "product_image": image,
-            "weight": weight,
-            "variant_id": variant_id,
-            "product_slug": product_slug,
-            "product_tax": product_tax,
-            "is_perisible": is_perisible
-
-        };
-        if (quantity != "" || quantity > 0) {
+		$(document).on('click', '.qty_change_sub', function() {
+			
+			var section_id = $(this).data('section');
+			var product_id = $(this).data('productid');
+			var product_name = $(this).data('productname');
+			var image = $(this).data('productimage');
+			var product_slug = $(this).data('productslug');
+			var is_perisible = $(this).data('isperisible');
+			var product_tax = $(this).data('producttax');
+			//	alert('product_tax'+product_tax);
+			var quantity = $('#' + product_id).val();
+			var parent = $("#product_varient_"+product_id).val();
+			if (parent && parent != "") {
+				var variant_detail = parent.split('-');
+				var weight = variant_detail[0];
+				var price = variant_detail[1];
+				var variant_id = variant_detail[2];
+			} else {
+				var price = $(this).data('price');
+				var weight = $(this).data('productweight');
+			}
+			var json_request = {
+				"oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+				"product_id": product_id,
+				"product_name": product_name,
+				"price": price,
+				"quantity": quantity,
+				"product_image": image,
+				"weight": weight,
+				"variant_id": variant_id,
+				"product_slug": product_slug,
+				"product_tax": product_tax,
+				"is_perisible": is_perisible
+			};
+			
+			if (quantity != "" || quantity > 0) {
             var total_qty = parseInt($("#cartCount").html()) - 1;
             $("#cartCount").html(total_qty);
                 if(quantity > 0){ 
@@ -346,8 +329,7 @@
             } else {
             alert("Please Enter quantity");
         }
-
-    });
+		});
 
 	});
 
@@ -514,7 +496,7 @@
 	}
 
 	function get_brand_products(api_url_prefix) {
-		//console.log('test');
+		console.log('test');
 		var url = $("#brand_url").val();
 		var search = $("#search_product").val();
 		if (search != "" && search != undefined) {
@@ -559,7 +541,7 @@
 									return value.qty;
 								}
 							});
-							//console.log(cart_qty);
+							console.log(cart_qty);
 							//find product row id
 							var cart_row_id = $.map(cart_arr, function(value, key) {
 								if (value.id == findDay)
@@ -606,7 +588,7 @@
 							var out_of_stock_class = "";
 							var variant_in_stock_count = 0;
 							/*if (response.data.products[a].is_out_of_stock == 0) {
-								out_of_stock = "<div class='product-stock-message'>Sold Out</div>";
+								out_of_stock = "<div class='product-stock-message'>Sold out</div>";
 								out_of_stock_class = "out_of_stock";
 							}*/
 							if (response.data.products[a].product_size.length > 1 && response.data.products[a].product_size[0] != "") {
@@ -640,9 +622,9 @@
 							var out_of_stock = "<div class='product-stock-message'></div>";
 							var out_of_stock_class = "";
 
-							//console.log("product Sold Out:" + response.data.products[a].is_out_of_stock + " and variant Sold Out:" + variant_in_stock_count);
+							console.log("product sold out:" + response.data.products[a].is_out_of_stock + " and variant sold out:" + variant_in_stock_count);
 							if (response.data.products[a].is_out_of_stock == 0) {
-								out_of_stock = "<div class='product-stock-message'>Product Sold Out</div>";
+								out_of_stock = "<div class='product-stock-message'>Product Sold out</div>";
 								out_of_stock_class = "out_of_stock";
 								var price_weight = "";
 							}
@@ -668,6 +650,7 @@
 
 			});
 		} else {
+			console.log('sds');
 			var json_request = {
 				"oauth_key": "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
 				"brand_slug": url
@@ -677,6 +660,7 @@
 				cart_arr = '<?php echo json_encode($this->cart->contents()); ?>';
 				cart_arr = JSON.parse(cart_arr);
 			}
+
 			
 			var cart_qty_val = 1;
 			$.ajax({
@@ -716,7 +700,7 @@
                                         return value.qty;
                                     }
                                 });
-								//console.log(cart_qty);
+								console.log(cart_qty);
                                 //find product row id
                                 var cart_row_id = $.map(cart_arr, function(value, key) {
                                     if (value.id == findDay)
@@ -771,7 +755,7 @@
 								var out_of_stock = "<div class='product-stock-message'></div>";
 								var out_of_stock_class = "";
 							/*if (response.data.products[a].is_out_of_stock == 0) {
-								out_of_stock = "<div class='product-stock-message'>Sold Out</div>";
+								out_of_stock = "<div class='product-stock-message'>Sold out</div>";
 								out_of_stock_class = "out_of_stock";
 							}*/
 							if (response.data.products[a].product_size.length > 1 && response.data.products[a].product_size[0] != "") {
@@ -806,28 +790,28 @@
 
 							var out_of_stock = "<div class='product-stock-message'></div>";
 							var out_of_stock_class = "";
-							//console.log(response.data.products[a].product_name.substring(0, 32) + "====product Sold Out:" + response.data.products[a].is_out_of_stock + " and variant Sold Out:" + variant_in_stock_count + "is_variant_product" + is_variant_product);
-							/* PRODUCT IS IN STOCK AND ALL VARIANT Sold Out  */
+							console.log(response.data.products[a].product_name.substring(0, 32) + "====product sold out:" + response.data.products[a].is_out_of_stock + " and variant sold out:" + variant_in_stock_count + "is_variant_product" + is_variant_product);
+							/* PRODUCT IS IN STOCK AND ALL VARIANT SOLD OUT  */
 							if (response.data.products[a].is_out_of_stock == 0 && variant_in_stock_count == 0) {
 								var price_weight = "";
-								out_of_stock = "<div class='product-stock-message'>Product Sold Out</div>";
+								out_of_stock = "<div class='product-stock-message'>Product Sold out</div>";
 								out_of_stock_class = "out_of_stock";
 							}
-							/* PRODUCT IS Sold Out */
+							/* PRODUCT IS SOLD OUT */
 							if (response.data.products[a].is_out_of_stock == 0) {
-								out_of_stock = "<div class='product-stock-message'>Product Sold Out</div>";
+								out_of_stock = "<div class='product-stock-message'>Product Sold out</div>";
 								out_of_stock_class = "out_of_stock";
 								var price_weight = "";
 							}
-							/* PRODUCT IS VARIANT AND ALL VARIANT Sold Out */
+							/* PRODUCT IS VARIANT AND ALL VARIANT SOLD OUT */
 							if (is_variant_product == 1 && variant_in_stock_count == 0) {
 								var price_weight = "";
-								out_of_stock = "<div class='product-stock-message'>Product Sold Out</div>";
+								out_of_stock = "<div class='product-stock-message'>Product Sold out</div>";
 								out_of_stock_class = "out_of_stock";
 							}
 							//product = product.concat('<div class="product-box"><img src='+response.data[a]["image"]+'><h4>'+response.data[a]["product_name"]+'</h4><strong>'+response.data[a]["product_price"]+'</strong> <span>'+response.data[a]["product_weight_gms"]+'</span><ul><li><img src=<?php echo ASSET_URL . "images/plus-minus.png"; ?>></li><li><button>Add</button></li></ul></div>');
 
-							product = product.concat('<a href="<?php echo BASE_URL; ?>product/' + response.data.products[a].product_slug + '"><div class="product-box"><img src=' + response.data.products[a].product_image + ' onerror=this.src="<?php echo ADMIN_URL; ?>uploads/logo-2.png" ><div><h4>' + response.data.products[a].product_name.substring(0, 32) + '...</h4></a>' + price_weight + out_of_stock + '<ul><li><div id="qty_'+ response.data.products[a].product_id+'" class="quantity ' + out_of_stock_class + ' '+ qty_class + '"><button type="button" id="sub" class="sub qty_change_sub" data-isperisible="' + response.data.products[a].is_perisible_products + '" data-productslug="' + response.data.products[a].product_slug + '" data-productimage= "' + response.data.products[a].product_image + '" data-productname="' + response.data.products[a].product_name + '" data-price=' + response.data.products[a].sale_price + ' data-productid = ' + response.data.products[a].product_id + ' data-productweight =' + response.data.products[a].product_weight_gms + ' data-producttax=' + response.data.products[a].product_tax + ' data-productrowid='+cart_row_id_val+'>-</button><input type="text" class= "prod_add1" id="' + response.data.products[a].product_id + '" value="'+cart_qty_val+'" min="1" max="3" disabled /><button type="button" id="add" class="add qty_change_add" data-isperisible="' + response.data.products[a].is_perisible_products + '" data-productslug="' + response.data.products[a].product_slug + '" data-productimage= "' + response.data.products[a].product_image + '" data-productname="' + response.data.products[a].product_name + '" data-price=' + response.data.products[a].sale_price + ' data-productid = ' + response.data.products[a].product_id + ' data-productweight =' + response.data.products[a].product_weight_gms + ' data-producttax=' + response.data.products[a].product_tax + ' data-productrowid='+cart_row_id_val+'>+</button></div></li><li><button id= "btn_' + response.data.products[a].product_id + '" class="add_cart ' + out_of_stock_class + ' '+ add_class+'" data-isperisible="' + response.data.products[a].is_perisible_products + '" data-productslug="' + response.data.products[a].product_slug + '" data-productimage= "' + response.data.products[a].product_image + '" data-productname="' + response.data.products[a].product_name + '" data-price=' + response.data.products[a].sale_price + ' data-productid = ' + response.data.products[a].product_id + ' data-productweight =' + response.data.products[a].product_weight_gms + ' data-producttax=' + response.data.products[a].product_tax + 'data-productrowid='+cart_row_id_val+'>Add</button></li></ul></div></div>');
+							product = product.concat('<a href="<?php echo BASE_URL; ?>product/' + response.data.products[a].product_slug + '"><div class="product-box"><img src=' + response.data.products[a].product_image + ' onerror=this.src="<?php echo ADMIN_URL; ?>uploads/logo-2.png" ><div><h4>' + response.data.products[a].product_name.substring(0, 32) + '...</h4></a>' + price_weight + out_of_stock + '<ul><li><div id="qty_'+ response.data.products[a].product_id+'" class="quantity ' + out_of_stock_class + ' '+ qty_class + '"><button type="button" id="sub" class="sub qty_change_sub" data-isperisible="' + response.data.products[a].is_perisible_products + '" data-productslug="' + response.data.products[a].product_slug + '" data-productimage= "' + response.data.products[a].product_image + '" data-productname="' + response.data.products[a].product_name + '" data-price=' + response.data.products[a].sale_price + ' data-productid = ' + response.data.products[a].product_id + ' data-productweight =' + response.data.products[a].product_weight_gms + ' data-producttax=' + response.data.products[a].product_tax + ' data-productrowid='+cart_row_id_val+'>-</button><input type="text" class= "prod_add1" id="' + response.data.products[a].product_id + '" value="'+cart_qty_val+'" min="1" max="3" disabled /><button type="button" id="add" class="add qty_change_add" data-isperisible="' + response.data.products[a].is_perisible_products + '" data-productslug="' + response.data.products[a].product_slug + '" data-productimage= "' + response.data.products[a].product_image + '" data-productname="' + response.data.products[a].product_name + '" data-price=' + response.data.products[a].sale_price + ' data-productid = ' + response.data.products[a].product_id + ' data-productweight =' + response.data.products[a].product_weight_gms + ' data-producttax=' + response.data.products[a].product_tax + 'data-productrowid='+cart_row_id_val+'>+</button></div></li><li><button id= "btn_' + response.data.products[a].product_id + '" class="add_cart ' + out_of_stock_class + ' '+ add_class+'" data-isperisible="' + response.data.products[a].is_perisible_products + '" data-productslug="' + response.data.products[a].product_slug + '" data-productimage= "' + response.data.products[a].product_image + '" data-productname="' + response.data.products[a].product_name + '" data-price=' + response.data.products[a].sale_price + ' data-productid = ' + response.data.products[a].product_id + ' data-productweight =' + response.data.products[a].product_weight_gms + ' data-producttax=' + response.data.products[a].product_tax + 'data-productrowid='+cart_row_id_val+'>Add</button></li></ul></div></div>');
 
 							var out_of_stock_class_varaiant = '';
 
@@ -883,7 +867,7 @@
 			"data": JSON.stringify(json_request),
 			"dataType": "JSON",
 			"success": function(response) {
-				//console.log(response);
+				console.log(response);
 				if (response.data != null) {
 					var product = "";
 					if (login_user_id == 0) {

@@ -37,6 +37,7 @@
                      </select>
 
                   </div>
+
                   <div class="col-sm-2">
                      <select class="form-control select2" style="width: 100%;" name="prodStatus" id="prodStatus">
                         <option value="" selected="selected">--Product Status--</option>
@@ -153,7 +154,7 @@
 
    var orderCol = [[2, "asc"]];
 
-   var cols = [{ "bSortable": false }, { "bSortable": true }, { "bSortable": true }, { "bSortable": true }, { "bSortable": true }, { "bSortable": true }, { "bSortable": true }, { "bSortable": false }, { "bSortable": false }];
+   var cols = [{ "bSortable": false }, { "bSortable": true }, { "bSortable": true }, { "bSortable": true }, { "bSortable": true }, { "bSortable": true }, { "bSortable": false }, { "bSortable": false }, { "bSortable": false }];
 
    var colDef = [0, 9];
 

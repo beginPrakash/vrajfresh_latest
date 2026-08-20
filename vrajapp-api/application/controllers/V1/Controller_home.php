@@ -243,10 +243,9 @@ class Controller_home extends CI_Controller
 										$t['size'] = $arr1->product_variant_size;
 										$t['price'] = $arr1->variant_price;
 										$t['product_variant_id'] = $arr1->product_variant_id;
-										$t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
 										$tempArray[] = $t;
 									endif;
-									
+									// $t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
 									
 								}
 
@@ -607,6 +606,8 @@ class Controller_home extends CI_Controller
 						'banner_image' => $upload_path . $row->banner_mobapp_image,
 						'banner_link'  => $row->banner_link,
 						'banner_type'  => $row->banner_type,
+						'banner_category'  => $row->banner_category,
+						'banner_slug' => $this->getLastValueFromUrl($row->banner_link),
 					];
 				}
 			}
@@ -615,6 +616,8 @@ class Controller_home extends CI_Controller
 				'home_banner'        => $home_banner,
 				'home_banner_mobile' => $home_banner_mobile,
 			];
+
+
 
 			if (count($result) > 0) {
 				$ArrData = $result;
@@ -649,8 +652,6 @@ class Controller_home extends CI_Controller
 						'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->adv_image,
 						'ad_link'=>$result_val[$i]->adv_link,
 						'ad_slug'=>$ad_slug,
-						'ad_url_category'  => $result_val[$i]->advt_url_category,
-						'ad_slug' => $this->getLastValueFromUrl($result_val[$i]->adv_link),
 						
 					];
 				}
@@ -660,8 +661,6 @@ class Controller_home extends CI_Controller
 						'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->adv_mobapp_image,
 						'ad_link'=>$result_val[$i]->adv_link,
 						'ad_slug'=>$ad_slug,
-						'ad_url_category'  => $result_val[$i]->advt_url_category,
-						'ad_slug' => $this->getLastValueFromUrl($result_val[$i]->adv_link),
 					];
 				}
 			}
@@ -817,8 +816,7 @@ class Controller_home extends CI_Controller
 						$ad_banner[] = [
 							'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->adv_image,
 							'ad_link'=>$result_val[$i]->adv_link,
-							'ad_url_category'  => $result_val[$i]->advt_url_category,
-							'ad_slug' => $this->getLastValueFromUrl($result_val[$i]->adv_link),
+							'ad_slug'=>$ad_slug,
 						];
 					}
 					if(!empty($result_val[$i]->adv_mobapp_image)){
@@ -826,8 +824,7 @@ class Controller_home extends CI_Controller
 						$ad_banner_mobile[] = [
 							'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->adv_mobapp_image,
 							'ad_link'=>$result_val[$i]->adv_link,
-							'ad_url_category'  => $result_val[$i]->advt_url_category,
-							'ad_slug' => $this->getLastValueFromUrl($result_val[$i]->adv_link),
+							'ad_slug'=>$ad_slug,
 						];
 					}
 				} else {
@@ -836,8 +833,6 @@ class Controller_home extends CI_Controller
 						$ad_banner[] = [
 							'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->alt_adv_image,
 							'ad_link'=>$result_val[$i]->alt_adv_link,
-							'ad_url_category'  => $result_val[$i]->advt_url_category,
-							'ad_slug' => $this->getLastValueFromUrl($result_val[$i]->alt_adv_link),
 						];
 					}
 
@@ -845,8 +840,6 @@ class Controller_home extends CI_Controller
 						$ad_banner_mobile[] = [
 							'ad_image'=>FILE_UPLOAD_PATH . 'advertise/' . $result_val[$i]->alt_adv_mobapp_image,
 							'ad_link'=>$result_val[$i]->alt_adv_link,
-							'ad_url_category'  => $result_val[$i]->advt_url_category,
-							'ad_slug' => $this->getLastValueFromUrl($result_val[$i]->alt_adv_link),
 						];
 					}
 				}
@@ -994,7 +987,6 @@ class Controller_home extends CI_Controller
 			}
 			send_response_to_api($ArrData, $errors, $success_message);
 	}
-
 	public function get_special_category_product()
     {
         $json_str = file_get_contents('php://input');
@@ -1056,7 +1048,7 @@ class Controller_home extends CI_Controller
 								$t['size'] = $arr1->product_variant_size;
 								$t['price'] = $arr1->variant_price;
 								$t['product_variant_id'] = $arr1->product_variant_id;
-								$t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
+								// $t['is_out_of_stock'] = $arr1->varaint_is_out_of_stock;
 							$tempArray[] = $t;
 							endif;
 						}

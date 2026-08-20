@@ -30,7 +30,6 @@
                             $prevf_var = substr($_SESSION['redirect_after_login'], strrpos($_SESSION['redirect_after_login'], '/' )+1);
                         } ?>
                         <input type="hidden" name="prev_f_url" value="<?php echo $prevf_var; ?>">
-
                         <div class="form-data">
                             <div class="mail">
                             <label>Username</label>

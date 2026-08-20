@@ -18,7 +18,7 @@
 
             <ul>
 
-                <li> <span><img src=<?php echo ASSET_URL . "images/map.svg"; ?> alt="Store location map"></span>
+                <li> <span><img src=<?php echo ASSET_URL . "images/map.svg"; ?> alt+Store location map"></span>
 
                     <div>
 
@@ -30,7 +30,7 @@
 
                 </li>
 
-                <li> <span><img src=<?php echo ASSET_URL . "images/phone.svg"; ?>></span>
+                <li> <span><img src=<?php echo ASSET_URL . "images/phone.svg"; ?> alt="Phone contact icon"></span>
 
                     <div>
 
@@ -61,6 +61,7 @@
         <div class="contact-right">
 
             <h3>Just say Hello!</h3>
+
 
             <form id="contact" method="post" action="">
 

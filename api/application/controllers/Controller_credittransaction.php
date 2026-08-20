@@ -31,7 +31,7 @@ class Controller_credittransaction extends CI_Controller
 			$result = $this->credittransaction_model->get_crtran_by_user_id($user_id);
             $total_cr_bal = $this->credittransaction_model->get_credit_sum($user_id);
 			$total_bal = ($total_cr_bal['amount'] > 0) ? $total_cr_bal['amount'] : 0;
-			
+
 			if ($result) {
 				$ArrData['trans_data'] = $result;
 				$ArrData['total_credit'] = number_format($total_bal,2);

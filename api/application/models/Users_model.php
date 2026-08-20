@@ -97,6 +97,7 @@ class Users_model extends CI_Model
     {
         $query = $this->db->select('user_name,email,user_id')
             ->where('email', $data['email'])
+            ->or_where('mobile_no', $data['mobile_no'])
             ->where('user_role_id', $data['user_role_id'])
             ->get('tbl_users');
         return $query->num_rows();

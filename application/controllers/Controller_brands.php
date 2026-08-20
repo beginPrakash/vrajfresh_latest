@@ -17,6 +17,7 @@ class Controller_brands extends CI_Controller
             $headerdata = array('meta_title' => $find_category_meta[0]['meta_title'] ?? '','meta_description' => $find_category_meta[0]['meta_description'] ?? '');
             $this->load->view('common/header', $headerdata);
         }
+
         $this->load->view('brand-list', $data);
 
     }

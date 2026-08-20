@@ -26,7 +26,6 @@ class Coupons_model extends CI_Model
 		$query = $this->db->where('promotional_code', $data['coupon_code'])
 			->where('is_active', '1')->where('is_deleted', '0')->where_in('coupon_for', array('mobile_aplication', 'all'))
 			->get('tblpromotional_code');
-
 		return $query->result();
 	}
 	public function get_coupon_by_id($data)

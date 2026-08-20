@@ -16,7 +16,9 @@ class Controller_products extends CI_Controller
         $find_category_meta = $this->Product_model->getCategoryMeta($slug);
         if(!empty($find_category_meta)){
             $headerdata = array('meta_title' => $find_category_meta[0]['meta_title'] ?? '','meta_description' => $find_category_meta[0]['meta_description'] ?? '');
+        
             $this->load->view('common/header', $headerdata);
+
         }
 
         $this->load->view('product-list', $data);
@@ -29,8 +31,8 @@ class Controller_products extends CI_Controller
 
         $this->load->model('Product_model');
         $product_meta = $this->Product_model->getProductDetail($slug);
-        $is_out_of_stock = $product_meta[0]['is_out_of_stock'] ?? '';
         //echo '<pre>';print_r($this->cart->contents());exit;
+        $is_out_of_stock = $product_meta[0]['is_out_of_stock'] ?? '';
         $data = [];
         $data['url'] = $slug;
         $data['meta_title'] = $product_meta[0]['meta_title'] ?? '';
@@ -51,11 +53,12 @@ class Controller_products extends CI_Controller
         $data['is_stock'] = ($is_out_of_stock == 1) ? 'InStock' : 'OutStock';
         $og_image = base_url('admin/uploads/products/'.$data['product_image']);
         $og_url = base_url('product/'.$slug);
+        
         $data['brand_name'] = $this->Product_model->getBrandname($product_meta[0]['brand_id']) ?? '';
         $data['category_name'] = $this->Product_model->getCategoryname($product_meta[0]['product_id']) ?? '';
         
         $headerdata = array('meta_title' => $product_meta[0]['meta_title'] ?? '','meta_description' => $product_meta[0]['meta_description'] ?? '','og_title' => $data['product_name'] ?? '','og_description' => $data['product_description'] ?? '','og_image' => $og_image ?? '','og_url' => $og_url ?? '');
-        
+         
         $this->load->view('common/header', $headerdata);
         $this->load->view('product-detail', $data);
 

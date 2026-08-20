@@ -164,7 +164,7 @@ $products_option = array(
 
 var orderCol = [[ 1, "desc" ]];  
 
-var cols = [{ "bSortable": false },{ "bSortable": true },{ "bSortable": true },{ "bSortable": true }, { "bSortable": true },{ "bSortable": false }, { "bSortable": true }, { "bSortable": true }, { "bSortable": true }];
+var cols = [{ "bSortable": false },{ "bSortable": true },{ "bSortable": true },{ "bSortable": true },{ "bSortable": true }, { "bSortable": true }, { "bSortable": true }, { "bSortable": true }, { "bSortable": true }];
 
 var colDef = [0,9];
 

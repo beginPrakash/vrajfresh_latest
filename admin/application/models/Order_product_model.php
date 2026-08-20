@@ -24,6 +24,8 @@ class order_product_model extends CI_Model
 		}
 	}
 
+
+
 	public function update($order_product_id, $ArrOrderProductData)
 	{
 		$this->db->where('order_product_id', $order_product_id);
@@ -38,6 +40,8 @@ class order_product_model extends CI_Model
 		return $this->db->affected_rows();
 	}
 
+
+
 	public function delete($order_product_id)
 	{
 		$this->db->where('order_product_id', $order_product_id);
@@ -46,6 +50,7 @@ class order_product_model extends CI_Model
 		return true;
 	}
 
+	
 	public function deleteProductrefunded($order_product_id)
 	{
 		$this->db->where('order_product_id', $order_product_id);
@@ -53,6 +58,8 @@ class order_product_model extends CI_Model
 		$this->db->delete('tbl_order_products');
 		return true;
 	}
+
+
 
 	public function updateOldQty($order_id)
 	{
@@ -67,6 +74,8 @@ class order_product_model extends CI_Model
 		$query = $this->db->query($sql);
 		return $this->db->affected_rows();
 	}
+
+
 
 
 	public function getOrderProductByOrderId($order_id, $parm = "*", $searchString = '')
@@ -99,7 +108,7 @@ class order_product_model extends CI_Model
                 }
         }
 
-		public function getOrderProductLogByOrderId($order_id, $parm = "*", $searchString = '')
+	public function getOrderProductLogByOrderId($order_id, $parm = "*", $searchString = '')
 	{
 			$sql = "SELECT op.*,`tbl_products`.*,`tblproduct_variant`.`variant_sku`,`tblproduct_variant`.`product_variant_size`,(SELECT `tbl_categories`.`category_name` FROM `tbl_categories_products_mapping` JOIN `tbl_categories` ON `tbl_categories`.`category_id` = `tbl_categories_products_mapping`.`category_id` AND `tbl_categories_products_mapping`.`product_id` = op.`product_id` LIMIT 1 ) AS category_name FROM `tbl_order_products_log` AS op JOIN `tbl_products` ON `tbl_products`.`product_id` = op.`product_id` LEFT JOIN `tblproduct_variant` ON `tblproduct_variant`.`id` = op.`product_variant_id` WHERE op.`order_id` = '".$order_id."' AND op.`is_deleted` = 0 ORDER BY category_name ASC";
 
@@ -111,6 +120,8 @@ class order_product_model extends CI_Model
 					return false;
 			}
 	}
+
+
 
 		public function getCategoryWiseOrderProducts($order_ids, $parm = "*", $searchString = '')
 		{		
@@ -142,7 +153,6 @@ class order_product_model extends CI_Model
 			return false;
 		}
 	}
-
 
 }
 ?>

@@ -49,6 +49,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
+//$route['default_controller'] = 'maintenance';
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
@@ -81,6 +82,7 @@ $route['cart-session-data'] = 'Controller_cart/get_cart_session_data';
 
 $route['brand/(:any)'] = 'Controller_brands/products_list/$1';
 $route['brands'] = 'Controller_brands/brand_list';
+
 
 $route['blogs'] = 'Controller_blogs/index';
 $route['blog/(:any)'] = 'Controller_blogs/details/$1';
@@ -135,6 +137,3 @@ $route['cart/total-items'] = 'Controller_cart/total_items';
 
 $route['/(:any)'] = 'Controller_products/products_list/$1';
 $route['special-category/(:any)'] = 'Controller_special_category/get_special_category_list/$1';
-
-
-$route['stripe/create-intent'] = 'StripeController/createIntent';

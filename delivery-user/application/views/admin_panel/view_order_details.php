@@ -36,7 +36,8 @@ $is_payment_received = true;
    accept-charset="utf-8">
    <input type="hidden" name="order_id" value="<?php echo $ArrFieldData['order_id']; ?>" />
    
-
+   
+   <div class="row">
 
    
          <?php if ($ArrFieldData['delivery_comments'] != '') { ?>
@@ -46,15 +47,14 @@ $is_payment_received = true;
             </div>
          <?php } ?>
          <br>
-
+   
       <?php if ($ArrFieldData['delivery_user_comment'] != '') { ?>
          <div class="col-sm-12 user_highlight_notes">
             <label>Delivery Comments By User :</label>
             <p><?php echo $ArrFieldData['delivery_user_comment']; ?></p>
          </div>
       <?php } ?>
-
-      
+   
 
       <div class="col-sm-12">
          <label>Shipping Address : </label>
@@ -103,16 +103,16 @@ $is_payment_received = true;
 
 
    <?php if($ArrFieldData['order_status'] == 'Out For Delivery'){ ?>
-      <div class="row">
+
          <div class="col-sm-12">
             <br>
             <button type="button" class="btn btn-default" name="submit" id="submit" value="Submit">Update Order</button>
          </div>
-      </div>
+     
 
    <?php } ?>
    
-
+ </div>
 </form>
 
 

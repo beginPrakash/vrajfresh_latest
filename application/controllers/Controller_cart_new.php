@@ -63,6 +63,12 @@ class Controller_cart extends CI_Controller
 		$date15DayAgo = date('Y-m-d', strtotime('-15 day', strtotime($current_date)));
 
 		if(!empty($contain)){
+			unset($Maincontain['cart_total'], $Maincontain['total_items']);
+			foreach ($Maincontain as $key => $item){
+				// if($item['created_date'] < $date15DayAgo){
+				// 	unset($contain[$key]);
+				// }
+			}
 			$CARTDATA = addslashes(json_encode($contain));
 		}
 		$customer_id = 0;
@@ -71,78 +77,106 @@ class Controller_cart extends CI_Controller
 		}
 		$SetCookieData = array();
 		
-		if($zipcode != ""){
-			$url = API_URL . 'remove-zipcode-products';
+		// if($zipcode != ""){
+		// 	$url = API_URL . 'remove-zipcode-products';
 
-			$data = array(
-				"oauth_key" => "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
-				"user_id" => $customer_id,
-				"zipcode" => $zipcode,
-				"cart" => $CARTDATA
-			);
+		// 	$data = array(
+		// 		"oauth_key" => "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+		// 		"user_id" => $customer_id,
+		// 		"zipcode" => $zipcode,
+		// 		"cart" => $CARTDATA
+		// 	);
 
-			$curl = curl_init();
-			curl_setopt($curl, CURLOPT_URL, $url);
-			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($curl, CURLOPT_POST, true);
-			curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
-			curl_setopt($curl, CURLOPT_HTTPHEADER, [
-				'X-RapidAPI-Host: kvstore.p.rapidapi.com',
-				'X-RapidAPI-Key: test',
-				'Content-Type: application/json'
-			]);
-			$response = curl_exec($curl);
-			//echo "<pre>zipcode response:- <pre>";print_r($response);exit;
-			curl_close($curl);
-			$response = json_decode($response, true);
+		// 	$curl = curl_init();
+		// 	curl_setopt($curl, CURLOPT_URL, $url);
+		// 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		// 	curl_setopt($curl, CURLOPT_POST, true);
+		// 	curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+		// 	curl_setopt($curl, CURLOPT_HTTPHEADER, [
+		// 		'X-RapidAPI-Host: kvstore.p.rapidapi.com',
+		// 		'X-RapidAPI-Key: test',
+		// 		'Content-Type: application/json'
+		// 	]);
+		// 	$response = curl_exec($curl);
+		// 	//echo "<pre>zipcode response:- <pre>";print_r($response);exit;
+		// 	curl_close($curl);
+		// 	$response = json_decode($response, true);
 			
-			if($response['is_successful'] == 1){
-				$products = $response['data'];
-				$ZipcodeDetails = (isset($response['data2']['zipcodeData']) && !empty($response['data2']['zipcodeData'])) ? $response['data2']['zipcodeData'] : array();
+		// 	if($response['is_successful'] == 1){
+		// 		$this->cart->destroy();
+		// 		$products = $response['data'];
+		// 		$ZipcodeDetails = (isset($response['data2']['zipcodeData']) && !empty($response['data2']['zipcodeData'])) ? $response['data2']['zipcodeData'] : array();
 				
-				$SetCookieData = array(
-					'minimum_order_value' => $ZipcodeDetails['minimum_order_value'],
-					'is_deliver_perishable_products' => $ZipcodeDetails['can_deliver_perishable_products'],
-					'delivery_type' => $ZipcodeDetails['delivery_types'],
-					'delivery_days' => $ZipcodeDetails['delivery_days'],
-					'delivery_area_name' => $ZipcodeDetails['area_name'],
-					'delivery_state_id' => $ZipcodeDetails['state_id'],
-					'zipcode_success_message' => 'Yes, We deliver in your area!',
-					'zipcode_error_message' => '',
-					'valid_zipcode' => 'TRUE',
-				);
+		// 		$SetCookieData = array(
+		// 			'minimum_order_value' => $ZipcodeDetails['minimum_order_value'],
+		// 			'is_deliver_perishable_products' => $ZipcodeDetails['can_deliver_perishable_products'],
+		// 			'delivery_type' => $ZipcodeDetails['delivery_types'],
+		// 			'delivery_days' => $ZipcodeDetails['delivery_days'],
+		// 			'delivery_area_name' => $ZipcodeDetails['area_name'],
+		// 			'delivery_state_id' => $ZipcodeDetails['state_id'],
+		// 			'zipcode_success_message' => 'Yes, We deliver in your area!',
+		// 			'zipcode_error_message' => '',
+		// 			'valid_zipcode' => 'TRUE',
+		// 		);
 
-			} else {
 				
-				$SetCookieData = array(
-					'minimum_order_value' => '',
-					'is_deliver_perishable_products' => '',
-					'delivery_type' => '',
-					'delivery_days' => '',
-					'delivery_area_name' => '',
-					'delivery_state_id' => '',
-					'zipcode_success_message' => '',
-					'zipcode_error_message' => 'Sorry We do not deliver in your area.',
-					'valid_zipcode' => 'FALSE',
-				);
-			}
+				
+		// 		if(!empty($products)){
+					
+		// 			unset($products['cart_total'], $products['total_items']);
+					
+		// 			if(!empty($products)){
+		// 				foreach ($products as $key => $value){
+							
+		// 					$newCartItem = array(
+		// 						"id" => $value['id'],
+		// 						"name" => $value['name'],
+		// 						"image" => $value['image'],
+		// 						"price" => $value['price'],
+		// 						"qty" => $value['qty'],
+		// 						"product_slug" => $value['product_slug'],
+		// 						"is_perisible" => $value['is_perisible'],
+		// 						"product_tax" => $value['product_tax'],
+		// 						"created_date" => $value['created_date'],
+		// 						"options" => array(
+		// 							"weight" => $value['options']['weight'],
+		// 							"variant_id" => $value['options']['variant_id']
+		// 						),
+		// 						"rowid" => $key,
+		// 						"subtotal" => $value['subtotal'],
+		// 					);
+		// 					$this->cart->insert($newCartItem);
+		// 				}
+		// 			}
+		// 		}
+		// 	} else {
+				
+		// 		$SetCookieData = array(
+		// 			'minimum_order_value' => '',
+		// 			'is_deliver_perishable_products' => '',
+		// 			'delivery_type' => '',
+		// 			'delivery_days' => '',
+		// 			'delivery_area_name' => '',
+		// 			'delivery_state_id' => '',
+		// 			'zipcode_success_message' => '',
+		// 			'zipcode_error_message' => 'Sorry We do not deliver in your area.',
+		// 			'valid_zipcode' => 'FALSE',
+		// 		);
+		// 	}
 
-			if(!empty($SetCookieData))
-			{
-				foreach($SetCookieData as $key => $value){
-					setcookie($key, $value);
-				}
-			}
+		// 	if(!empty($SetCookieData))
+		// 	{
+		// 		foreach($SetCookieData as $key => $value){
+		// 			setcookie($key, $value);
+		// 		}
+		// 	}
 
-			$contain = $this->cart->contents();
-		}
+		// 	$contain = $this->cart->contents();
+		// }
 		//echo '<pre>';print_r($_COOKIE);exit;
 		
 		//echo '<pre>';print_r($contain);exit;
 		$this->data['SetCookieData'] = $SetCookieData;
-		$headerdata = array('meta_title' => "Your Cart | VrajFresh — Fresh Grocery Delivery NJ & NY",'meta_description' => "Review your cart and place your order for fresh Indian groceries, vegetables, fruits & dairy. Same-day delivery available across New Jersey and New York at VrajFresh.");
-        
-        $this->load->view('common/header', $headerdata);
 		$this->load->view('cart', $this->data);
     }
 
@@ -207,14 +241,13 @@ class Controller_cart extends CI_Controller
 			$product_id_found = false;
 			foreach ($this->cart->contents() as $items)
 			{
-				$db_rowid = !empty($items['options']['db_rowid']) ? $items['options']['db_rowid'] : $items['rowid'];
 				$cart_product_id = $items['id'];
 				$cart_variant_id = $items['options']['variant_id'];
 				if($cart_product_id==$product_id && $cart_variant_id==$variant_id && !$product_id_found)
 				{
 					$product_id_found = true;
 					$qty = $items['qty'];
-					$rowid = $db_rowid;
+					$rowid = $items['rowid'];
 					$variant_id = $items['options']['variant_id'];
 				}
 			}
@@ -302,6 +335,11 @@ class Controller_cart extends CI_Controller
 	public function get_cart_session_data()
 	{
 		$cartdata = $this->cart->contents();
+		$cart_total = 0.00;
+		$total_items = 0;
+		if(!empty($cartdata)){
+			unset($cartdata['cart_total'], $cartdata['total_items']);
+		}
 		$errors = "";
 		$success_message = "Cart Data";
 		send_response_to_api($cartdata, $errors, $success_message);
@@ -410,8 +448,7 @@ class Controller_cart extends CI_Controller
 		}
 		$oauth_key = $_POST['oauth_key'];
 
-		$newArr = $this->cart->contents();
-
+		$newArr = $_SESSION['cart_contents'];
 		$user_cart_data = $this->cart->contents();
 		//save user data in cart
 		$url = API_URL . 'add-ucart-item';
@@ -442,135 +479,237 @@ class Controller_cart extends CI_Controller
 	}	
 
 	public function login_cart_data()
-	{
+    {
+		
 		$customer_id = 0;
-
 		if (isset($this->session->userdata['logged_in']['user_id'])) {
 			$customer_id = $this->session->userdata['logged_in']['user_id'];
 		}
-
 		$oauth_key = $_POST['oauth_key'];
 
+		$newArr = $_SESSION['cart_contents'];
+		$user_cart_data = $this->cart->contents();
+		
+		$CARTDATA = array();
+		$cart_total_items = 0;
+		$new_cart_total = 0.00;
+		$CutomerCart = 0;
+		$this->session->unset_userdata('cart_contents');
 		if (check_oauth_key($oauth_key) && $customer_id > 0) {
-
-			// ✅ DO NOT unset session manually ❌
-			// $this->session->unset_userdata('cart_contents');
-
-			// ✅ CLEAR cart properly
-			$this->cart->destroy();
-			//$this->db->query("DELETE FROM tbl_cart_items WHERE qty <= 0");
-			$this->db->query("DELETE c FROM tbl_cart_items c
-		LEFT JOIN tbl_products p ON p.product_id = c.id
-		LEFT JOIN tblproduct_variant v ON v.id = c.options_variant_id
-		WHERE c.customer_id = $customer_id
-		AND ( c.qty <= 0
-			OR (
-			c.options_variant_id IS NOT NULL
-			AND c.options_variant_id != 0
-			AND (
-				v.id IS NULL
-				OR v.is_out_of_stock = 0
-			)
-    	)
-    	OR (
-			(c.options_variant_id IS NULL OR c.options_variant_id = 0)
-			AND (
-				p.product_id IS NULL
-				OR p.is_out_of_stock = 0
-			)
-		)
-		)");
-			// ✅ Fetch DB cart
-			$query = $this->db->where('customer_id', $customer_id)
-							->get('tbl_cart_items');
-
-			if ($query->num_rows() > 0) {
-
-				foreach ($query->result_array() as $cart_row) {
-
+			
+			$query = $this->db->where('customer_id', $customer_id )->get('tbl_cart_items');
+			
+			if($query->num_rows() > 0)
+			{
+				$CutomerCart = 1;
+				
+				foreach($query->result_array() as $cart_row){
+					
 					$product_id = $cart_row['id'];
+					$product_name = $cart_row['name'];
+					$price = $cart_row['price'];
+					$quantity = $cart_row['qty'];
+					$image = $cart_row['image'];
+					$weight = $cart_row['options_weight'];
 					$variant_id = $cart_row['options_variant_id'];
-					$quantity   = (int)$cart_row['qty'];
+					$product_slug = $cart_row['product_slug'];
+					$is_perisible = $cart_row['is_perisible'];
+					$product_tax = $cart_row['product_tax'];
+					$rowid = $cart_row['row_id'];
+		
+					
+					$data = array(
+						"id" => $product_id,
+						"rowid" => $rowid,
+						"name" => $product_name,
+						"image" => $image,
+						"price" => (float)$price,
+						"qty" => (float)$quantity,
+						"product_slug" => $product_slug,
+						"is_perisible" => $is_perisible,
+						"product_tax" => $product_tax,
+						'created_date' => $cart_row['created_date'],
+						"options" => array(
+							"weight" => $weight,
+							"variant_id" => $variant_id
+						)
+					);
+					
+					$CARTDATA[$rowid]['id'] = $product_id;
+					$CARTDATA[$rowid]['rowid'] = $rowid;
+					$CARTDATA[$rowid]['name'] = $product_name;
+					$CARTDATA[$rowid]['image'] = $image;
+					$CARTDATA[$rowid]['price'] = $price;
+					$CARTDATA[$rowid]['qty'] = $quantity;
+					$CARTDATA[$rowid]['product_slug'] = $product_slug;
+					$CARTDATA[$rowid]['is_perisible'] = $is_perisible;
+					$CARTDATA[$rowid]['product_tax'] = $product_tax;
+					$CARTDATA[$rowid]['subtotal'] = $price * $quantity;
+					$CARTDATA[$rowid]['created_date'] = $cart_row['created_date'];
+					$CARTDATA[$rowid]['options']['weight'] = $weight;
+					$CARTDATA[$rowid]['options']['variant_id'] = $variant_id;
+					
+					$cart_total_items += $quantity;
+					$new_cart_total += $price * $quantity;
 
-					$found = false;
-					$rowid = '';
-
-					// ✅ Check existing cart item
-					foreach ($this->cart->contents() as $item) {
-						if (
-							$item['id'] == $product_id &&
-							isset($item['options']['variant_id']) &&
-							$item['options']['variant_id'] == $variant_id
-						) {
-							$found = true;
-							$rowid = $item['rowid'];
-							break;
+					$product_id_found = false;
+					$quantity_update = false;
+					foreach ($CARTDATA as $items)
+					{
+						$cart_product_id = $items['id'];
+						$cart_variant_id = $items['options']['variant_id'];
+						if($cart_product_id==$product_id && $cart_variant_id==$variant_id && !$product_id_found)
+						{
+							$product_id_found = true;
+							/* $qty = $items['qty'];
+							
+							if($qty !=  $quantity){
+								$quantity_update = true;
+							} */
+							$rowid = $items['rowid'];
+							$variant_id = $items['options']['variant_id'];
 						}
 					}
 
-					if ($found) {
-
-						// ✅ UPDATE
-						$this->cart->update([
-							'rowid' => $rowid,
-							'qty'   => $quantity
-						]);
-
-					} else {
-
-						// ✅ INSERT
-						$this->cart->insert([
-							'id'    => $product_id,
-							'qty'   => $quantity,
-							'price' => (float)$cart_row['price'],
-							'name'  => $cart_row['name'],
-							'product_tax'  => $cart_row['product_tax'],
-							'is_perisible' => $cart_row['is_perisible'],
-							'options' => [
-								'variant_id' => $variant_id,
-								'weight'     => $cart_row['options_weight'],
-								'image'      => $cart_row['image'],
-								'product_slug' => $cart_row['product_slug'],
-								'is_perisible' => $cart_row['is_perisible'],
-								'product_tax'  => $cart_row['product_tax'],
-								'created_date' => $cart_row['created_date'],
-								'db_rowid' => $cart_row['row_id']
-							]
-						]);
+					if(!$product_id_found)
+					{
+						$this->cart->insert($data);
 					}
+					else
+					{
+						$data = array(
+							'rowid' => $rowid,
+							'qty'   => $quantity,
+						);
+						if($quantity_update == true){
+							//$data['created_date'] = date("Y-m-d");
+						}
+						$this->cart->update($data);
+					}
+
+
 				}
 			}
 		}
+		if($CutomerCart > 0){
+			
+			$CARTDATA['total_items'] = $cart_total_items;
+			$CARTDATA['cart_total'] = $new_cart_total;
+			//$this->cart->destroy();
 
-		$contain = $this->cart->contents();
-		$new_contain = [];
-
-		foreach ($contain as $key => $item) {
-
-		
-			// get db_rowid if available
-			if (isset($item['options']['db_rowid']) && !empty($item['options']['db_rowid'])) {
-				$db_rowid = $item['options']['db_rowid'];
-			} else {
-				$db_rowid = $key; // fallback
-			}
-
-			// ✅ replace rowid for output only
-			$item['rowid'] = $db_rowid;
-
-			// 🔥 IMPORTANT: use DB rowid as ARRAY KEY
-			$new_contain[$db_rowid] = $item;
+			$new_expiration_time = time() + CART_SESSION_EXPIRATION_TIME; // 15 days added
+			$this->session->set_userdata('cart_contents', $CARTDATA);
+			$this->CI->session->set_userdata('cart_contents' , $CARTDATA);
+			$contain = $this->cart->contents();
 		}
+		
+		$contain = $this->cart->contents();
+		$Maincontain = $this->cart->contents();
+		
+		$current_date = date("Y-m-d");
+		$date15DayAgo = date('Y-m-d', strtotime('-15 day', strtotime($current_date)));
 
-		$new_contain['total_items'] = $this->cart->total_items();
-		$new_contain['cart_total']  = $this->cart->total();
+		$zipcode = $_COOKIE['zipcode'];
+		$CARTDATA = ""; 
+		if(!empty($contain)){
+			// unset($Maincontain['cart_total'], $Maincontain['total_items']);
+			// foreach ($Maincontain as $key => $item){
+			// 	if($item['created_date'] < $date15DayAgo){
+			// 		unset($contain[$key]);
+			// 	}
+			// }
+			$CARTDATA = addslashes(json_encode($contain));
+		}
+		
+		$total_items = 0;
+		$cart_total = 0.00;
+		
+		// if($zipcode != ""){
+		// 	$url = API_URL . 'remove-zipcode-products';
 
+		// 	$data = array(
+		// 		"oauth_key" => "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+		// 		"user_id" => $customer_id,
+		// 		"zipcode" => $zipcode,
+		// 		"cart" => $CARTDATA
+		// 	);
+		// 	$curl = curl_init();
+		// 	curl_setopt($curl, CURLOPT_URL, $url);
+		// 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		// 	curl_setopt($curl, CURLOPT_POST, true);
+		// 	curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+		// 	curl_setopt($curl, CURLOPT_HTTPHEADER, [
+		// 		'X-RapidAPI-Host: kvstore.p.rapidapi.com',
+		// 		'X-RapidAPI-Key: test',
+		// 		'Content-Type: application/json'
+		// 	]);
+		// 	$response = curl_exec($curl);
+		// 	//echo "<pre>zipcode response:- <pre>";print_r($response);
+			
+		// 	curl_close($curl);
+		// 	$response = json_decode($response, true);
+		// 	//echo "<pre>zipcode response2:- <pre>"; print_r($response);
+			
+		// 	//echo $response['is_successful'];exit;
+		// 	if($response['is_successful'] == 1){
+				
+		// 		$this->cart->destroy();
+				
+		// 		$products = $response['data'];
+				
+		// 		if(!empty($products)){
+					
+		// 			unset($products['cart_total'], $products['total_items']);
+					
+		// 			if(!empty($products)){
 
+		// 				foreach ($products as $key => $value){
+							
+		// 					$newCartItem = array(
+		// 						"id" => $value['id'],
+		// 						"name" => $value['name'],
+		// 						"image" => $value['image'],
+		// 						"price" => $value['price'],
+		// 						"qty" => $value['qty'],
+		// 						"product_slug" => $value['product_slug'],
+		// 						"is_perisible" => $value['is_perisible'],
+		// 						"product_tax" => $value['product_tax'],
+		// 						"created_date" => $value['created_date'],
+		// 						"options" => array(
+		// 							"weight" => $value['options']['weight'],
+		// 							"variant_id" => $value['options']['variant_id']
+		// 						),
+		// 						"rowid" => $key,
+		// 						"subtotal" => $value['subtotal'],
+		// 					);
+		// 					$total_items += $value['qty'];
+		// 					$cart_total += $value['subtotal'];
+		// 					$this->cart->insert($newCartItem);
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+        // } else {
+			$contain = $this->cart->contents();
+			foreach ($contain as $key => $item){
+				
+				$total_items += $item['qty'];
+				$cart_total += $item['subtotal'];
+			}
+		//}
+		
+		$contain = $this->cart->contents();
+		if(!empty($contain)){
+			if($total_items > 0){
+				$contain['total_items'] = $total_items;
+				$contain['cart_total'] = $cart_total;
+			}
+		}
 		$success_message = "Product Setup";
 		$errors = "";
+		send_response_to_api($contain, $errors, $success_message);
 
-		send_response_to_api($new_contain, $errors, $success_message);
-	}
+    }
 
 	public function load_cart_data()
 	{
@@ -659,11 +798,11 @@ class Controller_cart extends CI_Controller
     {
         $row_id = $_POST["row_id"];
 		$new_row_id = $_POST['new_row_id'];
-        $cartData = array(
+        $data = array(
             'rowid' => $row_id,
             'qty' => 0
         );
-		$this->cart->update($cartData);
+		$this->cart->update($data);
 
 		/* $data = $this->cart->contents();
 		echo '<pre>';print_r($data);exit; */
@@ -694,7 +833,6 @@ class Controller_cart extends CI_Controller
 					'Content-Type: application/json'
 				),
 			));
-
 
 			$response = curl_exec($curl);
 
@@ -827,7 +965,6 @@ class Controller_cart extends CI_Controller
 					'Content-Type: application/json'
 				),
 			));
-
 
 			$response = curl_exec($curl);
 

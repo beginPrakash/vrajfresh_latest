@@ -96,7 +96,7 @@ class Stripe extends CI_Controller
 
 	}
 
-	public function payment_refund_track()
+		public function payment_refund_track()
 
 	{
 
@@ -123,6 +123,7 @@ class Stripe extends CI_Controller
 		send_response_to_api($payment_details, $errors, $success_message);
 
 	}
+
 
 
 	/* GET BLOCKED PAYMENT - ADMIN PROCESS */
@@ -497,7 +498,7 @@ class Stripe extends CI_Controller
 		/* Call method in Helper */
 
 		//$payment_details = stripe_payment_process($token, $user_details, $card_details, $items,$ArrPayment['order_id']);
-		$payment_response = stripe_payment_process_new($stripeCustId, $card_id, $save_card, $CardToken, $StripeCardID, $CardPaymentMethodId, $user_details, $items, $ArrPayment['order_id'],$ArrPayment['payment_methodtype'],$ArrPayment['gpay_token_serialize']);
+		$payment_response = stripe_payment_process_new($stripeCustId, $card_id, $save_card, $CardToken, $StripeCardID, $CardPaymentMethodId, $user_details, $items, $ArrPayment['order_id']);
 
 		//send_response_to_api($payment_response, "", "Äsd");
 

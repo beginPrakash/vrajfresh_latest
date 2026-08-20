@@ -405,7 +405,6 @@ class Controller_categories extends CI_Controller
 							usort($unique, function($a, $b) {
 								return (float)$a['price'] - (float)$b['price']; // Ascending sort by 'price'
 							});
-							
 
 							$ArrFinal[$i] = $arr;
 
@@ -538,8 +537,10 @@ class Controller_categories extends CI_Controller
 						$tempArray = array();
 
 						foreach ($temp_result as $arr1) {
+
 							if ($arr->product_id == $arr1->product_id) {
-								$prod_var_arr = $this->products_model->get_variant_by_product_id($arr1->product_id);
+								$t = array();
+								$prod_var_arr = $this->products_model->get_variant_by_product_id_filter($arr1->product_id);
 								if(count($prod_var_arr) > 0){
 									foreach($prod_var_arr as $key => $val){
 										$t = array();
@@ -550,7 +551,6 @@ class Controller_categories extends CI_Controller
 										$tempArray[] = $t;
 									}
 								}
-								
 							}
 						}
 
@@ -558,7 +558,7 @@ class Controller_categories extends CI_Controller
 
 						$unique = array_map("unserialize", array_unique(array_map("serialize", $tempArray)));
 						usort($unique, function($a, $b) {
-							return (float)$a['price'] - (float)$b['price'];
+							return (float)$a['price'] - (float)$b['price']; // Ascending sort by 'price'
 						});
 
 						$ArrFinal[$i]->product_size = $unique;
@@ -791,7 +791,7 @@ class Controller_categories extends CI_Controller
 
 						$unique = array_map("unserialize", array_unique(array_map("serialize", $tempArray)));
 						usort($unique, function($a, $b) {
-							return (float)$a['price'] - (float)$b['price'];
+							return (float)$a['price'] - (float)$b['price']; // Ascending sort by 'price'
 						});
 						$ArrFinal[$i]->product_size = $unique;
 
@@ -818,7 +818,6 @@ class Controller_categories extends CI_Controller
 						}else{
 							$products['tag_discount'] = '';
 						}
-
 					}
 					$result['products'][] = $products;
 				}
@@ -848,11 +847,11 @@ class Controller_categories extends CI_Controller
 		$json_str = file_get_contents('php://input');
 		$json_obj = json_decode($json_str);
 
-		$oauth_key = $json_obj->oauth_key;
+		//$oauth_key = $json_obj->oauth_key;
 		$errors = $success_message = '';
 		$ArrData = array();
 		$category_result = "";
-		if (check_oauth_key($oauth_key)) {
+
 			$data = array(
 				'search_term' => $json_obj->search_keyword,
 				'zipcode' => $json_obj->zipcode,
@@ -945,6 +944,6 @@ class Controller_categories extends CI_Controller
 				$errors = 'No data available';
 			}
 			send_response_to_api($ArrData, $errors, $success_message);
-		}
+	
 	}
 }

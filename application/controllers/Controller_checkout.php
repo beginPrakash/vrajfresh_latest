@@ -64,13 +64,34 @@ class Controller_checkout extends CI_Controller
 			$user_id = $this->session->userdata['logged_in']['user_id'];
 		}
 
-		$total_items = 0;
-		$cart_total = 0.00;
-
+		$this->db->query("DELETE c FROM tbl_cart_items c
+		LEFT JOIN tbl_products p ON p.product_id = c.id
+		LEFT JOIN tblproduct_variant v ON v.id = c.options_variant_id
+		WHERE c.customer_id = $user_id
+		AND ( c.qty <= 0
+			OR (
+			c.options_variant_id IS NOT NULL
+			AND c.options_variant_id != 0
+			AND (
+				v.id IS NULL
+				OR v.is_out_of_stock = 0
+			)
+		)
+		OR (
+			(c.options_variant_id IS NULL OR c.options_variant_id = 0)
+			AND (
+				p.product_id IS NULL
+				OR p.is_out_of_stock = 0
+			)
+		)
+		)");
 		$query = $this->db->where('customer_id', $user_id)
                           ->get('tbl_cart_items');
 
         $cart_items = $query->result_array();
+
+		$total_items = 0;
+		$cart_total = 0.00;
 		
 		// if($zipcode != ""){
 		// 	$url = API_URL . 'remove-zipcode-products';
@@ -205,9 +226,9 @@ class Controller_checkout extends CI_Controller
 
 		$ArrUserData['ArrStateOption'] = $ArrStateOption;
 
-		$ArrUserData['ArrBillingStateOption'] = $ArrBillingStateOption;
-
 		$ArrUserData['cart_items'] = $cart_items;
+
+		$ArrUserData['ArrBillingStateOption'] = $ArrBillingStateOption;
 		
 		$this->load->view('checkout', $ArrUserData);
 
@@ -810,6 +831,100 @@ class Controller_checkout extends CI_Controller
 		$total_items = 0;
 		$cart_total = 0.00;
 		
+		// if($cookiezipcode != ""){
+
+		// 	$url = API_URL . 'remove-zipcode-products';
+
+		// 	$data = array(
+		// 		"oauth_key" => "F1CEC5YC4rrNhTzkP4aNR4Td3XAzCcHAWM4Eh1iDoofbl6xT",
+		// 		"user_id" => $user_id,
+		// 		"zipcode" => $cookiezipcode,
+		// 		"cart" => $CARTDATA
+		// 	);
+
+		// 	$curl = curl_init();
+		// 	curl_setopt($curl, CURLOPT_URL, $url);
+		// 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		// 	curl_setopt($curl, CURLOPT_POST, true);
+		// 	curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+		// 	curl_setopt($curl, CURLOPT_HTTPHEADER, [
+		// 		'X-RapidAPI-Host: kvstore.p.rapidapi.com',
+		// 		'X-RapidAPI-Key: test',
+		// 		'Content-Type: application/json'
+		// 	]);
+		// 	$response = curl_exec($curl);
+		// 	//echo "<pre>zipcode response:- <pre>";print_r($response);
+		// 	curl_close($curl);
+		// 	$response = json_decode($response, true);
+		// 	//echo "<pre>";print_r($response);exit;
+			
+		// 	if($response['is_successful'] == 1){
+		// 		$this->cart->destroy();
+		// 		$products = $response['data'];
+		// 		$remove_product_from_cart = $response['data2']['remove_product'];
+				
+		// 		if(!empty($products)){
+					
+		// 			unset($products['cart_total'], $products['total_items']);
+					
+		// 			if(!empty($products)){
+
+		// 				foreach ($products as $key => $value){
+							
+		// 					$newCartItem = array(
+		// 						"id" => $value['id'],
+		// 						"name" => $value['name'],
+		// 						"image" => $value['image'],
+		// 						"price" => number_format($value['price'],2),
+		// 						"qty" => $value['qty'],
+		// 						"product_slug" => $value['product_slug'],
+		// 						"is_perisible" => $value['is_perisible'],
+		// 						"product_tax" => number_format($value['product_tax']),
+		// 						"created_date" => date("Y-m-d"),
+		// 						"options" => array(
+		// 							"weight" => $value['options']['weight'],
+		// 							"variant_id" => $value['options']['variant_id']
+		// 						),
+		// 						"rowid" => $key,
+		// 						"subtotal" => $value['subtotal'],
+		// 					);
+		// 					$total_items += $value['qty'];
+		// 					$cart_total += $value['subtotal'];
+		// 					$this->cart->insert($newCartItem);
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+
+		// 	$contain = $this->cart->contents();
+		// 	if(!empty($contain)){
+		// 		if(!isset($contain['total_items']) || !isset($contain['cart_total'])){
+		// 			if($total_items > 0 && $cart_total >= $_COOKIE['minimum_order_value']){
+						
+		// 				$contain['total_items'] = $total_items;
+		// 				$contain['cart_total'] = $cart_total;
+
+		// 				if($remove_product_from_cart == 1){
+		// 					$this->session->set_flashdata('success', 'We have remove some items due to not valid. Please process again.');
+		// 					redirect(base_url('cart-detail'));
+		// 					exit(0);		
+		// 				}
+						
+		// 			} else {
+		// 				$this->session->set_flashdata('error', 'A minimum $'.$_COOKIE['minimum_order_value'].' Order Required.');
+		// 				redirect(base_url('cart-detail'));
+		// 				exit(0);		
+		// 			}
+		// 		} else {
+		// 			if($contain['total_items'] == 0 && $contain['cart_total'] < $_COOKIE['minimum_order_value']){
+		// 				$this->session->set_flashdata('error', 'A minimum $'.$_COOKIE['minimum_order_value'].' Order Required.');
+		// 				redirect(base_url('cart-detail'));
+		// 				exit(0);
+		// 			}
+		// 		}
+				
+		// 	}
+		// }
 
 		$ArrCustomer = array();
 
@@ -840,15 +955,13 @@ class Controller_checkout extends CI_Controller
 		$ArrCustomer['same_address'] = $same_address;
 		$ArrCustomer['billing_id'] = $billing_id;
 		$ArrCustomer['shipping_id'] = $shipping_id;
+		$ArrCustomer['card_id'] = $_POST['card_id'];
+		$ArrCustomer['save_card'] = (isset($_POST['save_card'])) ? $_POST['save_card'] : 0;
+		$ArrCustomer['CardToken'] = ($_POST['CardToken']) ? $_POST['CardToken'] : '';
+		$ArrCustomer['CardPaymentMethod'] = $_POST['CardPaymentMethod'];
+		$ArrCustomer['StripeCardID'] = $_POST['StripeCardID'];
 		
-			$ArrCustomer['card_id'] = $_POST['card_id'];
-			$ArrCustomer['save_card'] = (isset($_POST['save_card'])) ? $_POST['save_card'] : 0;
-			$ArrCustomer['CardToken'] = ($_POST['CardToken']) ? $_POST['CardToken'] : '';
-			$ArrCustomer['CardPaymentMethod'] = $_POST['CardPaymentMethod'];
-			$ArrCustomer['StripeCardID'] = $_POST['StripeCardID'];
 		
-		
-		$ArrCustomer['payment_methodtype'] = $_POST['payment_methodtype'];
 		$ArrCustomer['order_tip'] = $_POST['hdn_tip_amount']; 
 		$ArrCustomer['user_id'] = $this->session->userdata['logged_in']['user_id'];
 
@@ -873,6 +986,7 @@ class Controller_checkout extends CI_Controller
 		if ($dateObj) {
 			$delivery_date_time =  $dateObj->format('Y-m-d');
 		}
+		
 
 		// if ($_POST['delivery_type'] == 'two_hour') {
 		// 	$delivery_date_time = date("Y-m-d H:i:s", strtotime("+1 hours"));
@@ -928,6 +1042,7 @@ class Controller_checkout extends CI_Controller
 					$Arr['unit_price'] = (float)$val['price'];
 					$Arr['product_name'] = $val['name'];		
 					$Arr['product_tax_amount'] = 0;
+					$Arr['product_tax'] = $val["product_tax"];
 					if($val["product_tax"]==1)
 					{
 						$Arr['product_tax_amount'] = number_format( (($ArrCustomer["state_tax"] * $Arr['total_amount']) / 100),2);
@@ -956,10 +1071,11 @@ class Controller_checkout extends CI_Controller
 			'Content-Type: application/json'
 		]);
 		$response = curl_exec($curl);
-		 
+		// echo "<pre>";print_r($response);exit;
 		curl_close($curl);
 		$response = json_decode($response);
-		//echo'<pre>';print_r($response);exit;
+		
+
 		if ($response->is_successful == 1) {
 			$order_id = $response->data->order_id;
 			$shipping_details = $response->data->shipping_details;
@@ -1010,11 +1126,21 @@ class Controller_checkout extends CI_Controller
 
 			
 			//$this->payment($order_id, $order_amount, $zip_code,$sms_shipping_phone);
-			//$order_amount = 65.55;
+			
 			//$order_amount = $order_amount * 100;
-			$order_amount = intval(round($order_amount * 100));
-			//echo $order_amount;exit;
 			//$order_amount = bcmul($order_amount, '100', 0);
+			$order_amount = intval(round($order_amount * 100));
+			
+			$_SESSION['order_items'] = $ArrProduct;
+			
+			/*
+			$_SESSION['order_id'] = $order_id;
+		    $_SESSION['order_amount'] = $order_amount;
+			redirect(base_url('order-success/' . base64_encode($order_id)));
+			exit;
+			*/
+			
+			
 			$this->new_payment_process($order_id, $order_amount, $shipping_details, $billing_details, $_POST);
 
 		} else {
@@ -1044,7 +1170,7 @@ class Controller_checkout extends CI_Controller
 		$zip_code = $shipping_details->shipping_zipcode;
 		$sms_shipping_phone = $shipping_details->shipping_phone;
 
-		$POST['order_amount'] = intval($order_amount);
+        $POST['order_amount'] = intval($order_amount);
 		$POST['order_id'] = $order_id;
 		$ArrPayment = $POST;
 
@@ -1097,12 +1223,15 @@ class Controller_checkout extends CI_Controller
 
 		if (isset($response->is_successful) && $response->is_successful == 1) {
 
-		
+			
+
+			
+
 			//send sms
 
 			$SMSbody = "Your Vraj Fresh order ".$order_id." has been placed. It will be delivered soon. We will send you an update when your order is shipped. Thank you for shopping.";
 
-			//sendSMS($sms_shipping_phone, $SMSbody);
+			sendSMS($sms_shipping_phone, $SMSbody);
 
 			
 
@@ -1160,10 +1289,13 @@ class Controller_checkout extends CI_Controller
 
 			//$this->order_success($order_id);
 			
+			$_SESSION['order_id'] = $order_id;
+		    $_SESSION['order_amount'] = $order_amount;
+			
 			redirect(base_url('order-success/' . base64_encode($order_id)));
 
 		} else {
-//echo"fail";
+
 			redirect(base_url('order-falied'));
 			//$this->order_failed();
 

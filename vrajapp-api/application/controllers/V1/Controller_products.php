@@ -2834,32 +2834,31 @@ class Controller_products extends CI_Controller
 
 						$previous_variant_id = "";
 
-						//foreach ($temp_result as $arr1) {
+						// foreach ($temp_result as $arr1) {
 
 
 
-							// if ($arr['product_id'] == $arr1['product_id'] && $previous_variant_id != $arr1['id']) {
+						// 	if ($arr['product_id'] == $arr1['product_id'] && $previous_variant_id != $arr1['id']) {
 
-							// 	$t = array();
+						// 		$t = array();
 
-							// 	if ($arr1['id'] > 0) {
+						// 		if ($arr1['id'] > 0) {
 
-							// 		$t['size'] = $arr1['product_variant_size'];
+						// 			$t['size'] = $arr1['product_variant_size'];
 
-							// 		$t['price'] = $arr1['variant_price'];
+						// 			$t['price'] = $arr1['variant_price'];
 
-							// 		$t['variant_id'] = $arr1['id'];
+						// 			$t['variant_id'] = $arr1['id'];
 
-							// 	}
+						// 		}
 
-							// 	$tempArray[] = $t;
+						// 		$tempArray[] = $t;
 
-							// }
+						// 	}
 
+						// 	$previous_variant_id = $arr1['id'];
 
-							//$previous_variant_id = $arr1['id'];
-
-						//}
+						// }
 
 						$prod_var_arr = $this->Products_model->get_variant_by_product_id($arr['product_id']);
 						if(count($prod_var_arr) > 0){

@@ -77,7 +77,6 @@ class product_model extends CI_Model
 	}
 
 
-	
 	public function update_by_slug($product_slug, $ArrProductData)
 
 	{
@@ -89,10 +88,6 @@ class product_model extends CI_Model
 		return $this->db->affected_rows();
 
 	}
-
-
-
-
 
 
 	public function delete($product_id)
@@ -506,14 +501,35 @@ class product_model extends CI_Model
 
 					if ($_POST['search']['value']) {
 
-						$this->db->like('tbl_products.product_name', $_POST['search']['value']);
+						$searchKeyword = trim($_POST['search']['value']);
+
+						$searchWords = preg_split('/\s+/', $searchKeyword);
+
+						foreach ($searchWords as $word) {
+							if (!empty($word)) {
+								$this->db->group_start();
+								$this->db->like('tbl_products.product_name', $word);
+								$this->db->or_like('tbl_products.product_sku', $word);
+								$this->db->group_end();
+							}
+						}
 
 					}
 
 					if ($_POST['txtSearchKeyWord']) {
 
-						$this->db->like('tbl_products.product_name', $_POST['txtSearchKeyWord']);
+						$searchKeyword = trim($_POST['txtSearchKeyWord']);
 
+						$searchWords = preg_split('/\s+/', $searchKeyword);
+
+						foreach ($searchWords as $word) {
+							if (!empty($word)) {
+								$this->db->group_start();
+								$this->db->like('tbl_products.product_name', $word);
+								$this->db->or_like('tbl_products.product_sku', $word);
+								$this->db->group_end();
+							}
+						}
 					}
 
 				
@@ -546,6 +562,7 @@ class product_model extends CI_Model
 
 
 		// CATEGORY SEARCH
+
 		//product status search
 		if (isset($_POST['prod_status']) && !empty($_POST['prod_status'])):
 
@@ -558,12 +575,10 @@ class product_model extends CI_Model
 				$this->db->where_in('tbl_products.is_active', 1);
 			}else if($prod_status == 'inactive'){
 				$this->db->where_in('tbl_products.is_active', 0);
-			}
-			
-
-			
+			}	
 
 		endif;
+
 
 
 		if (@$_REQUEST['columns'] != "") {

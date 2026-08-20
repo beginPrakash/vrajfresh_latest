@@ -341,11 +341,10 @@
 										<option value="SG" <?php echo (@$ArrFieldData['apply_to'] == "SG") ? 'Selected' : '' ?>>Specific Group</option>
 
 										<option value="AC" <?php echo (@$ArrFieldData['apply_to'] == "AC") ? 'Selected' : '' ?>>All Customer</option>
-
+										
 										<option value="NC" <?php echo (@$ArrFieldData['apply_to'] == "NC") ? 'Selected' : '' ?>>New Customer</option>
 
 										<option value="RC" <?php echo (@$ArrFieldData['apply_to'] == "RC") ? 'Selected' : '' ?>>Returning Customer</option>
-
 									</select>
 
 									<?php echo form_error('apply_to'); ?>
@@ -903,7 +902,6 @@
 								</div>
 
 							</div>
-
 
 							<div class="form-group">
 
