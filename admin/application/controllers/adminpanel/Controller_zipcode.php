@@ -16,6 +16,8 @@ class Controller_zipcode extends CI_Controller
 
 		$this->load->model('zipcode_model');
 
+		$this->load->model('zone_model');
+
 		$this->load->model('common_model');
 
 
@@ -71,6 +73,9 @@ class Controller_zipcode extends CI_Controller
 		}
 
 		$ArrData['ArrStateOption'] = $ArrStateOption;
+		//get zone list 
+		$ArrZonelist = $this->zone_model->zone_list();
+		$ArrData['ArrZonelist'] = $ArrZonelist;
 
 		$ArrData['cms_title'] = 'ZIP Code Configuration';
 		$ArrData['view_name'] = 'view_zipcode_configuration.php';
@@ -88,17 +93,21 @@ class Controller_zipcode extends CI_Controller
 
 		$ArrZipCodeData = $_POST['ArrZipCodeData'];
 
-		$ArrCanDeliverPerishable = $_POST['ArrCanDeliverPerishable'];
+		$ArrCanDeliverPerishable = $_POST['ArrCanDeliverPerishable'] ?? '';
 
-		$ArrCanDeliverLiker = $_POST['ArrCanDeliverLiker'];
+		$ArrCanDeliverLiker = $_POST['ArrCanDeliverLiker'] ?? '';
 
-		$ArrCanDeliverCookFood = $_POST['ArrCanDeliverCookFood'];
+		$ArrCanDeliverCookFood = $_POST['ArrCanDeliverCookFood'] ?? '';
 
 		$ArrState = $_POST['ArrState'];
 
 		$ArrDeliveryTypes = $_POST['ArrDeliveryTypes'];
 
-		$ArrDeliveryDays = $_POST['ArrDeliveryDays'];
+		$ArrDeliveryDays = $_POST['ArrDeliveryDays'] ?? '';
+
+		$ArrDeliveryCutoff = $_POST['ArrDeliveryCutoff'];
+
+		$ArrZone = $_POST['ArrZone'];
 
 		if ($zipcode_id > 0) {
 
@@ -112,17 +121,19 @@ class Controller_zipcode extends CI_Controller
 
 				'minimum_order_value' => $ArrZipCodeData[3],
 
-				'can_deliver_perishable_products' => $ArrCanDeliverPerishable[0],
+				'can_deliver_perishable_products' => $ArrCanDeliverPerishable[0] ?? '',
 
-				'can_deliver_liker_products' => $ArrCanDeliverLiker[0],
+				'can_deliver_liker_products' => $ArrCanDeliverLiker[0] ?? '',
 
-				'can_deliver_cook_food_products' => $ArrCanDeliverCookFood[0],
+				'can_deliver_cook_food_products' => $ArrCanDeliverCookFood[0] ?? '',
 
 				'state' => $ArrState[0],
 
 				'delivery_types' => $ArrDeliveryTypes[0],
 
-				'delivery_days' => $ArrDeliveryDays[0],
+				'cutoff_time' => $ArrDeliveryCutoff[0],
+
+				'delivery_days' => $ArrDeliveryDays[0] ?? '',
 
 				'modified_by' => $_SESSION['admin_id'],
 
@@ -144,17 +155,19 @@ class Controller_zipcode extends CI_Controller
 
 				'minimum_order_value' => $ArrZipCodeData[3],
 
-				'can_deliver_perishable_products' => $ArrCanDeliverPerishable[0],
+				'can_deliver_perishable_products' => $ArrCanDeliverPerishable[0] ?? '',
 
-				'can_deliver_liker_products' => $ArrCanDeliverLiker[0],
+				'can_deliver_liker_products' => $ArrCanDeliverLiker[0] ?? '',
 
-				'can_deliver_cook_food_products' => $ArrCanDeliverCookFood[0],
+				'can_deliver_cook_food_products' => $ArrCanDeliverCookFood[0] ?? '',
 
 				'state' => $ArrState[0],
 
 				'delivery_types' => $ArrDeliveryTypes[0],
 
-				'delivery_days' => $ArrDeliveryDays[0],
+				'cutoff_time' => $ArrDeliveryCutoff[0],
+
+				'delivery_days' => $ArrDeliveryDays[0] ?? '',
 
 				'created_by' => $_SESSION['admin_id'],
 
@@ -183,7 +196,32 @@ class Controller_zipcode extends CI_Controller
 	}
 
 
+	public function save_holiday_date()
 
+	{	
+
+		$zipcode_id = $_POST['zipcode_id'];
+		$start_date = $_POST['start_date'];
+		$end_date = $_POST['end_date'];
+
+		if ($zipcode_id > 0) {
+
+			$arrData = array(
+
+				'holiday_start_date' => $start_date,
+				'holiday_end_date' => $end_date,
+
+			);
+
+			$this->zipcode_model->update($zipcode_id, $arrData);
+
+		}
+		echo json_encode([
+			'status'  => true,
+			'message' => 'Date range saved successfully.'
+		]);
+
+	}
 
 
 }

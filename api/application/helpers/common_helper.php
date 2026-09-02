@@ -1494,3 +1494,40 @@ if (!function_exists('sendSMS')) {
 		}
     }
 }
+
+function getHolidayDatearr($from_date,$to_date,$zone_id)
+{
+	
+    $ci =& get_instance();
+    $ci->db->select('holiday_date');
+    $ci->db->from('tbl_zones');
+    $ci->db->where('zone_id', $zone_id);
+
+    $query = $ci->db->get();
+
+    $result = $query->row();
+
+    $zone_holiday_date = $result->holiday_date ?? '';
+	$dates = [];
+
+	// Get all dates between start and end date
+	if(!empty($from_date) && !empty($to_date)){
+		$start = new DateTime($from_date);
+		$end   = new DateTime($to_date);
+
+		while ($start <= $end) {
+			$dates[] = $start->format('Y-m-d');
+			$start->modify('+1 day');
+		}
+	}
+
+	// Add another single date
+	if(!empty($zone_holiday_date)){
+		$dates[] = $zone_holiday_date;
+	}
+
+	// Remove duplicate dates and reset array keys
+	$dates = array_values(array_unique($dates));
+
+	return $dates;
+}

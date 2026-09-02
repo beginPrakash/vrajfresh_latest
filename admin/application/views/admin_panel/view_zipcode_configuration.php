@@ -1,4 +1,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+
+<script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
 <style>
 
@@ -66,10 +70,27 @@
 
 
 
-    table.table {
+  .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
 
-        table-layout: fixed;
+    .table-responsive .table-wrapper {
+        min-width: 100%;
+        padding: 20px;
+    }
 
+    .table-responsive table {
+        width: 1800px;
+        min-width: 1800px;
+        table-layout: auto;
+    }
+
+    .table-responsive th,
+    .table-responsive td {
+        white-space: nowrap;
     }
 
 
@@ -110,7 +131,7 @@
 
         display: inline-block;
 
-        margin: 0 5px;
+        margin: 0 0px;
 
         min-width: 24px;
 
@@ -192,15 +213,204 @@
 
     }
 
+    .date-range-icon {
+        cursor: pointer;
+        color: #007bff;
+    }
+
+    /* .daterangepicker {
+    width: 430px !important;
+    min-width: 430px !important;
+}
+
+.daterangepicker .drp-calendar {
+    max-width: 200px !important;
+    width: 200px !important;
+}
+
+.daterangepicker .drp-calendar.left {
+    float: left !important;
+}
+
+.daterangepicker .drp-calendar.right {
+    float: right !important;
+} */
+
+.daterangepicker .calendar-table {
+    width: 100% !important;
+}
+
+.daterangepicker .calendar-table table {
+    width: 100% !important;
+}
+
+.daterangepicker .calendar-table th,
+.daterangepicker .calendar-table td {
+    padding: 0 !important;
+    width: 19px !important;
+    min-width: 19px !important;
+    max-width: 19px !important;
+    height: 19px !important;
+    line-height: 19px !important;
+    font-size: 9px !important;
+}
+    
+
 </style>
 
 <script>
 
-    $(document).ready(function () {
+$(document).ready(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Initialize DateRangePicker directly on the icon
+    |--------------------------------------------------------------------------
+    */
+
+   $('.date-range-icon').each(function () {
+
+    var $icon = $(this);
+
+    var zipcode_id = $icon.attr('data-id');
+
+    // Get database dates for this specific row
+    var dbStartDate = $icon.attr('data-start-date');
+    var dbEndDate   = $icon.attr('data-end-date');
+
+    // Default picker options
+    var pickerOptions = {
+
+        autoUpdateInput: false,
+
+        opens: 'left',
+
+        drops: 'down',
+
+        locale: {
+            format: 'MM-DD-YYYY',
+            cancelLabel: 'Cancel',
+            applyLabel: 'Apply'
+        }
+    };
+
+    // If database dates exist, set them
+    if (
+        dbStartDate &&
+        dbStartDate !== '0000-00-00' &&
+        dbEndDate &&
+        dbEndDate !== '0000-00-00'
+    ) {
+
+        pickerOptions.startDate = moment(dbStartDate, 'YYYY-MM-DD');
+        pickerOptions.endDate   = moment(dbEndDate, 'YYYY-MM-DD');
+
+    } else {
+
+        // For empty database date
+        pickerOptions.startDate = moment();
+        pickerOptions.endDate   = moment();
+        pickerOptions.minDate   = moment();
+
+    }
+
+    // Initialize daterangepicker
+    $icon.daterangepicker(pickerOptions);
+
+
+    // APPLY BUTTON
+    $icon.on('apply.daterangepicker', function (ev, picker) {
+
+        console.log('APPLY CLICKED');
+
+        var zipcode_id = $(this).attr('data-id');
+
+        var start_date = picker.startDate.format('YYYY-MM-DD');
+        var end_date   = picker.endDate.format('YYYY-MM-DD');
+
+        console.log('ZIPCODE ID:', zipcode_id);
+        console.log('START DATE:', start_date);
+        console.log('END DATE:', end_date);
+
+
+        $.ajax({
+
+            type: 'POST',
+
+            url: '<?php echo base_url("save-holiday-date"); ?>',
+
+            data: {
+                zipcode_id: zipcode_id,
+                start_date: start_date,
+                end_date: end_date
+            },
+
+            dataType: 'json',
+
+            beforeSend: function () {
+                console.log('AJAX START');
+            },
+
+            success: function (response) {
+
+                console.log('AJAX SUCCESS:', response);
+
+                if (
+                    response.status == true ||
+                    response.status == 'true' ||
+                    response.status == 1 ||
+                    response.status == '1'
+                ) {
+
+                    toastr.success('Holiday date saved successfully!');
+
+                    // Update the selected dates in HTML
+                    $icon.attr('data-start-date', start_date);
+                    $icon.attr('data-end-date', end_date);
+
+                } else {
+
+                    toastr.error(
+                        response.message || 'Unable to save holiday date.'
+                    );
+
+                }
+
+            },
+
+            error: function (xhr, status, error) {
+
+                console.log('AJAX ERROR');
+                console.log('HTTP STATUS:', xhr.status);
+                console.log('STATUS:', status);
+                console.log('ERROR:', error);
+                console.log('RESPONSE:', xhr.responseText);
+
+                toastr.error('Holiday Date save operation failed.');
+
+            }
+
+        });
+
+    });
+
+
+    // CANCEL BUTTON
+    $icon.on('cancel.daterangepicker', function () {
+
+        console.log('CANCEL CLICKED');
+
+    });
+
+});
+
 
         $('[data-toggle="tooltip"]').tooltip();
 
-        var actions = $("table td:last-child").html();
+        var actions = $("table td:last-child").clone();
+        actions.find(".date-range-icon").remove();
+        actions.find(".daterange").remove();
+        actions = actions.html();
 
         // Append table with add row form on add new button click
 
@@ -232,20 +442,54 @@
 
 
 
-        var ddData1 = '<select name="ArrCanDeliverPerishable[]" class="form-control"><option>Select</option><option value="Yes">Yes</option><option value="No">No</option></select>';
+        var ddData1 = '<select name="ArrCanDeliverPerishable[]" class="form-control"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select>';
 
-        var ddData2 = '<select name="ArrDeliveryTypes[]" class="form-control" onChange="setDay(this.value,000);"><option>Select</option><option value="Express Delivery">Express Delivery</option><option value="Same Day Delivery">Same Day Delivery</option><option value="Twise in a week">Twise in a week</option></select>';
+        var ddData2 = '<select name="ArrDeliveryTypes[]" class="form-control" onChange="setDay(this.value,000);"><option value="">Select</option><option value="Express Delivery">Express Delivery</option><option value="Same Day Delivery">Same Day Delivery</option><option value="Twise in a week">Twise in a week</option></select>';
 
         
 
         var style = 'display:none;';
 
-        var ddData3 = '<select name="ArrDeliveryDays[]" class="form-control multiple_category_select days000" multiple="" style="' + style + '"><option>Select</option><option value="Monday">Monday</option><option value="Tuesday">Tuesday</option><option value="Wednesday">Wednesday</option><option value="Thursday">Thursday</option><option value="Friday">Friday</option><option value="Saturday">Saturday</option><option value="Sunday">Sunday</option></select>';
+        var ddData3 = '<select name="ArrDeliveryDays[]" class="form-control multiple_category_select days000 skip-validation" multiple="" style="' + style + '"><option value="">Select</option><option value="Monday">Monday</option><option value="Tuesday">Tuesday</option><option value="Wednesday">Wednesday</option><option value="Thursday">Thursday</option><option value="Friday">Friday</option><option value="Saturday">Saturday</option><option value="Sunday">Sunday</option></select>';
 
-        var ddData4 = '<select name="ArrCanDeliverLiker[]" class="form-control"><option>Select</option><option value="Yes">Yes</option><option value="No">No</option></select>';
-        var ddData5 = '<select name="ArrCanDeliverCookFood[]" class="form-control"><option>Select</option><option value="Yes">Yes</option><option value="No">No</option></select>';
+        var ddData4 = '<select name="ArrCanDeliverLiker[]" class="form-control skip-validation"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select>';
+        var ddData5 = '<select name="ArrCanDeliverCookFood[]" class="form-control skip-validation"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select>';
+
+        //get timeslot list
+        var timeOptions = '<option value="">Select Time</option>';
+
+        for (var hour = 0; hour < 24; hour++) {
+            var hour24 = String(hour).padStart(2, '0') + ':00';
+
+            var period = hour < 12 ? 'AM' : 'PM';
+            var hour12 = hour % 12;
+            hour12 = hour12 === 0 ? 12 : hour12;
+
+            var displayTime = String(hour12).padStart(2, '0') + ':00 ' + period;
+
+            timeOptions += '<option value="' + hour24 + '">' + displayTime + '</option>';
+        }
+
+        var cuttoff_time_list =
+            '<select name="ArrDeliveryCutoff[]" class="form-control" onchange="setDay(this.value,000);">' +
+                timeOptions +
+            '</select>';
 
 
+        //get zone list
+        var zoneselOption = '';
+        zoneselOption = '<option value="">Select Zone</option>';
+
+            <?php if(count($ArrZonelist) > 0){
+                foreach ($ArrZonelist as $key => $zonedata) { ?>
+
+                var is_selected = '';
+
+                zoneselOption = zoneselOption + '<option value="<?php echo $zonedata['zone_id']; ?>"' + is_selected + '><?php echo $zonedata['title']; ?></option>';
+
+        <?php } }?>
+
+        var zonedata = '<select name="ArrZone[]" class="form-control skip-validation" autofocus>' + zoneselOption + '</select>';
 
 
         var row = '<tr>' +
@@ -269,6 +513,10 @@
             '<td>' + ddData2 + '</td>' +
 
             '<td>' + ddData3 + '</td>' +
+
+            '<td>' + cuttoff_time_list + '</td>' +
+
+            '<td>' + zonedata + '</td>' +
 
             '<td>' + actions + '</td>' +
 
@@ -303,7 +551,7 @@
 
 
         input.each(function () {
-
+            
             if (!$(this).val()) {
 
                 $(this).addClass("error");
@@ -327,18 +575,35 @@
 
 
         select.each(function () {
-
+            
             if (!$(this).val()) {
+                if ($(this).hasClass('skip-validation')) {
+                    $(this).removeClass("error");
+                }else{
+                    $(this).addClass("error");
 
-                $(this).addClass("error");
-
-                empty = true;
+                    empty = true;
+                }
+                
 
             } else {
 
                 input_value = input_value + "&" + $(this).attr('name') + "=" + $(this).val();
+  var value = $(this).val();
+    var text = $(this).find("option:selected").text();
 
+    if ($(this).attr("name") == "ArrDeliveryCutoff[]") {
+        $(this).parent("td").html(text);
+    }if ($(this).attr("name") == "ArrZone[]") {
+        $(this).parent("td").html(text);
+    }if ($(this).attr("name") == "ArrDeliveryDays[]") {
+        var changetext = text.replace(/([a-z])([A-Z])/g, '$1 <br> $2');
+        console.log(changetext);
+        $(this).parent("td").html(changetext);
+    }
                 $(this).removeClass("error");
+
+              
 
             }
 
@@ -418,7 +683,6 @@
 
         $(this).parents("tr").find("td:not(:last-child)").each(function () {
 
-        console.log(number+"=="+$(this).text().trim());
 
             if (number == 1) {
 
@@ -459,7 +723,7 @@
                     var InputtName = 'ArrCanDeliverCookFood[]';
                 }
 
-                var ddData = '<select name="' + InputtName + '" class="form-control"><option>Select</option><option value="Yes"' + yes_chk + '>Yes</option><option value="No"' + no_chk + '>No</option></select>';
+                var ddData = '<select name="' + InputtName + '" class="form-control skip-validation"><option value="">Select</option><option value="Yes"' + yes_chk + '>Yes</option><option value="No"' + no_chk + '>No</option></select>';
 
                 $(this).html(ddData);
 
@@ -479,7 +743,7 @@
 
                 else if ($(this).text().trim() == 'Twise in a week') { option3_chk = ' selected'; }
 
-                var ddData = '<select name="ArrDeliveryTypes[]" class="form-control" onChange="setDay(this.value,' + current_zip_code + ');"><option>Select</option><option value="Express Delivery"' + option1_chk + '>Express Delivery</option><option value="Same Day Delivery"' + option2_chk + '>Same Day Delivery</option><option value="Twise in a week"' + option3_chk + '>Twise in a week</option></select>';
+                var ddData = '<select name="ArrDeliveryTypes[]" class="form-control" onChange="setDay(this.value,' + current_zip_code + ');"><option value="">Select</option><option value="Express Delivery"' + option1_chk + '>Express Delivery</option><option value="Same Day Delivery"' + option2_chk + '>Same Day Delivery</option><option value="Twise in a week"' + option3_chk + '>Twise in a week</option></select>';
 
                 $(this).html(ddData);
 
@@ -500,7 +764,7 @@
 
                 days = $(this).text().trim();
 
-                const dayArray = days.split(",");
+                const dayArray = days.split(" ");
 
                 if (dayArray.indexOf("Monday") > -1) { m_chk = ' selected'; }
 
@@ -520,13 +784,42 @@
 
                 if (twise_in_week == 'Twise in a week') { style = 'display:block;'; }
 
-                var ddData3 = '<select name="ArrDeliveryDays[]" class="form-control multiple_category_select days' + current_zip_code + '" multiple="" style="' + style + '"><option>Select</option><option value="Monday"' + m_chk + '>Monday</option><option value="Tuesday"' + t_chk + '>Tuesday</option><option value="Wednesday"' + w_chk + '>Wednesday</option><option value="Thursday"' + th_chk + '>Thursday</option><option value="Friday"' + f_chk + '>Friday</option><option value="Saturday"' + st_chk + '>Saturday</option><option value="Sunday"' + s_chk + '>Sunday</option></select>';
+                var ddData3 = '<select name="ArrDeliveryDays[]" class="form-control skip-validation multiple_category_select days' + current_zip_code + '" multiple="" style="' + style + '"><option value="">Select</option><option value="Monday"' + m_chk + '>Monday</option><option value="Tuesday"' + t_chk + '>Tuesday</option><option value="Wednesday"' + w_chk + '>Wednesday</option><option value="Thursday"' + th_chk + '>Thursday</option><option value="Friday"' + f_chk + '>Friday</option><option value="Saturday"' + st_chk + '>Saturday</option><option value="Sunday"' + s_chk + '>Sunday</option></select>';
 
                 $(this).html(ddData3);
 
                 ajax_page_drop_down('multiple_category_select');
                 
-            } else {
+            } else if (number == 11){
+                
+                //get time lsot
+                var timeOptions = '<option value="">Select Time</option>';
+
+                for (var hour = 0; hour < 24; hour++) {
+                    var option_chk = '';
+                    var hour24 = String(hour).padStart(2, '0') + ':00';
+
+                    var period = hour < 12 ? 'AM' : 'PM';
+                    var hour12 = hour % 12;
+                    hour12 = hour12 === 0 ? 12 : hour12;
+
+                    var displayTime = String(hour12).padStart(2, '0') + ':00 ' + period;
+                    if ($(this).text().trim() == displayTime) { option_chk = ' selected'; }
+                    timeOptions += '<option value="' + hour24 + '" '+option_chk+'>' + displayTime + '</option>';
+                }
+
+                var cutofftimeslot_list =
+                    '<select name="ArrDeliveryCutoff[]" class="form-control">' +
+                        timeOptions +
+                    '</select>';
+                    
+                $(this).html(cutofftimeslot_list);
+
+            }else if (number == 12) {
+
+                $(this).html($(this).text().trim());
+
+            }else {
 
                 $(this).html('<input type="text" name="ArrZipCodeData[]" class="form-control" value="' + $(this).text().trim() + '">');
 
@@ -639,7 +932,8 @@
 
 
 <body>
-
+<?php 
+$timeslotlist = get_timeslot_list(); ?>
     <div class="container-lg">
 
         <div class="table-responsive">
@@ -713,128 +1007,166 @@
                     </div>
 
                 </div>
+                <div class="table-responsive">
 
-                <table class="table table-bordered">
+                    <div class="table-wrapper">
+                        <table class="table table-bordered">
 
-                    <thead>
+                            <thead>
 
-                        <tr>
+                                <tr>
 
-                            <th>State</th>
+                                    <th>State</th>
 
-                            <th>ZIP Code</th>
+                                    <th>ZIP Code</th>
 
-                            <th>Area</th>
+                                    <th>Area</th>
 
-                            <th>Town Name</th>
+                                    <th>Town Name</th>
 
-                            <th>Minimum Order Value</th>
+                                    <th>Minimum Order Value</th>
 
-                            <th>Deliver Perishable Products?</th>
+                                    <th>Deliver Perishable Products?</th>
 
-                            <th>Deliver Liquor Products?</th>
+                                    <th>Deliver Liquor Products?</th>
 
-                            <th>Deliver Cook Food Products?</th>
+                                    <th>Deliver Cook Food Products?</th>
 
-                            <th>Delivery Types</th>
+                                    <th>Delivery Types</th>
 
-                            <th>Delivery Days</th>
+                                    <th>Delivery Days</th>
 
-                            <th>Action</th>
+                                    <th>CutOff Time</th>
 
-                        </tr>
+                                    <th>Zone</th>
 
-                    </thead>
+                                    <th>Action</th>
 
-                    <tbody>
+                                </tr>
 
-                        <?php foreach ($Arrzipcode as $data) { ?>
+                            </thead>
 
-                            <tr>
+                            <tbody>
 
-                                <td>
+                                <?php foreach ($Arrzipcode as $data) { ?>
 
-                                    <?php echo $data['state']; ?>
+                                    <tr>
 
-                                </td>
+                                        <td>
 
-                                <td>
+                                            <?php echo $data['state']; ?>
 
-                                    <?php echo $data['zipcode']; ?>
+                                        </td>
 
-                                </td>
+                                        <td>
 
-                                <td>
+                                            <?php echo $data['zipcode']; ?>
 
-                                    <?php echo $data['area_name']; ?>
+                                        </td>
 
-                                </td>
+                                        <td>
 
-                                <td>
+                                            <?php echo $data['area_name']; ?>
 
-                                    <?php echo $data['town_name']; ?>
+                                        </td>
 
-                                </td>
+                                        <td>
 
-                                <td>
+                                            <?php echo $data['town_name']; ?>
 
-                                    <?php echo $data['minimum_order_value']; ?>
+                                        </td>
 
-                                </td>
+                                        <td>
 
-                                <td>
+                                            <?php echo $data['minimum_order_value']; ?>
 
-                                    <?php echo $data['can_deliver_perishable_products']; ?>
+                                        </td>
 
-                                </td>
+                                        <td>
 
-                                <td>
+                                            <?php echo $data['can_deliver_perishable_products']; ?>
 
-                                    <?php echo $data['can_deliver_liker_products']; ?>
+                                        </td>
 
-                                </td>
+                                        <td>
 
-                                <td>
+                                            <?php echo $data['can_deliver_liker_products']; ?>
 
-                                    <?php echo $data['can_deliver_cook_food_products']; ?>
+                                        </td>
 
-                                </td>
+                                        <td>
 
-                                <td>
+                                            <?php echo $data['can_deliver_cook_food_products']; ?>
 
-                                    <?php echo $data['delivery_types']; ?>
+                                        </td>
 
-                                </td>
+                                        <td>
 
-                                <td>
+                                            <?php echo $data['delivery_types']; ?>
 
-                                    <?php echo $data['delivery_days']; ?>
+                                        </td>
 
-                                </td>
+                                        <td>
+                                            <?php if($data['delivery_days'] != '') { ?>
+                                                <?= str_replace(',', ' <br>', $data['delivery_days']); ?>
+                                            <?php } ?>
+                                        </td>
 
-                                <td>
+                                        <td>
+                                            <?php 
+                                            if(!empty($data['cutoff_time'])){
+                                                $formattedTime = date('h:i A', strtotime($data['cutoff_time'])); 
+                                                echo $formattedTime;
+                                            }
+                                            //    
+                                            ?>
+                                        </td>
 
-                                    <a data="<?php echo $data['zipcode_id']; ?>" class="add" title="Add"
+                                        <td>
+                                            <?php 
+                                            $zone_name = getZonenameById($data['zone_id']);
+                                            echo $zone_name; ?>
 
-                                        data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
+                                        </td>
 
-                                    <a data="<?php echo $data['zipcode_id']; ?>" class="edit" title="Edit"
+                                        <td class="zipcode_icon_list">
 
-                                        data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
+                                            <a data="<?php echo $data['zipcode_id']; ?>" class="add" title="Add"
 
-                                    <a data="<?php echo $data['zipcode_id']; ?>" class="delete" title="Delete"
+                                                data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
 
-                                        data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                                            <a data="<?php echo $data['zipcode_id']; ?>" class="edit" title="Edit"
 
-                                </td>
+                                                data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
+                                            <!-- start holiday date code -->
+                                            <?php if(!empty($data['zipcode_id'])){ ?>
+                                                <a href="javascript:void(0);"
+                                                    class="date-range-icon"
+                                                    data-id="<?php echo $data['zipcode_id']; ?>"
+                                                    data-start-date="<?php echo $data['holiday_start_date'] ?>"
+                                                    data-end-date="<?php echo $data['holiday_end_date'] ?>"
+                                                    title="Select Holiday Date">
+                                                        <i class="material-icons">date_range</i>
+                                                </a>
+                                            <?php } ?>
+                                            <!-- end holiday date code -->
+                                            <a data="<?php echo $data['zipcode_id']; ?>" class="delete" title="Delete"
 
-                            </tr>
+                                                data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                                            
 
-                        <?php } ?>
+                                        </td>
 
-                    </tbody>
+                                    </tr>
 
-                </table>
+                                <?php } ?>
+
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                </div>
 
             </div>
 

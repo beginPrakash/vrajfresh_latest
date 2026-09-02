@@ -352,6 +352,8 @@ span.noti_count_or {
 
 					<li><a href="<?php echo base_url(); ?>zipcode-configuration">ZIP Code Configuration</a></li>
 
+					<li><a href="<?php echo base_url(); ?>zone">Zipcode Zone</a></li>
+
 					<li><a href="<?php echo base_url(); ?>website-configuration">Website Configuration</a></li>
 
 					<li><a href="<?php echo base_url(); ?>app-configuration">Application Configuration</a></li>

@@ -266,6 +266,16 @@ class Controller_zipcodes extends CI_Controller
 			$ArrData = $zipcodeData;
 			if (count($zipcodeData) > 0) {
 				$ArrData = $zipcodeData;
+				//$ArrData['holiday_arr'] = getHolidayDatearr($zipcodeData[0]->holiday_start_date,$zipcodeData[0]->holiday_end_date,$zipcodeData[0]->zone_id);
+				// Get first record directly
+				$ArrData = (array) $zipcodeData[0];
+
+				// Add holiday array
+				$ArrData['holiday_arr'] = getHolidayDatearr(
+					$zipcodeData[0]->holiday_start_date,
+					$zipcodeData[0]->holiday_end_date,
+					$zipcodeData[0]->zone_id
+				);
 				$success_message = '';
 			} else {
 				$errors = 'No data available';

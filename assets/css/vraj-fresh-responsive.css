@@ -1229,9 +1229,14 @@
 }
 
 
+@media only screen and (min-width: 395px) and (max-width: 415px){
+.banner-empty .mobile-menu {
+		top: 100px;
+	}
+}
 @media (max-width: 395px) {
 	.banner-empty .mobile-menu {
-		top: 100px;
+		top: 125px;
 	}
 }
 
