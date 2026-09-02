@@ -34,6 +34,7 @@ $route['deliveryuser-view/(:num)'] = 'adminpanel/Controller_delivery_user/view_d
 /* CONFIGURATION */
 $route['zipcode-configuration'] = 'adminpanel/Controller_zipcode/zipcode';
 $route['save-zipcode'] = 'adminpanel/Controller_zipcode/save_zipcode';
+$route['save-holiday-date'] = 'adminpanel/Controller_zipcode/save_holiday_date';
 $route['delete-zipcode'] = 'adminpanel/Controller_zipcode/delete_zipcode';
 $route['website-configuration'] = 'adminpanel/Controller_configuration/website';
 $route['save-configuration'] = 'adminpanel/Controller_configuration/save_website_configuration';
@@ -112,6 +113,13 @@ $route['coupon-notification'] = 'adminpanel/Controller_coupon_notification';
 $route['coupon-notification/add'] = 'adminpanel/Controller_coupon_notification/add';
 $route['coupon-notification/update/(:num)'] = 'adminpanel/Controller_coupon_notification/add/$1';
 $route['coupon-notification/delete/(:num)'] = 'adminpanel/Controller_coupon_notification/delete/$1';
+
+/* Zone */
+$route['zone'] = 'adminpanel/Controller_zone';
+$route['zone/add'] = 'adminpanel/Controller_zone/add';
+$route['zone/update/(:num)'] = 'adminpanel/Controller_zone/add/$1';
+$route['zone/delete/(:num)'] = 'adminpanel/Controller_zone/delete/$1';
+$route['zone/check_zipcode_used'] = 'adminpanel/Controller_zone/check_zipcode_used';
 
 /* PROMOTIONAL CODE */
 $route['promotional-code'] = 'adminpanel/Controller_promotional_code';

@@ -647,3 +647,63 @@ function get_ci_rowid($db_rowid) {
 
     return false;
 }
+
+function getHolidayDatearr($zipcode)
+{
+	
+    $ci =& get_instance();
+
+	$ci->db->select('cutoff_time,zone_id,holiday_start_date,holiday_end_date');
+    $ci->db->from('tbl_zipcodes');
+    $ci->db->where('zipcode', $zipcode);
+
+    $zipcode_query = $ci->db->get();
+	$zipcode_result = $zipcode_query->row();
+
+	$cutoff_time = $zipcode_result->cutoff_time ?? '';
+	$zone_id = $zipcode_result->zone_id ?? '';
+	$from_date = $zipcode_result->holiday_start_date ?? '';
+	$to_date = $zipcode_result->holiday_end_date ?? '';
+
+	$dates = [];
+
+	// Get all dates between start and end date
+	if(!empty($from_date) && !empty($to_date)){
+		$start = new DateTime($from_date);
+		$end   = new DateTime($to_date);
+
+		while ($start <= $end) {
+			$dates[] = $start->format('Y-m-d');
+			$start->modify('+1 day');
+		}
+	}
+
+	//get particular zone date range
+	$ci->db->select('holiday_start_date,holiday_end_date');
+    $ci->db->from('tbl_zones');
+    $ci->db->where('zone_id', $zone_id);
+
+    $query = $ci->db->get();
+
+    $result = $query->row();
+	$zone_from_date = $result->holiday_start_date ?? '';
+	$zone_to_date = $result->holiday_end_date ?? '';
+    // Get all dates between start and end date
+	if(!empty($zone_from_date) && !empty($zone_to_date)){
+		$start = new DateTime($zone_from_date);
+		$end   = new DateTime($zone_to_date);
+
+		while ($start <= $end) {
+			$dates[] = $start->format('Y-m-d');
+			$start->modify('+1 day');
+		}
+	}
+	
+	// Remove duplicate dates and reset array keys
+	$dates = array_values(array_unique($dates));
+	$timedel_arr = [];
+	$timedel_arr['cutoff_time'] = $cutoff_time;
+	$timedel_arr['holiday_arr'] = $dates;
+	
+	return $timedel_arr;
+}

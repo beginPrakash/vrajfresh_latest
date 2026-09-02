@@ -701,7 +701,7 @@ class Controller_product extends CI_Controller
 							}
 						}
 						//END UPLOAD IMAGES
-						$this->notification_new_product($product_id, $this->input->post('product_name'), $this->input->post('product_slug'), $this->input->post('product_price'), $this->input->post('sale_price'), $this->input->post('product_image'));
+						//$this->notification_new_product($product_id, $this->input->post('product_name'), $this->input->post('product_slug'), $this->input->post('product_price'), $this->input->post('sale_price'), $this->input->post('product_image'));
 						$this->session->set_flashdata('success_message', 'Product details has been added successfully.');
 					} else {
 						$this->session->set_flashdata('error_message', 'Oops...! something went wrong, please try again');

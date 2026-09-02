@@ -3349,4 +3349,37 @@ if (!function_exists('getProcessingOrderCount')) {
     }
 }
 
+if (!function_exists('get_timeslot_list')) {
+    function get_timeslot_list()
+    {
+        $timeslots = [];
+
+        for ($hour = 0; $hour < 24; $hour++) {
+            $time24 = sprintf('%02d:00', $hour);
+            
+            $timeslots[] = [
+                'value' => $time24,
+                'display' => date('h:i A', strtotime($time24))
+            ];
+        }
+        return $timeslots;
+    }
+}
+
+function getZonenameById($zone_id)
+{
+    $ci =& get_instance();
+    $ci->db->select('title');
+    $ci->db->from('tbl_zones');
+    $ci->db->where('zone_id', $zone_id);
+
+    $query = $ci->db->get();
+
+    $result = $query->row();
+
+    return !empty($result) ? $result->title : '';
+}
+
+
+
 ?>

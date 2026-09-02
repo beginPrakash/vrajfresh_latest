@@ -39,12 +39,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title><?= (isset($meta_title) && !empty($meta_title)) ? $meta_title : 'VrajFresh'; ?></title>
     <meta name="description" content="<?= (isset($meta_description) && !empty($meta_description)) ? $meta_description : 'VrajFresh'; ?>">
-    <?php if(isset($og_title)) { ?>
-        <meta property="og:title" content="<?php echo $og_title; ?>">
-        <meta property="og:description" content="<?php echo htmlspecialchars(trim(preg_replace('/\s+/', ' ', strip_tags($og_description))), ENT_QUOTES, 'UTF-8'); ?>">
-        <meta property="og:image" content="<?php echo $og_image; ?>">
-        <meta property="og:url" content="<?php echo $og_url; ?>">
-    <?php } ?>
+    <?php if (!empty($og_title)) { ?>
+
+    <meta property="og:title"
+          content="<?php echo htmlspecialchars(trim(preg_replace('/\s+/', ' ', strip_tags($og_title))), ENT_QUOTES, 'UTF-8'); ?>">
+
+    <meta property="og:description"
+          content="<?php echo htmlspecialchars(trim(preg_replace('/\s+/', ' ', strip_tags($og_description))), ENT_QUOTES, 'UTF-8'); ?>">
+
+    <meta property="og:image"
+          content="<?php echo htmlspecialchars($og_image, ENT_QUOTES, 'UTF-8'); ?>">
+
+    <meta property="og:url"
+          content="<?php echo htmlspecialchars($og_url, ENT_QUOTES, 'UTF-8'); ?>">
+
+    <meta property="og:type" content="website">
+
+    <meta property="og:site_name" content="VrajFresh">
+
+<?php } ?>
     <meta name="author" content="">
     <title>VrajFresh</title>
     <link rel="shortcut icon" type="image/png" href=<?php echo ASSET_URL . "images/favicon.png"; ?>>
@@ -135,7 +148,169 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <i class="fa fa-pencil ms-1" style="font-size: 0.75rem;" aria-hidden="true"></i>
                 </a>
             </div>
+            <?php 
+                         
+                function get_single_delivery_date(){
+                        $time_del_arr = getHolidayDatearr($_COOKIE['zipcode']);
 
+                    $cutofftime    = trim($time_del_arr['cutoff_time']);   // Example: 03:00
+                    $holidaye_date = $time_del_arr['holiday_arr'];  
+                    // CURRENT DATE & TIME
+                    // -----------------------------------
+
+                    $todayDate = date('Y-m-d');
+
+                    $currentHour   = (int) date('H');
+                    $currentMinute = (int) date('i');
+
+                    // -----------------------------------
+                    // CUTOFF TIME
+                    // -----------------------------------
+
+                    // Example: 14:00
+                    $cutoffParts = explode(':', $cutofftime);
+
+                    $cutoffHour   = (int) $cutoffParts[0];
+                    $cutoffMinute = (int) $cutoffParts[1];
+
+                    // -----------------------------------
+                    // COMPARE CURRENT TIME WITH CUTOFF
+                    // -----------------------------------
+
+                    if (
+                        $currentHour > $cutoffHour ||
+                        (
+                            $currentHour == $cutoffHour &&
+                            $currentMinute >= $cutoffMinute
+                        )
+                    ) {
+
+                        // After cutoff → next day
+                        $todayDate = date(
+                            'Y-m-d',
+                            strtotime($todayDate . ' +1 day')
+                        );
+                    }
+
+                    // -----------------------------------
+                    // CHECK HOLIDAYS
+                    // -----------------------------------
+
+                    while (in_array($todayDate, $holidaye_date)) {
+
+                        // Holiday → next day
+                        $todayDate = date(
+                            'Y-m-d',
+                            strtotime($todayDate . ' +1 day')
+                        );
+                    }
+
+                    // -----------------------------------
+                    // FINAL DELIVERY DATE
+                    // -----------------------------------
+
+                    $deliveryDate = date(
+                        'l, d F Y',
+                        strtotime($todayDate)
+                    );
+                    return $deliveryDate;
+                }
+                function get_twise_delivery_date(){
+                    $time_del_arr = getHolidayDatearr($_COOKIE['zipcode']);
+
+                    $cutofftime    = trim($time_del_arr['cutoff_time']);   // Example: 03:00
+                    $holidaye_date = $time_del_arr['holiday_arr'];  
+                    $delivery_days = $_COOKIE['delivery_days'];
+                    $dayArray = array_map('trim', explode(',', $delivery_days));
+                    // Make sure holiday array is valid
+                    if (!is_array($holidaye_date)) {
+                        $holidaye_date = array();
+                    }
+
+
+                    // ----------------------------------------
+                    // CURRENT TIME
+                    // ----------------------------------------
+                    $todayDate = date('Y-m-d');
+
+                    $currentHour   = (int)date('H');
+                    $currentMinute = (int)date('i');
+
+
+                    // ----------------------------------------
+                    // CUTOFF TIME
+                    // ----------------------------------------
+                    $cutoffParts = explode(':', $cutofftime);
+
+                    $cutoffHour   = (int)$cutoffParts[0];
+                    $cutoffMinute = (int)$cutoffParts[1];
+
+
+                    // ----------------------------------------
+                    // AFTER CUTOFF?
+                    // ----------------------------------------
+                    $isAfterCutoff = false;
+
+                    if (
+                        $currentHour > $cutoffHour ||
+                        (
+                            $currentHour == $cutoffHour &&
+                            $currentMinute >= $cutoffMinute
+                        )
+                    ) {
+                        $isAfterCutoff = true;
+                    }
+
+
+                    // ----------------------------------------
+                    // START DATE
+                    // After cutoff → tomorrow
+                    // Before cutoff → today
+                    // ----------------------------------------
+                    $checkDate = $todayDate;
+
+                    if ($isAfterCutoff) {
+                        $checkDate = date(
+                            'Y-m-d',
+                            strtotime($todayDate . ' +1 day')
+                        );
+                    }
+
+
+                    // ----------------------------------------
+                    // FIND NEXT AVAILABLE DELIVERY DATE
+                    // ----------------------------------------
+                    $deliveryDate = '';
+
+                    for ($i = 0; $i < 60; $i++) {
+
+                        $checkDay = date('l', strtotime($checkDate));
+
+                        // 1. Must be a delivery day
+                        $isDeliveryDay = in_array($checkDay, $dayArray, true);
+
+                        // 2. Must NOT be a holiday date
+                        $isHoliday = in_array($checkDate, $holidaye_date, true);
+
+                        if ($isDeliveryDay && !$isHoliday) {
+
+                            $deliveryDate = date(
+                                'l, d F Y',
+                                strtotime($checkDate)
+                            );
+
+                            break;
+                        }
+
+                        // Move to next date
+                        $checkDate = date(
+                            'Y-m-d',
+                            strtotime($checkDate . ' +1 day')
+                        );
+                    }
+                    return $deliveryDate;
+                }
+            ?>
             <?php if (isset($_COOKIE['zipcode_success_message']) && !empty($_COOKIE['zipcode_success_message'])) { ?>
             <span class="zipcode-divider">|</span>
 
@@ -143,53 +318,39 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <i class="fa fa-truck" aria-hidden="true"></i>
                 <?php
                 $deliveryDate = '';
+                
+                //print_r($holidaye_date);
                 if ($_COOKIE['delivery_type'] == 'Express Delivery' || $_COOKIE['delivery_type'] == 'Same Day Delivery') {
-                    $timezone = new DateTimeZone("America/New_York");
-                    // Current date/time in New York
-                    $today = new DateTime("now", $timezone);
-                    // Tomorrow date
-                    $tomorrow = clone $today;
-                    $tomorrow->modify('+1 day');
-
-                    // Max date (+7 days)
-                    $maxDate = clone $today;
-                    $maxDate->modify('+7 day');
-
-                    // Current hour and minute
-                    $hr  = (int)$today->format('H');
-                    $min = (int)$today->format('i');
-
-                    // If time is after 2:00 PM
-                    if ($hr >= 14 && $min > 0) {
-                        $today = $tomorrow;
-                    }
-
-                    // Final formatted date
-                    $deliveryDate = $today->format('l, d F Y');
+                   $deliveryDate = get_single_delivery_date();
                 }
                 if ($_COOKIE['delivery_type'] == 'Twise in a week') {
-                    $delivery_days = $_COOKIE['delivery_days'];
-                    $dayArray = explode(',', $delivery_days);
-                    $deliveryDate = date('m-d-Y');
+                    // $delivery_days = $_COOKIE['delivery_days'];
+                     $deliveryDate = get_twise_delivery_date();
+                    // $dayArray = explode(',', $delivery_days);
+                    // $deliveryDate = date('m-d-Y');
                     
-                    $hours = date('H');
-                    $today = date('l');
+                    // $hours = date('H');
+                    // $today = date('l');
                     
-                    if(in_array($today, $dayArray) && $hours < 15){
-                        $deliveryDate = date('l, d F Y');
-                    } else {
-                        for ($i = 1; $i <= 7; $i++) {
-                            // Get the date for the next iteration
-                            $nextDate = new DateTime();
-                            $nextDate->modify("+$i day");
+                    // if(in_array($today, $dayArray) && $hours < 15){
+                    //     $deliveryDate = date('l, d F Y');
+                    // } else {
+                    //     for ($i = 1; $i <= 7; $i++) {
+                    //         // Get the date for the next iteration
+                    //         $nextDate = new DateTime();
+                    //         $nextDate->modify("+$i day");
                         
-                            // Check if the day of the next date is in the dayArray
-                            if (in_array($nextDate->format('l'), $dayArray)) {
-                                $deliveryDate = $nextDate->format('l, d F Y)');
-                                break; // Exit the loop once a suitable delivery date is found
-                            }
-                        }
-                    }
+                    //         // Check if the day of the next date is in the dayArray
+                    //         if (in_array($nextDate->format('l'), $dayArray)) {
+                    //             $deliveryDate = $nextDate->format('l, d F Y)');
+                    //             break; // Exit the loop once a suitable delivery date is found
+                    //         }
+                    //     }
+                    // }
+                   
+
+
+
                 }
                 ?>
                 <span><?php echo $deliveryDate; ?></span>

@@ -71,7 +71,7 @@ class zipcodes_model extends CI_Model
     }
     public function get_zipcode_by_data($data)
     {
-        $query = $this->db->select('z.zipcode_id,z.zipcode,z.minimum_order_value,z.can_deliver_perishable_products,z.can_deliver_liker_products,z.can_deliver_cook_food_products,z.delivery_types,z.delivery_days,z.is_active,z.area_name,z.state,s.state_id,s.tax as state_tax')
+        $query = $this->db->select('z.zipcode_id,z.zipcode,z.minimum_order_value,z.can_deliver_perishable_products,z.can_deliver_liker_products,z.can_deliver_cook_food_products,z.delivery_types,z.delivery_days,z.is_active,z.area_name,z.state,s.state_id,s.tax as state_tax,z.cutoff_time,z.holiday_start_date,z.holiday_end_date,z.zone_id')
             ->where('z.zipcode', $data)
             ->join('state s', 's.state=z.state')
             ->where('z.is_deleted', '0')

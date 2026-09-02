@@ -231,30 +231,8 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
                class="chk_delivery_type">
             <?php
 
-               $timezone = new DateTimeZone("America/New_York");
-
-               // Current date/time in New York
-               $today = new DateTime("now", $timezone);
-
-               // Tomorrow date
-               $tomorrow = clone $today;
-               $tomorrow->modify('+1 day');
-
-               // Max date (+7 days)
-               $maxDate = clone $today;
-               $maxDate->modify('+7 day');
-
-               // Current hour and minute
-               $hr  = (int)$today->format('H');
-               $min = (int)$today->format('i');
-
-               // If time is after 2:00 PM
-               if ($hr >= 14 && $min > 0) {
-                  $today = $tomorrow;
-               }
-
-               // Final formatted date
-               $stext = $today->format('m-d-Y');
+               $stextdate = get_single_delivery_date();
+               $stext = date('m-d-Y', strtotime($stextdate));
 
 
             ?>
@@ -269,28 +247,7 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
          <label><b>Tentitive Delivery Date:</b></label>
             <p>
                <?php 
-               $delivery_days = $_COOKIE['delivery_days'];
-               $dayArray = explode(',', $delivery_days);
-               $deliveryDate = date('m-d-Y');
-               
-               $hours = date('H');
-               $today = date('l');
-               
-               if(in_array($today, $dayArray) && $hours < 15){
-               	$deliveryDate = date('m-d-Y');
-               } else {
-               	for ($i = 1; $i <= 7; $i++) {
-               		// Get the date for the next iteration
-               		$nextDate = new DateTime();
-               		$nextDate->modify("+$i day");
-               	
-               		// Check if the day of the next date is in the dayArray
-               		if (in_array($nextDate->format('l'), $dayArray)) {
-               			$deliveryDate = $nextDate->format('l (d F, Y)');
-               			break; // Exit the loop once a suitable delivery date is found
-               		}
-               	}
-               }
+               $deliveryDate = get_twise_delivery_date();
                echo $deliveryDate;
                
                /* $t = date('m-d-Y');
@@ -592,33 +549,9 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
          <label><b>Expected Delivery Date:</b></label>
             <p>
             <?php 
-               $delivery_days = $_COOKIE['delivery_days'];
-               $dayArray = explode(',', $delivery_days);
-               $deliveryDate = date('m-d-Y');
-               $expdeliveryDate = date('m-d-Y');
-               
-               $hours = date('H');
-               $today = date('l');
-               
-               if(in_array($today, $dayArray) && $hours < 15){
-               	$deliveryDate = date('m-d-Y');
-                  $expdeliveryDate = date('m-d-Y');
-               } else {
-               	for ($i = 1; $i <= 7; $i++) {
-               		// Get the date for the next iteration
-               		$nextDate = new DateTime();
-               		$nextDate->modify("+$i day");
-               	
-               		// Check if the day of the next date is in the dayArray
-               		if (in_array($nextDate->format('l'), $dayArray)) {
-               			$deliveryDate = $nextDate->format('l (d F, Y)');
-                        $expdeliveryDate = $nextDate->format('m-d-Y');
-               			break; // Exit the loop once a suitable delivery date is found
-               		}
-               	}
-               }
+               $deliveryDate = get_twise_delivery_date();
                echo $deliveryDate;
-              $expdeliveryDate;
+               $expdeliveryDate = date('m-d-Y', strtotime($deliveryDate));
                
                ?>
             </p>
@@ -628,31 +561,9 @@ if ($_COOKIE['delivery_state_id'] != 'null') {
             <?php $deliveryDate = date('m-d-Y');?>
             <?php
 
-               $timezone = new DateTimeZone("America/New_York");
-
-               // Current date/time in New York
-               $today = new DateTime("now", $timezone);
-
-               // Tomorrow date
-               $tomorrow = clone $today;
-               $tomorrow->modify('+1 day');
-
-               // Max date (+7 days)
-               $maxDate = clone $today;
-               $maxDate->modify('+7 day');
-
-               // Current hour and minute
-               $hr  = (int)$today->format('H');
-               $min = (int)$today->format('i');
-
-               // If time is after 2:00 PM
-               if ($hr >= 14 && $min > 0) {
-                  $today = $tomorrow;
-               }
-
-               // Final formatted date
-               $stext = $today->format('m-d-Y');
-               $expdeliveryDate = $today->format('m-d-Y');
+              $stextdate = get_single_delivery_date();
+               $stext = date('m-d-Y', strtotime($stextdate));
+               $expdeliveryDate = date('m-d-Y', strtotime($stextdate));
 
 
             ?>

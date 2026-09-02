@@ -1,4 +1,9 @@
+<?php
+ $time_del_arr = getHolidayDatearr($_COOKIE['zipcode']);
 
+                    $cutofftime    = trim($time_del_arr['cutoff_time']);   // Example: 03:00
+                    $holidaye_date = $time_del_arr['holiday_arr'];
+                    ?>
 <script>
 
 $(document).ready(function () {
@@ -1020,7 +1025,7 @@ function get_product_detail(api_url_prefix) {
     });
 }
 
-function get_delivery_message() {
+function get_delivery_messageold() {
     var delivery_type = Cookies.get("delivery_type");
     var delivery_days = Cookies.get("delivery_days");
 
@@ -1084,6 +1089,281 @@ function get_delivery_message() {
         // Format the delivery_date as "Day dd mm, yyyy"
         const formattedDate = getDayName(delivery_date) + " (" + delivery_date.getDate() + " " + monthNames[delivery_date.getMonth()] + ", " + delivery_date.getFullYear() + ")";
 
+        message = 'You can expect delivery by coming ' + formattedDate;
+        
+        // Log the formatted date
+        console.log(formattedDate);
+        
+        // Code end by HD
+        
+        /*
+        var d_day = 0;
+    if (dayArray.indexOf("Monday") > -1) {
+            d_day = 1;
+        } else if (dayArray.indexOf("Tuesday") > -1) {
+            d_day = 2;
+        } else if (dayArray.indexOf("Wednesday") > -1) {
+            d_day = 3;
+        } else if (dayArray.indexOf("Thursday") > -1) {
+            d_day = 4;
+        } else if (dayArray.indexOf("Friday") > -1) {
+            d_day = 5;
+        } else if (dayArray.indexOf("Saturday") > -1) {
+            d_day = 6;
+        } else if (dayArray.indexOf("Sunday") > -1) {
+            d_day = 7;
+        }
+        if (d_day == 1) {
+            message = 'You can expect delivery by coming ' + '<?php $date = date_create();
+            $date->modify('next Monday');
+            echo date_format($date, "l d/M/Y") ?> ';
+        }
+        if (d_day == 2) {
+            message = 'You can expect delivery by coming ' + '<?php $date = date_create();
+            $date->modify('next Tuesday');
+            echo date_format($date, "l d/M/Y") ?> ';
+        }
+        if (d_day == 3) {
+            message = 'You can expect delivery by coming ' + '<?php $date = date_create();
+            $date->modify('next Wednesday');
+            echo date_format($date, "l d/M/Y") ?> ';
+        }
+        if (d_day == 4) {
+            message = 'You can expect delivery by coming ' + '<?php $date = date_create();
+            $date->modify('next Thursday');
+            echo date_format($date, "l d/M/Y") ?> ';
+        }
+        if (d_day == 5) {
+            message = 'You can expect delivery by coming ' + '<?php $date = date_create();
+            $date->modify('next Friday');
+            echo date_format($date, "l d/M/Y") ?> ';
+        }
+        if (d_day == 6) {
+            message = 'You can expect delivery by coming ' + '<?php $date = date_create();
+            $date->modify('next Saturday');
+            echo date_format($date, "l d/M/Y") ?> ';
+        }
+        if (d_day == 7) {
+            message = 'You can expect delivery by coming ' + '<?php $date = date_create();
+            $date->modify('next Sunday');
+            echo date_format($date, "l d/M/Y") ?> ';
+        }
+    */
+
+    }
+
+    $("#delivery_time").html(message);
+}
+
+function get_delivery_message() {
+    var delivery_type = Cookies.get("delivery_type");
+    var delivery_days = Cookies.get("delivery_days");
+
+    // Holiday dates from PHP
+    var holidayDates = <?php echo json_encode($holidaye_date); ?>;
+    // Cutoff time from PHP
+    var cutoffTime = "<?php echo $cutofftime; ?>"; // Example: 03:00
+
+
+    // ------------------------------------------
+    // GET CURRENT NEW YORK DATE/TIME
+    // ------------------------------------------
+
+    const now = new Date();
+
+    const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/New_York',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23'
+    }).formatToParts(now);
+
+    let year, month, day, hr, min;
+
+    parts.forEach(part => {
+
+        if (part.type === 'year') {
+            year = parseInt(part.value, 10);
+        }
+
+        if (part.type === 'month') {
+            month = parseInt(part.value, 10);
+        }
+
+        if (part.type === 'day') {
+            day = parseInt(part.value, 10);
+        }
+
+        if (part.type === 'hour') {
+            hr = parseInt(part.value, 10);
+        }
+
+        if (part.type === 'minute') {
+            min = parseInt(part.value, 10);
+        }
+    });
+
+
+
+    // ------------------------------------------
+    // CUTOFF TIME
+    // ------------------------------------------
+
+    const cutoffParts = cutoffTime.split(':');
+
+    const cutoffHour = parseInt(cutoffParts[0], 10);
+    const cutoffMinute = parseInt(cutoffParts[1], 10);
+
+
+    // ------------------------------------------
+    // CHECK AFTER CUTOFF
+    // ------------------------------------------
+
+    const isAfterCutoff =
+        hr > cutoffHour ||
+        (
+            hr === cutoffHour &&
+            min >= cutoffMinute
+        );
+
+
+    // ------------------------------------------
+    // CREATE START DATE
+    // ------------------------------------------
+
+    let checkDate = new Date(year, month - 1, day);
+
+
+    // After cutoff → tomorrow
+    if (isAfterCutoff) {
+        checkDate.setDate(checkDate.getDate() + 1);
+    }
+
+
+    // ------------------------------------------
+    // FORMAT YYYY-MM-DD
+    // ------------------------------------------
+
+    function getDateString(date) {
+
+        const y = date.getFullYear();
+
+        const m = String(
+            date.getMonth() + 1
+        ).padStart(2, '0');
+
+        const d = String(
+            date.getDate()
+        ).padStart(2, '0');
+
+        return y + '-' + m + '-' + d;
+    }
+
+
+    // ------------------------------------------
+    // FIND NEXT NON-HOLIDAY DATE
+    // ------------------------------------------
+
+    function getNextAvailableDate(startDate) {
+
+        let date = new Date(startDate);
+
+        for (let i = 0; i < 60; i++) {
+
+            const dateString = getDateString(date);
+
+            // Check holiday only
+            if (!holidayDates.includes(dateString)) {
+                return new Date(date);
+            }
+
+            // Holiday → next day
+            date.setDate(date.getDate() + 1);
+        }
+
+        return null;
+    }
+
+
+    const nextDeliveryDate = getNextAvailableDate(checkDate);
+
+
+    // ------------------------------------------
+    // FORMAT DATE
+    // ------------------------------------------
+
+    function formatDeliveryDate(date) {
+
+        return date.toLocaleDateString('en-US', {
+            weekday: 'long',
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        });
+    }
+
+
+   
+    var message = '';
+    // if (delivery_type == 'Express Delivery') {
+    //     message = 'Order within 23 hours and get delivery tomorrow';
+    //     if (hr < 14) {
+    //         message = 'Order within ' + (14 - hr) + ' hours' + ' : ' + (60 - min) + ' minutes and get same day delivery';
+    //     }
+    //     message = message + '<br>* Order before 2:00 PM and you can expect your order within 4 hours with our Express Delivery.'
+    // }
+  
+    if (delivery_type == 'Same Day Delivery' || delivery_type == 'Express Delivery') {
+
+         if (nextDeliveryDate) {
+
+            var formattedDate = formatDeliveryDate(
+                nextDeliveryDate
+            );
+
+            if (!isAfterCutoff) {
+
+            // Convert both times to minutes
+            var currentTotalMinutes =
+                (hr * 60) + min;
+
+            var cutoffTotalMinutes =
+                (cutoffHour * 60) + cutoffMinute;
+
+            // Difference
+            var remainingMinutes =
+                cutoffTotalMinutes - currentTotalMinutes;
+
+            // Convert back to hours and minutes
+            var remainingHours =
+                Math.floor(remainingMinutes / 60);
+
+            var remainingMins =
+                remainingMinutes % 60;
+
+
+            message =
+                'Order within ' +
+                remainingHours +
+                ' hours : ' +
+                remainingMins +
+                ' minutes and delivery By Today ' +
+                formattedDate;
+
+        } else {
+
+                message =
+                    'Order now and delivery By ' +
+                    formattedDate;
+            }
+        }
+
+    }
+    if (delivery_type == 'Twise in a week') {
+        const formattedDate = <?php echo json_encode(get_twise_delivery_date()); ?>;
         message = 'You can expect delivery by coming ' + formattedDate;
         
         // Log the formatted date

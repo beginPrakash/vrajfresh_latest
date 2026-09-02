@@ -590,7 +590,9 @@ class Controller_orders extends CI_Controller
 					'title'       => $title,
 					'body'        => $body,
 					'custom_data' => $json_custom_data,
-					'read_status'      => 0 // 0 = Unread app notification inbox item
+					'read_status'      => 0, // 0 = Unread app notification inbox item
+					'created_at'=> date('Y-m-d H:i:s'),
+					'updated_at'=> date('Y-m-d H:i:s'),
 				];
 				$this->db->insert('tbl_notification', $insert_notification_data);
 
@@ -611,7 +613,9 @@ class Controller_orders extends CI_Controller
 								'title'        => $title,
 								'body'         => $body,
 								'custom_data'  => $json_custom_data,
-								'status'       => 'pending'
+								'status'       => 'pending',
+								'created_at'=> date('Y-m-d H:i:s'),
+								'updated_at'=> date('Y-m-d H:i:s'),
 							];
 						}
 					}
