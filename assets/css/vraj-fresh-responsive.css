@@ -414,8 +414,8 @@
 
 	.mobile-menu {
 		display: inline-block;
-		position: fixed;
-		top: 82px;
+		position: absolute;
+		top: 17px;
 		left: 15px;
 		z-index: 9;
 		background: #013F9E;
@@ -1229,14 +1229,9 @@
 }
 
 
-@media only screen and (min-width: 395px) and (max-width: 415px){
-.banner-empty .mobile-menu {
-		top: 100px;
-	}
-}
 @media (max-width: 395px) {
 	.banner-empty .mobile-menu {
-		top: 125px;
+		top: 17px;
 	}
 }
 

@@ -201,8 +201,9 @@ class Controller_zipcode extends CI_Controller
 	{	
 
 		$zipcode_id = $_POST['zipcode_id'];
-		$start_date = $_POST['start_date'];
-		$end_date = $_POST['end_date'];
+		$start_date = !empty($_POST['start_date']) ? $_POST['start_date'] : NULL;
+		$end_date   = !empty($_POST['end_date']) ? $_POST['end_date'] : NULL;
+
 
 		if ($zipcode_id > 0) {
 

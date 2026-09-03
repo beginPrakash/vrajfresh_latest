@@ -289,7 +289,7 @@ $(document).ready(function () {
 
         locale: {
             format: 'MM-DD-YYYY',
-            cancelLabel: 'Cancel',
+            cancelLabel: 'Clear',
             applyLabel: 'Apply'
         }
     };
@@ -324,14 +324,13 @@ $(document).ready(function () {
         console.log('APPLY CLICKED');
 
         var zipcode_id = $(this).attr('data-id');
+        var start_date = '';
+        var end_date = '';
 
-        var start_date = picker.startDate.format('YYYY-MM-DD');
-        var end_date   = picker.endDate.format('YYYY-MM-DD');
-
-        console.log('ZIPCODE ID:', zipcode_id);
-        console.log('START DATE:', start_date);
-        console.log('END DATE:', end_date);
-
+        if (picker.startDate && picker.endDate) {
+            start_date = picker.startDate.format('YYYY-MM-DD');
+            end_date   = picker.endDate.format('YYYY-MM-DD');
+        }
 
         $.ajax({
 
@@ -380,11 +379,11 @@ $(document).ready(function () {
 
             error: function (xhr, status, error) {
 
-                console.log('AJAX ERROR');
-                console.log('HTTP STATUS:', xhr.status);
-                console.log('STATUS:', status);
-                console.log('ERROR:', error);
-                console.log('RESPONSE:', xhr.responseText);
+                // console.log('AJAX ERROR');
+                // console.log('HTTP STATUS:', xhr.status);
+                // console.log('STATUS:', status);
+                // console.log('ERROR:', error);
+                // console.log('RESPONSE:', xhr.responseText);
 
                 toastr.error('Holiday Date save operation failed.');
 
@@ -396,9 +395,68 @@ $(document).ready(function () {
 
 
     // CANCEL BUTTON
-    $icon.on('cancel.daterangepicker', function () {
+    $icon.on('cancel.daterangepicker', function (ev, picker) {
 
-        console.log('CANCEL CLICKED');
+        // Clear the input
+        picker.element.val('');
+
+        // Clear selected dates
+        picker.setStartDate(moment());
+        picker.setEndDate(moment());
+        $.ajax({
+
+            type: 'POST',
+
+            url: '<?php echo base_url("save-holiday-date"); ?>',
+
+            data: {
+                zipcode_id: zipcode_id,
+                start_date: '',
+                end_date: ''
+            },
+
+            dataType: 'json',
+
+            beforeSend: function () {
+                console.log('AJAX START');
+            },
+
+            success: function (response) {
+
+                console.log('AJAX SUCCESS:', response);
+
+                if (
+                    response.status == true ||
+                    response.status == 'true' ||
+                    response.status == 1 ||
+                    response.status == '1'
+                ) {
+
+                    toastr.success('Holiday date saved successfully!');
+
+                } else {
+
+                    toastr.error(
+                        response.message || 'Unable to save holiday date.'
+                    );
+
+                }
+
+            },
+
+            error: function (xhr, status, error) {
+
+                // console.log('AJAX ERROR');
+                // console.log('HTTP STATUS:', xhr.status);
+                // console.log('STATUS:', status);
+                // console.log('ERROR:', error);
+                // console.log('RESPONSE:', xhr.responseText);
+
+                toastr.error('Holiday Date save operation failed.');
+
+            }
+
+        });
 
     });
 
@@ -458,16 +516,40 @@ $(document).ready(function () {
         //get timeslot list
         var timeOptions = '<option value="">Select Time</option>';
 
-        for (var hour = 0; hour < 24; hour++) {
-            var hour24 = String(hour).padStart(2, '0') + ':00';
+        var startHour = 8;
+        var endHour = 24;
 
-            var period = hour < 12 ? 'AM' : 'PM';
-            var hour12 = hour % 12;
-            hour12 = hour12 === 0 ? 12 : hour12;
+        for (var hour = startHour; hour < endHour; hour++) {
 
-            var displayTime = String(hour12).padStart(2, '0') + ':00 ' + period;
+            // 30-minute interval from 8 AM through 8 PM
+            var minutesList = (hour <= 20) ? [0, 30] : [0];
 
-            timeOptions += '<option value="' + hour24 + '">' + displayTime + '</option>';
+            for (var i = 0; i < minutesList.length; i++) {
+
+                var minutes = minutesList[i];
+
+                var hour24 = String(hour).padStart(2, '0');
+                var minute = String(minutes).padStart(2, '0');
+
+                var value = hour24 + ':' + minute;
+
+                var period = hour < 12 ? 'AM' : 'PM';
+
+                var hour12 = hour % 12;
+                hour12 = hour12 === 0 ? 12 : hour12;
+
+                var displayTime =
+                    String(hour12).padStart(2, '0') +
+                    ':' +
+                    minute +
+                    ' ' +
+                    period;
+
+                timeOptions +=
+                    '<option value="' + value + '">' +
+                    displayTime +
+                    '</option>';
+            }
         }
 
         var cuttoff_time_list =
@@ -796,17 +878,44 @@ $(document).ready(function () {
                 var timeOptions = '<option value="">Select Time</option>';
 
                 for (var hour = 0; hour < 24; hour++) {
-                    var option_chk = '';
-                    var hour24 = String(hour).padStart(2, '0') + ':00';
 
-                    var period = hour < 12 ? 'AM' : 'PM';
-                    var hour12 = hour % 12;
-                    hour12 = hour12 === 0 ? 12 : hour12;
+                    // 30-minute interval from 08:00 to 20:00
+                    var minutesList = (hour >= 8 && hour <= 20) ? [0, 30] : [0];
 
-                    var displayTime = String(hour12).padStart(2, '0') + ':00 ' + period;
-                    if ($(this).text().trim() == displayTime) { option_chk = ' selected'; }
-                    timeOptions += '<option value="' + hour24 + '" '+option_chk+'>' + displayTime + '</option>';
+                    for (var i = 0; i < minutesList.length; i++) {
+
+                        var minutes = minutesList[i];
+
+                        var hour24 = String(hour).padStart(2, '0');
+                        var minute = String(minutes).padStart(2, '0');
+
+                        var value = hour24 + ':' + minute;
+
+                        // Display as 12-hour format
+                        var period = hour < 12 ? 'AM' : 'PM';
+                        var hour12 = hour % 12;
+                        hour12 = hour12 === 0 ? 12 : hour12;
+
+                        var displayTime =
+                            String(hour12).padStart(2, '0') +
+                            ':' +
+                            minute +
+                            ' ' +
+                            period;
+
+                        var option_chk = '';
+
+                        if ($(this).text().trim() == displayTime) {
+                            option_chk = ' selected';
+                        }
+
+                        timeOptions +=
+                            '<option value="' + value + '"' + option_chk + '>' +
+                            displayTime +
+                            '</option>';
+                    }
                 }
+                
 
                 var cutofftimeslot_list =
                     '<select name="ArrDeliveryCutoff[]" class="form-control">' +
