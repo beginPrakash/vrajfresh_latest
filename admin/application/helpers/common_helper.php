@@ -3355,13 +3355,23 @@ if (!function_exists('get_timeslot_list')) {
         $timeslots = [];
 
         for ($hour = 0; $hour < 24; $hour++) {
-            $time24 = sprintf('%02d:00', $hour);
-            
-            $timeslots[] = [
-                'value' => $time24,
-                'display' => date('h:i A', strtotime($time24))
-            ];
+
+            // 30-minute interval from 8 AM to 8 PM
+            $minutesList = ($hour >= 8 && $hour <= 20)
+                ? [0, 30]
+                : [0];
+
+            foreach ($minutesList as $minute) {
+
+                $time24 = sprintf('%02d:%02d', $hour, $minute);
+
+                $timeslots[] = [
+                    'value'   => $time24,
+                    'display' => date('h:i A', strtotime($time24))
+                ];
+            }
         }
+
         return $timeslots;
     }
 }
